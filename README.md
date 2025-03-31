@@ -11,9 +11,6 @@ This supplementary material includes:
 - **Detailed revisions introducing the REE vulnerability in GPTScan**  
 - **A video demo illustrating how Socrates works**
 
-## Demo
-[demo](demo.mp4)
-
 
 ## Usage
 ### Create a python environment
