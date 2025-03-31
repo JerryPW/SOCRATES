@@ -9,7 +9,10 @@ This supplementary material includes:
 - **The dataset used for testing Socrates**  
 - **Overall experimental results**  
 - **Detailed revisions introducing the REE vulnerability in GPTScan**  
-- **A video demo illustrating how Socrates works**  
+- **A video demo illustrating how Socrates works**
+
+## Demo
+[demo](demo.mp4)
 
 
 ## Usage
