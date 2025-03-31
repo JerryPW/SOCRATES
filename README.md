@@ -3,6 +3,15 @@ This is the official repository for Socrates in paper "How To Ask Questions The 
 
 ![Structure](Structure.png)
 
+## Outline
+This supplementary material includes:  
+- **The source code of Socrates**  
+- **The dataset used for testing Socrates**  
+- **Overall experimental results**  
+- **Detailed revisions introducing the REE vulnerability in GPTScan**  
+- **A video demo illustrating how Socrates works**  
+
+
 ## Usage
 ### Create a python environment
 ```
