@@ -1,0 +1,21 @@
+
+Start analyze function: TydoIco.buy()
+Function Security Analysis for TydoIco.buy()
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function TydoIco.buy() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures that check against msg.sender being an owner or similar privileged role.
+        - function TydoIco.buy() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match any of the given structures. It uses `require()` statements to enforce conditions on `canBuy()` and `amount > 0`, but
+          there are no changes to the boolean values within this function that would match the specified patterns.
+External Call Analysis
+    Direct external call: ['token.transferFrom(address(owner),address(this),amount)']
+    Analyze Transfer
+    Analyze Gas
+        - token.transferFrom(address(owner),address(this),amount) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transferFrom(address(owner),address(this),amount)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function provided in the code is explicitly named 'constructor'.
+Conclusion: This function will not cause REE Problem.

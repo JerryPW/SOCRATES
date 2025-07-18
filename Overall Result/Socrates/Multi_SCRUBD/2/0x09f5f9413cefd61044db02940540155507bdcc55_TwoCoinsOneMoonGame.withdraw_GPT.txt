@@ -1,0 +1,23 @@
+
+Start analyze function: TwoCoinsOneMoonGame.withdraw()
+Function Security Analysis for TwoCoinsOneMoonGame.withdraw()
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function TwoCoinsOneMoonGame.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures 1 to 4 involving msg.sender checks against an xxxOwner/xxxAddress/Leader/CEO.
+        - function TwoCoinsOneMoonGame.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not have any 'require' or 'if' statements with 'throw' that involves the operation of checking a boolean and then flipping it to
+          the opposite value as specified in the given structures.
+External Call Analysis
+    Direct external call: ['feeCollector.call.value(fee)()']
+    Analyze Transfer
+    Analyze Gas
+        - feeCollector.call.value(fee)() ISN'T subjected to gas limits.
+    Remaining external call: ['feeCollector.call.value(fee)()']
+    Analyze External Address
+        There are ['feeCollector'] should be checked in variable feeCollector
+        Checked variables: feeCollector
+            Yes The code provided is a constructor because it is explicitly named 'constructor'. Moreover, within this constructor, the state variable 'feeCollector' is
+            hardcoded with the address '0xfd4e7b9f4f97330356f7d1b5ddb9843f2c3e9d87'. Therefore, the code satisfies both characteristics of being a constructor and having
+            a hardcoded state variable.
+Conclusion: This function will not cause REE Problem.

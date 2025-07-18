@@ -1,0 +1,183 @@
+KittenSelfDrop2.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function() payable {
+        require (participants[msg.sender] < dropNumber && kittensRemainingToDrop > basicReward);
+        uint256 tokensIssued = basicReward;
+        // Send extra Kitten Coins bonus if participant is donating Ether
+        if (msg.value > donatorReward[0][0])
+            tokensIssued += donatorBonus(msg.value);
+        // Send extra Kitten Coins bonus if participant holds at least holderAmount
+        if (kittenContract.balanceOf(msg.sender) >= holderAmount)
+            tokensIssued += holderReward;
+        // Check if number of Kitten Coins to issue is higher than coins remaining for airdrop (last transaction of airdrop)
+        if (tokensIssued > kittensRemainingToDrop)
+            tokensIssued = kittensRemainingToDrop;
+        
+        // Give away these so cute Kitten Coins to contributor
+        kittenContract.transfer(msg.sender, tokensIssued);
+        participants[msg.sender] = dropNumber;
+        kittensRemainingToDrop -= tokensIssued;
+        kittensDroppedToTheWorld += tokensIssued;
+        totalDropTransactions += 1;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function() payable {
+        require (participants[msg.sender] < dropNumber && kittensRemainingToDrop > basicReward);
+        uint256 tokensIssued = basicReward;
+        // Send extra Kitten Coins bonus if participant is donating Ether
+        if (msg.value > donatorReward[0][0])
+            tokensIssued += donatorBonus(msg.value);
+        // Send extra Kitten Coins bonus if participant holds at least holderAmount
+        if (kittenContract.balanceOf(msg.sender) >= holderAmount)
+            tokensIssued += holderReward;
+        // Check if number of Kitten Coins to issue is higher than coins remaining for airdrop (last transaction of airdrop)
+        if (tokensIssued > kittensRemainingToDrop)
+            tokensIssued = kittensRemainingToDrop;
+        
+        // Give away these so cute Kitten Coins to contributor
+        kittenContract.transfer(msg.sender, tokensIssued);
+        participants[msg.sender] = dropNumber;
+        kittensRemainingToDrop -= tokensIssued;
+        kittensDroppedToTheWorld += tokensIssued;
+        totalDropTransactions += 1;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function() payable {
+        require (participants[msg.sender] < dropNumber && kittensRemainingToDrop > basicReward);
+        uint256 tokensIssued = basicReward;
+        // Send extra Kitten Coins bonus if participant is donating Ether
+        if (msg.value > donatorReward[0][0])
+            tokensIssued += donatorBonus(msg.value);
+        // Send extra Kitten Coins bonus if participant holds at least holderAmount
+        if (kittenContract.balanceOf(msg.sender) >= holderAmount)
+            tokensIssued += holderReward;
+        // Check if number of Kitten Coins to issue is higher than coins remaining for airdrop (last transaction of airdrop)
+        if (tokensIssued > kittensRemainingToDrop)
+            tokensIssued = kittensRemainingToDrop;
+        
+        // Give away these so cute Kitten Coins to contributor
+        kittenContract.transfer(msg.sender, tokensIssued);
+        participants[msg.sender] = dropNumber;
+        kittensRemainingToDrop -= tokensIssued;
+        kittensDroppedToTheWorld += tokensIssued;
+        totalDropTransactions += 1;
+    }
+Response:
+{"StatementsA": {"participants[msg.sender] = dropNumber;":"Updates the participants mapping with the current drop number for the sender."}, "StatementsB": {"kittenContract.transfer(msg.sender, tokensIssued);":"Executes an external call to transfer tokens to the sender."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: participants[msg.sender] = dropNumber;
+2.External Call: kittenContract.transfer(msg.sender, tokensIssued);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function() payable {
+        require (participants[msg.sender] < dropNumber && kittensRemainingToDrop > basicReward);
+        uint256 tokensIssued = basicReward;
+        // Send extra Kitten Coins bonus if participant is donating Ether
+        if (msg.value > donatorReward[0][0])
+            tokensIssued += donatorBonus(msg.value);
+        // Send extra Kitten Coins bonus if participant holds at least holderAmount
+        if (kittenContract.balanceOf(msg.sender) >= holderAmount)
+            tokensIssued += holderReward;
+        // Check if number of Kitten Coins to issue is higher than coins remaining for airdrop (last transaction of airdrop)
+        if (tokensIssued > kittensRemainingToDrop)
+            tokensIssued = kittensRemainingToDrop;
+        
+        // Give away these so cute Kitten Coins to contributor
+        kittenContract.transfer(msg.sender, tokensIssued);
+        participants[msg.sender] = dropNumber;
+        kittensRemainingToDrop -= tokensIssued;
+        kittensDroppedToTheWorld += tokensIssued;
+        totalDropTransactions += 1;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function() payable {
+        require (participants[msg.sender] < dropNumber && kittensRemainingToDrop > basicReward);
+        uint256 tokensIssued = basicReward;
+        // Send extra Kitten Coins bonus if participant is donating Ether
+        if (msg.value > donatorReward[0][0])
+            tokensIssued += donatorBonus(msg.value);
+        // Send extra Kitten Coins bonus if participant holds at least holderAmount
+        if (kittenContract.balanceOf(msg.sender) >= holderAmount)
+            tokensIssued += holderReward;
+        // Check if number of Kitten Coins to issue is higher than coins remaining for airdrop (last transaction of airdrop)
+        if (tokensIssued > kittensRemainingToDrop)
+            tokensIssued = kittensRemainingToDrop;
+        
+        // Give away these so cute Kitten Coins to contributor
+        kittenContract.transfer(msg.sender, tokensIssued);
+        participants[msg.sender] = dropNumber;
+        kittensRemainingToDrop -= tokensIssued;
+        kittensDroppedToTheWorld += tokensIssued;
+        totalDropTransactions += 1;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function() payable {
+        require (participants[msg.sender] < dropNumber && kittensRemainingToDrop > basicReward);
+        uint256 tokensIssued = basicReward;
+        // Send extra Kitten Coins bonus if participant is donating Ether
+        if (msg.value > donatorReward[0][0])
+            tokensIssued += donatorBonus(msg.value);
+        // Send extra Kitten Coins bonus if participant holds at least holderAmount
+        if (kittenContract.balanceOf(msg.sender) >= holderAmount)
+            tokensIssued += holderReward;
+        // Check if number of Kitten Coins to issue is higher than coins remaining for airdrop (last transaction of airdrop)
+        if (tokensIssued > kittensRemainingToDrop)
+            tokensIssued = kittensRemainingToDrop;
+        
+        // Give away these so cute Kitten Coins to contributor
+        kittenContract.transfer(msg.sender, tokensIssued);
+        participants[msg.sender] = dropNumber;
+        kittensRemainingToDrop -= tokensIssued;
+        kittensDroppedToTheWorld += tokensIssued;
+        totalDropTransactions += 1;
+    }
+Response:
+{"StatementsA": {"participants[msg.sender] = dropNumber;":"Updates the state variable 'participants'."}, "StatementsB": {"kittenContract.transfer(msg.sender, tokensIssued);":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: participants[msg.sender] = dropNumber;
+2.External Call: kittenContract.transfer(msg.sender, tokensIssued);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

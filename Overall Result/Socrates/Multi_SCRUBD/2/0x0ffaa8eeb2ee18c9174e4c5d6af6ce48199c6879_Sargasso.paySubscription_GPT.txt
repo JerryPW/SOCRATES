@@ -1,0 +1,24 @@
+
+Start analyze function: Sargasso.paySubscription()
+Function Security Analysis for Sargasso.paySubscription()
+    There are no modifiers should be examined in function paySubscription.
+    Check direct function security
+        - function Sargasso.paySubscription() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any check that compares msg.sender to an owner or specific leadership address using the specified patterns.
+        - function Sargasso.paySubscription() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does contain the structure `{require(xxx == False); xxx = True; ...}` as it checks `require(secondaryUserLock[msg.sender] == false);` and then
+          sets `secondaryUserLock[msg.sender] = true;`. However, immediately after setting the variable to true, it executes `buccTransfer = BuccV2(v2Address);`, which is
+          part of the main logic of the function, meaning the negation operation is immediately followed by main logic operation. Thus, it doesn't meet the requirement
+          that the state negation should immediately follow the state check and be completed before any of the main logic of the function.
+External Call Analysis
+    Direct external call: ['buccTransfer.transferFrom(msg.sender,address(this),subscriptionFee)']
+    Analyze Transfer
+    Analyze Gas
+        - buccTransfer.transferFrom(msg.sender,address(this),subscriptionFee) ISN'T subjected to gas limits.
+    Remaining external call: ['buccTransfer.transferFrom(msg.sender,address(this),subscriptionFee)']
+    Analyze External Address
+        There are ['v2Address'] should be checked in variable buccTransfer
+        Checked variables: v2Address
+            Yes The provided code includes a constructor function, as indicated by the function definition 'constructor(...) public'. The constructor sets the state
+            variable 'v2Address' using a parameter '_v2Address', which is not hardcoded. Since the function is a constructor, the first characteristic is satisfied.
+Conclusion: This function will not cause REE Problem.

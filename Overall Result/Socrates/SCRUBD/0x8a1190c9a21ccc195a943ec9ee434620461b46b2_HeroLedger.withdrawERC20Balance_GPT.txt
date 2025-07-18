@@ -1,0 +1,11 @@
+
+Start analyze function: HeroLedger.withdrawERC20Balance(uint256)
+Function Security Analysis for HeroLedger.withdrawERC20Balance(uint256)
+    The modifier of function withdrawERC20Balance are ['onlyLeader']
+    The result of checking modifiers:
+        - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'onlyLeader' uses a require statement to verify that the function caller's address (msg.sender) is equal to 'leaderAddress'. This satisfies
+          characteristic 1, which checks whether the function enforces that only specific addresses can execute it. The require statement is correctly identified and
+          there are no structural omissions regarding this characteristic. The code does not address characteristic 2, as there is no indication of a lock operation using
+          flags in this modifier, and characteristic 3 does not apply since the function name suggests access control for a specific user ('Leader').
+Conclusion: This function will not cause REE Problem.

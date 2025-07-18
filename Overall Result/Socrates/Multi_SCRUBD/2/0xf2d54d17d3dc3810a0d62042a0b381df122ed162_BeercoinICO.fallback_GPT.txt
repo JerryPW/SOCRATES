@@ -1,0 +1,31 @@
+
+Start analyze function: BeercoinICO.fallback()
+Function Security Analysis for BeercoinICO.fallback()
+    The modifier of function fallback are ['isOpen']
+    The result of checking modifiers:
+        - modifier isOpen has no relation with controlled by owner.
+          Reason: None of the specified characteristics are present: 1. No ownership check (no comparison against msg.sender); 2. No lock operation (flag
+          setting/resetting); 3. Modifier's name 'isOpen' does not imply ownership or reentrancy protection.
+    Check direct function security
+        - function BeercoinICO.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: This function does not include any statements that check the identity of msg.sender against an owner or other specific role like Owner, Address, Leader,
+          or CEO.
+        - function BeercoinICO.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match any of the structures specified in the characteristics. It does not contain require or if statements matching the
+          required patterns.
+External Call Analysis
+    Direct external call: ['beercoin.transfer(msg.sender,beercoinAmount)', 'beercoin.decimals()']
+    Analyze Transfer
+        - beercoin.transfer(msg.sender,beercoinAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - beercoin.transfer(msg.sender,beercoinAmount) ISN'T subjected to gas limits.
+        - beercoin.decimals() ISN'T subjected to gas limits.
+    Remaining external call: ['beercoin.transfer(msg.sender,beercoinAmount)', 'beercoin.decimals()']
+    Analyze External Address
+        There are ['beercoin'] should be checked in variable beercoin
+        Checked variables: beercoin
+            State variable beercoin has initialized in public area after declaration.
+        There are ['beercoin'] should be checked in variable beercoin
+        Checked variables: beercoin
+            State variable beercoin has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

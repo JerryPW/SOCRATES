@@ -1,0 +1,110 @@
+
+Start analyze function: HeroAuction.orderOnFightAuction(uint256,uint256,uint256)
+Function Security Analysis for HeroAuction.orderOnFightAuction(uint256,uint256,uint256)
+    The modifier of function orderOnFightAuction are ['whenNotPaused']
+    The result of checking modifiers:
+        - modifier whenNotPaused has no relation with controlled by owner.
+          Reason: The provided modifier checks only whether the contract is paused and does not enforce ownership or specific address checks, nor does it implement a lock
+          operation for reentrancy protection. It does not satisfy any of the conditions stated in the instructions.
+    Check direct function security
+        - function HeroAuction.orderOnFightAuction(uint256,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not contain any of the specified structures that check if 'msg.sender' equals or does not equal
+          xxxOwner/xxxAddress/Leader/CEO. The conditions in the code involve msg.sender being used for ownership checks, balance checks, and order operations, but none
+          match the criteria given.
+        - function HeroAuction.orderOnFightAuction(uint256,uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures as there are no require statements with boolean assignments to the same variable
+          later in the function.
+External Call Analysis
+    Direct external call: ['fightAuction.order(_yangId,orderAmount,msg.sender)', 'fightAuction.getCurrentPrice(_yangId,1)', 'fightAuction.getSeller(_yangId)']
+    Analyze Transfer
+    Analyze Gas
+        - fightAuction.order(_yangId,orderAmount,msg.sender) ISN'T subjected to gas limits.
+        - fightAuction.getCurrentPrice(_yangId,1) ISN'T subjected to gas limits.
+        - fightAuction.getSeller(_yangId) ISN'T subjected to gas limits.
+    Remaining external call: ['fightAuction.order(_yangId,orderAmount,msg.sender)', 'fightAuction.getCurrentPrice(_yangId,1)', 'fightAuction.getSeller(_yangId)']
+    Analyze External Address
+        There are ['fightAuction'] should be checked in variable fightAuction
+        Checked variables: fightAuction
+            No The provided function is not a constructor since its name is 'setFightAuctionAddress', which does not match the contract name 'HeroAuction' or explicitly
+            named 'constructor'. Additionally, the function does not hardcode the provided state variable 'fightAuction', as it is set to the value of
+            'candidateContract', which is passed as a parameter. Therefore, the function does not meet any of the specified characteristics.
+            Function Security Analysis for HeroAuction.setFightAuctionAddress(address)
+                The modifier of function setFightAuctionAddress are ['onlyLeader']
+                The result of checking modifiers:
+                    - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+                      Reason: The code includes the statement `require(msg.sender == leaderAddress);`, which enforces that only the leader can execute the function. This
+                      fulfills rule 1.
+        There are ['fightAuction'] should be checked in variable fightAuction
+        Checked variables: fightAuction
+            No 1. The function name 'setFightAuctionAddress' does not match the contract name 'HeroAuction', and it is not named 'constructor', so it is not a
+            constructor. 2. The function does not hardcode the state variable 'fightAuction'; instead, it assigns it based on the input parameter '_address'.
+            Function Security Analysis for HeroAuction.setFightAuctionAddress(address)
+                The modifier of function setFightAuctionAddress are ['onlyLeader']
+                The result of checking modifiers:
+                    - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon re-evaluation, in the given code modifier 'onlyLeader', there is a direct requirement check 'require(msg.sender == leaderAddress);'
+                      which matches Rule 1. This confirms that the code enforces that only a specific address (leaderAddress) can execute the function. There are no
+                      structural omissions for Rule 1, as the presence of 'require' clearly indicates restricted access based on msg.sender.
+        There are ['fightAuction'] should be checked in variable fightAuction
+        Checked variables: fightAuction
+            No The provided function is named 'setFightAuctionAddress', which neither matches the contract name 'HeroAuction' nor is it named 'constructor', thus it is
+            not a constructor function.  The function is designed to set the 'fightAuction' state variable with a new instance of 'FightClockAuction', but it does not
+            hardcode a value for the 'fightAuction' variable; instead, it takes an address as a parameter and requires that the address point to a valid
+            'FightClockAuction'. Therefore, it does not satisfy the second characteristic either.
+            Function Security Analysis for HeroAuction.setFightAuctionAddress(address)
+                The modifier of function setFightAuctionAddress are ['onlyLeader']
+                The result of checking modifiers:
+                    - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon reviewing the code, the modifier 'onlyLeader' uses 'require(msg.sender == leaderAddress);' to restrict access to only the
+                      'leaderAddress'. This directly matches rule 1, which looks for such a requirement statement to ensure only the owner or specific addresses can
+                      execute the function. There are no structural omissions as this code snippet clearly satisfies rule 1.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: HeroFighting._fight(uint32,uint32)
+Function Security Analysis for HeroFighting._fight(uint32,uint32)
+    The modifier of function _fight are ['whenNotPaused']
+    The result of checking modifiers:
+        - modifier whenNotPaused has no relation with controlled by owner.
+          Reason: The modifier does not enforce caller identity checks or lock operations, and its name 'whenNotPaused' indicates only a state check.
+    Check direct function security
+        - function HeroFighting._fight(uint32,uint32) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any require/assert statements involving msg.sender with xxxOwner/xxxAddress/Leader/CEO.
+        - function HeroFighting._fight(uint32,uint32) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains an `if(!flag)` statement with swapping of _yinId and _yangId inside the block. However, it does not include setting `flag` to true
+          within this structure, and also `flag` is not involved in a `require` like statement as per the specifications given. Therefore, it does not fully match the
+          structure 4.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['orderOnFightAuction']
+        Function Security Analysis for HeroAuction.orderOnFightAuction(uint256,uint256,uint256)
+            The modifier of function orderOnFightAuction are ['whenNotPaused']
+            The result of checking modifiers:
+                - modifier whenNotPaused has no relation with controlled by owner.
+                  Reason: The code checks if a certain condition ('!paused') is met before allowing the function to continue, but it does not explicitly check for an
+                  owner or specific address. It does not set or reset a flag for reentrancy protection. It also does not have a function name suggesting ownership or
+                  reentrancy protection. Therefore, it does not meet any of the specified criteria.
+            Check direct function security
+                - function HeroAuction.orderOnFightAuction(uint256,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any access control mechanism checking for specific roles or ownership within the provided conditions. It primarily
+                  focuses on checking the ownership of the _yinId and balance checks for transaction validity, but none match the specific structures outlined in the
+                  task.
+                - function HeroAuction.orderOnFightAuction(uint256,uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not satisfy any of the specified structures. There are no 'require' or 'if' statements followed by variable assignments that match
+                  the described characteristics.
+External Call Analysis
+    Direct external call: ['masterRecruitment.fightMix(yin.belongings,yang.belongings)']
+    Analyze Transfer
+    Analyze Gas
+        - masterRecruitment.fightMix(yin.belongings,yang.belongings) ISN'T subjected to gas limits.
+    Remaining external call: ['masterRecruitment.fightMix(yin.belongings,yang.belongings)']
+    Analyze External Address
+        There are ['masterRecruitment'] should be checked in variable masterRecruitment
+        Checked variables: masterRecruitment
+            No The function provided does not have a name matching the contract name 'HeroAuction', nor is it explicitly named 'constructor', so it is not a constructor
+            function. Also, there are no hardcoded assignments to the state variable 'masterRecruitment'; the value is set based on the function input '_address'.
+            Function Security Analysis for HeroFighting.setMasterRecruitmentAddress(address)
+                The modifier of function setMasterRecruitmentAddress are ['onlyLeader']
+                The result of checking modifiers:
+                    - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+                      Reason: The code contains a 'require' statement that checks if 'msg.sender' is equal to 'leaderAddress', which enforces that only a specific address
+                      can execute the function. This matches rule 1 precisely.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,74 @@
+YZYVault.addTaxFee: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function addTaxFee(uint256 amount) external onlyYzy returns (bool) {
+        uint256 daoTreasuryReward = amount.mul(uint256(_treasuryFee)).div(10000);
+        _yzy.transfer(_daoTreasury, daoTreasuryReward);
+
+        uint256 stakerReward = amount.mul(uint256(_rewardFee)).div(10000);
+        _collectedAmountForStakers = _collectedAmountForStakers.add(stakerReward);
+
+        uint256 lotteryReward =  amount.mul(uint256(_lotteryFee)).div(10000);
+        _collectedAmountForLottery = _collectedAmountForLottery.add(lotteryReward);
+
+        _collectedAmountForSwap = _collectedAmountForSwap.add(amount.sub(daoTreasuryReward).sub(stakerReward).sub(lotteryReward));
+
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function addTaxFee(uint256 amount) external onlyYzy returns (bool) {
+        uint256 daoTreasuryReward = amount.mul(uint256(_treasuryFee)).div(10000);
+        _yzy.transfer(_daoTreasury, daoTreasuryReward);
+
+        uint256 stakerReward = amount.mul(uint256(_rewardFee)).div(10000);
+        _collectedAmountForStakers = _collectedAmountForStakers.add(stakerReward);
+
+        uint256 lotteryReward =  amount.mul(uint256(_lotteryFee)).div(10000);
+        _collectedAmountForLottery = _collectedAmountForLottery.add(lotteryReward);
+
+        _collectedAmountForSwap = _collectedAmountForSwap.add(amount.sub(daoTreasuryReward).sub(stakerReward).sub(lotteryReward));
+
+        return true;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function addTaxFee(uint256 amount) external onlyYzy returns (bool) {
+        uint256 daoTreasuryReward = amount.mul(uint256(_treasuryFee)).div(10000);
+        _yzy.transfer(_daoTreasury, daoTreasuryReward);
+
+        uint256 stakerReward = amount.mul(uint256(_rewardFee)).div(10000);
+        _collectedAmountForStakers = _collectedAmountForStakers.add(stakerReward);
+
+        uint256 lotteryReward =  amount.mul(uint256(_lotteryFee)).div(10000);
+        _collectedAmountForLottery = _collectedAmountForLottery.add(lotteryReward);
+
+        _collectedAmountForSwap = _collectedAmountForSwap.add(amount.sub(daoTreasuryReward).sub(stakerReward).sub(lotteryReward));
+
+        return true;
+    }
+Response:
+{"StatementsA": {"_collectedAmountForStakers = _collectedAmountForStakers.add(stakerReward);":"Updates the state variable _collectedAmountForStakers with the new staker reward."}, "StatementsB": {"_yzy.transfer(_daoTreasury, daoTreasuryReward);":"Executes an external call to transfer daoTreasuryReward to _daoTreasury."}, "VariableA": {"_daoTreasury":"Holds the address of the recipient for the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _collectedAmountForStakers = _collectedAmountForStakers.add(stakerReward);
+2.External Call: _yzy.transfer(_daoTreasury, daoTreasuryReward);
+3.Variable A: _daoTreasury
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,28 @@
+
+Start analyze function: LockingContract.releaseTokens(address)
+Function Security Analysis for LockingContract.releaseTokens(address)
+    The modifier of function releaseTokens are ['onlyWhenUnlocked']
+    The result of checking modifiers:
+        - modifier onlyWhenUnlocked has no relation with controlled by owner.
+          Reason: The modifier onlyWhenUnlocked uses the function isLocked() to determine the condition of being unlocked, which suggests a locking mechanism. However, to
+          satisfy rule 2, both a lock and unlock operation must be present in the code structure. Since only a single operation (checking if unlocked) is present here, it
+          does not fully satisfy rule 2.
+    Check direct function security
+        - function LockingContract.releaseTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code uses 'require(msg.sender == owner || msg.sender == _beneficiary);', but the 'owner' is not prefixed by a specific local variable (xxxOwner),
+          making it not strictly matching the structure.
+        - function LockingContract.releaseTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the mentioned structures 1-4 involving require statements or variable assignments in the specified patterns.
+External Call Analysis
+    Direct external call: ['tokenContract.transfer(_beneficiary,amount)']
+    Analyze Transfer
+        - tokenContract.transfer(_beneficiary,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenContract.transfer(_beneficiary,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenContract.transfer(_beneficiary,amount)']
+    Analyze External Address
+        There are ['tokenContract'] should be checked in variable tokenContract
+        Checked variables: tokenContract
+            Yes The function 'LockingContract' matches the name of the contract 'LockingContract'. Thus, it can be identified as a constructor in Solidity version prior
+            to 0.4.22, where constructor functions were named after the contract.
+Conclusion: This function will not cause REE Problem.

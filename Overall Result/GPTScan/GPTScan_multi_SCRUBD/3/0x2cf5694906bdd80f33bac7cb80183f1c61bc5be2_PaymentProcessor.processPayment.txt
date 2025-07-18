@@ -1,0 +1,235 @@
+PaymentProcessor.processPayment: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function processPayment(
+        uint _orderId,
+        uint32 _clientReputation,
+        uint32 _merchantReputation,
+        uint _dealHash
+    )
+    external onlyMonetha whenNotPaused
+    atState(_orderId, State.Paid) transition(_orderId, State.Finalized)
+    {
+        Order storage order = orders[_orderId];
+        address fundAddress = merchantWallet.merchantFundAddress();
+
+        if (order.tokenAddress != address(0)) {
+            if (fundAddress != address(0)) {
+                GenericERC20(order.tokenAddress).transfer(address(monethaGateway), order.price);
+                monethaGateway.acceptTokenPayment(fundAddress, order.fee, order.tokenAddress, order.price);
+            } else {
+                GenericERC20(order.tokenAddress).transfer(address(monethaGateway), order.price);
+                monethaGateway.acceptTokenPayment(merchantWallet, order.fee, order.tokenAddress, order.price);
+            }
+        } else {
+            uint discountWei = 0;
+            if (fundAddress != address(0)) {
+                discountWei = monethaGateway.acceptPayment.value(order.price)(
+                    fundAddress,
+                    order.fee,
+                    order.originAddress,
+                    order.vouchersApply,
+                    PAYBACK_PERMILLE);
+            } else {
+                discountWei = monethaGateway.acceptPayment.value(order.price)(
+                    merchantWallet,
+                    order.fee,
+                    order.originAddress,
+                    order.vouchersApply,
+                    PAYBACK_PERMILLE);
+            }
+
+            if (discountWei > 0) {
+                order.discount = discountWei;
+            }
+        }
+
+        updateDealConditions(
+            _orderId,
+            _clientReputation,
+            _merchantReputation,
+            true,
+            _dealHash
+        );
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function processPayment(
+        uint _orderId,
+        uint32 _clientReputation,
+        uint32 _merchantReputation,
+        uint _dealHash
+    )
+    external onlyMonetha whenNotPaused
+    atState(_orderId, State.Paid) transition(_orderId, State.Finalized)
+    {
+        Order storage order = orders[_orderId];
+        address fundAddress = merchantWallet.merchantFundAddress();
+
+        if (order.tokenAddress != address(0)) {
+            if (fundAddress != address(0)) {
+                GenericERC20(order.tokenAddress).transfer(address(monethaGateway), order.price);
+                monethaGateway.acceptTokenPayment(fundAddress, order.fee, order.tokenAddress, order.price);
+            } else {
+                GenericERC20(order.tokenAddress).transfer(address(monethaGateway), order.price);
+                monethaGateway.acceptTokenPayment(merchantWallet, order.fee, order.tokenAddress, order.price);
+            }
+        } else {
+            uint discountWei = 0;
+            if (fundAddress != address(0)) {
+                discountWei = monethaGateway.acceptPayment.value(order.price)(
+                    fundAddress,
+                    order.fee,
+                    order.originAddress,
+                    order.vouchersApply,
+                    PAYBACK_PERMILLE);
+            } else {
+                discountWei = monethaGateway.acceptPayment.value(order.price)(
+                    merchantWallet,
+                    order.fee,
+                    order.originAddress,
+                    order.vouchersApply,
+                    PAYBACK_PERMILLE);
+            }
+
+            if (discountWei > 0) {
+                order.discount = discountWei;
+            }
+        }
+
+        updateDealConditions(
+            _orderId,
+            _clientReputation,
+            _merchantReputation,
+            true,
+            _dealHash
+        );
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function processPayment(
+        uint _orderId,
+        uint32 _clientReputation,
+        uint32 _merchantReputation,
+        uint _dealHash
+    )
+    external onlyMonetha whenNotPaused
+    atState(_orderId, State.Paid) transition(_orderId, State.Finalized)
+    {
+        Order storage order = orders[_orderId];
+        address fundAddress = merchantWallet.merchantFundAddress();
+
+        if (order.tokenAddress != address(0)) {
+            if (fundAddress != address(0)) {
+                GenericERC20(order.tokenAddress).transfer(address(monethaGateway), order.price);
+                monethaGateway.acceptTokenPayment(fundAddress, order.fee, order.tokenAddress, order.price);
+            } else {
+                GenericERC20(order.tokenAddress).transfer(address(monethaGateway), order.price);
+                monethaGateway.acceptTokenPayment(merchantWallet, order.fee, order.tokenAddress, order.price);
+            }
+        } else {
+            uint discountWei = 0;
+            if (fundAddress != address(0)) {
+                discountWei = monethaGateway.acceptPayment.value(order.price)(
+                    fundAddress,
+                    order.fee,
+                    order.originAddress,
+                    order.vouchersApply,
+                    PAYBACK_PERMILLE);
+            } else {
+                discountWei = monethaGateway.acceptPayment.value(order.price)(
+                    merchantWallet,
+                    order.fee,
+                    order.originAddress,
+                    order.vouchersApply,
+                    PAYBACK_PERMILLE);
+            }
+
+            if (discountWei > 0) {
+                order.discount = discountWei;
+            }
+        }
+
+        updateDealConditions(
+            _orderId,
+            _clientReputation,
+            _merchantReputation,
+            true,
+            _dealHash
+        );
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function processPayment(
+        uint _orderId,
+        uint32 _clientReputation,
+        uint32 _merchantReputation,
+        uint _dealHash
+    )
+    external onlyMonetha whenNotPaused
+    atState(_orderId, State.Paid) transition(_orderId, State.Finalized)
+    {
+        Order storage order = orders[_orderId];
+        address fundAddress = merchantWallet.merchantFundAddress();
+
+        if (order.tokenAddress != address(0)) {
+            if (fundAddress != address(0)) {
+                GenericERC20(order.tokenAddress).transfer(address(monethaGateway), order.price);
+                monethaGateway.acceptTokenPayment(fundAddress, order.fee, order.tokenAddress, order.price);
+            } else {
+                GenericERC20(order.tokenAddress).transfer(address(monethaGateway), order.price);
+                monethaGateway.acceptTokenPayment(merchantWallet, order.fee, order.tokenAddress, order.price);
+            }
+        } else {
+            uint discountWei = 0;
+            if (fundAddress != address(0)) {
+                discountWei = monethaGateway.acceptPayment.value(order.price)(
+                    fundAddress,
+                    order.fee,
+                    order.originAddress,
+                    order.vouchersApply,
+                    PAYBACK_PERMILLE);
+            } else {
+                discountWei = monethaGateway.acceptPayment.value(order.price)(
+                    merchantWallet,
+                    order.fee,
+                    order.originAddress,
+                    order.vouchersApply,
+                    PAYBACK_PERMILLE);
+            }
+
+            if (discountWei > 0) {
+                order.discount = discountWei;
+            }
+        }
+
+        updateDealConditions(
+            _orderId,
+            _clientReputation,
+            _merchantReputation,
+            true,
+            _dealHash
+        );
+    }
+    
+Response:
+No
+--------------------------------------------------

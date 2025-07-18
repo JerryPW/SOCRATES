@@ -1,0 +1,131 @@
+Staking.harvest: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function harvest() external nonReentrant {
+        UserInfo storage user = userInfo[msg.sender];
+        require(user.amount >= 0, "You havent invested yet");
+        require(block.timestamp > user.depositTime.add(requiredTimeForReward), "Check locking time require");
+
+        _updatePool();
+
+        uint256 pendingUsdt = user.pendingUsdtReward.add(user.amount.mul(accUsdtPerShare).div(PRECISION_FACTOR).sub(user.rewardUsdtDebt));
+        if (pendingUsdt > 0) {
+            USDT.transfer(address(msg.sender), pendingUsdt);
+            user.pendingUsdtReward = 0;
+            user.rewardUsdtDebt = user.amount.mul(accUsdtPerShare).div(PRECISION_FACTOR);
+            emit Harvest(msg.sender, pendingUsdt);
+        }
+
+        uint256 pendingEth = user.pendingEthReward.add(user.amount.mul(accEthPerShare).div(PRECISION_FACTOR).sub(user.rewardEthDebt));
+        if (pendingEth > 0) {
+            payable(msg.sender).transfer(pendingEth);
+            user.pendingEthReward = 0;
+            user.rewardEthDebt = user.amount.mul(accEthPerShare).div(PRECISION_FACTOR);
+
+            lastEthBalance = address(this).balance;
+            emit Harvest(msg.sender, pendingEth);
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function harvest() external nonReentrant {
+        UserInfo storage user = userInfo[msg.sender];
+        require(user.amount >= 0, "You havent invested yet");
+        require(block.timestamp > user.depositTime.add(requiredTimeForReward), "Check locking time require");
+
+        _updatePool();
+
+        uint256 pendingUsdt = user.pendingUsdtReward.add(user.amount.mul(accUsdtPerShare).div(PRECISION_FACTOR).sub(user.rewardUsdtDebt));
+        if (pendingUsdt > 0) {
+            USDT.transfer(address(msg.sender), pendingUsdt);
+            user.pendingUsdtReward = 0;
+            user.rewardUsdtDebt = user.amount.mul(accUsdtPerShare).div(PRECISION_FACTOR);
+            emit Harvest(msg.sender, pendingUsdt);
+        }
+
+        uint256 pendingEth = user.pendingEthReward.add(user.amount.mul(accEthPerShare).div(PRECISION_FACTOR).sub(user.rewardEthDebt));
+        if (pendingEth > 0) {
+            payable(msg.sender).transfer(pendingEth);
+            user.pendingEthReward = 0;
+            user.rewardEthDebt = user.amount.mul(accEthPerShare).div(PRECISION_FACTOR);
+
+            lastEthBalance = address(this).balance;
+            emit Harvest(msg.sender, pendingEth);
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function harvest() external nonReentrant {
+        UserInfo storage user = userInfo[msg.sender];
+        require(user.amount >= 0, "You havent invested yet");
+        require(block.timestamp > user.depositTime.add(requiredTimeForReward), "Check locking time require");
+
+        _updatePool();
+
+        uint256 pendingUsdt = user.pendingUsdtReward.add(user.amount.mul(accUsdtPerShare).div(PRECISION_FACTOR).sub(user.rewardUsdtDebt));
+        if (pendingUsdt > 0) {
+            USDT.transfer(address(msg.sender), pendingUsdt);
+            user.pendingUsdtReward = 0;
+            user.rewardUsdtDebt = user.amount.mul(accUsdtPerShare).div(PRECISION_FACTOR);
+            emit Harvest(msg.sender, pendingUsdt);
+        }
+
+        uint256 pendingEth = user.pendingEthReward.add(user.amount.mul(accEthPerShare).div(PRECISION_FACTOR).sub(user.rewardEthDebt));
+        if (pendingEth > 0) {
+            payable(msg.sender).transfer(pendingEth);
+            user.pendingEthReward = 0;
+            user.rewardEthDebt = user.amount.mul(accEthPerShare).div(PRECISION_FACTOR);
+
+            lastEthBalance = address(this).balance;
+            emit Harvest(msg.sender, pendingEth);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function harvest() external nonReentrant {
+        UserInfo storage user = userInfo[msg.sender];
+        require(user.amount >= 0, "You havent invested yet");
+        require(block.timestamp > user.depositTime.add(requiredTimeForReward), "Check locking time require");
+
+        _updatePool();
+
+        uint256 pendingUsdt = user.pendingUsdtReward.add(user.amount.mul(accUsdtPerShare).div(PRECISION_FACTOR).sub(user.rewardUsdtDebt));
+        if (pendingUsdt > 0) {
+            USDT.transfer(address(msg.sender), pendingUsdt);
+            user.pendingUsdtReward = 0;
+            user.rewardUsdtDebt = user.amount.mul(accUsdtPerShare).div(PRECISION_FACTOR);
+            emit Harvest(msg.sender, pendingUsdt);
+        }
+
+        uint256 pendingEth = user.pendingEthReward.add(user.amount.mul(accEthPerShare).div(PRECISION_FACTOR).sub(user.rewardEthDebt));
+        if (pendingEth > 0) {
+            payable(msg.sender).transfer(pendingEth);
+            user.pendingEthReward = 0;
+            user.rewardEthDebt = user.amount.mul(accEthPerShare).div(PRECISION_FACTOR);
+
+            lastEthBalance = address(this).balance;
+            emit Harvest(msg.sender, pendingEth);
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

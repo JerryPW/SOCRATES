@@ -1,0 +1,154 @@
+
+Start analyze function: RedKnightToken._swapAndLiquify()
+Function Security Analysis for RedKnightToken._swapAndLiquify()
+    There are no modifiers should be examined in function _swapAndLiquify.
+    Check direct function security
+        - function RedKnightToken._swapAndLiquify() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not have any of the specified structures that check or throw based on `msg.sender` relating to ownership or specific
+          addresses.
+        - function RedKnightToken._swapAndLiquify() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures like require or if statements with variable assignment to true/false.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_transfer', 'transfer', 'transferFrom']
+        Function Security Analysis for RedKnightToken._transfer(address,address,uint256)
+            There are no modifiers should be examined in function _transfer.
+            Check direct function security
+                - function RedKnightToken._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not have any checks or assertions related to msg.sender involving an owner or special role like Leader or CEO.
+                - function RedKnightToken._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain any of the structural patterns required for a 'Yes' output as per the given conditions. There are no direct
+                  assignments of a boolean variable to True or False following a require statement that would match the specified patterns.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['transfer', 'transferFrom']
+                Function Security Analysis for RedKnightToken.transfer(address,uint256)
+                    There are no modifiers should be examined in function transfer.
+                    Check direct function security
+                        - function RedKnightToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The provided code does not contain any of the specified structures involving 'msg.sender'. There are no require, if, or assert
+                          statements that involve 'msg.sender' in the context of 'xxxOwner/xxxAddress/Leader/CEO'.
+                        - function RedKnightToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided function does not contain any of the specified structures involving a condition followed by changing a boolean variable's
+                          state.
+External Call Analysis
+    Direct external call: ['address(marketingWallet).transfer(amountETHMarketing)', 'address(devWallet).transfer(amountETHDev)',
+    'address(buyBackWallet).transfer(amountETHBuyBack)']
+    Analyze Transfer
+        - address(marketingWallet).transfer(amountETHMarketing) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        contains '.transfer(' keyword, indicating it matches characteristic 1.. Parameter in 'transfer'/'send': 1.
+        - address(devWallet).transfer(amountETHDev) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains
+        '.transfer(' keyword, indicating it matches characteristic 1.. Parameter in 'transfer'/'send': 1.
+        - address(buyBackWallet).transfer(amountETHBuyBack) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains
+        '.transfer(' keyword, indicating it matches characteristic 1.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: RedKnightToken._addLiquidity(uint256,uint256)
+Function Security Analysis for RedKnightToken._addLiquidity(uint256,uint256)
+    There are no modifiers should be examined in function _addLiquidity.
+    Check direct function security
+        - function RedKnightToken._addLiquidity(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not contain any authorization checks or conditions related to msg.sender. It neither checks for owner or specific address
+          conditions using require, if, or assert statements nor involves any throwing mechanism based on msg.sender.
+        - function RedKnightToken._addLiquidity(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not show any require or conditional statements that align with the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_swapAndLiquify', 'transfer', '_transfer', 'transferFrom']
+        Function Security Analysis for RedKnightToken._swapAndLiquify()
+            There are no modifiers should be examined in function _swapAndLiquify.
+            Check direct function security
+                - function RedKnightToken._swapAndLiquify() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified structures such as 'require', 'if', or 'assert' that checks the caller's address against a
+                  specific owner or authority address.
+                - function RedKnightToken._swapAndLiquify() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not contain a 'require' statement or an 'if (!xxx) throw' structure that utilizes the critical variable assignment pattern
+                  described. The code mainly performs token swapping and liquidity management without exception handling that matches the specified patterns.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['_transfer', 'transfer', 'transferFrom']
+                Function Security Analysis for RedKnightToken._transfer(address,address,uint256)
+                    There are no modifiers should be examined in function _transfer.
+                    Check direct function security
+                        - function RedKnightToken._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not contain any checks or assertions for `msg.sender` being equal or not equal to any 'Owner', 'Leader', 'CEO', or related
+                          addresses.
+                        - function RedKnightToken._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided function doesn't have the required structures that involve setting a variable to true or false after a condition check
+                          using 'require' or 'if' with 'throw'.
+                    Since the function can only be called by functions, we start to analyze indirect function security.
+                    The reachable functions are ['transfer', 'transferFrom']
+                        Function Security Analysis for RedKnightToken.transfer(address,uint256)
+                            There are no modifiers should be examined in function transfer.
+                            Check direct function security
+                                - function RedKnightToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                                  Reason: The function `transfer` does not contain any statement that verifies the identity of the sender against a specific owner,
+                                  address, or role such as Owner, Address, Leader, or CEO. Hence, none of the outlined structures are present in the code.
+                                - function RedKnightToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                                  Reason: The code snippet does not contain any of the specified structures involving `require` or conditional throws with variable
+                                  assignments as described in the given patterns.
+External Call Analysis
+    Direct external call: ['uniswapV2Router.addLiquidityETH{value:ethAmount}(address(this),tokenAmount,0,0,liquidityWallet,block.timestamp)']
+    Analyze Transfer
+    Analyze Gas
+        - uniswapV2Router.addLiquidityETH{value:ethAmount}(address(this),tokenAmount,0,0,liquidityWallet,block.timestamp) ISN'T subjected to gas limits.
+    Remaining external call: ['uniswapV2Router.addLiquidityETH{value:ethAmount}(address(this),tokenAmount,0,0,liquidityWallet,block.timestamp)']
+    Analyze External Address
+        There are ['uniswapV2Router'] should be checked in variable uniswapV2Router
+        Checked variables: uniswapV2Router
+            Yes The provided code is a constructor because it is explicitly named 'constructor()', and it initializes several state variables including 'uniswapV2Router'.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: RedKnightToken._swapTokensForETH(uint256)
+Function Security Analysis for RedKnightToken._swapTokensForETH(uint256)
+    There are no modifiers should be examined in function _swapTokensForETH.
+    Check direct function security
+        - function RedKnightToken._swapTokensForETH(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function '_swapTokensForETH' does not include any checks for 'msg.sender'. Therefore, it does not satisfy any of the specified characteristics.
+        - function RedKnightToken._swapTokensForETH(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not contain any 'require' statements or 'if' statements that throw exceptions, nor does it include any variable assignments
+          after such statements. Thus, it does not match any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_swapAndLiquify', 'transfer', '_transfer', 'transferFrom']
+        Function Security Analysis for RedKnightToken._swapAndLiquify()
+            There are no modifiers should be examined in function _swapAndLiquify.
+            Check direct function security
+                - function RedKnightToken._swapAndLiquify() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function _swapAndLiquify does not contain any require, if, or assert statements that check or utilize msg.sender in any way.
+                - function RedKnightToken._swapAndLiquify() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not contain any of the specified patterns in the problem description. There are no `require` or `if-throw` statements
+                  regarding any boolean variable that are followed by setting that same variable to a specific value (true or false), as described in the conditions.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['_transfer', 'transfer', 'transferFrom']
+                Function Security Analysis for RedKnightToken._transfer(address,address,uint256)
+                    There are no modifiers should be examined in function _transfer.
+                    Check direct function security
+                        - function RedKnightToken._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not contain any special checks on msg.sender against variables ending with Owner/Address/Leader/CEO or similar
+                          context, matching any specified authorization patterns.
+                        - function RedKnightToken._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not contain any of the specified patterns. The 'require' statements and variable assignments, as used in the function, are
+                          checking conditions and enabling or disabling certain actions, but they don't fit the specific structures required. For example, there is no
+                          'require(xxx == True); xxx = False;' or similar structured pattern with the same variable.
+                    Since the function can only be called by functions, we start to analyze indirect function security.
+                    The reachable functions are ['transfer', 'transferFrom']
+                        Function Security Analysis for RedKnightToken.transfer(address,uint256)
+                            There are no modifiers should be examined in function transfer.
+                            Check direct function security
+                                - function RedKnightToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                                  Reason: The function does not include any statement that verifies the identity of the sender or compares msg.sender to a specific
+                                  owner/leader address.
+                                - function RedKnightToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                                  Reason: The provided function does not contain any of the specified structures where a 'require' statement checks a condition related to
+                                  a variable and then the variable's value is modified accordingly. It only involves a call to another function and returns a boolean
+                                  value.
+External Call Analysis
+    Direct external call: ['uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp)']
+    Analyze Transfer
+    Analyze Gas
+        - uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp) ISN'T subjected to gas limits.
+    Remaining external call: ['uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp)']
+    Analyze External Address
+        There are ['uniswapV2Router'] should be checked in variable uniswapV2Router
+        Checked variables: uniswapV2Router
+            Yes The provided code is a constructor, as it is explicitly named 'constructor'.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,10 @@
+
+Start analyze function: SwifyStaking.closePosition(uint256)
+Function Security Analysis for SwifyStaking.closePosition(uint256)
+    The modifier of function closePosition are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier explicitly uses two functions '_nonReentrantBefore()' and '_nonReentrantAfter()'. This indicates that the lock operation is done through
+          '_nonReentrantBefore()' (presumably setting a flag to true or similar), and the unlock operation is carried out by '_nonReentrantAfter()' (presumably resetting
+          the flag). These functions ensure the function enters only once, fully aligning with characteristic 2.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,50 @@
+
+Start analyze function: ShibaUncle._transfer(address,address,uint256)
+Function Security Analysis for ShibaUncle._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function ShibaUncle._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code contains an 'if' statement that checks if 'msg.sender' is not equal to 'pair', which is not directly related to checking against an owner,
+          leader, or CEO. However, there is another 'if' statement checking if 'sender' and 'recipient' are not equal to 'owner'. Hence, neither the 'msg.sender'
+          condition nor the 'require' or 'assert' statements meet the described characteristics specifically referring to 'msg.sender' and a role of
+          xxxOwner/xxxAddress/Leader/CEO in the provided code logic.
+        - function ShibaUncle._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains checks using `require` statements, but none of them match the specified structures where a variable is required to be either True or
+          False, and then the variable is assigned to the opposite value. Therefore, the code does not satisfy any of the given structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for ShibaUncle.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function ShibaUncle.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any statements that check if msg.sender is equal or not equal to any owner or leader address such as
+                  xxxOwner/xxxAddress/Leader/CEO. It simply updates allowances and transfers funds.
+                - function ShibaUncle.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain a structure that matches any of the specified patterns. There is no 'require' statement or an 'if' condition
+                  that meets the criteria outlined. The code primarily consists of an 'if' condition followed by operations on array elements without explicit assignments
+                  to the tested condition variable.
+External Call Analysis
+    Direct external call: ['coolUncle.setShare(sender,_balances[sender])', 'coolUncle.setShare(recipient,_balances[recipient])']
+    Analyze Transfer
+    Analyze Gas
+        - coolUncle.setShare(sender,_balances[sender]) ISN'T subjected to gas limits.
+        - coolUncle.setShare(recipient,_balances[recipient]) ISN'T subjected to gas limits.
+    Remaining external call: ['coolUncle.setShare(sender,_balances[sender])', 'coolUncle.setShare(recipient,_balances[recipient])']
+    Analyze External Address
+        There are ['coolUncle'] should be checked in variable coolUncle
+        Checked variables: coolUncle
+            Yes The code is a constructor because the function explicitly named 'constructor'.
+        There are ['coolUncle'] should be checked in variable coolUncle
+        Checked variables: coolUncle
+            Yes The provided code has a function named 'constructor', which matches the requirement for determining if it is a constructor. The function directly
+            initializes the contract and sets initial state variables and configurations.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ShibaUncle.swapBack()
+Function Security Analysis for ShibaUncle.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: In the modifier code, there is both a lock operation (inSwapAndLiquify = true) before the function's main body and an unlock operation (inSwapAndLiquify
+          = false) after the function's main body. This meets the requirement for characteristic 2.
+Conclusion: This function will not cause REE Problem.

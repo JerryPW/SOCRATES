@@ -1,0 +1,39 @@
+
+Start analyze function: Sargasso.tokenSend(address,uint256,uint256)
+Function Security Analysis for Sargasso.tokenSend(address,uint256,uint256)
+    There are no modifiers should be examined in function tokenSend.
+    Check direct function security
+        - function Sargasso.tokenSend(address,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any of the required structures involving checking msg.sender against a predefined owner or address.
+        - function Sargasso.tokenSend(address,uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The first two lines that fit the structure do not immediately perform a state negation operation. After the initial 'require' of
+          'secondaryUserLock[msg.sender] == false', several 'require' checks and changes to state (like modifying 'userSpecifiedTokenLock' and
+          'totalTokensSpecifiedAddress') occur before 'secondaryUserLock[msg.sender]' is set to 'true'. This implies that the state change happens after some main logic
+          execution.
+External Call Analysis
+    Direct external call: ['buccTransfer.findUser(userNum)', 'selectedTokentoTumble.transfer(lookUP,userAmount)', 'buccTransfer.specialTransfer(userNum,0)']
+    Analyze Transfer
+        - selectedTokentoTumble.transfer(lookUP,userAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - buccTransfer.specialTransfer(userNum,0) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - buccTransfer.findUser(userNum) ISN'T subjected to gas limits.
+        - selectedTokentoTumble.transfer(lookUP,userAmount) ISN'T subjected to gas limits.
+        - buccTransfer.specialTransfer(userNum,0) ISN'T subjected to gas limits.
+    Remaining external call: ['buccTransfer.findUser(userNum)', 'selectedTokentoTumble.transfer(lookUP,userAmount)', 'buccTransfer.specialTransfer(userNum,0)']
+    Analyze External Address
+        There are ['v2Address'] should be checked in variable buccTransfer
+        Checked variables: v2Address
+            Yes The code includes a constructor function named 'constructor', which matches the second rule for determining constructors. Additionally, the state variable
+            'v2Address' is included in the constructor parameters and initialized within the constructor, but there is no hardcoding of the 'v2Address' since it relies on
+            input parameters.
+        There are ['selectedTokentoTumble'] should be checked in variable selectedTokentoTumble
+        Checked variables: selectedTokentoTumble
+            Yes The function 'tokenSend' and 'preApproveTokens' contain the statement 'selectedTokentoTumble = tokenTumble(specifiedToken);', which modifies the provided
+            state variable 'selectedTokentoTumble'. Therefore, the functions satisfy the second characteristic where the function has hardcoded the provided state
+            variable.
+        There are ['v2Address'] should be checked in variable buccTransfer
+        Checked variables: v2Address
+            Yes The constructor function explicitly takes '_v2Address' as a parameter and assigns it to 'v2Address', so it is not hardcoded. The given code includes a
+            constructor explicitly named, conforming to the rule that a constructor is either named constructor or has a name matching the contract name. Therefore, the
+            code matches the first characteristic of being a constructor.
+Conclusion: This function will not cause REE Problem.

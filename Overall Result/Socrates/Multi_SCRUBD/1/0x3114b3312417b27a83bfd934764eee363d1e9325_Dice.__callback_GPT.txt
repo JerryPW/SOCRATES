@@ -1,0 +1,10 @@
+
+Start analyze function: Dice.__callback(bytes32,string)
+Function Security Analysis for Dice.__callback(bytes32,string)
+    There are no modifiers should be examined in function __callback.
+    Check direct function security
+        - function Dice.__callback(bytes32,string) has security assurance protected by checking the authority of msg.sender, the function would not cause REE problem.
+          Reason: The function contains the line `require(msg.sender == oraclize_cb);`, which fits structure 1: `require(msg.sender == xxxOwner/xxxAddress/Leader/CEO);`.
+          Here, `oraclize_cb` serves as the specific address against which `msg.sender` is checked, directly matching the required structure for access control based on
+          sender identity.
+Conclusion: This function will not cause REE Problem.

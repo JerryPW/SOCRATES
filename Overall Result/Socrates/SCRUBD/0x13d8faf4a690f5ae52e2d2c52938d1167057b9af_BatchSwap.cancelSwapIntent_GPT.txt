@@ -1,0 +1,9 @@
+
+Start analyze function: BatchSwap.cancelSwapIntent(uint256)
+Function Security Analysis for BatchSwap.cancelSwapIntent(uint256)
+    The modifier of function cancelSwapIntent are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The code structure within the 'nonReentrant' modifier includes both a lock and an unlock operation: it sets '_status' to '_ENTERED' at the beginning and
+          resets it to '_NOT_ENTERED' at the end. This matches the requirement of rule two for using a flag mechanism to prevent reentrancy.
+Conclusion: This function will not cause REE Problem.

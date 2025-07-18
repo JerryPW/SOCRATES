@@ -1,0 +1,649 @@
+dexBlueSettlementModule.settleRingTradeWithData: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function settleRingTradeWithData(
+        OrderInputPacked[]     calldata orderInput,
+        RingTradeInputPacked[] calldata tradeInput,
+        bytes32[][]            calldata data
+    ) external {
+        require(arbiters[msg.sender] && marketActive);      // Check if msg.sender is an arbiter and the market is active
+        
+        // Parse Orders from packed input
+        uint256 i = orderInput.length;
+        Order[] memory orders = new Order[](i);
+        while(i-- != 0){
+            orders[i] = orderFromInput(orderInput[i]);
+        }
+        
+        // Parse RingTrades from packed input
+        i = tradeInput.length;
+        RingTrade[] memory trades = new RingTrade[](i);
+        while(i-- != 0){
+            trades[i] = ringTradeFromInput(tradeInput[i]);
+        }
+        
+        uint256 prev = trades.length - 1;
+        uint256 next = 1;
+         // Loop through the RingTrades array and settle each participants trade
+        for(i = 0; i < trades.length; i++){
+            
+            require(
+                // Check if the charged fee is not too high
+                trades[i].fee       <= trades[prev].giveAmount / 20
+                
+                // Check if maker_rebate is smaller than or equal to the taker's fee which compensates it
+                && trades[i].rebate <= trades[next].fee
+            );
+            
+            if(trades[i].isReserve){ // ring element is a reserve
+                address reserve = reserves[trades[i].identifier];
+
+                if(i == 0){
+                    require(
+                        dexBlueReserve(reserve).offerWithData(
+                            trades[i].giveToken,                                   // The token the reserve would sell
+                            trades[i].giveAmount - trades[i].rebate,               // The amount the reserve would sell
+                            trades[prev].giveToken,                                // The token the reserve would receive
+                            trades[prev].giveAmount - trades[i].fee,               // The amount the reserve would receive
+                            data[i]                                                // The data to pass along to the reserve
+                        )
+                        && balances[trades[i].giveToken][reserve] >= trades[i].giveAmount
+                    );
+                }else{
+                    uint256 receiveAmount = trades[prev].giveAmount - trades[i].fee;
+
+                    if(trades[prev].giveToken != address(0)){
+                        Token(trades[prev].giveToken).transfer(reserve, receiveAmount);  // Send collateral to reserve
+                        require(                                                         // Revert if the send failed
+                            checkERC20TransferSuccess(),
+                            "ERC20 token transfer failed."
+                        );
+                    }
+
+                    require(
+                        dexBlueReserve(reserve).tradeWithData.value(
+                            trades[prev].giveToken == address(0) ? receiveAmount : 0
+                        )(             
+                            trades[prev].giveToken,
+                            receiveAmount,                                      // Reserve gets the reserve_buy_amount minus the fee
+                            trades[i].giveToken,    
+                            trades[i].giveAmount - trades[i].rebate,            // Reserve has to give reserve_sell_amount minus the reserve rebate
+                            data[i]                                             // The data to pass along to the reserve
+                        )
+                    );
+                }
+
+                // Substract deposited amount from reserves balance
+                balances[trades[i].giveToken][reserve] -= trades[i].giveAmount - trades[i].rebate;
+
+                emit LogDirectWithdrawal(reserve, trades[prev].giveToken, trades[prev].giveAmount - trades[i].fee);
+            }else{ // Ring element is an order
+                
+                Order memory order = orders[trades[i].identifier];  // Cache order
+
+                uint256 orderMatched = matched[order.hash];
+                
+                require(
+                    // Does the order signee want to trade the last elements giveToken and this elements giveToken
+                       order.buyToken  == trades[prev].giveToken
+                    && order.sellToken == trades[i].giveToken
+                    
+                    // Is the order still valid
+                    && order.expiry > block.timestamp
+                    
+                    // Does the order signee hold the required balances
+                    && balances[order.sellToken][order.signee] >= trades[i].giveAmount - trades[i].rebate
+                    
+                    // Is the order matched at a rate better or equal to the one the order signee signed
+                    && trades[i].giveAmount - trades[i].rebate <= order.sellAmount * trades[prev].giveAmount / order.buyAmount + 1  // Check order doesn't overpay (+ 1 to deal with rouding errors for very smal amounts)
+                    
+                    // Check if the order was cancelled
+                    && order.sellAmount > orderMatched
+                    
+                    // Do the matched amount + previously matched trades not exceed the amount specified by the order signee
+                    && trades[i].giveAmount - trades[i].rebate + orderMatched <= order.sellAmount
+                );
+                
+                // Substract the sold amounts
+                balances[order.sellToken       ][order.signee] -= trades[i].giveAmount - trades[i].rebate;      // Substract sold amount minus the makers rebate from order signees balance
+                
+                // Add bought amounts
+                balances[trades[prev].giveToken][order.signee] += trades[prev].giveAmount - trades[i].fee;      // Give the order signee his bought amount minus the fee
+                
+                // Save sold amounts to prevent double matching
+                matched[order.hash] += trades[i].giveAmount - trades[i].rebate;                                 // Prevent order from being reused
+                
+                // Set potential previous blocking of these funds to 0
+                blocked_for_single_sig_withdrawal[order.sellToken][order.signee] = 0;                           // If the order signee tried to block funds which he/she used in this order we have to unblock them
+            }
+
+            emit LogTrade(trades[prev].giveToken, trades[prev].giveAmount, trades[i].giveToken, trades[i].giveAmount);
+            
+            // Give fee to feeCollector
+            balances[trades[prev].giveToken][feeCollector] += trades[i].fee - trades[prev].rebate;              // Give the feeColletor the fee minus the maker rebate 
+            
+            prev = i;
+            if(i == trades.length - 2){
+                next = 0;
+            }else{
+                next = i + 2;
+            }
+        }
+
+        if(trades[0].isReserve){
+            address payable reserve = reserves[trades[0].identifier];
+            prev = trades.length - 1;
+            
+            if(trades[prev].giveToken == address(0)){                                                       // Is the withdrawal token ETH
+                require(
+                    reserve.send(trades[prev].giveAmount - trades[0].fee),                                  // Withdraw ETH
+                    "Sending of ETH failed."
+                );
+            }else{
+                Token(trades[prev].giveToken).transfer(reserve, trades[prev].giveAmount - trades[0].fee);   // Withdraw ERC20
+                require(                                                                                    // Revert if the withdrawal failed
+                    checkERC20TransferSuccess(),
+                    "ERC20 token transfer failed."
+                );
+            }
+
+            // Notify the reserve, that the offer got executed
+            dexBlueReserve(reserve).offerExecuted(
+                trades[0].giveToken,                                   // The token the reserve sold
+                trades[0].giveAmount - trades[0].rebate,               // The amount the reserve sold
+                trades[prev].giveToken,                                // The token the reserve received
+                trades[prev].giveAmount - trades[0].fee                // The amount the reserve received
+            );
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function settleRingTradeWithData(
+        OrderInputPacked[]     calldata orderInput,
+        RingTradeInputPacked[] calldata tradeInput,
+        bytes32[][]            calldata data
+    ) external {
+        require(arbiters[msg.sender] && marketActive);      // Check if msg.sender is an arbiter and the market is active
+        
+        // Parse Orders from packed input
+        uint256 i = orderInput.length;
+        Order[] memory orders = new Order[](i);
+        while(i-- != 0){
+            orders[i] = orderFromInput(orderInput[i]);
+        }
+        
+        // Parse RingTrades from packed input
+        i = tradeInput.length;
+        RingTrade[] memory trades = new RingTrade[](i);
+        while(i-- != 0){
+            trades[i] = ringTradeFromInput(tradeInput[i]);
+        }
+        
+        uint256 prev = trades.length - 1;
+        uint256 next = 1;
+         // Loop through the RingTrades array and settle each participants trade
+        for(i = 0; i < trades.length; i++){
+            
+            require(
+                // Check if the charged fee is not too high
+                trades[i].fee       <= trades[prev].giveAmount / 20
+                
+                // Check if maker_rebate is smaller than or equal to the taker's fee which compensates it
+                && trades[i].rebate <= trades[next].fee
+            );
+            
+            if(trades[i].isReserve){ // ring element is a reserve
+                address reserve = reserves[trades[i].identifier];
+
+                if(i == 0){
+                    require(
+                        dexBlueReserve(reserve).offerWithData(
+                            trades[i].giveToken,                                   // The token the reserve would sell
+                            trades[i].giveAmount - trades[i].rebate,               // The amount the reserve would sell
+                            trades[prev].giveToken,                                // The token the reserve would receive
+                            trades[prev].giveAmount - trades[i].fee,               // The amount the reserve would receive
+                            data[i]                                                // The data to pass along to the reserve
+                        )
+                        && balances[trades[i].giveToken][reserve] >= trades[i].giveAmount
+                    );
+                }else{
+                    uint256 receiveAmount = trades[prev].giveAmount - trades[i].fee;
+
+                    if(trades[prev].giveToken != address(0)){
+                        Token(trades[prev].giveToken).transfer(reserve, receiveAmount);  // Send collateral to reserve
+                        require(                                                         // Revert if the send failed
+                            checkERC20TransferSuccess(),
+                            "ERC20 token transfer failed."
+                        );
+                    }
+
+                    require(
+                        dexBlueReserve(reserve).tradeWithData.value(
+                            trades[prev].giveToken == address(0) ? receiveAmount : 0
+                        )(             
+                            trades[prev].giveToken,
+                            receiveAmount,                                      // Reserve gets the reserve_buy_amount minus the fee
+                            trades[i].giveToken,    
+                            trades[i].giveAmount - trades[i].rebate,            // Reserve has to give reserve_sell_amount minus the reserve rebate
+                            data[i]                                             // The data to pass along to the reserve
+                        )
+                    );
+                }
+
+                // Substract deposited amount from reserves balance
+                balances[trades[i].giveToken][reserve] -= trades[i].giveAmount - trades[i].rebate;
+
+                emit LogDirectWithdrawal(reserve, trades[prev].giveToken, trades[prev].giveAmount - trades[i].fee);
+            }else{ // Ring element is an order
+                
+                Order memory order = orders[trades[i].identifier];  // Cache order
+
+                uint256 orderMatched = matched[order.hash];
+                
+                require(
+                    // Does the order signee want to trade the last elements giveToken and this elements giveToken
+                       order.buyToken  == trades[prev].giveToken
+                    && order.sellToken == trades[i].giveToken
+                    
+                    // Is the order still valid
+                    && order.expiry > block.timestamp
+                    
+                    // Does the order signee hold the required balances
+                    && balances[order.sellToken][order.signee] >= trades[i].giveAmount - trades[i].rebate
+                    
+                    // Is the order matched at a rate better or equal to the one the order signee signed
+                    && trades[i].giveAmount - trades[i].rebate <= order.sellAmount * trades[prev].giveAmount / order.buyAmount + 1  // Check order doesn't overpay (+ 1 to deal with rouding errors for very smal amounts)
+                    
+                    // Check if the order was cancelled
+                    && order.sellAmount > orderMatched
+                    
+                    // Do the matched amount + previously matched trades not exceed the amount specified by the order signee
+                    && trades[i].giveAmount - trades[i].rebate + orderMatched <= order.sellAmount
+                );
+                
+                // Substract the sold amounts
+                balances[order.sellToken       ][order.signee] -= trades[i].giveAmount - trades[i].rebate;      // Substract sold amount minus the makers rebate from order signees balance
+                
+                // Add bought amounts
+                balances[trades[prev].giveToken][order.signee] += trades[prev].giveAmount - trades[i].fee;      // Give the order signee his bought amount minus the fee
+                
+                // Save sold amounts to prevent double matching
+                matched[order.hash] += trades[i].giveAmount - trades[i].rebate;                                 // Prevent order from being reused
+                
+                // Set potential previous blocking of these funds to 0
+                blocked_for_single_sig_withdrawal[order.sellToken][order.signee] = 0;                           // If the order signee tried to block funds which he/she used in this order we have to unblock them
+            }
+
+            emit LogTrade(trades[prev].giveToken, trades[prev].giveAmount, trades[i].giveToken, trades[i].giveAmount);
+            
+            // Give fee to feeCollector
+            balances[trades[prev].giveToken][feeCollector] += trades[i].fee - trades[prev].rebate;              // Give the feeColletor the fee minus the maker rebate 
+            
+            prev = i;
+            if(i == trades.length - 2){
+                next = 0;
+            }else{
+                next = i + 2;
+            }
+        }
+
+        if(trades[0].isReserve){
+            address payable reserve = reserves[trades[0].identifier];
+            prev = trades.length - 1;
+            
+            if(trades[prev].giveToken == address(0)){                                                       // Is the withdrawal token ETH
+                require(
+                    reserve.send(trades[prev].giveAmount - trades[0].fee),                                  // Withdraw ETH
+                    "Sending of ETH failed."
+                );
+            }else{
+                Token(trades[prev].giveToken).transfer(reserve, trades[prev].giveAmount - trades[0].fee);   // Withdraw ERC20
+                require(                                                                                    // Revert if the withdrawal failed
+                    checkERC20TransferSuccess(),
+                    "ERC20 token transfer failed."
+                );
+            }
+
+            // Notify the reserve, that the offer got executed
+            dexBlueReserve(reserve).offerExecuted(
+                trades[0].giveToken,                                   // The token the reserve sold
+                trades[0].giveAmount - trades[0].rebate,               // The amount the reserve sold
+                trades[prev].giveToken,                                // The token the reserve received
+                trades[prev].giveAmount - trades[0].fee                // The amount the reserve received
+            );
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function settleRingTradeWithData(
+        OrderInputPacked[]     calldata orderInput,
+        RingTradeInputPacked[] calldata tradeInput,
+        bytes32[][]            calldata data
+    ) external {
+        require(arbiters[msg.sender] && marketActive);      // Check if msg.sender is an arbiter and the market is active
+        
+        // Parse Orders from packed input
+        uint256 i = orderInput.length;
+        Order[] memory orders = new Order[](i);
+        while(i-- != 0){
+            orders[i] = orderFromInput(orderInput[i]);
+        }
+        
+        // Parse RingTrades from packed input
+        i = tradeInput.length;
+        RingTrade[] memory trades = new RingTrade[](i);
+        while(i-- != 0){
+            trades[i] = ringTradeFromInput(tradeInput[i]);
+        }
+        
+        uint256 prev = trades.length - 1;
+        uint256 next = 1;
+         // Loop through the RingTrades array and settle each participants trade
+        for(i = 0; i < trades.length; i++){
+            
+            require(
+                // Check if the charged fee is not too high
+                trades[i].fee       <= trades[prev].giveAmount / 20
+                
+                // Check if maker_rebate is smaller than or equal to the taker's fee which compensates it
+                && trades[i].rebate <= trades[next].fee
+            );
+            
+            if(trades[i].isReserve){ // ring element is a reserve
+                address reserve = reserves[trades[i].identifier];
+
+                if(i == 0){
+                    require(
+                        dexBlueReserve(reserve).offerWithData(
+                            trades[i].giveToken,                                   // The token the reserve would sell
+                            trades[i].giveAmount - trades[i].rebate,               // The amount the reserve would sell
+                            trades[prev].giveToken,                                // The token the reserve would receive
+                            trades[prev].giveAmount - trades[i].fee,               // The amount the reserve would receive
+                            data[i]                                                // The data to pass along to the reserve
+                        )
+                        && balances[trades[i].giveToken][reserve] >= trades[i].giveAmount
+                    );
+                }else{
+                    uint256 receiveAmount = trades[prev].giveAmount - trades[i].fee;
+
+                    if(trades[prev].giveToken != address(0)){
+                        Token(trades[prev].giveToken).transfer(reserve, receiveAmount);  // Send collateral to reserve
+                        require(                                                         // Revert if the send failed
+                            checkERC20TransferSuccess(),
+                            "ERC20 token transfer failed."
+                        );
+                    }
+
+                    require(
+                        dexBlueReserve(reserve).tradeWithData.value(
+                            trades[prev].giveToken == address(0) ? receiveAmount : 0
+                        )(             
+                            trades[prev].giveToken,
+                            receiveAmount,                                      // Reserve gets the reserve_buy_amount minus the fee
+                            trades[i].giveToken,    
+                            trades[i].giveAmount - trades[i].rebate,            // Reserve has to give reserve_sell_amount minus the reserve rebate
+                            data[i]                                             // The data to pass along to the reserve
+                        )
+                    );
+                }
+
+                // Substract deposited amount from reserves balance
+                balances[trades[i].giveToken][reserve] -= trades[i].giveAmount - trades[i].rebate;
+
+                emit LogDirectWithdrawal(reserve, trades[prev].giveToken, trades[prev].giveAmount - trades[i].fee);
+            }else{ // Ring element is an order
+                
+                Order memory order = orders[trades[i].identifier];  // Cache order
+
+                uint256 orderMatched = matched[order.hash];
+                
+                require(
+                    // Does the order signee want to trade the last elements giveToken and this elements giveToken
+                       order.buyToken  == trades[prev].giveToken
+                    && order.sellToken == trades[i].giveToken
+                    
+                    // Is the order still valid
+                    && order.expiry > block.timestamp
+                    
+                    // Does the order signee hold the required balances
+                    && balances[order.sellToken][order.signee] >= trades[i].giveAmount - trades[i].rebate
+                    
+                    // Is the order matched at a rate better or equal to the one the order signee signed
+                    && trades[i].giveAmount - trades[i].rebate <= order.sellAmount * trades[prev].giveAmount / order.buyAmount + 1  // Check order doesn't overpay (+ 1 to deal with rouding errors for very smal amounts)
+                    
+                    // Check if the order was cancelled
+                    && order.sellAmount > orderMatched
+                    
+                    // Do the matched amount + previously matched trades not exceed the amount specified by the order signee
+                    && trades[i].giveAmount - trades[i].rebate + orderMatched <= order.sellAmount
+                );
+                
+                // Substract the sold amounts
+                balances[order.sellToken       ][order.signee] -= trades[i].giveAmount - trades[i].rebate;      // Substract sold amount minus the makers rebate from order signees balance
+                
+                // Add bought amounts
+                balances[trades[prev].giveToken][order.signee] += trades[prev].giveAmount - trades[i].fee;      // Give the order signee his bought amount minus the fee
+                
+                // Save sold amounts to prevent double matching
+                matched[order.hash] += trades[i].giveAmount - trades[i].rebate;                                 // Prevent order from being reused
+                
+                // Set potential previous blocking of these funds to 0
+                blocked_for_single_sig_withdrawal[order.sellToken][order.signee] = 0;                           // If the order signee tried to block funds which he/she used in this order we have to unblock them
+            }
+
+            emit LogTrade(trades[prev].giveToken, trades[prev].giveAmount, trades[i].giveToken, trades[i].giveAmount);
+            
+            // Give fee to feeCollector
+            balances[trades[prev].giveToken][feeCollector] += trades[i].fee - trades[prev].rebate;              // Give the feeColletor the fee minus the maker rebate 
+            
+            prev = i;
+            if(i == trades.length - 2){
+                next = 0;
+            }else{
+                next = i + 2;
+            }
+        }
+
+        if(trades[0].isReserve){
+            address payable reserve = reserves[trades[0].identifier];
+            prev = trades.length - 1;
+            
+            if(trades[prev].giveToken == address(0)){                                                       // Is the withdrawal token ETH
+                require(
+                    reserve.send(trades[prev].giveAmount - trades[0].fee),                                  // Withdraw ETH
+                    "Sending of ETH failed."
+                );
+            }else{
+                Token(trades[prev].giveToken).transfer(reserve, trades[prev].giveAmount - trades[0].fee);   // Withdraw ERC20
+                require(                                                                                    // Revert if the withdrawal failed
+                    checkERC20TransferSuccess(),
+                    "ERC20 token transfer failed."
+                );
+            }
+
+            // Notify the reserve, that the offer got executed
+            dexBlueReserve(reserve).offerExecuted(
+                trades[0].giveToken,                                   // The token the reserve sold
+                trades[0].giveAmount - trades[0].rebate,               // The amount the reserve sold
+                trades[prev].giveToken,                                // The token the reserve received
+                trades[prev].giveAmount - trades[0].fee                // The amount the reserve received
+            );
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function settleRingTradeWithData(
+        OrderInputPacked[]     calldata orderInput,
+        RingTradeInputPacked[] calldata tradeInput,
+        bytes32[][]            calldata data
+    ) external {
+        require(arbiters[msg.sender] && marketActive);      // Check if msg.sender is an arbiter and the market is active
+        
+        // Parse Orders from packed input
+        uint256 i = orderInput.length;
+        Order[] memory orders = new Order[](i);
+        while(i-- != 0){
+            orders[i] = orderFromInput(orderInput[i]);
+        }
+        
+        // Parse RingTrades from packed input
+        i = tradeInput.length;
+        RingTrade[] memory trades = new RingTrade[](i);
+        while(i-- != 0){
+            trades[i] = ringTradeFromInput(tradeInput[i]);
+        }
+        
+        uint256 prev = trades.length - 1;
+        uint256 next = 1;
+         // Loop through the RingTrades array and settle each participants trade
+        for(i = 0; i < trades.length; i++){
+            
+            require(
+                // Check if the charged fee is not too high
+                trades[i].fee       <= trades[prev].giveAmount / 20
+                
+                // Check if maker_rebate is smaller than or equal to the taker's fee which compensates it
+                && trades[i].rebate <= trades[next].fee
+            );
+            
+            if(trades[i].isReserve){ // ring element is a reserve
+                address reserve = reserves[trades[i].identifier];
+
+                if(i == 0){
+                    require(
+                        dexBlueReserve(reserve).offerWithData(
+                            trades[i].giveToken,                                   // The token the reserve would sell
+                            trades[i].giveAmount - trades[i].rebate,               // The amount the reserve would sell
+                            trades[prev].giveToken,                                // The token the reserve would receive
+                            trades[prev].giveAmount - trades[i].fee,               // The amount the reserve would receive
+                            data[i]                                                // The data to pass along to the reserve
+                        )
+                        && balances[trades[i].giveToken][reserve] >= trades[i].giveAmount
+                    );
+                }else{
+                    uint256 receiveAmount = trades[prev].giveAmount - trades[i].fee;
+
+                    if(trades[prev].giveToken != address(0)){
+                        Token(trades[prev].giveToken).transfer(reserve, receiveAmount);  // Send collateral to reserve
+                        require(                                                         // Revert if the send failed
+                            checkERC20TransferSuccess(),
+                            "ERC20 token transfer failed."
+                        );
+                    }
+
+                    require(
+                        dexBlueReserve(reserve).tradeWithData.value(
+                            trades[prev].giveToken == address(0) ? receiveAmount : 0
+                        )(             
+                            trades[prev].giveToken,
+                            receiveAmount,                                      // Reserve gets the reserve_buy_amount minus the fee
+                            trades[i].giveToken,    
+                            trades[i].giveAmount - trades[i].rebate,            // Reserve has to give reserve_sell_amount minus the reserve rebate
+                            data[i]                                             // The data to pass along to the reserve
+                        )
+                    );
+                }
+
+                // Substract deposited amount from reserves balance
+                balances[trades[i].giveToken][reserve] -= trades[i].giveAmount - trades[i].rebate;
+
+                emit LogDirectWithdrawal(reserve, trades[prev].giveToken, trades[prev].giveAmount - trades[i].fee);
+            }else{ // Ring element is an order
+                
+                Order memory order = orders[trades[i].identifier];  // Cache order
+
+                uint256 orderMatched = matched[order.hash];
+                
+                require(
+                    // Does the order signee want to trade the last elements giveToken and this elements giveToken
+                       order.buyToken  == trades[prev].giveToken
+                    && order.sellToken == trades[i].giveToken
+                    
+                    // Is the order still valid
+                    && order.expiry > block.timestamp
+                    
+                    // Does the order signee hold the required balances
+                    && balances[order.sellToken][order.signee] >= trades[i].giveAmount - trades[i].rebate
+                    
+                    // Is the order matched at a rate better or equal to the one the order signee signed
+                    && trades[i].giveAmount - trades[i].rebate <= order.sellAmount * trades[prev].giveAmount / order.buyAmount + 1  // Check order doesn't overpay (+ 1 to deal with rouding errors for very smal amounts)
+                    
+                    // Check if the order was cancelled
+                    && order.sellAmount > orderMatched
+                    
+                    // Do the matched amount + previously matched trades not exceed the amount specified by the order signee
+                    && trades[i].giveAmount - trades[i].rebate + orderMatched <= order.sellAmount
+                );
+                
+                // Substract the sold amounts
+                balances[order.sellToken       ][order.signee] -= trades[i].giveAmount - trades[i].rebate;      // Substract sold amount minus the makers rebate from order signees balance
+                
+                // Add bought amounts
+                balances[trades[prev].giveToken][order.signee] += trades[prev].giveAmount - trades[i].fee;      // Give the order signee his bought amount minus the fee
+                
+                // Save sold amounts to prevent double matching
+                matched[order.hash] += trades[i].giveAmount - trades[i].rebate;                                 // Prevent order from being reused
+                
+                // Set potential previous blocking of these funds to 0
+                blocked_for_single_sig_withdrawal[order.sellToken][order.signee] = 0;                           // If the order signee tried to block funds which he/she used in this order we have to unblock them
+            }
+
+            emit LogTrade(trades[prev].giveToken, trades[prev].giveAmount, trades[i].giveToken, trades[i].giveAmount);
+            
+            // Give fee to feeCollector
+            balances[trades[prev].giveToken][feeCollector] += trades[i].fee - trades[prev].rebate;              // Give the feeColletor the fee minus the maker rebate 
+            
+            prev = i;
+            if(i == trades.length - 2){
+                next = 0;
+            }else{
+                next = i + 2;
+            }
+        }
+
+        if(trades[0].isReserve){
+            address payable reserve = reserves[trades[0].identifier];
+            prev = trades.length - 1;
+            
+            if(trades[prev].giveToken == address(0)){                                                       // Is the withdrawal token ETH
+                require(
+                    reserve.send(trades[prev].giveAmount - trades[0].fee),                                  // Withdraw ETH
+                    "Sending of ETH failed."
+                );
+            }else{
+                Token(trades[prev].giveToken).transfer(reserve, trades[prev].giveAmount - trades[0].fee);   // Withdraw ERC20
+                require(                                                                                    // Revert if the withdrawal failed
+                    checkERC20TransferSuccess(),
+                    "ERC20 token transfer failed."
+                );
+            }
+
+            // Notify the reserve, that the offer got executed
+            dexBlueReserve(reserve).offerExecuted(
+                trades[0].giveToken,                                   // The token the reserve sold
+                trades[0].giveAmount - trades[0].rebate,               // The amount the reserve sold
+                trades[prev].giveToken,                                // The token the reserve received
+                trades[prev].giveAmount - trades[0].fee                // The amount the reserve received
+            );
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

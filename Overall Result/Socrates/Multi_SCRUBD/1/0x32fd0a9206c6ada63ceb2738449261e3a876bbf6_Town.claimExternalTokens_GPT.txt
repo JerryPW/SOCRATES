@@ -1,0 +1,36 @@
+
+Start analyze function: Town.claimExternalTokens(address)
+Function Security Analysis for Town.claimExternalTokens(address)
+    There are no modifiers should be examined in function claimExternalTokens.
+    Check direct function security
+        - function Town.claimExternalTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified conditions involving msg.sender to check its equality or inequality with any owner, address or role
+          such as Leader/CEO.
+        - function Town.claimExternalTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any structure matching the given patterns related to variables with a require or if condition followed by an assignment to a
+          boolean variable.
+External Call Analysis
+    Direct external call: ['Token(externalTokensForHolder[i]).transfer(holder,_townHoldersLedger[holder][externalTokensForHolder[i]])']
+    Analyze Transfer
+        - Token(externalTokensForHolder[i]).transfer(holder,_townHoldersLedger[holder][externalTokensForHolder[i]]) ISN'T subjected to gas limits. Parameter in
+        'transfer'/'send': 2.
+    Analyze Gas
+        - Token(externalTokensForHolder[i]).transfer(holder,_townHoldersLedger[holder][externalTokensForHolder[i]]) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(externalTokensForHolder[i]).transfer(holder,_townHoldersLedger[holder][externalTokensForHolder[i]])']
+    Analyze External Address
+        There are ['_ledgerExternalTokensAddresses'] should be checked in variable externalTokensForHolder
+        Checked variables: _ledgerExternalTokensAddresses
+            No 1. The functions provided in the code do not have a name that matches the contract name 'Town', nor are they explicitly named 'constructor'. Therefore,
+            they are not constructors.  2. The state variable mentioned, _ledgerExternalTokensAddresses, is not hardcoded in the provided code snippets. It is being used
+            in various operations such as accessing and managing data, but there is no instance of it being assigned a hardcoded value.
+            Function Security Analysis for Town.distributionSnapshot()
+                There are no modifiers should be examined in function distributionSnapshot.
+                Check direct function security
+                    - function Town.distributionSnapshot() has no security assurance protected by checking the authority of msg.sender
+                      Reason: The function `distributionSnapshot` does not contain any check for `msg.sender`, such as checking if the sender is equal to some owner or a
+                      specific address. It lacks any require or if statements that involve `msg.sender` and the specific addresses like xxxOwner, xxxAddress, etc., that
+                      our checklist specifies.
+                    - function Town.distributionSnapshot() has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The function does not have any of the specified patterns. It mainly deals with updating weights, computing balances, distributing amounts,
+                      and updating dates, but it lacks any of the conditional and assignment combinations specified in the patterns.
+Conclusion: This function will cause REE Problem.

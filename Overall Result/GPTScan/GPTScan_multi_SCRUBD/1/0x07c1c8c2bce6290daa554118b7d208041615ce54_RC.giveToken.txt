@@ -1,0 +1,68 @@
+RC.giveToken: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function giveToken(address _buyer) internal {
+	    require( pendingTokenUser[_buyer] > 0 );
+
+		tokenUser[_buyer] = tokenUser[_buyer].add(pendingTokenUser[_buyer]);
+	
+		tokenSaleContract.claim(_buyer, pendingTokenUser[_buyer]);
+		soldTokens = soldTokens.add(pendingTokenUser[_buyer]);
+		pendingTokenUser[_buyer] = 0;
+		
+		tokenSaleContract.wallet().transfer(etherUser[_buyer]);
+		etherUser[_buyer] = 0;
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function giveToken(address _buyer) internal {
+	    require( pendingTokenUser[_buyer] > 0 );
+
+		tokenUser[_buyer] = tokenUser[_buyer].add(pendingTokenUser[_buyer]);
+	
+		tokenSaleContract.claim(_buyer, pendingTokenUser[_buyer]);
+		soldTokens = soldTokens.add(pendingTokenUser[_buyer]);
+		pendingTokenUser[_buyer] = 0;
+		
+		tokenSaleContract.wallet().transfer(etherUser[_buyer]);
+		etherUser[_buyer] = 0;
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function giveToken(address _buyer) internal {
+	    require( pendingTokenUser[_buyer] > 0 );
+
+		tokenUser[_buyer] = tokenUser[_buyer].add(pendingTokenUser[_buyer]);
+	
+		tokenSaleContract.claim(_buyer, pendingTokenUser[_buyer]);
+		soldTokens = soldTokens.add(pendingTokenUser[_buyer]);
+		pendingTokenUser[_buyer] = 0;
+		
+		tokenSaleContract.wallet().transfer(etherUser[_buyer]);
+		etherUser[_buyer] = 0;
+	}
+Response:
+{"StatementsA": {"soldTokens = soldTokens.add(pendingTokenUser[_buyer]);":"Updates the state variable 'soldTokens'."}, "StatementsB": {"tokenSaleContract.wallet().transfer(etherUser[_buyer]);":"Executes an external call to transfer ether."}, "VariableA": {"_buyer": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: soldTokens = soldTokens.add(pendingTokenUser[_buyer]);
+2.External Call: tokenSaleContract.wallet().transfer(etherUser[_buyer]);
+3.Variable A: _buyer
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

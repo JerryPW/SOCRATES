@@ -1,0 +1,22 @@
+
+Start analyze function: DappVolumeAd.updateAd(uint256)
+Function Security Analysis for DappVolumeAd.updateAd(uint256)
+    There are no modifiers should be examined in function updateAd.
+    Check direct function security
+        - function DappVolumeAd.updateAd(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not include any checks for `msg.sender` being equal to or not equal to any owner like `xxxOwner`, `xxxAddress`, `Leader`, or
+          `CEO`, nor does it use `assert` or `throw` for such checks. It focuses on time and value requirements, and handles payments.
+        - function DappVolumeAd.updateAd(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain the specific structures 1 to 4 as outlined. It lacks any require statements or if conditions that directly check for boolean
+          variable equality or negation and then thereafter assigns a boolean value to that same variable.
+External Call Analysis
+    Direct external call: ['theInvestor.send(msg.value.div(10))', 'lastOwner.send(msg.value.div(2))']
+    Analyze Transfer
+        - theInvestor.send(msg.value.div(10)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: This external call contains the
+        '.send(' keyword, indicating it satisfies one of the characteristics.. Parameter in 'transfer'/'send': 1.
+        - lastOwner.send(msg.value.div(2)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: This external call contains the
+        '.send(' keyword, indicating it satisfies one of the characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

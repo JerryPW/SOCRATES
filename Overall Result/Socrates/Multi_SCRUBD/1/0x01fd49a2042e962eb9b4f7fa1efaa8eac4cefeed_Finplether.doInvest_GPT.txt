@@ -1,0 +1,51 @@
+
+Start analyze function: Finplether.doInvest(address)
+Function Security Analysis for Finplether.doInvest(address)
+    The modifier of function doInvest are ['notFromContract', 'balanceChanged']
+    The result of checking modifiers:
+        - modifier notFromContract has no relation with controlled by owner.
+          Reason: The modifier enforces that only non-contract addresses (i.e. externally owned accounts) can execute the function. This is inferred from the function
+          name 'notFromContract' and the use of `require(msg.sender.isNotContract())`. However, it does not specifically enforce owner or specific address restrictions,
+          nor lock operations for reentrancy protection.
+        - modifier balanceChanged has no relation with controlled by owner.
+          Reason: The modifier 'balanceChanged' does not enforce any owner or specific address restriction, nor does it include a lock operation to ensure the function
+          enters only once. It only emits an event logging the balance change.
+    Check direct function security
+        - function Finplether.doInvest(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function `doInvest` does not contain any of the structures specified. It includes usage of `require` and `assert` keywords, but none of them
+          involves checking `msg.sender` against an owner, address, leader, or CEO role.
+        - function Finplether.doInvest(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: There are no statements in the code that satisfy any of the specified structures.
+External Call Analysis
+    Direct external call: ['adminsAddress.send(m_adminsPercent.mul(receivedEther))', 'referrerAddr.notZero()', 'm_investors.isInvestor(msg.sender)',
+    'm_investors.setPaymentTime(msg.sender,now)', 'msg.sender.transfer(excess)', 'm_investors.addInvestment(referrerAddr,referrerBonus)',
+    'advertisingAddress.send(m_advertisingPercent.mul(receivedEther))', 'm_privEnter.maxInvestmentFor(msg.sender)', 'm_investors.newInvestor(msg.sender,investment,now)',
+    'm_investors.addInvestment(msg.sender,investment)', 'm_investors.isInvestor(referrerAddr)']
+    Analyze Transfer
+        - adminsAddress.send(m_adminsPercent.mul(receivedEther)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external
+        call 'adminsAddress.send(m_adminsPercent.mul(receivedEther))' contains '.send(' keyword. Therefore, it satisfies the second characteristic.. Parameter in
+        'transfer'/'send': 1.
+        - msg.sender.transfer(excess) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(excess)' contains '.transfer(' keyword. Therefore, it satisfies the first characteristic.. Parameter in 'transfer'/'send': 1.
+        - advertisingAddress.send(m_advertisingPercent.mul(receivedEther)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call 'advertisingAddress.send(m_advertisingPercent.mul(receivedEther))' contains '.send(' keyword. Therefore, it satisfies the second characteristic..
+        Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - referrerAddr.notZero() ISN'T subjected to gas limits.
+        - m_investors.isInvestor(msg.sender) ISN'T subjected to gas limits.
+        - m_investors.setPaymentTime(msg.sender,now) ISN'T subjected to gas limits.
+        - m_investors.addInvestment(referrerAddr,referrerBonus) ISN'T subjected to gas limits.
+        - m_privEnter.maxInvestmentFor(msg.sender) ISN'T subjected to gas limits.
+        - m_investors.newInvestor(msg.sender,investment,now) ISN'T subjected to gas limits.
+        - m_investors.addInvestment(msg.sender,investment) ISN'T subjected to gas limits.
+        - m_investors.isInvestor(referrerAddr) ISN'T subjected to gas limits.
+    Remaining external call: ['referrerAddr.notZero()', 'm_investors.isInvestor(msg.sender)', 'm_investors.setPaymentTime(msg.sender,now)',
+    'm_investors.addInvestment(referrerAddr,referrerBonus)', 'm_privEnter.maxInvestmentFor(msg.sender)', 'm_investors.newInvestor(msg.sender,investment,now)',
+    'm_investors.addInvestment(msg.sender,investment)', 'm_investors.isInvestor(referrerAddr)']
+    Analyze External Address
+        The variable 'referrerAddr' in external call 'referrerAddr.notZero()' has no state variable assigned in Finplether.doInvest(address). Therefore we check whether
+        it has been hardcoded in the function.
+            No The 'referrerAddr' variable is used in logical conditions to determine whether certain actions should be taken, such as awarding a referral bonus. It is
+            not directly replaced by a fixed value or constant, indicating that it depends on the dynamic input from the function call, which suggests usage as intended
+            without hardcoding.
+Conclusion: This function will cause REE Problem.

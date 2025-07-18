@@ -1,0 +1,31 @@
+
+Start analyze function: Redeem.RedeemMTU(bool)
+Function Security Analysis for Redeem.RedeemMTU(bool)
+    The modifier of function RedeemMTU are ['paused']
+    The result of checking modifiers:
+        - modifier paused has no relation with controlled by owner.
+          Reason: The code only contains a single line `require(!Paused);`, which checks if Paused is false before allowing the function to execute. There is no explicit
+          lock (set Paused to true) or unlock (set Paused to false) in the modifier, so it does not fully satisfy Rule 2 as the corresponding unlock operation is missing.
+    Check direct function security
+        - function Redeem.RedeemMTU(bool) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures involving `msg.sender` comparisons that check against an owner or specific address.
+        - function Redeem.RedeemMTU(bool) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not satisfy any of the specified structures as it doesn't contain any require statements that check if a boolean variable, which is
+          the same across two assignments, is either True or False. Additionally, there are no paired assignments where the boolean is first set to True/False and later
+          negated.
+External Call Analysis
+    Direct external call: ['tokenFunction.transfer(msg.sender,AppliedUnits)', 'msg.sender.transfer(withdrawVal)']
+    Analyze Transfer
+        - tokenFunction.transfer(msg.sender,AppliedUnits) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.transfer(withdrawVal) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenFunction.transfer(msg.sender,AppliedUnits) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenFunction.transfer(msg.sender,AppliedUnits)']
+    Analyze External Address
+        The variable 'tokenFunction' in external call 'tokenFunction.transfer(msg.sender,AppliedUnits)' has no state variable assigned in Redeem.RedeemMTU(bool).
+        Therefore we check whether it has been hardcoded in the function.
+            No The provided variable, 'tokenFunction', is defined in the function as 'token tokenFunction = token(tokenAddress);'. The 'tokenAddress' is retrieved by
+            calling 'getAddress("unit")', which implies that the address is dynamically fetched at runtime, rather than being hardcoded within the function. Therefore,
+            since the 'tokenFunction' is assigned using this dynamically fetched address, it is not hardcoded.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,134 @@
+MYSTIC.processActionProposal: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+     function processActionProposal(uint256 proposalIndex) external nonReentrant returns (bool, bytes memory) {
+        _validateProposalForProcessing(proposalIndex);
+        uint256 proposalId = proposalQueue[proposalIndex];
+        bytes storage action = actions[proposalId];
+        Proposal storage proposal = proposals[proposalId];
+        require(proposal.flags[6] == 1, "!action");
+        proposal.flags[1] = 1; // processed
+
+        bool didPass = _didPass(proposalIndex);
+        // Make the proposal fail if it is requesting more accounted tokens than the available guild bank balance
+        if (tokenWhitelist[proposal.applicant] && proposal.paymentRequested > userTokenBalances[GUILD][proposal.applicant]) {
+            didPass = false;
+        }
+        
+        // Make the proposal fail if it is requesting more ether than the available local balance
+        if (proposal.tributeOffered > address(this).balance) {
+            didPass = false;
+        }
+
+        if (didPass) {
+            proposal.flags[2] = 1; // didPass
+            (bool success, bytes memory returnData) = proposal.applicant.call{value: proposal.tributeOffered}(action);
+            if (tokenWhitelist[proposal.applicant]) {
+                unsafeSubtractFromBalance(GUILD, proposal.applicant, proposal.paymentRequested);
+                // if the action proposal spends 100% of guild bank balance for a token, decrement total guild bank tokens
+                if (userTokenBalances[GUILD][proposal.applicant] == 0 && proposal.paymentRequested > 0) {totalGuildBankTokens -= 1;}
+            }
+            return (success, returnData);
+        }
+        
+        _returnDeposit(proposal.sponsor);
+        
+        emit ProcessActionProposal(proposalIndex, proposalId, didPass);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+     function processActionProposal(uint256 proposalIndex) external nonReentrant returns (bool, bytes memory) {
+        _validateProposalForProcessing(proposalIndex);
+        uint256 proposalId = proposalQueue[proposalIndex];
+        bytes storage action = actions[proposalId];
+        Proposal storage proposal = proposals[proposalId];
+        require(proposal.flags[6] == 1, "!action");
+        proposal.flags[1] = 1; // processed
+
+        bool didPass = _didPass(proposalIndex);
+        // Make the proposal fail if it is requesting more accounted tokens than the available guild bank balance
+        if (tokenWhitelist[proposal.applicant] && proposal.paymentRequested > userTokenBalances[GUILD][proposal.applicant]) {
+            didPass = false;
+        }
+        
+        // Make the proposal fail if it is requesting more ether than the available local balance
+        if (proposal.tributeOffered > address(this).balance) {
+            didPass = false;
+        }
+
+        if (didPass) {
+            proposal.flags[2] = 1; // didPass
+            (bool success, bytes memory returnData) = proposal.applicant.call{value: proposal.tributeOffered}(action);
+            if (tokenWhitelist[proposal.applicant]) {
+                unsafeSubtractFromBalance(GUILD, proposal.applicant, proposal.paymentRequested);
+                // if the action proposal spends 100% of guild bank balance for a token, decrement total guild bank tokens
+                if (userTokenBalances[GUILD][proposal.applicant] == 0 && proposal.paymentRequested > 0) {totalGuildBankTokens -= 1;}
+            }
+            return (success, returnData);
+        }
+        
+        _returnDeposit(proposal.sponsor);
+        
+        emit ProcessActionProposal(proposalIndex, proposalId, didPass);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+     function processActionProposal(uint256 proposalIndex) external nonReentrant returns (bool, bytes memory) {
+        _validateProposalForProcessing(proposalIndex);
+        uint256 proposalId = proposalQueue[proposalIndex];
+        bytes storage action = actions[proposalId];
+        Proposal storage proposal = proposals[proposalId];
+        require(proposal.flags[6] == 1, "!action");
+        proposal.flags[1] = 1; // processed
+
+        bool didPass = _didPass(proposalIndex);
+        // Make the proposal fail if it is requesting more accounted tokens than the available guild bank balance
+        if (tokenWhitelist[proposal.applicant] && proposal.paymentRequested > userTokenBalances[GUILD][proposal.applicant]) {
+            didPass = false;
+        }
+        
+        // Make the proposal fail if it is requesting more ether than the available local balance
+        if (proposal.tributeOffered > address(this).balance) {
+            didPass = false;
+        }
+
+        if (didPass) {
+            proposal.flags[2] = 1; // didPass
+            (bool success, bytes memory returnData) = proposal.applicant.call{value: proposal.tributeOffered}(action);
+            if (tokenWhitelist[proposal.applicant]) {
+                unsafeSubtractFromBalance(GUILD, proposal.applicant, proposal.paymentRequested);
+                // if the action proposal spends 100% of guild bank balance for a token, decrement total guild bank tokens
+                if (userTokenBalances[GUILD][proposal.applicant] == 0 && proposal.paymentRequested > 0) {totalGuildBankTokens -= 1;}
+            }
+            return (success, returnData);
+        }
+        
+        _returnDeposit(proposal.sponsor);
+        
+        emit ProcessActionProposal(proposalIndex, proposalId, didPass);
+    }
+Response:
+{"StatementsA": {"proposal.flags[1] = 1;":"Updates the 'processed' flag of the proposal."}, "StatementsB": {"(bool success, bytes memory returnData) = proposal.applicant.call{value: proposal.tributeOffered}(action);":"Executes an external call to the proposal applicant."}, "VariableA": {"proposal.applicant": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: proposal.flags[1] = 1;
+2.External Call: (bool success, bytes memory returnData) = proposal.applicant.call{value: proposal.tributeOffered}(action);
+3.Variable A: proposal.applicant
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,23 @@
+
+Start analyze function: Web3NameService.allowListSubdomain(string,string,bytes32[])
+Function Security Analysis for Web3NameService.allowListSubdomain(string,string,bytes32[])
+    There are no modifiers should be examined in function allowListSubdomain.
+    Check direct function security
+        - function Web3NameService.allowListSubdomain(string,string,bytes32[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified patterns that require or check if msg.sender corresponds to an Owner, Address, Leader, or CEO.
+        - function Web3NameService.allowListSubdomain(string,string,bytes32[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the statements `require(subDomains_allowlistAddresses[pepe_name][msg.sender]!=true, "Claimed!");` followed by
+          `subDomains_allowlistAddresses[pepe_name][msg.sender] = true;`. This satisfies structure 2 where `require(xxx == False); xxx = True;` is executed. However, the
+          state negation operation on `xxx` (in this case `subDomains_allowlistAddresses[pepe_name][msg.sender]`) is not immediately performed after checking the
+          requirement state and before the main logic of the function as there are several other statements (such as `TokenOwnership memory Ownership =
+          _ownershipOf(tokenAddressandID[pepe_name]);` and a transfer operation) performed before updating `subDomains_allowlistAddresses[pepe_name][msg.sender]` to
+          `true`. Hence, it does not satisfy the structural requirement regarding immediate state negation.
+External Call Analysis
+    Direct external call: ['address(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100)']
+    Analyze Transfer
+        - address(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason:
+        The external call contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

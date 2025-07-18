@@ -1,0 +1,386 @@
+PiZZa.reinvestEarnings: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function reinvestEarnings(uint amountFromEarnings) public returns(uint,uint){
+		address sender = msg.sender;
+		// Retrieve the resolveEarnings associated with the address the request came from.		
+		uint upScaleDivs = (uint)((int256)( earningsPerResolve * resolveWeight[sender] ) - payouts[sender]);
+		uint totalEarnings = upScaleDivs / scaleFactor;//resolveEarnings(sender);
+		require(amountFromEarnings <= totalEarnings, "the amount exceeds total earnings");
+		uint oldWeight = resolveWeight[sender];
+		resolveWeight[sender] = oldWeight * (totalEarnings - amountFromEarnings) / totalEarnings;
+		uint weightDiff = oldWeight - resolveWeight[sender];
+		resolveToken.transfer( address0, weightDiff );
+		dissolvingResolves -= weightDiff;
+		
+		// something about invariance
+		int withdrawnEarnings = (int)(upScaleDivs * amountFromEarnings / totalEarnings) - (int)(weightDiff*earningsPerResolve);
+		payouts[sender] += withdrawnEarnings;
+		// Increase the total amount that's been paid out to maintain invariance.
+		earningsOffset += withdrawnEarnings;
+
+		// Assign balance to a new variable.
+		uint value_ = (uint) (amountFromEarnings);
+
+		// If your resolveEarnings are worth less than 1 szabo, abort.
+		if (value_ < 0.000001 ether)
+			revert();
+
+		// Calculate the fee
+		uint fee = fluxFee(value_);
+
+		// The amount of Ether used to purchase new bonds for the caller
+		uint numEther = value_ - fee;
+
+		//resolve reward tracking stuff
+		average_ethSpent[sender] += numEther;
+		average_buyInTimeSum[sender] += now * scaleFactor * numEther;
+		sumOfInputETH += numEther;
+		sumOfInputTime += now * scaleFactor * numEther;
+
+		// The number of bonds which can be purchased for numEther.
+		uint createdBonds = ethereumToTokens_(numEther);
+		uint[] memory RGB = new uint[](3);
+  		(RGB[0], RGB[1], RGB[2]) = RGB_Ratio(sender);
+		
+		addColor(sender, createdBonds, RGB[0], RGB[1], RGB[2]);
+
+		// the variable stoLOGC the amount to be paid to stakers
+		uint resolveFee;
+
+		// Check if we have bonds in existence
+		if ( dissolvingResolves > 0 ) {
+			resolveFee = fee * scaleFactor;
+
+			// Fee is distributed to all existing resolve stakers before the new bonds are purchased.
+			// rewardPerResolve is the amount(ETH) gained per resolve token from this purchase.
+			uint rewardPerResolve = resolveFee / dissolvingResolves;
+
+			// The Ether value per token is increased proportionally.
+			earningsPerResolve += rewardPerResolve;
+		}
+
+		// Add the createdBonds to the total supply.
+		_totalSupply += createdBonds;
+
+		// Assign the bonds to the balance of the buyer.
+		balances[sender] += createdBonds;
+
+		emit Reinvest(sender, value_, weightDiff, createdBonds, resolveFee);
+		return (createdBonds, weightDiff);
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function reinvestEarnings(uint amountFromEarnings) public returns(uint,uint){
+		address sender = msg.sender;
+		// Retrieve the resolveEarnings associated with the address the request came from.		
+		uint upScaleDivs = (uint)((int256)( earningsPerResolve * resolveWeight[sender] ) - payouts[sender]);
+		uint totalEarnings = upScaleDivs / scaleFactor;//resolveEarnings(sender);
+		require(amountFromEarnings <= totalEarnings, "the amount exceeds total earnings");
+		uint oldWeight = resolveWeight[sender];
+		resolveWeight[sender] = oldWeight * (totalEarnings - amountFromEarnings) / totalEarnings;
+		uint weightDiff = oldWeight - resolveWeight[sender];
+		resolveToken.transfer( address0, weightDiff );
+		dissolvingResolves -= weightDiff;
+		
+		// something about invariance
+		int withdrawnEarnings = (int)(upScaleDivs * amountFromEarnings / totalEarnings) - (int)(weightDiff*earningsPerResolve);
+		payouts[sender] += withdrawnEarnings;
+		// Increase the total amount that's been paid out to maintain invariance.
+		earningsOffset += withdrawnEarnings;
+
+		// Assign balance to a new variable.
+		uint value_ = (uint) (amountFromEarnings);
+
+		// If your resolveEarnings are worth less than 1 szabo, abort.
+		if (value_ < 0.000001 ether)
+			revert();
+
+		// Calculate the fee
+		uint fee = fluxFee(value_);
+
+		// The amount of Ether used to purchase new bonds for the caller
+		uint numEther = value_ - fee;
+
+		//resolve reward tracking stuff
+		average_ethSpent[sender] += numEther;
+		average_buyInTimeSum[sender] += now * scaleFactor * numEther;
+		sumOfInputETH += numEther;
+		sumOfInputTime += now * scaleFactor * numEther;
+
+		// The number of bonds which can be purchased for numEther.
+		uint createdBonds = ethereumToTokens_(numEther);
+		uint[] memory RGB = new uint[](3);
+  		(RGB[0], RGB[1], RGB[2]) = RGB_Ratio(sender);
+		
+		addColor(sender, createdBonds, RGB[0], RGB[1], RGB[2]);
+
+		// the variable stoLOGC the amount to be paid to stakers
+		uint resolveFee;
+
+		// Check if we have bonds in existence
+		if ( dissolvingResolves > 0 ) {
+			resolveFee = fee * scaleFactor;
+
+			// Fee is distributed to all existing resolve stakers before the new bonds are purchased.
+			// rewardPerResolve is the amount(ETH) gained per resolve token from this purchase.
+			uint rewardPerResolve = resolveFee / dissolvingResolves;
+
+			// The Ether value per token is increased proportionally.
+			earningsPerResolve += rewardPerResolve;
+		}
+
+		// Add the createdBonds to the total supply.
+		_totalSupply += createdBonds;
+
+		// Assign the bonds to the balance of the buyer.
+		balances[sender] += createdBonds;
+
+		emit Reinvest(sender, value_, weightDiff, createdBonds, resolveFee);
+		return (createdBonds, weightDiff);
+	}
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function reinvestEarnings(uint amountFromEarnings) public returns(uint,uint){
+		address sender = msg.sender;
+		// Retrieve the resolveEarnings associated with the address the request came from.		
+		uint upScaleDivs = (uint)((int256)( earningsPerResolve * resolveWeight[sender] ) - payouts[sender]);
+		uint totalEarnings = upScaleDivs / scaleFactor;//resolveEarnings(sender);
+		require(amountFromEarnings <= totalEarnings, "the amount exceeds total earnings");
+		uint oldWeight = resolveWeight[sender];
+		resolveWeight[sender] = oldWeight * (totalEarnings - amountFromEarnings) / totalEarnings;
+		uint weightDiff = oldWeight - resolveWeight[sender];
+		resolveToken.transfer( address0, weightDiff );
+		dissolvingResolves -= weightDiff;
+		
+		// something about invariance
+		int withdrawnEarnings = (int)(upScaleDivs * amountFromEarnings / totalEarnings) - (int)(weightDiff*earningsPerResolve);
+		payouts[sender] += withdrawnEarnings;
+		// Increase the total amount that's been paid out to maintain invariance.
+		earningsOffset += withdrawnEarnings;
+
+		// Assign balance to a new variable.
+		uint value_ = (uint) (amountFromEarnings);
+
+		// If your resolveEarnings are worth less than 1 szabo, abort.
+		if (value_ < 0.000001 ether)
+			revert();
+
+		// Calculate the fee
+		uint fee = fluxFee(value_);
+
+		// The amount of Ether used to purchase new bonds for the caller
+		uint numEther = value_ - fee;
+
+		//resolve reward tracking stuff
+		average_ethSpent[sender] += numEther;
+		average_buyInTimeSum[sender] += now * scaleFactor * numEther;
+		sumOfInputETH += numEther;
+		sumOfInputTime += now * scaleFactor * numEther;
+
+		// The number of bonds which can be purchased for numEther.
+		uint createdBonds = ethereumToTokens_(numEther);
+		uint[] memory RGB = new uint[](3);
+  		(RGB[0], RGB[1], RGB[2]) = RGB_Ratio(sender);
+		
+		addColor(sender, createdBonds, RGB[0], RGB[1], RGB[2]);
+
+		// the variable stoLOGC the amount to be paid to stakers
+		uint resolveFee;
+
+		// Check if we have bonds in existence
+		if ( dissolvingResolves > 0 ) {
+			resolveFee = fee * scaleFactor;
+
+			// Fee is distributed to all existing resolve stakers before the new bonds are purchased.
+			// rewardPerResolve is the amount(ETH) gained per resolve token from this purchase.
+			uint rewardPerResolve = resolveFee / dissolvingResolves;
+
+			// The Ether value per token is increased proportionally.
+			earningsPerResolve += rewardPerResolve;
+		}
+
+		// Add the createdBonds to the total supply.
+		_totalSupply += createdBonds;
+
+		// Assign the bonds to the balance of the buyer.
+		balances[sender] += createdBonds;
+
+		emit Reinvest(sender, value_, weightDiff, createdBonds, resolveFee);
+		return (createdBonds, weightDiff);
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function reinvestEarnings(uint amountFromEarnings) public returns(uint,uint){
+		address sender = msg.sender;
+		// Retrieve the resolveEarnings associated with the address the request came from.		
+		uint upScaleDivs = (uint)((int256)( earningsPerResolve * resolveWeight[sender] ) - payouts[sender]);
+		uint totalEarnings = upScaleDivs / scaleFactor;//resolveEarnings(sender);
+		require(amountFromEarnings <= totalEarnings, "the amount exceeds total earnings");
+		uint oldWeight = resolveWeight[sender];
+		resolveWeight[sender] = oldWeight * (totalEarnings - amountFromEarnings) / totalEarnings;
+		uint weightDiff = oldWeight - resolveWeight[sender];
+		resolveToken.transfer( address0, weightDiff );
+		dissolvingResolves -= weightDiff;
+		
+		// something about invariance
+		int withdrawnEarnings = (int)(upScaleDivs * amountFromEarnings / totalEarnings) - (int)(weightDiff*earningsPerResolve);
+		payouts[sender] += withdrawnEarnings;
+		// Increase the total amount that's been paid out to maintain invariance.
+		earningsOffset += withdrawnEarnings;
+
+		// Assign balance to a new variable.
+		uint value_ = (uint) (amountFromEarnings);
+
+		// If your resolveEarnings are worth less than 1 szabo, abort.
+		if (value_ < 0.000001 ether)
+			revert();
+
+		// Calculate the fee
+		uint fee = fluxFee(value_);
+
+		// The amount of Ether used to purchase new bonds for the caller
+		uint numEther = value_ - fee;
+
+		//resolve reward tracking stuff
+		average_ethSpent[sender] += numEther;
+		average_buyInTimeSum[sender] += now * scaleFactor * numEther;
+		sumOfInputETH += numEther;
+		sumOfInputTime += now * scaleFactor * numEther;
+
+		// The number of bonds which can be purchased for numEther.
+		uint createdBonds = ethereumToTokens_(numEther);
+		uint[] memory RGB = new uint[](3);
+  		(RGB[0], RGB[1], RGB[2]) = RGB_Ratio(sender);
+		
+		addColor(sender, createdBonds, RGB[0], RGB[1], RGB[2]);
+
+		// the variable stoLOGC the amount to be paid to stakers
+		uint resolveFee;
+
+		// Check if we have bonds in existence
+		if ( dissolvingResolves > 0 ) {
+			resolveFee = fee * scaleFactor;
+
+			// Fee is distributed to all existing resolve stakers before the new bonds are purchased.
+			// rewardPerResolve is the amount(ETH) gained per resolve token from this purchase.
+			uint rewardPerResolve = resolveFee / dissolvingResolves;
+
+			// The Ether value per token is increased proportionally.
+			earningsPerResolve += rewardPerResolve;
+		}
+
+		// Add the createdBonds to the total supply.
+		_totalSupply += createdBonds;
+
+		// Assign the bonds to the balance of the buyer.
+		balances[sender] += createdBonds;
+
+		emit Reinvest(sender, value_, weightDiff, createdBonds, resolveFee);
+		return (createdBonds, weightDiff);
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function reinvestEarnings(uint amountFromEarnings) public returns(uint,uint){
+		address sender = msg.sender;
+		// Retrieve the resolveEarnings associated with the address the request came from.		
+		uint upScaleDivs = (uint)((int256)( earningsPerResolve * resolveWeight[sender] ) - payouts[sender]);
+		uint totalEarnings = upScaleDivs / scaleFactor;//resolveEarnings(sender);
+		require(amountFromEarnings <= totalEarnings, "the amount exceeds total earnings");
+		uint oldWeight = resolveWeight[sender];
+		resolveWeight[sender] = oldWeight * (totalEarnings - amountFromEarnings) / totalEarnings;
+		uint weightDiff = oldWeight - resolveWeight[sender];
+		resolveToken.transfer( address0, weightDiff );
+		dissolvingResolves -= weightDiff;
+		
+		// something about invariance
+		int withdrawnEarnings = (int)(upScaleDivs * amountFromEarnings / totalEarnings) - (int)(weightDiff*earningsPerResolve);
+		payouts[sender] += withdrawnEarnings;
+		// Increase the total amount that's been paid out to maintain invariance.
+		earningsOffset += withdrawnEarnings;
+
+		// Assign balance to a new variable.
+		uint value_ = (uint) (amountFromEarnings);
+
+		// If your resolveEarnings are worth less than 1 szabo, abort.
+		if (value_ < 0.000001 ether)
+			revert();
+
+		// Calculate the fee
+		uint fee = fluxFee(value_);
+
+		// The amount of Ether used to purchase new bonds for the caller
+		uint numEther = value_ - fee;
+
+		//resolve reward tracking stuff
+		average_ethSpent[sender] += numEther;
+		average_buyInTimeSum[sender] += now * scaleFactor * numEther;
+		sumOfInputETH += numEther;
+		sumOfInputTime += now * scaleFactor * numEther;
+
+		// The number of bonds which can be purchased for numEther.
+		uint createdBonds = ethereumToTokens_(numEther);
+		uint[] memory RGB = new uint[](3);
+  		(RGB[0], RGB[1], RGB[2]) = RGB_Ratio(sender);
+		
+		addColor(sender, createdBonds, RGB[0], RGB[1], RGB[2]);
+
+		// the variable stoLOGC the amount to be paid to stakers
+		uint resolveFee;
+
+		// Check if we have bonds in existence
+		if ( dissolvingResolves > 0 ) {
+			resolveFee = fee * scaleFactor;
+
+			// Fee is distributed to all existing resolve stakers before the new bonds are purchased.
+			// rewardPerResolve is the amount(ETH) gained per resolve token from this purchase.
+			uint rewardPerResolve = resolveFee / dissolvingResolves;
+
+			// The Ether value per token is increased proportionally.
+			earningsPerResolve += rewardPerResolve;
+		}
+
+		// Add the createdBonds to the total supply.
+		_totalSupply += createdBonds;
+
+		// Assign the bonds to the balance of the buyer.
+		balances[sender] += createdBonds;
+
+		emit Reinvest(sender, value_, weightDiff, createdBonds, resolveFee);
+		return (createdBonds, weightDiff);
+	}
+Response:
+{"StatementsA": {"resolveWeight[sender] = oldWeight * (totalEarnings - amountFromEarnings) / totalEarnings;":"Updates the resolveWeight state variable for the sender", "dissolvingResolves -= weightDiff;":"Updates the dissolvingResolves state variable", "payouts[sender] += withdrawnEarnings;":"Updates the payouts state variable for the sender", "earningsOffset += withdrawnEarnings;":"Updates the earningsOffset state variable", "_totalSupply += createdBonds;":"Updates the _totalSupply state variable", "balances[sender] += createdBonds;":"Updates the balances state variable for the sender"}, "StatementsB": {"resolveToken.transfer( address0, weightDiff );":"Executes an external call to transfer tokens"}, "VariableA": {"sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: resolveWeight[sender] = oldWeight * (totalEarnings - amountFromEarnings) / totalEarnings;
+2.External Call: resolveToken.transfer( address0, weightDiff );
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

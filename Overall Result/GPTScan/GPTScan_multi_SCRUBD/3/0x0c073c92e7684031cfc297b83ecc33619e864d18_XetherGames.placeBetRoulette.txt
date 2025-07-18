@@ -1,0 +1,81 @@
+XetherGames.placeBetRoulette: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function placeBetRoulette(
+        uint[] calldata betMask,
+        uint[] calldata betAmount,
+        uint commitLastBlock,
+        uint commit, uint256 clientSeed,
+        bytes32 r, bytes32 s
+    ) external payable {
+        BetRoulette storage betRoulette = betsRoulette[commit];
+        require(msg.value <= rouletteTableLimit, "Bets sum must be LTE table limit");
+        betRoulette.betsCount = uint8(betMask.length);
+        require (betRoulette.gambler == address(0), "Bet should be in a 'clean' state.");
+        require (block.number <= commitLastBlock, "Commit has expired.");
+        require (
+          secretSigner == ecrecover(keccak256(abi.encodePacked(uint40(commitLastBlock), commit)), 27, r, s) ||
+          secretSigner == ecrecover(keccak256(abi.encodePacked(uint40(commitLastBlock), commit)), 28, r, s),
+          "ECDSA signature is not valid."
+        );
+        if (totalDividends >= DIVIDENDS_LIMIT) {
+          sendDividends();
+        }
+        (betRoulette.betsCount, betRoulette.locked) = placeBetRouletteProcess(commit, betMask, betAmount);
+        lockedInBets += betRoulette.locked;
+        require (lockedInBets <= address(this).balance, "Cannot afford to lose this bet.");
+        if (rouletteSkipComission != 1) {
+          bonusProgrammAccumulated[msg.sender] += msg.value;
+        }
+        betRoulette.totalBetAmount = msg.value;
+        betRoulette.placeBlockNumber = uint40(block.number);
+        betRoulette.clientSeed = clientSeed;
+        betRoulette.gambler = msg.sender;
+        jackpotSize += msg.value >= MIN_JACKPOT_BET ? uint128(JACKPOT_FEE) : 0;
+        emit Commit(commit, clientSeed, msg.value);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function placeBetRoulette(
+        uint[] calldata betMask,
+        uint[] calldata betAmount,
+        uint commitLastBlock,
+        uint commit, uint256 clientSeed,
+        bytes32 r, bytes32 s
+    ) external payable {
+        BetRoulette storage betRoulette = betsRoulette[commit];
+        require(msg.value <= rouletteTableLimit, "Bets sum must be LTE table limit");
+        betRoulette.betsCount = uint8(betMask.length);
+        require (betRoulette.gambler == address(0), "Bet should be in a 'clean' state.");
+        require (block.number <= commitLastBlock, "Commit has expired.");
+        require (
+          secretSigner == ecrecover(keccak256(abi.encodePacked(uint40(commitLastBlock), commit)), 27, r, s) ||
+          secretSigner == ecrecover(keccak256(abi.encodePacked(uint40(commitLastBlock), commit)), 28, r, s),
+          "ECDSA signature is not valid."
+        );
+        if (totalDividends >= DIVIDENDS_LIMIT) {
+          sendDividends();
+        }
+        (betRoulette.betsCount, betRoulette.locked) = placeBetRouletteProcess(commit, betMask, betAmount);
+        lockedInBets += betRoulette.locked;
+        require (lockedInBets <= address(this).balance, "Cannot afford to lose this bet.");
+        if (rouletteSkipComission != 1) {
+          bonusProgrammAccumulated[msg.sender] += msg.value;
+        }
+        betRoulette.totalBetAmount = msg.value;
+        betRoulette.placeBlockNumber = uint40(block.number);
+        betRoulette.clientSeed = clientSeed;
+        betRoulette.gambler = msg.sender;
+        jackpotSize += msg.value >= MIN_JACKPOT_BET ? uint128(JACKPOT_FEE) : 0;
+        emit Commit(commit, clientSeed, msg.value);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

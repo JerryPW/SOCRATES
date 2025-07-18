@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "swapTokensForEth",
+        "code": "function swapTokensForEth(uint256 tokenAmount) private { address[] memory path = new address[](2); path[0] = address(this); path[1] = uniswapV2Router.WETH(); _approve(address(this), address(uniswapV2Router), tokenAmount); uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens( tokenAmount, 0, path, address(this), block.timestamp ); }",
+        "vulnerability": "Potential slippage exploitation",
+        "reason": "The function does not set a minimum amount of ETH to receive from the swap, which could result in a slippage attack where an attacker manipulates the price and exploits the contract during the swap.",
+        "file_name": "0x119f4c9de5539fd053aed5091db4ba59f83330d7.sol"
+    },
+    {
+        "function_name": "sendEthToDev",
+        "code": "function sendEthToDev(uint256 amount) private { address payable _buyBackAddress = payable(0x72C935abeB07a955F9d9B881A784cECbcC3997Fb); address payable _marketingAddress = payable(0x87AC09056fd909DDB7E1398Bb4DcF0b0B7d473C0); address payable _oppAddress = payable(0x76bC307F0B562C417025E0A3290b3496Dc6Bae1F); address payable _teamFeeAddress = payable(0xB701e71805cEeEBD5caFF976945AFa855Dc56a3A); _buyBackAddress.transfer(amount.div(3)); _marketingAddress.transfer(amount.div(3)); uint256 oppFeeAndTeamFee = amount.div(3); uint256 teamFee = oppFeeAndTeamFee.div(4); uint256 oppFee = oppFeeAndTeamFee.sub(teamFee); _oppAddress.transfer(oppFee); _teamFeeAddress.transfer(teamFee); }",
+        "vulnerability": "Hardcoded addresses and unchecked transfers",
+        "reason": "The function uses hardcoded addresses for the transfers and does not check the result of the transfer calls. If any of these addresses are incorrect or compromised, funds could be lost or misdirected. Additionally, if the transfer fails, it might revert the transaction.",
+        "file_name": "0x119f4c9de5539fd053aed5091db4ba59f83330d7.sol"
+    },
+    {
+        "function_name": "_transfer",
+        "code": "function _transfer( address from, address to, uint256 amount ) internal override { require(from != address(0), \"ERC20: transfer from the zero address\"); require(to != address(0), \"ERC20: transfer to the zero address\"); if(from != owner() && to != owner() && _maxBuyEnabled){ if(from != liquidityWallet && to != liquidityWallet){ require(amount <= MAX_SELL_TRANSACTION_AMOUNT, \"Transfer amount exceeds the maxTxAmount.\"); } } bool tradingIsEnabled = tradingEnabled; if (!tradingIsEnabled) { require(canTransferBeforeTradingIsEnabled[from], \"PENGU: This account cannot send tokens until trading is enabled\"); } if ((from == uniswapV2Pair || to == uniswapV2Pair) && tradingIsEnabled) { } if (amount == 0) { super._transfer(from, to, 0); return; } if (!liquidating && tradingIsEnabled && automatedMarketMakerPairs[to] && from != address(uniswapV2Router) && !_isExcludedFromFees[to] ) { require(amount <= MAX_SELL_TRANSACTION_AMOUNT, \"Sell transfer amount exceeds the MAX_SELL_TRANSACTION_AMOUNT.\"); } uint256 contractTokenBalance = balanceOf(address(this)); bool canSwap = contractTokenBalance >= liquidateTokensAtAmount; if (tradingIsEnabled && canSwap && _swapEnabled && !liquidating && !automatedMarketMakerPairs[from] && from != liquidityWallet && to != liquidityWallet ) { liquidating = true; uint256 swapTokens = contractTokenBalance.mul(LIQUIDITY_FEE).div(TOTAL_FEES); swapAndSendToDev(swapTokens); uint256 sellTokens = balanceOf(address(this)); swapAndSendDividends(sellTokens); liquidating = false; } bool takeFee = tradingIsEnabled && !liquidating; if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) { takeFee = false; } if (takeFee) { uint256 fees = amount.mul(TOTAL_FEES).div(100); amount = amount.sub(fees); super._transfer(from, address(this), fees); } super._transfer(from, to, amount); try dividendTracker.setBalance(payable(from), balanceOf(from)) {} catch {} try dividendTracker.setBalance(payable(to), balanceOf(to)) {} catch { } if (!liquidating) { uint256 gas = gasForProcessing; try dividendTracker.process(gas) returns (uint256 iterations, uint256 claims, uint256 lastProcessedIndex) { emit ProcessedDividendTracker(iterations, claims, lastProcessedIndex, true, gas, tx.origin); } catch { } } }",
+        "vulnerability": "Reentrancy risk during token swap and dividend distribution",
+        "reason": "The function allows reentrancy by enabling external calls during `swapAndSendToDev` and `swapAndSendDividends` without proper reentrancy guard. An attacker can exploit this by reentering the function and manipulating the state in between these calls.",
+        "file_name": "0x119f4c9de5539fd053aed5091db4ba59f83330d7.sol"
+    }
+]

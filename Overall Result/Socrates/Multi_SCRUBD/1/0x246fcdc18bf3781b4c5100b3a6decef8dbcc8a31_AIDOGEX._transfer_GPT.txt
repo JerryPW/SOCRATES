@@ -1,0 +1,76 @@
+
+Start analyze function: AIDOGEX._transfer(address,address,uint256)
+Function Security Analysis for AIDOGEX._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function AIDOGEX._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain checks involving msg.sender compared to any xxxOwner or similar roles.
+        - function AIDOGEX._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures from the provided criteria. It contains checks for 'require(from != address(0)' and
+          'require(amount > 0)', but these do not match the required patterns (like changing the same variable state after a require or if statement). Further,
+          'inSwapAndLiquify = true' appears without an initial require or if check as described in the patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for AIDOGEX.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function AIDOGEX.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified checks for msg.sender against an owner or specific address.
+                - function AIDOGEX.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not contain any of the specified structures. There are no require or if statements that check a condition on a variable
+                  and then change the state of that variable. The function simply calls _transfer and returns true, without any of the required structure patterns.
+External Call Analysis
+    Direct external call: ['uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(contractTokenBalance,0,path,address(this),block.timestamp)',
+    'address(marketingWallet).sendValue(marketingAmount)']
+    Analyze Transfer
+        - address(marketingWallet).sendValue(marketingAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(contractTokenBalance,0,path,address(this),block.timestamp) ISN'T subjected to gas limits.
+        - address(marketingWallet).sendValue(marketingAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(contractTokenBalance,0,path,address(this),block.timestamp)',
+    'address(marketingWallet).sendValue(marketingAmount)']
+    Analyze External Address
+        There are ['uniswapV2Router'] should be checked in variable uniswapV2Router
+        Checked variables: uniswapV2Router
+            Yes The provided code defines a function named 'constructor', which aligns with the characteristic of being a constructor as specified in the rule.
+            Constructors in Solidity are special functions used to initialize state variables and set up the contract when it is deployed. This is clearly a constructor
+            function because it is explicitly named 'constructor'.
+        There are ['marketingWallet'] should be checked in variable marketingWallet
+        Checked variables: marketingWallet
+            Yes 1. The given code is a constructor, as indicated by the presence of the function specifically named 'constructor'. This matches characteristic 1. 2.
+            Additionally, the state variable 'marketingWallet' is hardcoded within the constructor with the value '0xF88Db7a0e6fA4f0a36Bfc0e71AcC3F587aCCd700', thus
+            satisfying characteristic 2.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: AIDOGEX.buybackAndBurn(uint256)
+Function Security Analysis for AIDOGEX.buybackAndBurn(uint256)
+    There are no modifiers should be examined in function buybackAndBurn.
+    Check direct function security
+        - function AIDOGEX.buybackAndBurn(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any conditionals or assertions that check the "msg.sender" against any kind of owner, address, or role like Leader/CEO.
+        - function AIDOGEX.buybackAndBurn(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code snippet does not contain any of the four specified structures. There is no 'require' statement or an 'if' statement with a 'throw',
+          nor are there variable assignments that match the described patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', '_transfer', 'transferFrom']
+        Function Security Analysis for AIDOGEX.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function AIDOGEX.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any statements that verify whether msg.sender is the owner, address, leader, or CEO. Therefore, it does not meet
+                  any of the specified conditions.
+                - function AIDOGEX.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures, such as a conditional check using 'require' or 'if', followed by assignments to the
+                  same variable.
+External Call Analysis
+    Direct external call: ['uniswapV2Router.swapExactETHForTokensSupportingFeeOnTransferTokens{value:buybackBNB}(0,path,address(0xdead),block.timestamp+300)']
+    Analyze Transfer
+    Analyze Gas
+        - uniswapV2Router.swapExactETHForTokensSupportingFeeOnTransferTokens{value:buybackBNB}(0,path,address(0xdead),block.timestamp+300) ISN'T subjected to gas limits.
+    Remaining external call: ['uniswapV2Router.swapExactETHForTokensSupportingFeeOnTransferTokens{value:buybackBNB}(0,path,address(0xdead),block.timestamp+300)']
+    Analyze External Address
+        There are ['uniswapV2Router'] should be checked in variable uniswapV2Router
+        Checked variables: uniswapV2Router
+            Yes The code provided is a constructor because its name is 'constructor', which explicitly matches the condition for being recognized as a constructor
+            function. Constructors often serve to initialize state variables and set up the contract when it is deployed.
+Conclusion: This function will not cause REE Problem.

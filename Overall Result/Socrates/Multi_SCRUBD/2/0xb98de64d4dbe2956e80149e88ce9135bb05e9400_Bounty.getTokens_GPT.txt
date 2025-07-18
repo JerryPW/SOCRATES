@@ -1,0 +1,25 @@
+
+Start analyze function: Bounty.getTokens(address)
+Function Security Analysis for Bounty.getTokens(address)
+    There are no modifiers should be examined in function getTokens.
+    Check direct function security
+        - function Bounty.getTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the require/assert/if structures check for msg.sender's equality or inequality with any 'Owner', 'Address', 'Leader', or 'CEO'.
+        - function Bounty.getTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. There are no patterns of a require statement checking a boolean condition followed by a
+          reassignment of that variable.
+External Call Analysis
+    Direct external call: ['token.transfer(beneficiary,BountyAmount)']
+    Analyze Transfer
+        - token.transfer(beneficiary,BountyAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(beneficiary,BountyAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(beneficiary,BountyAmount)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The code provided is not a constructor because the contract name is "Bounty" but the function is named "Bounty", which matches the contract name
+            suggesting it could be a constructor. However, this code does not use the "constructor" keyword, and it uses the old syntax style for constructors which
+            matches the contract name exactly, so this can be considered as a constructor. But, the function does not hardcode the state variable "token" as it assigns it
+            to a parameterized address, indicating it's set dynamically. Hence, the first characteristic is satisfied.
+Conclusion: This function will not cause REE Problem.

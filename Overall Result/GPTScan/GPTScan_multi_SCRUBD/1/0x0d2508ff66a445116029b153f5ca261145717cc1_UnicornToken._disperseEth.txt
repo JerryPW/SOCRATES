@@ -1,0 +1,80 @@
+UnicornToken._disperseEth: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _disperseEth() private {
+        uint256 _eth = address(this).balance;
+        if (_eth <= m_LastEthBal)
+            return;
+            
+        uint256 _newEth = _eth.sub(m_LastEthBal);
+        uint _d = _getTaxDenominator();
+        if (_d < 1)
+            return;
+
+        payTaxes(_newEth, _d);
+		m_EthReflectAmount = _newEth.mul(m_EthReflectAlloc).div(_d);
+        m_EthReflectSvcAddress.transfer(m_EthReflectAmount);
+
+        m_LastEthBal = address(this).balance;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _disperseEth() private {
+        uint256 _eth = address(this).balance;
+        if (_eth <= m_LastEthBal)
+            return;
+            
+        uint256 _newEth = _eth.sub(m_LastEthBal);
+        uint _d = _getTaxDenominator();
+        if (_d < 1)
+            return;
+
+        payTaxes(_newEth, _d);
+		m_EthReflectAmount = _newEth.mul(m_EthReflectAlloc).div(_d);
+        m_EthReflectSvcAddress.transfer(m_EthReflectAmount);
+
+        m_LastEthBal = address(this).balance;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function _disperseEth() private {
+        uint256 _eth = address(this).balance;
+        if (_eth <= m_LastEthBal)
+            return;
+            
+        uint256 _newEth = _eth.sub(m_LastEthBal);
+        uint _d = _getTaxDenominator();
+        if (_d < 1)
+            return;
+
+        payTaxes(_newEth, _d);
+		m_EthReflectAmount = _newEth.mul(m_EthReflectAlloc).div(_d);
+        m_EthReflectSvcAddress.transfer(m_EthReflectAmount);
+
+        m_LastEthBal = address(this).balance;
+    }
+Response:
+{"StatementsA": {"m_LastEthBal = address(this).balance;":"Updates the state variable m_LastEthBal with the current contract balance."}, "StatementsB": {"m_EthReflectSvcAddress.transfer(m_EthReflectAmount);":"Executes an external call to transfer Ether to m_EthReflectSvcAddress."}, "VariableA": {"m_EthReflectSvcAddress": "Holds the address to which the external call is made."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: m_LastEthBal = address(this).balance;
+2.External Call: m_EthReflectSvcAddress.transfer(m_EthReflectAmount);
+3.Variable A: m_EthReflectSvcAddress
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,40 @@
+
+Start analyze function: Swap.fallback()
+Function Security Analysis for Swap.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Swap.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: There are no conditions checking if msg.sender is equal or not equal to any 'Owner', 'Leader', or 'CEO' variables.
+        - function Swap.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does contain a structure that satisfies the requirements to match either Structure 1, 2, 3, or 4, specifically Structure 2:
+          'require(check[msg.sender] == false);' is followed by 'check[msg.sender] = true;'. However, the state change through 'check[msg.sender] = true;' does not occur
+          immediately after the require statement but instead after the main logic of the function is executed. Thus, it does not satisfy the requirement where the
+          negation operation must occur immediately after the check, before the main function logic. Thus, based on the provided criteria, the output should be 'No'.
+External Call Analysis
+    Direct external call: ['beneficiary.send(msg.value)', 'swapaddress.transfer(msg.sender,amount/secondvalue)', 'swapaddress.transfer(msg.sender,amount/third)',
+    'swapaddress.transfer(msg.sender,amount/newvalue)']
+    Analyze Transfer
+        - beneficiary.send(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword, fulfilling the second characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - swapaddress.transfer(msg.sender,amount/secondvalue) ISN'T subjected to gas limits.
+        - swapaddress.transfer(msg.sender,amount/third) ISN'T subjected to gas limits.
+        - swapaddress.transfer(msg.sender,amount/newvalue) ISN'T subjected to gas limits.
+    Remaining external call: ['swapaddress.transfer(msg.sender,amount/secondvalue)', 'swapaddress.transfer(msg.sender,amount/third)',
+    'swapaddress.transfer(msg.sender,amount/newvalue)']
+    Analyze External Address
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The provided code is a constructor, as indicated by the function name being 'constructor'. Furthermore, the constructor function directly sets the state
+            variable 'swapaddress' using a parameter value without hardcoding it, so it doesn't match the second characteristic. However, it satisfies the first
+            characteristic because it is a constructor.
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The code provided is a constructor for the contract 'Swap'. This is determined by the use of the keyword 'constructor'. In the constructor, the state
+            variable 'swapaddress' is set to the result of the function 'collectible(addressOfCollectibleUsedAsReward)', which is not a hardcoded value but computed at
+            runtime from the parameter 'addressOfCollectibleUsedAsReward'. However, meeting criterion 1 alone (being a constructor) is enough to satisfy the requirement.
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The function in the provided code is named 'constructor', which is explicitly a constructor function by definition. The state variable 'swapaddress' is
+            being assigned the value derived from the parameter 'addressOfCollectibleUsedAsReward' and is not hardcoded in the constructor.
+Conclusion: This function will not cause REE Problem.

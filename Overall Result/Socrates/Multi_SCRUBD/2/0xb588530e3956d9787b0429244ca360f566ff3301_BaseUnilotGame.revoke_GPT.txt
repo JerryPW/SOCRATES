@@ -1,0 +1,10 @@
+
+Start analyze function: BaseUnilotGame.revoke()
+Function Security Analysis for BaseUnilotGame.revoke()
+    The modifier of function revoke are ['onlyAdministrator', 'activeGame']
+    The result of checking modifiers:
+        - modifier onlyAdministrator is controlled by owner, the function would not cause REE problem.
+          Reason: The judgment is based on rule 1. The code contains 'require(msg.sender == administrator);' which enforces that only the administrator can execute the
+          function. There are no omissions in identifying the enforcement of owner-only execution logic. No lock mechanism is used in the provided code, thus rule 2 does
+          not apply.
+Conclusion: This function will not cause REE Problem.

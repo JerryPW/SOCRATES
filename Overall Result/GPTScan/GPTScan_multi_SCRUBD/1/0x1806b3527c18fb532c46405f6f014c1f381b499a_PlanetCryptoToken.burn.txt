@@ -1,0 +1,41 @@
+PlanetCryptoToken.burn: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function burn(uint256 _token_id) public {
+        require(msg.sender == ownerOf(_token_id));
+        
+        uint256 _cardSize = plotDetails[tokenIDplotdetailsIndexId[_token_id]].plots_lat.length;
+        
+        processBurn(msg.sender, _token_id);
+        
+        // allocate PlanetCOIN tokens to user...
+        planetCryptoCoin_interface.transfer(msg.sender, _cardSize);
+        
+        
+        
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function burn(uint256 _token_id) public {
+        require(msg.sender == ownerOf(_token_id));
+        
+        uint256 _cardSize = plotDetails[tokenIDplotdetailsIndexId[_token_id]].plots_lat.length;
+        
+        processBurn(msg.sender, _token_id);
+        
+        // allocate PlanetCOIN tokens to user...
+        planetCryptoCoin_interface.transfer(msg.sender, _cardSize);
+        
+        
+        
+    }
+    
+Response:
+No
+--------------------------------------------------

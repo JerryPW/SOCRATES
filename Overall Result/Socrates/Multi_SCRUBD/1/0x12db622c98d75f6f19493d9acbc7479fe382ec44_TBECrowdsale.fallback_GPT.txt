@@ -1,0 +1,23 @@
+
+Start analyze function: TBECrowdsale.fallback()
+Function Security Analysis for TBECrowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function TBECrowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks against specific owner or addresses in the form of require/assert involving msg.sender.
+        - function TBECrowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures, such as setting a boolean variable based on a condition or throwing an exception when a
+          condition involving a boolean variable is met.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount)']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function 'TBECrowdsale' is a constructor because its name matches the contract name 'TBECrowdsale', fulfilling the first characteristic of being a
+            constructor.
+Conclusion: This function will not cause REE Problem.

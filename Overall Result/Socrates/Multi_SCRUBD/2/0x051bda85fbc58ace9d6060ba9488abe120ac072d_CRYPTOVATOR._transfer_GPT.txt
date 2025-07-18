@@ -1,0 +1,42 @@
+
+Start analyze function: CRYPTOVATOR._transfer(address,address,uint256)
+Function Security Analysis for CRYPTOVATOR._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function CRYPTOVATOR._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any of the specified structures involving `msg.sender`. It contains multiple `require` checks but none of them involve
+          `msg.sender == xxxOwner/xxxAddress/Leader/CEO` or related conditions.
+        - function CRYPTOVATOR._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluation, the initial assessment was incorrect. The code does not have both parts of any defined structure required for a 'Yes' judgment.
+          Specifically, while the code contains multiple `require` statements, none of them are matched by a subsequent setting of that variable, such as `blackListAdd`
+          or `tradingActive`. The presence of require statements without corresponding variable assignments pertinent to the exact conditions means the initial 'Yes'
+          judgment was incorrect. There should not have been an implicit linking of unrelated variables as in the initial misinterpretation of `boughtEarly` with
+          `blackListAdd`. Therefore, the correct response is 'No'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for CRYPTOVATOR.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function CRYPTOVATOR.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided function does not include any of the specific structures that involve comparing or asserting the `msg.sender` with any owner,
+                  address, leader, or CEO identifier as outlined in the criteria.
+                - function CRYPTOVATOR.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures: requirements or if-throw controls over a variable, and state changes from false to
+                  true or from true to false.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: CRYPTOVATOR.swapBack()
+Function Security Analysis for CRYPTOVATOR.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: Upon re-evaluating the code, it's confirmed that the lockTheSwap modifier sets the 'inSwapAndLiquify' flag to true before the function execution and
+          resets it to false afterwards. The presence of both lock ('inSwapAndLiquify = true;') and unlock ('inSwapAndLiquify = false;') operations fulfill the condition
+          for characteristic 2.
+Conclusion: This function will not cause REE Problem.

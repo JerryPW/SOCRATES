@@ -1,0 +1,37 @@
+
+Start analyze function: PoCGame.donateToWhale(uint256)
+Function Security Analysis for PoCGame.donateToWhale(uint256)
+    There are no modifiers should be examined in function donateToWhale.
+    Check direct function security
+        - function PoCGame.donateToWhale(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not check for specific 'msg.sender' roles such as xxxOwner, xxxAddress, Leader, or CEO through any of the listed structures.
+        - function PoCGame.donateToWhale(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require', 'if', or '!xxx' statements as specified in the given structures. It directly makes a call to a function and
+          performs some operations.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['donate']
+        Function Security Analysis for PoCGame.donate()
+            The modifier of function donate are ['isOpenToPublic']
+            The result of checking modifiers:
+                - modifier isOpenToPublic has no relation with controlled by owner.
+                  Reason: The code in the modifier `isOpenToPublic()` checks a boolean variable `openToPublic` but does not enforce owner-only access or employ a lock
+                  mechanism. It doesn't match any of the specified conditions.
+            Check direct function security
+                - function PoCGame.donate() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function 'donate' does not contain any of the specified structures that involve msg.sender and access restrictions or checks based on
+                  sender's address.
+                - function PoCGame.donate() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function provided does not contain any 'require' or 'if(!xxx)' statements as specified in the structures required. The code is simply
+                  defining a public payable function without any conditions or state changes related to 'require' or 'if(!xxx)' logic.
+External Call Analysis
+    Direct external call: ['whale.call.value(amount)(bytes4(keccak256()(donate())))']
+    Analyze Transfer
+    Analyze Gas
+        - whale.call.value(amount)(bytes4(keccak256()(donate()))) ISN'T subjected to gas limits.
+    Remaining external call: ['whale.call.value(amount)(bytes4(keccak256()(donate())))']
+    Analyze External Address
+        There are ['whale'] should be checked in variable whale
+        Checked variables: whale
+            Yes The provided code is the constructor of the contract. It is explicitly named 'constructor', which means it matches the characteristic of checking whether
+            the code is a constructor (point 1).
+Conclusion: This function will not cause REE Problem.

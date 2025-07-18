@@ -1,0 +1,40 @@
+
+Start analyze function: PoCGame.donateToWhale(uint256)
+Function Security Analysis for PoCGame.donateToWhale(uint256)
+    There are no modifiers should be examined in function donateToWhale.
+    Check direct function security
+        - function PoCGame.donateToWhale(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check if the msg.sender is a specific Owner/Address/Leader or CEO before executing its logic. It only performs an action of
+          calling a function on another contract and updates the total donated variable, emitting an event afterwards.
+        - function PoCGame.donateToWhale(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code uses a simple internal function to facilitate a donation transaction without any checks or conditional structures. It calls a function
+          on the whale contract and emits an event afterward, without using require statements to conditionally evaluate or toggle variable states according to the
+          specified patterns. There are also no if/throw patterns in place, confirming that none of the variations like require(xxx == True), require(xxx == False), or
+          related variable handling according to the specified structures are present.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['donate']
+        Function Security Analysis for PoCGame.donate()
+            The modifier of function donate are ['isOpenToPublic']
+            The result of checking modifiers:
+                - modifier isOpenToPublic has no relation with controlled by owner.
+                  Reason: The modifier only checks if the contract is open to the public via "require(openToPublic);", but it does not enforce ownership or a specific
+                  address check, nor does it implement a reentrancy lock. None of the rules apply.
+            Check direct function security
+                - function PoCGame.donate() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any requirements or conditions on msg.sender being equal to or different from a specific Owner, Address, Leader, or
+                  CEO.
+                - function PoCGame.donate() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided function does not contain any 'require' statements or conditional checks that match the specified structures. There are no
+                  variables being set to boolean values after a 'require' or 'if' condition check, making it ineligible for the criteria given.
+External Call Analysis
+    Direct external call: ['whale.call.value(amount)(bytes4(keccak256()(donate())))']
+    Analyze Transfer
+    Analyze Gas
+        - whale.call.value(amount)(bytes4(keccak256()(donate()))) ISN'T subjected to gas limits.
+    Remaining external call: ['whale.call.value(amount)(bytes4(keccak256()(donate())))']
+    Analyze External Address
+        There are ['whale'] should be checked in variable whale
+        Checked variables: whale
+            Yes The provided code is a constructor, as the function is explicitly named 'constructor'. It also assigns a value to the state variable 'whale' using a
+            parameter 'whaleAddress', rather than a hardcoded value.
+Conclusion: This function will not cause REE Problem.

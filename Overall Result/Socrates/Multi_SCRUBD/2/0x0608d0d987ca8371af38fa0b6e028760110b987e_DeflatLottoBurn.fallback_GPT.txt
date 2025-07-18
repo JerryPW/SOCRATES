@@ -1,0 +1,37 @@
+
+Start analyze function: DeflatLottoBurn.fallback()
+Function Security Analysis for DeflatLottoBurn.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function DeflatLottoBurn.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any statements that check for the identity of 'msg.sender' as per the specified patterns (e.g., checking if 'msg.sender'
+          is or is not equal to a specific owner or address). It focuses on different conditions, such as the value of 'msg.value' or the length of 'playerPool', and
+          performs actions based on those conditions without explicit identity checks of 'msg.sender'.
+        - function DeflatLottoBurn.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not have any `require` statement checking a boolean variable followed by setting the same variable to `True` or `False`, nor does
+          it have an `if` statement that throws an exception followed by setting the variable to true. It uses `require` to check an equality condition (checking
+          `msg.value == quota`). Hence, it does not match any of the specified structures.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(burncontract,tokenReward.balanceOf(address(this)))', 'winner.send(amount)', 'tokenReward.balanceOf(address(this))',
+    'maincontract.call.gas(200000).value(address(this).balance)()']
+    Analyze Transfer
+        - tokenReward.transfer(burncontract,tokenReward.balanceOf(address(this))) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - winner.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send(' keyword in
+        'winner.send(amount)'.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(burncontract,tokenReward.balanceOf(address(this))) ISN'T subjected to gas limits.
+        - tokenReward.balanceOf(address(this)) ISN'T subjected to gas limits.
+        - The gas limit in maincontract.call.gas(200000).value(address(this).balance)() is 200000, which is too high. Therefore, it will not prevent REE problem.
+    Remaining external call: ['tokenReward.transfer(burncontract,tokenReward.balanceOf(address(this)))', 'tokenReward.balanceOf(address(this))',
+    'maincontract.call.gas(200000).value(address(this).balance)()']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            State variable tokenReward has initialized in public area after declaration.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            State variable tokenReward has initialized in public area after declaration.
+        There are ['maincontract'] should be checked in variable maincontract
+        Checked variables: maincontract
+            State variable maincontract has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

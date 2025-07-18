@@ -1,0 +1,32 @@
+
+Start analyze function: DividendDistributor.distributeDividend(address)
+Function Security Analysis for DividendDistributor.distributeDividend(address)
+    There are no modifiers should be examined in function distributeDividend.
+    Check direct function security
+        - function DividendDistributor.distributeDividend(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check for msg.sender at all, so none of the specified structures apply.
+        - function DividendDistributor.distributeDividend(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function checks if the `amount` of shares for a given shareholder is zero at the start with the condition `if(shares[shareholder].amount == 0){
+          return; }`, but this doesn't match any of the four specified structures that involve checking a boolean variable and toggling its state. It simply returns
+          rather than toggling a variable between true and false or vice versa.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['claimDividend', 'setShare', 'process']
+        Function Security Analysis for DividendDistributor.claimDividend()
+            There are no modifiers should be examined in function claimDividend.
+            Check direct function security
+                - function DividendDistributor.claimDividend() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any condition or assertion that checks if 'msg.sender' is equal to a specific owner, address, or role.
+                - function DividendDistributor.claimDividend() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function 'claimDividend' doesn't contain any of the specified structures as there are no 'require', 'if', or variable assignments inside it.
+External Call Analysis
+    Direct external call: ['BITCOIN.transfer(shareholder,amount)']
+    Analyze Transfer
+        - BITCOIN.transfer(shareholder,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - BITCOIN.transfer(shareholder,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['BITCOIN.transfer(shareholder,amount)']
+    Analyze External Address
+        There are ['BITCOIN'] should be checked in variable BITCOIN
+        Checked variables: BITCOIN
+            State variable BITCOIN has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,25 @@
+
+Start analyze function: Crowdsale.safeWithdrawal()
+Function Security Analysis for Crowdsale.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier 'afterDeadline' only checks if the current time is past a certain deadline and does not enforce ownership, specific address execution, or
+          locking mechanism. Thus, it does not meet any of the specified characteristics.
+    Check direct function security
+        - function Crowdsale.safeWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the specified conditions are met. There is no direct comparison of msg.sender to an Owner, Address, Leader, or CEO using the patterns provided.
+        - function Crowdsale.safeWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code uses a `require` statement but does not follow any of the specified structures. It only checks `require(crowdsaleClosed);` and does not assign
+          `crowdsaleClosed` to either `false` or `true` after the `require` statement. Consequently, none of the listed patterns are present in this code.
+External Call Analysis
+    Direct external call: ['msg.sender.send(amount)', 'beneficiary.send(amountRaised)']
+    Analyze Transfer
+        - msg.sender.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword.. Parameter in 'transfer'/'send': 1.
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,77 @@
+
+Start analyze function: CharityMiner.deposit(uint8)
+Function Security Analysis for CharityMiner.deposit(uint8)
+    There are no modifiers should be examined in function deposit.
+    Check direct function security
+        - function CharityMiner.deposit(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified patterns related to msg.sender such as require, if, or assert statements directly checking msg.sender
+          against predefined addresses or roles like xxxOwner/xxxAddress/Leader/CEO.
+        - function CharityMiner.deposit(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the statement 'require(!paused);', but it does not follow up immediately with the assignment 'paused = True;'. Therefore, none of the
+          listed structures are present in the code.
+External Call Analysis
+    Direct external call: ['charityAddress.transfer(donation)', 'p3d.withdraw()', 'p3d.buy.value(purchase)(msg.sender)']
+    Analyze Transfer
+        - charityAddress.transfer(donation) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(', which satisfies the condition for a transfer call.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - p3d.withdraw() ISN'T subjected to gas limits.
+        - p3d.buy.value(purchase)(msg.sender) ISN'T subjected to gas limits.
+    Remaining external call: ['p3d.withdraw()', 'p3d.buy.value(purchase)(msg.sender)']
+    Analyze External Address
+        There are ['p3d'] should be checked in variable p3d
+        Checked variables: p3d
+            Yes The provided code is a constructor because the function is explicitly named 'constructor', indicating it is a special type of function that initializes
+            the contract. This fulfills the first characteristic.
+        There are ['p3d'] should be checked in variable p3d
+        Checked variables: p3d
+            Yes The function in the provided code is named 'constructor', explicitly indicating it is a constructor function. Constructors are special functions in
+            Solidity that are used for initializing the contract state during deployment. Thus, this code satisfies the first characteristic as the function's name is
+            'constructor'.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: CharityMiner.myTokens()
+Function Security Analysis for CharityMiner.myTokens()
+    There are no modifiers should be examined in function myTokens.
+    Check direct function security
+        - function CharityMiner.myTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not perform any checks related to msg.sender and does not match any of the provided structures.
+        - function CharityMiner.myTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures as it is a simple function returning the result of another function call
+          (p3d.myTokens()). It lacks require statements or if statements as described in the characteristic structures.
+External Call Analysis
+    Direct external call: ['p3d.myTokens()']
+    Analyze Transfer
+    Analyze Gas
+        - p3d.myTokens() ISN'T subjected to gas limits.
+    Remaining external call: ['p3d.myTokens()']
+    Analyze External Address
+        There are ['p3d'] should be checked in variable p3d
+        Checked variables: p3d
+            Yes The function is explicitly named 'constructor', indicating that it is a constructor function for the contract. Constructor functions are special functions
+            in smart contracts that are only executed once when the contract is deployed. Thus, the code satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: CharityMiner.myDividends()
+Function Security Analysis for CharityMiner.myDividends()
+    There are no modifiers should be examined in function myDividends.
+    Check direct function security
+        - function CharityMiner.myDividends() has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function does not contain any access control checks as specified (e.g., require, if statements checking msg.sender, or assert statements).
+          Thus, none of the characteristics are present.
+        - function CharityMiner.myDividends() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function myDividends does not satisfy any of the defined structures as there are no require statements or any logical conditions manipulating a
+          boolean variable.
+External Call Analysis
+    Direct external call: ['p3d.myDividends(true)']
+    Analyze Transfer
+    Analyze Gas
+        - p3d.myDividends(true) ISN'T subjected to gas limits.
+    Remaining external call: ['p3d.myDividends(true)']
+    Analyze External Address
+        There are ['p3d'] should be checked in variable p3d
+        Checked variables: p3d
+            Yes 1. The given function is a constructor as evidenced by its name, which matches one of the characteristics of constructors in Solidity. Specifically, the
+            function is explicitly named 'constructor'. This matches the second part of characteristic 1. 2. Additionally, the function initializes the state variable
+            'p3d' using the passed argument 'powh', but there is no hardcoding of the 'p3d' variable in the constructor body, so it doesn't satisfy characteristic 2.
+Conclusion: This function will not cause REE Problem.

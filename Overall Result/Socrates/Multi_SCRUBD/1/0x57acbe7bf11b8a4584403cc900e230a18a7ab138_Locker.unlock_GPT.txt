@@ -1,0 +1,24 @@
+
+Start analyze function: Locker.unlock(uint8)
+Function Security Analysis for Locker.unlock(uint8)
+    There are no modifiers should be examined in function unlock.
+    Check direct function security
+        - function Locker.unlock(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks or assertions involving msg.sender, such as require(msg.sender == xxxOwner) or if (msg.sender != xxxOwner) throw.
+        - function Locker.unlock(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not match any of the specified structures. It uses multiple require statements, but none of them follow the pattern of changing a
+          boolean variable as described in the structures 1, 2, 3, or 4.
+External Call Analysis
+    Direct external call: ['APIX.transfer(receiver,amount)']
+    Analyze Transfer
+        - APIX.transfer(receiver,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - APIX.transfer(receiver,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['APIX.transfer(receiver,amount)']
+    Analyze External Address
+        There are ['APIX'] should be checked in variable APIX
+        Checked variables: APIX
+            Yes The code provided is a constructor function as its name is 'constructor', which is explicitly mentioned in the code. Constructors are called once during
+            the contract deployment and are not considered external calls during regular contract operation. The constructor does modify the state variable 'APIX', but it
+            doesn't hardcode a value; instead, it assigns a value provided as a parameter, which doesn't satisfy the hardcoding condition.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,103 @@
+RAGE._transfer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) private {
+        uint256 balance = balanceOf(from);
+        require(balance >= amount, "balanceNotEnough");
+
+        if (inSwap){
+            _basicTransfer(from, to, amount);
+            return;
+        }
+
+        bool takeFee;
+
+        if (isMarketPair[to] && !inSwap && !_isExcludeFromFee[from] && !_isExcludeFromFee[to] && _buyCount > _preventSwapBefore) {
+            uint256 _numSellToken = amount;
+            if (_numSellToken > balanceOf(address(this))){
+                _numSellToken = _balances[address(this)];
+            }
+            if (_numSellToken > swapAtAmount){
+                swapTokenForETH(_numSellToken);
+            }
+        }
+
+        if (!_isExcludeFromFee[from] && !_isExcludeFromFee[to] && !inSwap) {
+            require(startTradeBlock > 0);
+            takeFee = true;
+            
+            // buyCount
+            if (isMarketPair[from] && to != address(_uniswapRouter) && !_isExcludeFromFee[to]) {
+                _buyCount++;
+            }
+
+            // remainHolder
+            if (remainHolder && amount == balance) {
+                amount = amount - (amount / 10000);
+            }
+
+        }
+
+        _transferToken(from, to, amount, takeFee);
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) private {
+        uint256 balance = balanceOf(from);
+        require(balance >= amount, "balanceNotEnough");
+
+        if (inSwap){
+            _basicTransfer(from, to, amount);
+            return;
+        }
+
+        bool takeFee;
+
+        if (isMarketPair[to] && !inSwap && !_isExcludeFromFee[from] && !_isExcludeFromFee[to] && _buyCount > _preventSwapBefore) {
+            uint256 _numSellToken = amount;
+            if (_numSellToken > balanceOf(address(this))){
+                _numSellToken = _balances[address(this)];
+            }
+            if (_numSellToken > swapAtAmount){
+                swapTokenForETH(_numSellToken);
+            }
+        }
+
+        if (!_isExcludeFromFee[from] && !_isExcludeFromFee[to] && !inSwap) {
+            require(startTradeBlock > 0);
+            takeFee = true;
+            
+            // buyCount
+            if (isMarketPair[from] && to != address(_uniswapRouter) && !_isExcludeFromFee[to]) {
+                _buyCount++;
+            }
+
+            // remainHolder
+            if (remainHolder && amount == balance) {
+                amount = amount - (amount / 10000);
+            }
+
+        }
+
+        _transferToken(from, to, amount, takeFee);
+    }
+    
+Response:
+No
+--------------------------------------------------

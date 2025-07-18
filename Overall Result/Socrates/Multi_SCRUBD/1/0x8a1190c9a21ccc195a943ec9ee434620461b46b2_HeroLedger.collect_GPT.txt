@@ -1,0 +1,31 @@
+
+Start analyze function: HeroLedger.collect(uint256)
+Function Security Analysis for HeroLedger.collect(uint256)
+    There are no modifiers should be examined in function collect.
+    Check direct function security
+        - function HeroLedger.collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check if msg.sender is equal or not equal to owner, address, leader, or CEO.
+        - function HeroLedger.collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have a require statement that checks if a variable is true or false, followed by setting that same variable to the opposite of the
+          checked condition. The require statement checks for a balance condition, and the if statement checks the result of a token transfer.
+External Call Analysis
+    Direct external call: ['erc20.transfer(msg.sender,amount)']
+    Analyze Transfer
+        - erc20.transfer(msg.sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - erc20.transfer(msg.sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['erc20.transfer(msg.sender,amount)']
+    Analyze External Address
+        There are ['erc20'] should be checked in variable erc20
+        Checked variables: erc20
+            No The provided smart contract code includes a function named 'setERC20Address', which is not the same as the contract name 'HeroLedger' and is not explicitly
+            named 'constructor', so it does not satisfy the constructor characteristic. The function does not hardcode the state variable 'erc20'; instead, it assigns
+            'erc20' to 'candidateContract', which is determined at runtime by the parameter '_address'. Therefore, it does not satisfy the second characteristic either.
+            Function Security Analysis for HeroLedger.setERC20Address(address,uint256,uint256)
+                The modifier of function setERC20Address are ['onlyLeader']
+                The result of checking modifiers:
+                    - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier contains the statement 'require(msg.sender == leaderAddress);', matching the characteristic that verifies ownership or specific
+                      addresses (rule 1). There are no lock and unlock operations present in the modifier, so rule 2 does not apply. Thus, the judgment based on rule 1 is
+                      correct.
+Conclusion: This function will not cause REE Problem.

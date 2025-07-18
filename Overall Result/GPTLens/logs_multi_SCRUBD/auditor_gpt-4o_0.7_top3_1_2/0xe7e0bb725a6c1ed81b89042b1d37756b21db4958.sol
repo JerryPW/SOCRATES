@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "BDSM_Crowdsale",
+        "code": "function BDSM_Crowdsale(address _tokenAddress, address _owner, address _stopScamHolder) { owner = _owner; sharesTokenAddress = token(_tokenAddress); safeContract = _stopScamHolder; }",
+        "vulnerability": "Unrestricted Access to Constructor",
+        "reason": "The constructor function BDSM_Crowdsale does not have any access control, allowing anyone to deploy the contract and set themselves as the owner. This poses a significant risk as the deployer can manipulate the contract in their favor, especially since they can set the owner to any address.",
+        "file_name": "0xe7e0bb725a6c1ed81b89042b1d37756b21db4958.sol"
+    },
+    {
+        "function_name": "fallback function",
+        "code": "function() payable { if(now > 1519084800) price = 0.0105 * 1 ether; else if(now > 1516406400) price = 0.0070 * 1 ether; tokenFree = sharesTokenAddress.balanceOf(this); if (now < startICO) { msg.sender.transfer(msg.value); } else if (now > stopICO) { msg.sender.transfer(msg.value); if(!tokenWithdraw){ sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this)); tokenFree = sharesTokenAddress.balanceOf(this); tokenWithdraw = true; crowdsaleClosed = true; } } else if (crowdsaleClosed) { msg.sender.transfer(msg.value); } else { uint256 tokenToBuy = msg.value / price * coeff; if(tokenToBuy <= 0) msg.sender.transfer(msg.value); require(tokenToBuy > 0); uint256 actualETHTransfer = tokenToBuy * price / coeff; if (tokenFree >= tokenToBuy) { owner.transfer(actualETHTransfer); if (msg.value > actualETHTransfer){ msg.sender.transfer(msg.value - actualETHTransfer); } sharesTokenAddress.transfer(msg.sender, tokenToBuy); tokenSold += tokenToBuy; tokenFree -= tokenToBuy; if(tokenFree==0) crowdsaleClosed = true; } else { uint256 sendETH = tokenFree * price / coeff; owner.transfer(sendETH); sharesTokenAddress.transfer(msg.sender, tokenFree); msg.sender.transfer(msg.value - sendETH); tokenSold += tokenFree; tokenFree = sharesTokenAddress.balanceOf(this); crowdsaleClosed = true; } } TokenFree(tokenFree); CrowdsaleClosed(crowdsaleClosed); }",
+        "vulnerability": "Potential Reentrancy in Fallback Function",
+        "reason": "The fallback function handles Ether transfers and token transfers without using any reentrancy guards. This could potentially allow reentrancy attacks, where an attacker can call back into the contract before the state changes are finalized, manipulating the contract state and leading to undesired outcomes, such as withdrawing more Ether or tokens than entitled.",
+        "file_name": "0xe7e0bb725a6c1ed81b89042b1d37756b21db4958.sol"
+    },
+    {
+        "function_name": "fallback function",
+        "code": "function() payable { if(now > 1519084800) price = 0.0105 * 1 ether; else if(now > 1516406400) price = 0.0070 * 1 ether; tokenFree = sharesTokenAddress.balanceOf(this); if (now < startICO) { msg.sender.transfer(msg.value); } else if (now > stopICO) { msg.sender.transfer(msg.value); if(!tokenWithdraw){ sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this)); tokenFree = sharesTokenAddress.balanceOf(this); tokenWithdraw = true; crowdsaleClosed = true; } } else if (crowdsaleClosed) { msg.sender.transfer(msg.value); } else { uint256 tokenToBuy = msg.value / price * coeff; if(tokenToBuy <= 0) msg.sender.transfer(msg.value); require(tokenToBuy > 0); uint256 actualETHTransfer = tokenToBuy * price / coeff; if (tokenFree >= tokenToBuy) { owner.transfer(actualETHTransfer); if (msg.value > actualETHTransfer){ msg.sender.transfer(msg.value - actualETHTransfer); } sharesTokenAddress.transfer(msg.sender, tokenToBuy); tokenSold += tokenToBuy; tokenFree -= tokenToBuy; if(tokenFree==0) crowdsaleClosed = true; } else { uint256 sendETH = tokenFree * price / coeff; owner.transfer(sendETH); sharesTokenAddress.transfer(msg.sender, tokenFree); msg.sender.transfer(msg.value - sendETH); tokenSold += tokenFree; tokenFree = sharesTokenAddress.balanceOf(this); crowdsaleClosed = true; } } TokenFree(tokenFree); CrowdsaleClosed(crowdsaleClosed); }",
+        "vulnerability": "Improper Handling of Crowdsale Closure",
+        "reason": "The function does not properly handle the closure of the crowdsale. Specifically, it transfers tokens to the `safeContract` when `stopICO` is reached, but this action is only triggered once. If any tokens are left over or if the closure logic is improperly executed, it may lead to tokens being stuck or misappropriated. Additionally, the function lacks checks to ensure that the token transfers and Ether refunds are securely completed.",
+        "file_name": "0xe7e0bb725a6c1ed81b89042b1d37756b21db4958.sol"
+    }
+]

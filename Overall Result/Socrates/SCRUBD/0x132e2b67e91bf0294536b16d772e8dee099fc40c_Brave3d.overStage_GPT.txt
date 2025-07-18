@@ -1,0 +1,40 @@
+
+Start analyze function: Brave3d.overStage(uint8)
+Function Security Analysis for Brave3d.overStage(uint8)
+    There are no modifiers should be examined in function overStage.
+    Check direct function security
+        - function Brave3d.overStage(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not contain any of the specified characteristics related to verifying msg.sender against xxxOwner/xxxAddress/Leader/CEO.
+        - function Brave3d.overStage(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The structure that satisfies the given rules has an immediate transformation on `xxx`. The `assert(!finishStage.isFinish);` is followed by some logic
+          and then `finishStage.isFinish = true;` at the end. The state change does not immediately occur after the state check, hence it doesn't satisfy the additional
+          requirement for an immediate change before main logic.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyByName', 'withdraw', 'forceOverStage', 'setName', 'buyFromValue', 'buyByAddress']
+        Function Security Analysis for Brave3d.buyByName(string)
+            There are no modifiers should be examined in function buyByName.
+            Check direct function security
+                - function Brave3d.buyByName(string) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any condition checking the msg.sender directly against an owner or specific leader address.
+                - function Brave3d.buyByName(string) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code structure does not match any of the specified patterns. There is no 'require' statement that checks the truth value of a variable and
+                  subsequently assigns the opposing boolean value to that variable.
+External Call Analysis
+    Direct external call: ['p3dContract.withdraw()', 'p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D))', 'p3dContract.myDividends(true)']
+    Analyze Transfer
+    Analyze Gas
+        - p3dContract.withdraw() ISN'T subjected to gas limits.
+        - p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D)) ISN'T subjected to gas limits.
+        - p3dContract.myDividends(true) ISN'T subjected to gas limits.
+    Remaining external call: ['p3dContract.withdraw()', 'p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D))', 'p3dContract.myDividends(true)']
+    Analyze External Address
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

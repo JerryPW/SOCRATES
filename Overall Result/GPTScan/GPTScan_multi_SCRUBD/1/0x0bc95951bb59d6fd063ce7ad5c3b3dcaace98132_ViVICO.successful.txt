@@ -1,0 +1,83 @@
+ViVICO.successful: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function successful() public { 
+        //When successful
+        require(state == State.Successful);
+        //Users have 14 days period to claim tokens
+        if (now > completedAt.add(14 days)){
+            //If there is any token left after
+            uint256 remanent = tokenReward.balanceOf(this);
+            //It's send to creator
+            tokenReward.transfer(creator,remanent);
+            emit LogContributorsPayout(creator, remanent);
+        }
+        //After successful eth is send to creator
+        creator.transfer(address(this).balance);
+
+        emit LogBeneficiaryPaid(creator);
+
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function successful() public { 
+        //When successful
+        require(state == State.Successful);
+        //Users have 14 days period to claim tokens
+        if (now > completedAt.add(14 days)){
+            //If there is any token left after
+            uint256 remanent = tokenReward.balanceOf(this);
+            //It's send to creator
+            tokenReward.transfer(creator,remanent);
+            emit LogContributorsPayout(creator, remanent);
+        }
+        //After successful eth is send to creator
+        creator.transfer(address(this).balance);
+
+        emit LogBeneficiaryPaid(creator);
+
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function successful() public { 
+        //When successful
+        require(state == State.Successful);
+        //Users have 14 days period to claim tokens
+        if (now > completedAt.add(14 days)){
+            //If there is any token left after
+            uint256 remanent = tokenReward.balanceOf(this);
+            //It's send to creator
+            tokenReward.transfer(creator,remanent);
+            emit LogContributorsPayout(creator, remanent);
+        }
+        //After successful eth is send to creator
+        creator.transfer(address(this).balance);
+
+        emit LogBeneficiaryPaid(creator);
+
+    }
+Response:
+{"StatementsA": {"emit LogContributorsPayout(creator, remanent);":"Emits an event indicating tokens have been sent to the creator."}, "StatementsB": {"creator.transfer(address(this).balance);":"Transfers the contract's balance to the creator."}, "VariableA": {"creator": "Holds the address of the creator to whom the funds are transferred."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: emit LogContributorsPayout(creator, remanent);
+2.External Call: creator.transfer(address(this).balance);
+3.Variable A: creator
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

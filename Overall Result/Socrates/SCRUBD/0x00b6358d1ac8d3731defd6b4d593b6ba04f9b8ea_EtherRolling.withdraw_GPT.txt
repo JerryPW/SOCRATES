@@ -1,0 +1,28 @@
+
+Start analyze function: EtherRolling.withdraw(uint8)
+Function Security Analysis for EtherRolling.withdraw(uint8)
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function EtherRolling.withdraw(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks specifically restricting or allowing the execution of code based on whether `msg.sender` is a specific owner,
+          address, leader, or CEO. All conditional logic is related to payouts and bonuses, not sender validation for such roles.
+        - function EtherRolling.withdraw(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does have a structure where a variable is set to false based on a condition, but it does not strictly follow the required pattern. To be
+          specific, at the very end of the function there is a statement that sets 'users[msg.sender].isWithdrawActive = false;' based on a condition, but there is no
+          matched 'require' or 'if' statement using '!xxx' before changing its value. Thus, the function does not strictly follow any of the specified structures.
+External Call Analysis
+    Direct external call: ['address(msg.sender).transfer(to_payout)', '_token.send(msg.sender,to_payout,TokenWithdrawed)']
+    Analyze Transfer
+        - address(msg.sender).transfer(to_payout) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'address(msg.sender).transfer(to_payout)' contains the keyword '.transfer(', satisfying the first characteristic.. Parameter in 'transfer'/'send': 1.
+        - _token.send(msg.sender,to_payout,TokenWithdrawed) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 3.
+    Analyze Gas
+        - _token.send(msg.sender,to_payout,TokenWithdrawed) ISN'T subjected to gas limits.
+    Remaining external call: ['_token.send(msg.sender,to_payout,TokenWithdrawed)']
+    Analyze External Address
+        There are ['_token'] should be checked in variable _token
+        Checked variables: _token
+            Yes 1. The provided code is a constructor, which is explicitly named 'constructor'. Therefore, it satisfies the first characteristic. 2. The state variable
+            '_token' is directly assigned within the constructor using '_token = IERC777(token);'. Therefore, it does not have any hardcoded value and does not satisfy
+            the second characteristic.  Since the code satisfies the first characteristic (being a constructor), the output is 'Yes'.
+Conclusion: This function will not cause REE Problem.

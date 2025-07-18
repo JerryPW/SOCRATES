@@ -1,0 +1,40 @@
+
+Start analyze function: Investment.removeOrder(uint256)
+Function Security Analysis for Investment.removeOrder(uint256)
+    There are no modifiers should be examined in function removeOrder.
+    Check direct function security
+        - function Investment.removeOrder(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The require statement does not match the specified structures because `owner()` is a function call, not a variable directly named `xxxOwner`. Therefore,
+          it does not align with the specified msg.sender checks.
+        - function Investment.removeOrder(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures such as require(xxx == True) followed by xxx = False, require(xxx == False) followed by xxx =
+          True, require(!xxx) followed by xxx = True, or if(!xxx) throw followed by xxx = true.
+External Call Analysis
+    Direct external call: ['_userActions[indexOfOrder].user.call{value:_transactionFee}()']
+    Analyze Transfer
+    Analyze Gas
+        - _userActions[indexOfOrder].user.call{value:_transactionFee}() ISN'T subjected to gas limits.
+    Remaining external call: ['_userActions[indexOfOrder].user.call{value:_transactionFee}()']
+    Analyze External Address
+        There are ['_userActions'] should be checked in variable _userActions
+        Checked variables: _userActions
+            No 1. The provided functions are not constructors. The contract name is 'Investment', and neither function has the same name nor is there an explicitly named
+            'constructor' function.  2. The functions do not hardcode the state variable '_userActions'. Both 'removeOrder' and 'submitOrder' modify '_userActions' but do
+            not set it to a hardcoded value. Instead, they perform operations based on the inputs and logic within the functions.
+            Function Security Analysis for Investment.removeOrder(uint256)
+                There are no modifiers should be examined in function removeOrder.
+                Check direct function security
+                    - function Investment.removeOrder(uint256) has security assurance protected by checking the authority of msg.sender, the function would not cause REE
+                    problem.
+                      Reason: The function uses the require statement with 'msg.sender == owner()' and also includes 'msg.sender == address(this)', but neither involves a
+                      local variable name with a pattern like xxxOwner/xxxAddress/Leader/CEO directly in the structure.
+            Function Security Analysis for Investment.submitOrder(uint256,uint256,bool)
+                There are no modifiers should be examined in function submitOrder.
+                Check direct function security
+                    - function Investment.submitOrder(uint256,uint256,bool) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The code checks for conditions related to deposits and transaction fees but does not include any checks or assertions for specific roles or
+                      addresses, such as xxxOwner, xxxAddress, Leader, or CEO. Therefore, it doesn't match any of the specified patterns.
+                    - function Investment.submitOrder(uint256,uint256,bool) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code checks requiring 'acceptingNewDeposits == true', but 'acceptingNewDeposits' is not subsequently assigned 'False' or 'True' within
+                      the function, which is required to meet the pattern structure 1. Hence, none of the specified structures are present in the function.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,44 @@
+
+Start analyze function: Swap.fallback()
+Function Security Analysis for Swap.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Swap.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check for the identity of the message sender against any owner or known address.
+        - function Swap.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code initially requires 'check[msg.sender] == false;', however, the statement 'check[msg.sender] = true;' is executed at the end of the function,
+          after all main logic and operations. This means the state negation operation doesn't immediately follow and is not completed before the main logic executes.
+          Therefore, the structural requirement is not satisfied.
+External Call Analysis
+    Direct external call: ['msg.sender.send(msg.value)', 'beneficiary.send(msg.value)', 'swapaddress.transfer(msg.sender,amount/secondvalue)',
+    'swapaddress.transfer(msg.sender,amount/thirdvalue)', 'swapaddress.transfer(msg.sender,5000000)']
+    Analyze Transfer
+        - msg.sender.send(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.send(msg.value)' contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+        - beneficiary.send(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(msg.value)' contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+        - swapaddress.transfer(msg.sender,amount/secondvalue) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - swapaddress.transfer(msg.sender,amount/thirdvalue) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - swapaddress.transfer(msg.sender,5000000) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - swapaddress.transfer(msg.sender,amount/secondvalue) ISN'T subjected to gas limits.
+        - swapaddress.transfer(msg.sender,amount/thirdvalue) ISN'T subjected to gas limits.
+        - swapaddress.transfer(msg.sender,5000000) ISN'T subjected to gas limits.
+    Remaining external call: ['swapaddress.transfer(msg.sender,amount/secondvalue)', 'swapaddress.transfer(msg.sender,amount/thirdvalue)',
+    'swapaddress.transfer(msg.sender,5000000)']
+    Analyze External Address
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The provided code is a constructor for a contract named 'Swap'. The function is explicitly named 'constructor', which satisfies the first characteristic
+            to check if the code is a constructor.
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The function provided is named 'constructor', which matches the second part of the first characteristic indicating it is a constructor. The availability
+            of a variable directly assigned within the function (e.g., 'swapaddress = ...') is not explicitly hardcoded, but the significance in this context is that the
+            function's name is 'constructor'. Therefore, characteristic 1 is satisfied.
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The code provided is a constructor of the contract because the function is explicitly named 'constructor'. Within this constructor, the state variable
+            'swapaddress' is being set using the parameter 'addressOfCollectibleUsedAsReward'. Since this is a dynamic assignment to 'swapaddress' and not a hardcoded
+            value, the state variable is not hardcoded. However, since the function is indeed a constructor, it satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

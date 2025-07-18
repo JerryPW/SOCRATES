@@ -1,0 +1,22 @@
+
+Start analyze function: DividendTracker._compoundDividendOfUser(address)
+Function Security Analysis for DividendTracker._compoundDividendOfUser(address)
+    There are no modifiers should be examined in function _compoundDividendOfUser.
+    Check direct function security
+        - function DividendTracker._compoundDividendOfUser(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function `_compoundDividendOfUser` does not contain any of the specified structures that perform checks on `msg.sender`. The function works
+          with an `account` parameter and performs various operations related to dividends and token swapping without explicit conditions or requirements involving
+          `msg.sender`.
+        - function DividendTracker._compoundDividendOfUser(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any `require(xxx == True); xxx = False;`, `require(xxx == False); xxx = True;`, `require(!xxx); xxx = True;`, or `if(!xxx)
+          throw; xxx = true;` structure. There is an if condition with `!success`, but no throw statement and no variable setting pattern described in the initial check.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['compoundAccount']
+        Function Security Analysis for DividendTracker.compoundAccount(address)
+            The modifier of function compoundAccount are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The code has a 'require' statement that ensures only the owner can execute the function: 'require(owner() == _msgSender())'. This matches
+                  criterion 1, which specifies that ownership checks should be enforced using a 'require' statement. There are no lock/unlock operations in this modifier,
+                  so criterion 2 does not apply.
+Conclusion: This function will not cause REE Problem.

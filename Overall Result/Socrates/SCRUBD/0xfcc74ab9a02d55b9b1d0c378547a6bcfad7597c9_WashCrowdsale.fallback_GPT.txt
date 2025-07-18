@@ -1,0 +1,26 @@
+
+Start analyze function: WashCrowdsale.fallback()
+Function Security Analysis for WashCrowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function WashCrowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function does not contain any structures that check msg.sender against a specific owner, address, Leader, or CEO. It mainly deals with
+          transferring tokens and managing the funds within a sale timeframe.
+        - function WashCrowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function contains the statement 'require(!crowdsaleClosed);' at the beginning, which corresponds to the first part of structure 3. However, the
+          second part of structure 3 'crowdsaleClosed = True;' or 'crowdsaleClosed = False;' is not found anywhere else in the code. As both statements are necessary to
+          match the structure, the initial judgment of 'Yes' based on incomplete analysis was incorrect.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount)', 'beneficiary.send(ethamount)']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.send(ethamount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword which is the second characteristic used to determine the judgment.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function is a constructor as it has the same name as the contract, 'WashCrowdsale'.
+Conclusion: This function will not cause REE Problem.

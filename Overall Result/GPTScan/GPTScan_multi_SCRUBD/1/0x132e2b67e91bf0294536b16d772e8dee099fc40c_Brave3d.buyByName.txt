@@ -1,0 +1,50 @@
+Brave3d.buyByName: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function buyByName(string name)
+    external
+    payable
+    {
+        uint8 rate = 1;
+        if (msg.value == PRICE) {
+            rate = 1;
+        } else if (msg.value == PRICE * 5) {
+            rate = 5;
+        } else if (msg.value == PRICE * 10) {
+            rate = 10;
+        } else {
+            require(false);
+        }
+
+        resetStage(rate);
+
+        buy(rate);
+
+        overStage(rate);
+
+        if (_addressMap[msg.sender] == 0) {
+
+            if (_nameAddressMap[name] == 0) {
+
+                _addressMap[msg.sender] = OFFICIAL;
+
+            } else {
+
+                address referee = _nameAddressMap[name];
+                if (referee != 0x0000000000000000000000000000000000000000 && referee != msg.sender && _valueMap[referee] >= 0) {
+
+                    _addressMap[msg.sender] = referee;
+                } else {
+
+                    _addressMap[msg.sender] = OFFICIAL;
+                }
+            }
+        }
+        
+         emit BraveReferrer(_addressMap[msg.sender],msg.sender,rate);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

@@ -1,0 +1,36 @@
+
+Start analyze function: PoCGame.donateToWhale(uint256)
+Function Security Analysis for PoCGame.donateToWhale(uint256)
+    There are no modifiers should be examined in function donateToWhale.
+    Check direct function security
+        - function PoCGame.donateToWhale(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any require, if, or assert checks related to msg.sender validating against any form of ownership or specific addresses such as
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function PoCGame.donateToWhale(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. It simply calls a function on the `whale` address, updates a `totalDonated` variable, and
+          emits an event. There are no require statements or if(!xxx) throw; statements that alter boolean variables as outlined in the criteria.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['donate']
+        Function Security Analysis for PoCGame.donate()
+            The modifier of function donate are ['isOpenToPublic']
+            The result of checking modifiers:
+                - modifier isOpenToPublic has no relation with controlled by owner.
+                  Reason: The modifier does not enforce owner or specific addresses control, use a lock mechanism, or infer such characteristics from its name. It simply
+                  checks if a boolean 'openToPublic' is true, so none of the specified characteristics are met.
+            Check direct function security
+                - function PoCGame.donate() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function 'donate' does not contain any msg.sender checks according to the specified structures.
+                - function PoCGame.donate() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain any 'require' or 'if' statements checking a boolean variable and subsequently changing its value, as
+                  specified by any of the four structures listed. Therefore, it does not satisfy any of the given conditions.
+External Call Analysis
+    Direct external call: ['whale.call.value(amount)(bytes4(keccak256()(donate())))']
+    Analyze Transfer
+    Analyze Gas
+        - whale.call.value(amount)(bytes4(keccak256()(donate()))) ISN'T subjected to gas limits.
+    Remaining external call: ['whale.call.value(amount)(bytes4(keccak256()(donate())))']
+    Analyze External Address
+        There are ['whale'] should be checked in variable whale
+        Checked variables: whale
+            Yes The provided code is a constructor as the function is explicitly named 'constructor'. This satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

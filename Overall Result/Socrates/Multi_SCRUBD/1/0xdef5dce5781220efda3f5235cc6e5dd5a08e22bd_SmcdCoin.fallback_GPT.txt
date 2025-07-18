@@ -1,0 +1,19 @@
+
+Start analyze function: SmcdCoin.fallback()
+Function Security Analysis for SmcdCoin.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function SmcdCoin.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures checking for 'msg.sender'.
+        - function SmcdCoin.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't have any conditional statements with the specified pattern. It just contains some simple operations without any 'require' or 'if'
+          statements as per the conditions given.
+External Call Analysis
+    Direct external call: ['owner.send(msg.value)']
+    Analyze Transfer
+        - owner.send(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, which satisfies the specified characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

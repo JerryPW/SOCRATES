@@ -1,0 +1,27 @@
+
+Start analyze function: DappIncubator.transfer(address,address,uint256)
+Function Security Analysis for DappIncubator.transfer(address,address,uint256)
+    There are no modifiers should be examined in function transfer.
+    Check direct function security
+        - function DappIncubator.transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check any ownership or authority based on the message sender using the identified structures.
+        - function DappIncubator.transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluating the code, it matches none of the provided structures completely. While there is a statement
+          `require(contractAddressRecord[contractAddress] == true);`, it's not followed by `contractAddressRecord[contractAddress] = false;`. The structure requires both
+          statements to be considered a match.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: DappIncubator.withdraw(address)
+Function Security Analysis for DappIncubator.withdraw(address)
+    The modifier of function withdraw are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The code within the 'nonReentrant' modifier contains both a lock and an unlock operation. It sets _status to _ENTERED as a lock operation and later
+          resets it back to _NOT_ENTERED as an unlock operation. This confirms the use of a lock operation as described in rule 2.
+Conclusion: This function will not cause REE Problem.

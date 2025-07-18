@@ -1,0 +1,54 @@
+
+Start analyze function: BATMO.determinePID(BATMODatasets.EventReturns)
+Function Security Analysis for BATMO.determinePID(BATMODatasets.EventReturns)
+    There are no modifiers should be examined in function determinePID.
+    Check direct function security
+        - function BATMO.determinePID(BATMODatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the listed structures related to msg.sender.
+        - function BATMO.determinePID(BATMODatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code checks if `_pID` is `0`, but it does not require it to be `true` or `false`, nor contains any assignment statements like `xxx = False` or `xxx
+          = True`. There are no throw statements or handling of boolean variables in the required pattern.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyXid', 'fallback', 'buyXname', 'buyXaddr']
+        Function Security Analysis for BATMO.buyXid(uint256)
+            The modifier of function buyXid are ['isActivated', 'isHuman', 'isWithinLimits']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier `isActivated()` does not enforce restrictions based on msg.sender nor does it implement a known locking pattern. It checks for a
+                  specific state variable `activated_`, unrelated to the ownership or reentrancy protection.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: The code uses a check 'require (msg.sender == tx.origin);' to ensure that only EOA (Externally Owned Accounts) can call the function, rather
+                  than ensuring only a specific owner or address is allowed to call it. Therefore, it doesn't meet the requirements of any of the specified
+                  characteristics.
+                - modifier isWithinLimits has no relation with controlled by owner.
+                  Reason: The modifier isWithinLimits only checks if a value is within a certain range and does not enforce any ownership or specific address execution,
+                  nor does it use lock operations. Therefore, it does not satisfy any of the given characteristics.
+            Check direct function security
+                - function BATMO.buyXid(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code does not contain any statement that checks if 'msg.sender' is equal to or not equal to an owner/address/leader/CEO, nor does
+                  it include any assert, require, or throw statement with such checks. Thus, none of the specified patterns are matched.
+                - function BATMO.buyXid(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain any of the specified structures or similar constructs. It does not use 'require' or 'if' statements to
+                  conditionally throw or alter boolean variables, as described in the criteria.
+External Call Analysis
+    Direct external call: ['PlayerBook.getPlayerLAff(_pID)', 'PlayerBook.getPlayerName(_pID)', 'PlayerBook.getPlayerID(msg.sender)']
+    Analyze Transfer
+    Analyze Gas
+        - PlayerBook.getPlayerLAff(_pID) ISN'T subjected to gas limits.
+        - PlayerBook.getPlayerName(_pID) ISN'T subjected to gas limits.
+        - PlayerBook.getPlayerID(msg.sender) ISN'T subjected to gas limits.
+    Remaining external call: ['PlayerBook.getPlayerLAff(_pID)', 'PlayerBook.getPlayerName(_pID)', 'PlayerBook.getPlayerID(msg.sender)']
+    Analyze External Address
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            Yes The function in the provided code is a constructor because its name is 'constructor', which explicitly identifies it as a constructor in Solidity.
+            Constructors are special functions with the same name as the contract or named 'constructor' (in newer versions) that initialize the contract when it is
+            deployed.
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            Yes The provided function is a constructor because its name is 'constructor', which explicitly indicates that it is a constructor in Solidity.
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            Yes The code provided is a constructor because it explicitly uses the keyword 'constructor'. Constructors are special functions in Solidity that initialize
+            contracts and do not require matching the contract name in versions from 0.4.22 onwards. Therefore, it satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

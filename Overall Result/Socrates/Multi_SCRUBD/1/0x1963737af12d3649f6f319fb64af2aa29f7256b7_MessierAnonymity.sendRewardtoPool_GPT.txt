@@ -1,0 +1,27 @@
+
+Start analyze function: MessierAnonymity.sendRewardtoPool()
+Function Security Analysis for MessierAnonymity.sendRewardtoPool()
+    There are no modifiers should be examined in function sendRewardtoPool.
+    Check direct function security
+        - function MessierAnonymity.sendRewardtoPool() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code in the provided function does not include any require, assert, or if statement checking msg.sender against roles like
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function MessierAnonymity.sendRewardtoPool() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures, such as require statements or if conditions that include setting the same variable to true or
+          false.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['deposit', 'withdraw']
+        Function Security Analysis for MessierAnonymity.deposit(bytes32)
+            The modifier of function deposit are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The code in the modifier uses a counter (_guardCounter) to implement a locking mechanism. It increments the counter and checks it after the
+                  function execution to ensure reentrancy is prevented. This matches the criterion for a lock operation, which requires setting a flag before execution
+                  and checking/resetting it afterward, satisfying rule 2. Both lock and unlock operations are identified here.
+        Function Security Analysis for MessierAnonymity.withdraw(bytes,bytes32,bytes32,address,address,uint256,uint256)
+            The modifier of function withdraw are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier uses a counter to implement a reentrancy guard. It sets the counter at the start and checks the counter after executing the
+                  function body to ensure it's not re-entered. This matches the lock and unlock operations required in rule 2.
+Conclusion: This function will not cause REE Problem.

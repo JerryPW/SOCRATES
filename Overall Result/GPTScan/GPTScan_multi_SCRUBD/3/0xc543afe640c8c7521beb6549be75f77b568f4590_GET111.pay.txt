@@ -1,0 +1,71 @@
+GET111.pay: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function pay() private {
+        uint128 money = uint128(address(this).balance);
+
+        for(uint i=0; i<queue.length; i++){
+
+            uint idx = currentReceiverIndex + i;
+
+            Deposit storage dep = queue[idx];
+
+            if(money >= dep.expect){
+                dep.depositor.send(dep.expect);
+                money -= dep.expect;
+
+                //User total paid
+                delete queue[idx];
+            }else{
+                
+                dep.depositor.send(money);
+                dep.expect -= money;
+                break;
+            }
+
+            if(gasleft() <= 50000)
+                break;
+        }
+
+        currentReceiverIndex += i;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function pay() private {
+        uint128 money = uint128(address(this).balance);
+
+        for(uint i=0; i<queue.length; i++){
+
+            uint idx = currentReceiverIndex + i;
+
+            Deposit storage dep = queue[idx];
+
+            if(money >= dep.expect){
+                dep.depositor.send(dep.expect);
+                money -= dep.expect;
+
+                //User total paid
+                delete queue[idx];
+            }else{
+                
+                dep.depositor.send(money);
+                dep.expect -= money;
+                break;
+            }
+
+            if(gasleft() <= 50000)
+                break;
+        }
+
+        currentReceiverIndex += i;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

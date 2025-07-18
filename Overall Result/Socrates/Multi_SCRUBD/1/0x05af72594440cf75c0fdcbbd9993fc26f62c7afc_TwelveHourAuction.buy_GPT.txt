@@ -1,0 +1,234 @@
+
+Start analyze function: TwelveHourAuction.buy(address)
+Function Security Analysis for TwelveHourAuction.buy(address)
+    The modifier of function buy are ['disableContract']
+    The result of checking modifiers:
+        - modifier disableContract has no relation with controlled by owner.
+          Reason: The modifier uses `require(tx.origin == msg.sender);`, which checks that the direct caller of the function is the original external account and not a
+          contract. However, it does not explicitly enforce owner-only access or specific address execution. It also doesn't implement any locking mechanism. Hence, it
+          doesn't satisfy the defined characteristics for a 'Yes' response.
+    Check direct function security
+        - function TwelveHourAuction.buy(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any structure that checks for msg.sender being equal to or not equal to specific roles like owner, CEO, leader, xxxOwner,
+          or xxxAddress.
+        - function TwelveHourAuction.buy(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the statement `require(init == true);` followed by (but not directly, there's code in between) an instance where `init` is updated to
+          `False`. However, the pattern requires filling in the structure exactly as specified. Since there is no such change for `init` variable, the function does not
+          match the conditions provided.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(repay)', 'owner.transfer(_referralBonus)']
+    Analyze Transfer
+        - msg.sender.transfer(repay) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, indicating it satisfies the rule 1 condition.. Parameter in 'transfer'/'send': 1.
+        - owner.transfer(_referralBonus) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, indicating it satisfies the rule 1 condition.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: TwelveHourAuction.sendToTeamMaketing(uint256)
+Function Security Analysis for TwelveHourAuction.sendToTeamMaketing(uint256)
+    There are no modifiers should be examined in function sendToTeamMaketing.
+    Check direct function security
+        - function TwelveHourAuction.sendToTeamMaketing(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code snippet does not contain any check of the sender's address against an owner, address, leader, or CEO.
+        - function TwelveHourAuction.sendToTeamMaketing(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures with 'require' or 'if' statements checking and modifying any boolean variable 'xxx'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback', 'buy']
+        Function Security Analysis for TwelveHourAuction.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function TwelveHourAuction.fallback() has security assurance protected by checking the authority of msg.sender, the function would not cause REE
+                problem.
+                  Reason: The previous analysis was correct because the condition 'if (msg.sender != twelveHourTokenAddress)' matches characteristic 2 where msg.sender is
+                  checked against a specified address (twelveHourTokenAddress). Even with the consideration that xxx.owner guided by a local variable wouldn't count, the
+                  check here isn't using a local variable directly in that manner but compares msg.sender to a specific address.
+        Function Security Analysis for TwelveHourAuction.buy(address)
+            The modifier of function buy are ['disableContract']
+            The result of checking modifiers:
+                - modifier disableContract has no relation with controlled by owner.
+                  Reason: The modifier does not restrict access based on ownership or a specific address, nor does it seem to implement a lock mechanism. It simply checks
+                  if the transaction origin is the same as the message sender.
+            Check direct function security
+                - function TwelveHourAuction.buy(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code doesn't contain any of the specified structures as it doesn't check msg.sender against a specific owner-like role such as xxxOwner,
+                  xxxAddress, Leader, or CEO.
+                - function TwelveHourAuction.buy(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: Upon reevaluation, the initial judgment was incorrect. In the given code, there is indeed a `require(init == true);` statement, but there is no
+                  corresponding `init = false;` or any change of the `init` variable within the function. Therefore, none of the specified structural patterns are fully
+                  met.
+External Call Analysis
+    Direct external call: ['teamMarketing[idx].transfer(profit)']
+    Analyze Transfer
+        - teamMarketing[idx].transfer(profit) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: TwelveHourAuction.sendProfitTTH()
+Function Security Analysis for TwelveHourAuction.sendProfitTTH()
+    There are no modifiers should be examined in function sendProfitTTH.
+    Check direct function security
+        - function TwelveHourAuction.sendProfitTTH() has no security assurance protected by checking the authority of msg.sender
+          Reason: There's no check on msg.sender being equal or unequal to xxxOwner/xxxAddress/Leader/CEO.
+        - function TwelveHourAuction.sendProfitTTH() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any 'require' or 'if' statements that match the specified patterns. There are no conditions specified before directly
+          assigning any variable, nor does it involve toggling a boolean variable. The structures outlined in the characteristics are not present in this function.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback', 'buy']
+        Function Security Analysis for TwelveHourAuction.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function TwelveHourAuction.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code contains an `if` statement checking `if (msg.sender != twelveHourTokenAddress)`, but 'twelveHourTokenAddress' is considered a local
+                  variable and does not match the specified structure based on the given guidelines.
+                - function TwelveHourAuction.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not match any of the identified structures. Specifically, it lacks the presence of a 'require' or 'if' statement with a
+                  throw that includes a variable being set to True or False as described in the patterns.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: TwelveHourAuction.buyTHT(uint256)
+Function Security Analysis for TwelveHourAuction.buyTHT(uint256)
+    There are no modifiers should be examined in function buyTHT.
+    Check direct function security
+        - function TwelveHourAuction.buyTHT(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'buyTHT' does not have any checks related to 'msg.sender' against predefined accounts such as Owner, Address, Leader, or CEO. It lacks any
+          of the specified structures for permission control.
+        - function TwelveHourAuction.buyTHT(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the structures mentioned. There is no use of require statements or condition checks involving true or false that meet
+          the specified pattern criteria.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback', 'buy', 'sendProfitTTH']
+        Function Security Analysis for TwelveHourAuction.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function TwelveHourAuction.fallback() has security assurance protected by checking the authority of msg.sender, the function would not cause REE
+                problem.
+                  Reason: The code contains an 'if' statement with the structure 'if (msg.sender != xxxAddress)', which matches one of the specified criteria. The
+                  variable used (twelveHourTokenAddress) is not a local variable named 'xxx', so it is still valid for the conditions.
+        Function Security Analysis for TwelveHourAuction.buy(address)
+            The modifier of function buy are ['disableContract']
+            The result of checking modifiers:
+                - modifier disableContract has no relation with controlled by owner.
+                  Reason: The modifier enforces a condition using require(tx.origin == msg.sender), which implies it is restricting execution to the original external
+                  caller, not necessarily an owner or specific addresses. None of the specified rules for ownership or single-entry lock operation are satisfied.
+            Check direct function security
+                - function TwelveHourAuction.buy(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any direct conditional check or assertion involving msg.sender and a specific owner/certain address like
+                  xxxOwner/xxxAddress/Leader/CEO in the specified structures.
+                - function TwelveHourAuction.buy(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: Upon revisiting the code and requirements, the code contains 'require(init == true);', satisfying the first part of Structure 1, but there is no
+                  subsequent statement setting 'init' to false within the function. Similarly, it does not satisfy any of the other structures 2, 3, or 4 as no matching
+                  variable setting patterns are present for these structures. Therefore, the function does not completely satisfy any of the defined structures.
+External Call Analysis
+    Direct external call: ['TwelveHourToken.fallback.value(_value)()']
+    Analyze Transfer
+    Analyze Gas
+        - TwelveHourToken.fallback.value(_value)() ISN'T subjected to gas limits.
+    Remaining external call: ['TwelveHourToken.fallback.value(_value)()']
+    Analyze External Address
+        There are ['TwelveHourToken'] should be checked in variable TwelveHourToken
+        Checked variables: TwelveHourToken
+            No The provided function `setTwelveHourToken` is not a constructor because it does not match the contract name `TwelveHourAuction` and is not explicitly named
+            'constructor'. Additionally, the function does not hardcode a state variable; it assigns a value to the state variable `TwelveHourToken` based on the provided
+            address `_addr`. Thus, neither of the conditions applies to this function.
+            Function Security Analysis for TwelveHourAuction.setTwelveHourToken(address)
+                The modifier of function setTwelveHourToken are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The code includes 'require(msg.sender == owner);', which ensures that only the owner can execute the function. This matches characteristic
+                      1, as it checks if the message sender is the owner. There are no lock operations present, so characteristic 2 does not apply. Thus, the judgment is
+                      based solely on characteristic 1.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: TwelveHourAuction.exitTHT()
+Function Security Analysis for TwelveHourAuction.exitTHT()
+    There are no modifiers should be examined in function exitTHT.
+    Check direct function security
+        - function TwelveHourAuction.exitTHT() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function code does not contain any checks or conditions related to msg.sender. It solely calls the exit function on TwelveHourToken.
+        - function TwelveHourAuction.exitTHT() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not exhibit any of the specified characteristics. It solely contains a function call without any state checks or changes.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback', 'buy', 'sendProfitTTH']
+        Function Security Analysis for TwelveHourAuction.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function TwelveHourAuction.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code doesn't use any of the specified patterns because `twelveHourTokenAddress` is not explicitly described as an owner, leader, CEO, or
+                  similar strong authoritative role. Hence, it doesn't meet the outlined structures as the variable is simply `twelveHourTokenAddress` without any context
+                  indicating it is equivalent to an owner or similar role.
+                - function TwelveHourAuction.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures involving the 'require' statement or exception throwing with condition inversion.
+                  Therefore, it doesn't meet the criteria outlined for outputting 'Yes'.
+External Call Analysis
+    Direct external call: ['TwelveHourToken.exit()']
+    Analyze Transfer
+    Analyze Gas
+        - TwelveHourToken.exit() ISN'T subjected to gas limits.
+    Remaining external call: ['TwelveHourToken.exit()']
+    Analyze External Address
+        There are ['TwelveHourToken'] should be checked in variable TwelveHourToken
+        Checked variables: TwelveHourToken
+            No 1. The provided function is not a constructor because its name 'setTwelveHourToken' does not match the contract name 'TwelveHourAuction', and it is not
+            explicitly named 'constructor'.  2. The function 'setTwelveHourToken' does not hardcode the state variable 'TwelveHourToken'. Instead, it assigns the state
+            variable using an argument '_addr' passed to the function, which is dynamic and not hardcoded.
+            Function Security Analysis for TwelveHourAuction.setTwelveHourToken(address)
+                The modifier of function setTwelveHourToken are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon re-evaluating the modifier code, the requirement `require(msg.sender == owner);` is indeed present, confirming that only the owner can
+                      execute the function. No lock/unlock mechanism is involved here, hence the answer is based solely on the enforcement of ownership as per structure
+                      1.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: TwelveHourAuction.calEthSendToTHT(uint256)
+Function Security Analysis for TwelveHourAuction.calEthSendToTHT(uint256)
+    There are no modifiers should be examined in function calEthSendToTHT.
+    Check direct function security
+        - function TwelveHourAuction.calEthSendToTHT(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures related to msg.sender verification.
+        - function TwelveHourAuction.calEthSendToTHT(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any logical statements such as 'require', 'if', or variable assignments related to the structures mentioned for
+          evaluation. It only contains a calculation using SafeMath operations.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback', 'buy', 'sendProfitTTH']
+        Function Security Analysis for TwelveHourAuction.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function TwelveHourAuction.fallback() has security assurance protected by checking the authority of msg.sender, the function would not cause REE
+                problem.
+                  Reason: The code snippet contains 'if (msg.sender != twelveHourTokenAddress)', which matches structure 2: 'if (msg.sender !=
+                  xxxOwner/xxxAddress/Leader/CEO) {...}'. The condition checks if the sender is not 'twelveHourTokenAddress', which corresponds with the structure
+                  described.
+        Function Security Analysis for TwelveHourAuction.buy(address)
+            The modifier of function buy are ['disableContract']
+            The result of checking modifiers:
+                - modifier disableContract has no relation with controlled by owner.
+                  Reason: The modifier uses 'require(tx.origin == msg.sender);' which does not enforce a specific sender address like an owner or whitelisted address, nor
+                  does it utilize a locking mechanism or indicate such from its name. Therefore, it doesn't satisfy any of the specified characteristics.
+            Check direct function security
+                - function TwelveHourAuction.buy(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any of the specified structures where `msg.sender` is directly compared to or asserted equal to an `Owner`, `Address`,
+                  `Leader`, or `CEO`. It only checks if `msg.sender` is not equal to `_referral`.
+                - function TwelveHourAuction.buy(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: Upon reviewing the code, the structure 'require(init == true);' matches the first part of the specified pattern 1. However, there is no
+                  subsequent assignment like 'init = false;' within the provided code, which is necessary to fully match the structure. Without both components, the
+                  pattern is not satisfied.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,29 @@
+
+Start analyze function: DCY_preICO.fallback()
+Function Security Analysis for DCY_preICO.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function DCY_preICO.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any of the required authority check structures as specified in the criteria.
+        - function DCY_preICO.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does have `require(!crowdsaleClosed);`, but the negation operation, `crowdsaleClosed = true;`, doesn't occur immediately after the require
+          statement and several lines of main logic are executed before potentially setting `crowdsaleClosed` to true. Thus, it does not immediately perform a state
+          negation operation on `crowdsaleClosed` after checking.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount/price)', 'tokenReward.getBalanceOf(address(this))']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits.
+        - tokenReward.getBalanceOf(address(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount/price)', 'tokenReward.getBalanceOf(address(this))']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code is a constructor for the contract with the name 'DCY_preICO'. The function name matches the contract name, which is a characteristic of
+            a constructor in Solidity.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided function is a constructor because its name 'DCY_preICO' matches the contract name 'DCY_preICO'. Therefore, it satisfies the first
+            characteristic.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,31 @@
+
+Start analyze function: ZTCrowdsale.fallback()
+Function Security Analysis for ZTCrowdsale.fallback()
+    The modifier of function fallback are ['atStage']
+    The result of checking modifiers:
+        - modifier atStage has no relation with controlled by owner.
+          Reason: The modifier 'atStage' does not enforce owner-specific or specific address execution. It checks the current stage with a required stage but doesn't
+          involve sender checks or a lock mechanism. There are no indications of the function names resembling ownership or reentrancy protection.
+    Check direct function security
+        - function ZTCrowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks that explicitly compare `msg.sender` to a specified 'owner', 'leader', 'address', or 'CEO'. It only assigns
+          `msg.sender` to the variable `sender` and uses it without any such checks.
+        - function ZTCrowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the required structures as specified. It primarily contains checks and validation logic without the exact sequences
+          required. The require statements present do not directly manipulate the boolean variable as mentioned in the required structures.
+External Call Analysis
+    Direct external call: ['ztToken.issue(sender,valueInZT)', 'creator.send(ethFees)', 'beneficiary.send(received-ethFees)']
+    Analyze Transfer
+        - creator.send(ethFees) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.send(' keyword.. Parameter
+        in 'transfer'/'send': 1.
+        - beneficiary.send(received-ethFees) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.send('
+        keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - ztToken.issue(sender,valueInZT) ISN'T subjected to gas limits.
+    Remaining external call: ['ztToken.issue(sender,valueInZT)']
+    Analyze External Address
+        There are ['ztToken'] should be checked in variable ztToken
+        Checked variables: ztToken
+            Yes The function is named 'ZTCrowdsale', which matches the contract name provided. This indicates that the code is a constructor for the contract
+            'ZTCrowdsale'. Thus, it satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

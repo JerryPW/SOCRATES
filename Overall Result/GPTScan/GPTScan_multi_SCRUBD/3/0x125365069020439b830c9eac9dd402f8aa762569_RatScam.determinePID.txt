@@ -1,0 +1,206 @@
+RatScam.determinePID: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function determinePID(RSdatasets.EventReturns memory _eventData_)
+        private
+        returns (RSdatasets.EventReturns)
+    {
+        uint256 _pID = pIDxAddr_[msg.sender];
+        // if player is new to this version of ratscam
+        if (_pID == 0)
+        {
+            // grab their player ID, name and last aff ID, from player names contract 
+            _pID = RatBook.getPlayerID(msg.sender);
+            bytes32 _name = RatBook.getPlayerName(_pID);
+            uint256 _laff = RatBook.getPlayerLAff(_pID);
+            
+            // set up player account 
+            pIDxAddr_[msg.sender] = _pID;
+            plyr_[_pID].addr = msg.sender;
+            
+            if (_name != "")
+            {
+                pIDxName_[_name] = _pID;
+                plyr_[_pID].name = _name;
+                plyrNames_[_pID][_name] = true;
+            }
+            
+            if (_laff != 0 && _laff != _pID)
+                plyr_[_pID].laff = _laff;
+            
+            // set the new player bool to true
+            _eventData_.compressedData = _eventData_.compressedData + 1;
+        } 
+        return (_eventData_);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function determinePID(RSdatasets.EventReturns memory _eventData_)
+        private
+        returns (RSdatasets.EventReturns)
+    {
+        uint256 _pID = pIDxAddr_[msg.sender];
+        // if player is new to this version of ratscam
+        if (_pID == 0)
+        {
+            // grab their player ID, name and last aff ID, from player names contract 
+            _pID = RatBook.getPlayerID(msg.sender);
+            bytes32 _name = RatBook.getPlayerName(_pID);
+            uint256 _laff = RatBook.getPlayerLAff(_pID);
+            
+            // set up player account 
+            pIDxAddr_[msg.sender] = _pID;
+            plyr_[_pID].addr = msg.sender;
+            
+            if (_name != "")
+            {
+                pIDxName_[_name] = _pID;
+                plyr_[_pID].name = _name;
+                plyrNames_[_pID][_name] = true;
+            }
+            
+            if (_laff != 0 && _laff != _pID)
+                plyr_[_pID].laff = _laff;
+            
+            // set the new player bool to true
+            _eventData_.compressedData = _eventData_.compressedData + 1;
+        } 
+        return (_eventData_);
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function determinePID(RSdatasets.EventReturns memory _eventData_)
+        private
+        returns (RSdatasets.EventReturns)
+    {
+        uint256 _pID = pIDxAddr_[msg.sender];
+        // if player is new to this version of ratscam
+        if (_pID == 0)
+        {
+            // grab their player ID, name and last aff ID, from player names contract 
+            _pID = RatBook.getPlayerID(msg.sender);
+            bytes32 _name = RatBook.getPlayerName(_pID);
+            uint256 _laff = RatBook.getPlayerLAff(_pID);
+            
+            // set up player account 
+            pIDxAddr_[msg.sender] = _pID;
+            plyr_[_pID].addr = msg.sender;
+            
+            if (_name != "")
+            {
+                pIDxName_[_name] = _pID;
+                plyr_[_pID].name = _name;
+                plyrNames_[_pID][_name] = true;
+            }
+            
+            if (_laff != 0 && _laff != _pID)
+                plyr_[_pID].laff = _laff;
+            
+            // set the new player bool to true
+            _eventData_.compressedData = _eventData_.compressedData + 1;
+        } 
+        return (_eventData_);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function determinePID(RSdatasets.EventReturns memory _eventData_)
+        private
+        returns (RSdatasets.EventReturns)
+    {
+        uint256 _pID = pIDxAddr_[msg.sender];
+        // if player is new to this version of ratscam
+        if (_pID == 0)
+        {
+            // grab their player ID, name and last aff ID, from player names contract 
+            _pID = RatBook.getPlayerID(msg.sender);
+            bytes32 _name = RatBook.getPlayerName(_pID);
+            uint256 _laff = RatBook.getPlayerLAff(_pID);
+            
+            // set up player account 
+            pIDxAddr_[msg.sender] = _pID;
+            plyr_[_pID].addr = msg.sender;
+            
+            if (_name != "")
+            {
+                pIDxName_[_name] = _pID;
+                plyr_[_pID].name = _name;
+                plyrNames_[_pID][_name] = true;
+            }
+            
+            if (_laff != 0 && _laff != _pID)
+                plyr_[_pID].laff = _laff;
+            
+            // set the new player bool to true
+            _eventData_.compressedData = _eventData_.compressedData + 1;
+        } 
+        return (_eventData_);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function determinePID(RSdatasets.EventReturns memory _eventData_)
+        private
+        returns (RSdatasets.EventReturns)
+    {
+        uint256 _pID = pIDxAddr_[msg.sender];
+        // if player is new to this version of ratscam
+        if (_pID == 0)
+        {
+            // grab their player ID, name and last aff ID, from player names contract 
+            _pID = RatBook.getPlayerID(msg.sender);
+            bytes32 _name = RatBook.getPlayerName(_pID);
+            uint256 _laff = RatBook.getPlayerLAff(_pID);
+            
+            // set up player account 
+            pIDxAddr_[msg.sender] = _pID;
+            plyr_[_pID].addr = msg.sender;
+            
+            if (_name != "")
+            {
+                pIDxName_[_name] = _pID;
+                plyr_[_pID].name = _name;
+                plyrNames_[_pID][_name] = true;
+            }
+            
+            if (_laff != 0 && _laff != _pID)
+                plyr_[_pID].laff = _laff;
+            
+            // set the new player bool to true
+            _eventData_.compressedData = _eventData_.compressedData + 1;
+        } 
+        return (_eventData_);
+    }
+Response:
+{"StatementsA": {"pIDxAddr_[msg.sender] = _pID;":"Updates the mapping of player ID to address."}, "StatementsB": {"_pID = RatBook.getPlayerID(msg.sender);":"Calls an external contract to get the player ID."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: pIDxAddr_[msg.sender] = _pID;
+2.External Call: _pID = RatBook.getPlayerID(msg.sender);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

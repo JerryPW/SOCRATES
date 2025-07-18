@@ -1,0 +1,31 @@
+airPort.transfer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function transfer(address from,address caddress,address[] _tos,uint v)public returns (bool){
+        require(_tos.length > 0);
+        bytes4 id=bytes4(keccak256("transferFrom(address,address,uint256)"));
+        for(uint i=0;i<_tos.length;i++){
+            caddress.call(id,from,_tos[i],v);
+        }
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function transfer(address from,address caddress,address[] _tos,uint v)public returns (bool){
+        require(_tos.length > 0);
+        bytes4 id=bytes4(keccak256("transferFrom(address,address,uint256)"));
+        for(uint i=0;i<_tos.length;i++){
+            caddress.call(id,from,_tos[i],v);
+        }
+        return true;
+    }
+    
+Response:
+No
+--------------------------------------------------

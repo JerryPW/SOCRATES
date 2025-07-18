@@ -1,0 +1,117 @@
+DERPNATION.takeLoan: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function takeLoan(uint256 tokenId) public nonReentrant payable {
+      if(_vaultOpen == 0)
+        require(totalSupply() >= _maxSupply, "Closed");
+      uint256 loanValue = getUserSellPrice()/4; // loans are 25% of token value
+      uint256 interest = loanValue*3*_loanTerm/1000; //loans are 0.3% per week ~7.2% for 24 week loan
+      // take the collateral
+      safeTransferFrom(msg.sender ,address(this) ,tokenId);
+      // create the loan
+      Loan memory currentLoan;
+      currentLoan.debtor = msg.sender;
+      currentLoan.total = loanValue + interest;
+      currentLoan.interest = interest;
+      currentLoan.startBlock = block.number;
+      currentLoan.loanId = vStats.loanId;
+      vStats.totalLoanPrinciple = vStats.totalLoanPrinciple + loanValue;
+      vStats.totalLoanInterest = vStats.totalLoanInterest + interest;
+      // issue the loan
+      (bool sent, bytes memory data) = payable(msg.sender).call{value: loanValue}("");
+      _currentLoans[tokenId] = currentLoan;
+      emit IssueLoan(vStats.loanId, msg.sender, currentLoan.total, tokenId);
+      vStats.loanId = vStats.loanId + 1;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function takeLoan(uint256 tokenId) public nonReentrant payable {
+      if(_vaultOpen == 0)
+        require(totalSupply() >= _maxSupply, "Closed");
+      uint256 loanValue = getUserSellPrice()/4; // loans are 25% of token value
+      uint256 interest = loanValue*3*_loanTerm/1000; //loans are 0.3% per week ~7.2% for 24 week loan
+      // take the collateral
+      safeTransferFrom(msg.sender ,address(this) ,tokenId);
+      // create the loan
+      Loan memory currentLoan;
+      currentLoan.debtor = msg.sender;
+      currentLoan.total = loanValue + interest;
+      currentLoan.interest = interest;
+      currentLoan.startBlock = block.number;
+      currentLoan.loanId = vStats.loanId;
+      vStats.totalLoanPrinciple = vStats.totalLoanPrinciple + loanValue;
+      vStats.totalLoanInterest = vStats.totalLoanInterest + interest;
+      // issue the loan
+      (bool sent, bytes memory data) = payable(msg.sender).call{value: loanValue}("");
+      _currentLoans[tokenId] = currentLoan;
+      emit IssueLoan(vStats.loanId, msg.sender, currentLoan.total, tokenId);
+      vStats.loanId = vStats.loanId + 1;
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function takeLoan(uint256 tokenId) public nonReentrant payable {
+      if(_vaultOpen == 0)
+        require(totalSupply() >= _maxSupply, "Closed");
+      uint256 loanValue = getUserSellPrice()/4; // loans are 25% of token value
+      uint256 interest = loanValue*3*_loanTerm/1000; //loans are 0.3% per week ~7.2% for 24 week loan
+      // take the collateral
+      safeTransferFrom(msg.sender ,address(this) ,tokenId);
+      // create the loan
+      Loan memory currentLoan;
+      currentLoan.debtor = msg.sender;
+      currentLoan.total = loanValue + interest;
+      currentLoan.interest = interest;
+      currentLoan.startBlock = block.number;
+      currentLoan.loanId = vStats.loanId;
+      vStats.totalLoanPrinciple = vStats.totalLoanPrinciple + loanValue;
+      vStats.totalLoanInterest = vStats.totalLoanInterest + interest;
+      // issue the loan
+      (bool sent, bytes memory data) = payable(msg.sender).call{value: loanValue}("");
+      _currentLoans[tokenId] = currentLoan;
+      emit IssueLoan(vStats.loanId, msg.sender, currentLoan.total, tokenId);
+      vStats.loanId = vStats.loanId + 1;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function takeLoan(uint256 tokenId) public nonReentrant payable {
+      if(_vaultOpen == 0)
+        require(totalSupply() >= _maxSupply, "Closed");
+      uint256 loanValue = getUserSellPrice()/4; // loans are 25% of token value
+      uint256 interest = loanValue*3*_loanTerm/1000; //loans are 0.3% per week ~7.2% for 24 week loan
+      // take the collateral
+      safeTransferFrom(msg.sender ,address(this) ,tokenId);
+      // create the loan
+      Loan memory currentLoan;
+      currentLoan.debtor = msg.sender;
+      currentLoan.total = loanValue + interest;
+      currentLoan.interest = interest;
+      currentLoan.startBlock = block.number;
+      currentLoan.loanId = vStats.loanId;
+      vStats.totalLoanPrinciple = vStats.totalLoanPrinciple + loanValue;
+      vStats.totalLoanInterest = vStats.totalLoanInterest + interest;
+      // issue the loan
+      (bool sent, bytes memory data) = payable(msg.sender).call{value: loanValue}("");
+      _currentLoans[tokenId] = currentLoan;
+      emit IssueLoan(vStats.loanId, msg.sender, currentLoan.total, tokenId);
+      vStats.loanId = vStats.loanId + 1;
+    }
+    
+Response:
+No
+--------------------------------------------------

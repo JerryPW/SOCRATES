@@ -1,0 +1,249 @@
+Daoclub.liquidate: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function liquidate() onlyGpAndLp external {
+        require(daoStatus() == 3, "Daoclub: yes shares less than 70%");
+        //获取结算资金
+        uint256 amountOfThisLiquidation_ = getBalance();
+        if(!_receivedManagementFee) {    
+            require(amountOfThisLiquidation_ > _receivableManagementFee, "Daoclub: Insufficient amount");
+            if(isETH()) {
+                payable(_summonerAddress).transfer(_receivableManagementFee);
+            }else {
+                _targetToken.safeTransfer( _summonerAddress, _receivableManagementFee);
+            }
+            _receivedManagementFee = true;
+            amountOfThisLiquidation_ = amountOfThisLiquidation_.sub(_receivableManagementFee);
+
+        }
+
+        //先来一波卖币逻辑
+        //sellToken();
+
+        
+        uint256 gpProfit_ = 0;
+        if((amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation) > _actualFund) {
+            //分利润
+            uint256 profit_;
+            if(_amountOfGrandTotalLiquidation < _actualFund) {
+                profit_ = amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation - _actualFund;
+            }else {
+                profit_ = amountOfThisLiquidation_;
+            }
+            //先分gp
+            gpProfit_ = profit_.mul(_profitDistribution).div(100);
+            if(isETH()) {
+                payable(_summonerAddress).transfer(gpProfit_);
+            }else {
+                _targetToken.safeTransfer( _summonerAddress, gpProfit_);
+            }
+            amountOfThisLiquidation_ -= gpProfit_;
+            //emit LiquidationCompleted(address(this), _owner, gpProfit_, _fundShare());
+        }
+        for(uint i = 0; i < _members.length; i++ ) {
+            if(_balances[_members[i]] > 0) {
+                uint256 distributeProfit_ = amountOfThisLiquidation_.mul(_balances[_members[i]]).div(_totalSupply);
+                if(isETH()) {
+                    payable(_members[i]).transfer(distributeProfit_);
+                }else {
+                    _targetToken.safeTransfer(_members[i], distributeProfit_);
+                }
+                emit LiquidationCompleted(address(this), _members[i], distributeProfit_, _fundShare(_members[i]));
+            }
+        }
+        _amountOfGrandTotalLiquidation = _amountOfGrandTotalLiquidation + amountOfThisLiquidation_ + gpProfit_;
+        
+
+        
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function liquidate() onlyGpAndLp external {
+        require(daoStatus() == 3, "Daoclub: yes shares less than 70%");
+        //获取结算资金
+        uint256 amountOfThisLiquidation_ = getBalance();
+        if(!_receivedManagementFee) {    
+            require(amountOfThisLiquidation_ > _receivableManagementFee, "Daoclub: Insufficient amount");
+            if(isETH()) {
+                payable(_summonerAddress).transfer(_receivableManagementFee);
+            }else {
+                _targetToken.safeTransfer( _summonerAddress, _receivableManagementFee);
+            }
+            _receivedManagementFee = true;
+            amountOfThisLiquidation_ = amountOfThisLiquidation_.sub(_receivableManagementFee);
+
+        }
+
+        //先来一波卖币逻辑
+        //sellToken();
+
+        
+        uint256 gpProfit_ = 0;
+        if((amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation) > _actualFund) {
+            //分利润
+            uint256 profit_;
+            if(_amountOfGrandTotalLiquidation < _actualFund) {
+                profit_ = amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation - _actualFund;
+            }else {
+                profit_ = amountOfThisLiquidation_;
+            }
+            //先分gp
+            gpProfit_ = profit_.mul(_profitDistribution).div(100);
+            if(isETH()) {
+                payable(_summonerAddress).transfer(gpProfit_);
+            }else {
+                _targetToken.safeTransfer( _summonerAddress, gpProfit_);
+            }
+            amountOfThisLiquidation_ -= gpProfit_;
+            //emit LiquidationCompleted(address(this), _owner, gpProfit_, _fundShare());
+        }
+        for(uint i = 0; i < _members.length; i++ ) {
+            if(_balances[_members[i]] > 0) {
+                uint256 distributeProfit_ = amountOfThisLiquidation_.mul(_balances[_members[i]]).div(_totalSupply);
+                if(isETH()) {
+                    payable(_members[i]).transfer(distributeProfit_);
+                }else {
+                    _targetToken.safeTransfer(_members[i], distributeProfit_);
+                }
+                emit LiquidationCompleted(address(this), _members[i], distributeProfit_, _fundShare(_members[i]));
+            }
+        }
+        _amountOfGrandTotalLiquidation = _amountOfGrandTotalLiquidation + amountOfThisLiquidation_ + gpProfit_;
+        
+
+        
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function liquidate() onlyGpAndLp external {
+        require(daoStatus() == 3, "Daoclub: yes shares less than 70%");
+        //获取结算资金
+        uint256 amountOfThisLiquidation_ = getBalance();
+        if(!_receivedManagementFee) {    
+            require(amountOfThisLiquidation_ > _receivableManagementFee, "Daoclub: Insufficient amount");
+            if(isETH()) {
+                payable(_summonerAddress).transfer(_receivableManagementFee);
+            }else {
+                _targetToken.safeTransfer( _summonerAddress, _receivableManagementFee);
+            }
+            _receivedManagementFee = true;
+            amountOfThisLiquidation_ = amountOfThisLiquidation_.sub(_receivableManagementFee);
+
+        }
+
+        //先来一波卖币逻辑
+        //sellToken();
+
+        
+        uint256 gpProfit_ = 0;
+        if((amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation) > _actualFund) {
+            //分利润
+            uint256 profit_;
+            if(_amountOfGrandTotalLiquidation < _actualFund) {
+                profit_ = amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation - _actualFund;
+            }else {
+                profit_ = amountOfThisLiquidation_;
+            }
+            //先分gp
+            gpProfit_ = profit_.mul(_profitDistribution).div(100);
+            if(isETH()) {
+                payable(_summonerAddress).transfer(gpProfit_);
+            }else {
+                _targetToken.safeTransfer( _summonerAddress, gpProfit_);
+            }
+            amountOfThisLiquidation_ -= gpProfit_;
+            //emit LiquidationCompleted(address(this), _owner, gpProfit_, _fundShare());
+        }
+        for(uint i = 0; i < _members.length; i++ ) {
+            if(_balances[_members[i]] > 0) {
+                uint256 distributeProfit_ = amountOfThisLiquidation_.mul(_balances[_members[i]]).div(_totalSupply);
+                if(isETH()) {
+                    payable(_members[i]).transfer(distributeProfit_);
+                }else {
+                    _targetToken.safeTransfer(_members[i], distributeProfit_);
+                }
+                emit LiquidationCompleted(address(this), _members[i], distributeProfit_, _fundShare(_members[i]));
+            }
+        }
+        _amountOfGrandTotalLiquidation = _amountOfGrandTotalLiquidation + amountOfThisLiquidation_ + gpProfit_;
+        
+
+        
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function liquidate() onlyGpAndLp external {
+        require(daoStatus() == 3, "Daoclub: yes shares less than 70%");
+        //获取结算资金
+        uint256 amountOfThisLiquidation_ = getBalance();
+        if(!_receivedManagementFee) {    
+            require(amountOfThisLiquidation_ > _receivableManagementFee, "Daoclub: Insufficient amount");
+            if(isETH()) {
+                payable(_summonerAddress).transfer(_receivableManagementFee);
+            }else {
+                _targetToken.safeTransfer( _summonerAddress, _receivableManagementFee);
+            }
+            _receivedManagementFee = true;
+            amountOfThisLiquidation_ = amountOfThisLiquidation_.sub(_receivableManagementFee);
+
+        }
+
+        //先来一波卖币逻辑
+        //sellToken();
+
+        
+        uint256 gpProfit_ = 0;
+        if((amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation) > _actualFund) {
+            //分利润
+            uint256 profit_;
+            if(_amountOfGrandTotalLiquidation < _actualFund) {
+                profit_ = amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation - _actualFund;
+            }else {
+                profit_ = amountOfThisLiquidation_;
+            }
+            //先分gp
+            gpProfit_ = profit_.mul(_profitDistribution).div(100);
+            if(isETH()) {
+                payable(_summonerAddress).transfer(gpProfit_);
+            }else {
+                _targetToken.safeTransfer( _summonerAddress, gpProfit_);
+            }
+            amountOfThisLiquidation_ -= gpProfit_;
+            //emit LiquidationCompleted(address(this), _owner, gpProfit_, _fundShare());
+        }
+        for(uint i = 0; i < _members.length; i++ ) {
+            if(_balances[_members[i]] > 0) {
+                uint256 distributeProfit_ = amountOfThisLiquidation_.mul(_balances[_members[i]]).div(_totalSupply);
+                if(isETH()) {
+                    payable(_members[i]).transfer(distributeProfit_);
+                }else {
+                    _targetToken.safeTransfer(_members[i], distributeProfit_);
+                }
+                emit LiquidationCompleted(address(this), _members[i], distributeProfit_, _fundShare(_members[i]));
+            }
+        }
+        _amountOfGrandTotalLiquidation = _amountOfGrandTotalLiquidation + amountOfThisLiquidation_ + gpProfit_;
+        
+
+        
+    }
+    
+Response:
+No
+--------------------------------------------------

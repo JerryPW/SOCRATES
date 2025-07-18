@@ -1,0 +1,24 @@
+
+Start analyze function: EthTokenToSmthSwaps.createSwap(bytes20,address,uint256,address)
+Function Security Analysis for EthTokenToSmthSwaps.createSwap(bytes20,address,uint256,address)
+    There are no modifiers should be examined in function createSwap.
+    Check direct function security
+        - function EthTokenToSmthSwaps.createSwap(bytes20,address,uint256,address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any check or requirement relating to msg.sender being equal or not equal to an owner, address, leader, or CEO. It only checks
+          if `_value` is greater than 0, if there's no existing balance for the participant address, and if the token transfer is successful.
+        - function EthTokenToSmthSwaps.createSwap(bytes20,address,uint256,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures. It uses a series of require statements and assignments, but none of them involve
+          setting a variable to true or false after a require or if statement that checks for the opposite value. Thus, it doesn't satisfy any of the characteristics
+          listed in the prompt.
+External Call Analysis
+    Direct external call: ['ERC20(_token).transferFrom(msg.sender,this,_value)']
+    Analyze Transfer
+    Analyze Gas
+        - ERC20(_token).transferFrom(msg.sender,this,_value) ISN'T subjected to gas limits.
+    Remaining external call: ['ERC20(_token).transferFrom(msg.sender,this,_value)']
+    Analyze External Address
+        The variable '_token' in external call 'ERC20(_token).transferFrom(msg.sender,this,_value)' has no state variable assigned in
+        EthTokenToSmthSwaps.createSwap(bytes20,address,uint256,address). Therefore we check whether it has been hardcoded in the function.
+            No The variable '_token' is used as a parameter in the function and is passed by the caller when the function is invoked. There is no specific value assigned
+            to '_token' within the function itself, indicating that it is not hardcoded.
+Conclusion: This function will cause REE Problem.

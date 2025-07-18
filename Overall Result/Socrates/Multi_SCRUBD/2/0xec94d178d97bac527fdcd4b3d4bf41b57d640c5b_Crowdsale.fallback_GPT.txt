@@ -1,0 +1,26 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check the sender against any owner or specific address.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluation, the initial judgment was incorrect. To meet the structure criteria, both conditional checks and assignments should be present as
+          specified in the conditions. In the provided function, the only relevant check is 'if (crowdsaleClosed', but there is no assignment to the 'crowdsaleClosed'
+          variable following the throw. Similarly, other candidate variable checks like 'minimumTargetReached' are part of standard conditional logic without assignments
+          that complete any of the required patterns. Thus, the code does not consistently use both necessary parts of any pattern listed.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount/price)', 'beneficiary.send(amount)']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(amount)' contains the '.send(' keyword, therefore satisfies the second characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount/price)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            State variable tokenReward has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

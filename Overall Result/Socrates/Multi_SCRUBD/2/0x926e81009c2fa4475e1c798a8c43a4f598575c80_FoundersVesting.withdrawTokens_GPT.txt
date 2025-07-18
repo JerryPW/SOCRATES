@@ -1,0 +1,30 @@
+
+Start analyze function: FoundersVesting.withdrawTokens()
+Function Security Analysis for FoundersVesting.withdrawTokens()
+    There are no modifiers should be examined in function withdrawTokens.
+    Check direct function security
+        - function FoundersVesting.withdrawTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specific code patterns that enforce a particular identity check based on msg.sender such as 'require(msg.sender
+          == xxxOwner)' or similar structures.
+        - function FoundersVesting.withdrawTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. It uses require statements to check conditions, but none of them are in the form 'require(xxx
+          == True); xxx = False;' or 'require(xxx == False); xxx = True;' or 'require(!xxx); xxx = True;' or 'if(!xxx) throw; xxx = true;'.
+External Call Analysis
+    Direct external call: ['mntToken.balanceOf(this)', 'mntToken.transfer(teamAccountAddress,amountToSend)']
+    Analyze Transfer
+        - mntToken.transfer(teamAccountAddress,amountToSend) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - mntToken.balanceOf(this) ISN'T subjected to gas limits.
+        - mntToken.transfer(teamAccountAddress,amountToSend) ISN'T subjected to gas limits.
+    Remaining external call: ['mntToken.balanceOf(this)', 'mntToken.transfer(teamAccountAddress,amountToSend)']
+    Analyze External Address
+        There are ['mntToken'] should be checked in variable mntToken
+        Checked variables: mntToken
+            Yes 1. The provided code contains a function named 'FoundersVesting', which matches the contract name. This indicates that it is a constructor function.  2.
+            The function does assign a value to the state variable 'mntToken', but it is not hardcoded; it is set using an external address '_mntTokenAddress'. Therefore,
+            it does not satisfy the second characteristic. Since the code satisfies the first characteristic, the output is 'Yes'.
+        There are ['mntToken'] should be checked in variable mntToken
+        Checked variables: mntToken
+            Yes The function FoundersVesting is a constructor because its name matches the contract name 'FoundersVesting'. This adheres to the first characteristic to be
+            checked.
+Conclusion: This function will not cause REE Problem.

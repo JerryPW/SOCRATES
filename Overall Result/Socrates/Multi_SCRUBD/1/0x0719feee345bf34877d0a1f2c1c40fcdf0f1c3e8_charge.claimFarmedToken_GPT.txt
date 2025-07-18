@@ -1,0 +1,35 @@
+
+Start analyze function: charge.claimFarmedToken(address,address,uint8)
+Function Security Analysis for charge.claimFarmedToken(address,address,uint8)
+    There are no modifiers should be examined in function claimFarmedToken.
+    Check direct function security
+        - function charge.claimFarmedToken(address,address,uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any of the specified structures that explicitly check for `msg.sender` equality or inequality with an owner-like
+          variable.
+        - function charge.claimFarmedToken(address,address,uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does satisfy Structure 3 with {require(!_isWithdrawing); _isWithdrawing = true;}, where '_isWithdrawing' is checked and then set. However, the
+          main logic of the function isn't executed immediately after setting '_isWithdrawing = true;'. Instead, there is an extensive processing block that follows,
+          including setting the 'amount', before the logic related to the output actions. Performing the state negation isn't immediate or prior to the main logic, which
+          means it doesn't follow the specific requirement given.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['FarmedTokenWithdrawSlotOne', 'FarmedTokenWithdrawSlotTwo']
+        Function Security Analysis for charge.FarmedTokenWithdrawSlotOne(address)
+            There are no modifiers should be examined in function FarmedTokenWithdrawSlotOne.
+            Check direct function security
+                - function charge.FarmedTokenWithdrawSlotOne(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not have any checks involving require, if, or assert statements that compare msg.sender to an owner or specific address.
+                - function charge.FarmedTokenWithdrawSlotOne(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures involving require statements or condition checks modifying a boolean variable.
+External Call Analysis
+    Direct external call: ['_UniswapRouter.swapExactETHForTokensSupportingFeeOnTransferTokens{value:amount}(0,path,addr,block.timestamp)']
+    Analyze Transfer
+    Analyze Gas
+        - _UniswapRouter.swapExactETHForTokensSupportingFeeOnTransferTokens{value:amount}(0,path,addr,block.timestamp) ISN'T subjected to gas limits.
+    Remaining external call: ['_UniswapRouter.swapExactETHForTokensSupportingFeeOnTransferTokens{value:amount}(0,path,addr,block.timestamp)']
+    Analyze External Address
+        There are ['_UniswapRouter'] should be checked in variable _UniswapRouter
+        Checked variables: _UniswapRouter
+            Yes The provided code segment is the constructor of the contract. This is indicated by the use of the keyword 'constructor' when defining the function.
+            Additionally, the state variable _UniswapRouter is hardcoded within this constructor as it is assigned a value from the initialization function
+            IUniswapRouter02(UniswapRouterAddy).
+Conclusion: This function will not cause REE Problem.

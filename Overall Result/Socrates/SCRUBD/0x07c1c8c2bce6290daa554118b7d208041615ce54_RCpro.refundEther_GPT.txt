@@ -1,0 +1,9 @@
+
+Start analyze function: RCpro.refundEther(address)
+Function Security Analysis for RCpro.refundEther(address)
+    The modifier of function refundEther are ['onlyTokenSaleOwner']
+    The result of checking modifiers:
+        - modifier onlyTokenSaleOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The code contains the statement 'require(msg.sender == tokenSaleContract.owner())', which enforces that only the owner can execute the function. This
+          matches rule 1 since it checks if msg.sender is the owner. There are no structures related to lock and unlock operation, thus rule 2 is not applicable.
+Conclusion: This function will not cause REE Problem.

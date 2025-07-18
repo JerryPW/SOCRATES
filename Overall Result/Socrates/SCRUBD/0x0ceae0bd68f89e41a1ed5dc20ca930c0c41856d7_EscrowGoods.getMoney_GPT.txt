@@ -1,0 +1,32 @@
+
+Start analyze function: EscrowGoods.getMoney(uint256)
+Function Security Analysis for EscrowGoods.getMoney(uint256)
+    There are no modifiers should be examined in function getMoney.
+    Check direct function security
+        - function EscrowGoods.getMoney(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code doesn't contain any access control mechanism that checks if msg.sender equals or doesn't equal a specific owner or role, such as Owner, Leader,
+          CEO, etc., through the require, if, or assert statements.
+        - function EscrowGoods.getMoney(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures, such as 'require' or 'if(!xxx) throw' followed by an alteration of the same
+          variable. The function is performing checks using 'if' statements and follows by actions within different branches but does not strictly match any of the given
+          structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: EscrowGoods.safeSend(address,uint256)
+Function Security Analysis for EscrowGoods.safeSend(address,uint256)
+    There are no modifiers should be examined in function safeSend.
+    Check direct function security
+        - function EscrowGoods.safeSend(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function only checks for an `atomicLock` before proceeding with its operation, and does not contain msg.sender conditions to restrict access based
+          on ownership or authority.
+        - function EscrowGoods.safeSend(address,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: The code matches structure 4. However, after the check 'if(atomicLock) throw;', which matches the first condition in the structure 4, 'atomicLock =
+          true;' is immediately executed, which negates the state of 'atomicLock'. This occurs before any main logic or critical operation, like address calls, is
+          performed. The main logic only starts after setting 'atomicLock' to true, satisfying the structural requirement for immediate negation.
+Conclusion: This function will not cause REE Problem.

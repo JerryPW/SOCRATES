@@ -1,0 +1,105 @@
+
+Start analyze function: BabyDubbz._transferFrom(address,address,uint256)
+Function Security Analysis for BabyDubbz._transferFrom(address,address,uint256)
+    There are no modifiers should be examined in function _transferFrom.
+    Check direct function security
+        - function BabyDubbz._transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not include any direct checks against msg.sender to restrict it to specific roles such as xxxOwner, xxxAddress, Leader, or
+          CEO. All the conditions present pertain to launch checks, authorizations, balance limits, and fee setups, but no security checks based on sender address
+          explicitly match the required patterns.
+        - function BabyDubbz._transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: There are no explicit require statements setting a variable to True or False, nor any if-throw pattern in the code. The function checks various
+          conditions and calls several other functions but does not modify a variable directly after checking it with require or if(!variable) throw patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for BabyDubbz.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function BabyDubbz.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not have any checks for msg.sender being equal to or not equal to a specified owner or address role, hence does not match the
+                  required patterns.
+                - function BabyDubbz.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not have any 'require' or 'if' statement that throws an error with a subsequent reassignment to true or false for the
+                  same boolean variable, as specified by the given patterns.
+External Call Analysis
+    Direct external call: ['distributor.setShare(sender,balanceOf(sender))', 'distributor.setShare(recipient,balanceOf(recipient))',
+    'distributor.process(distributorGas)']
+    Analyze Transfer
+    Analyze Gas
+        - distributor.setShare(sender,balanceOf(sender)) ISN'T subjected to gas limits.
+        - distributor.setShare(recipient,balanceOf(recipient)) ISN'T subjected to gas limits.
+        - distributor.process(distributorGas) ISN'T subjected to gas limits. Here is the reason: The variable in question is distributorGas. From the given code, there
+        are two main sections related to setting the distributorGas variable: the initial assignment in the contract BabyDubbz where distributorGas is initialized to
+        500000, and a function setDistributorSettings(uint256 gas) which allows the contract owner to change the value of distributorGas with the requirement that the gas
+        cannot be greater than 900000.   Thus, throughout the execution of the contract, distributorGas can vary from as low as 0 to as high as just below 900000. Since
+        there is no stipulation in the contract to limit distributorGas precisely to values less than or equal to 3000 - and indeed contract settings allow values
+        intensively above 3000 (up to just slightly under 900000) - it is not guaranteed that the variable will always be less than or equal to 3000, hence;  The answer
+        is False.
+    Remaining external call: ['distributor.setShare(sender,balanceOf(sender))', 'distributor.setShare(recipient,balanceOf(recipient))',
+    'distributor.process(distributorGas)']
+    Analyze External Address
+        There are ['distributor'] should be checked in variable distributor
+        Checked variables: distributor
+            Yes The provided code is a constructor for the contract named BabyDubbz, as indicated by the function name "constructor", which follows the typical naming
+            pattern for constructors in Solidity. Additionally, the state variable 'distributor' is hardcoded with a new instance of DividendDistributor.
+        There are ['distributor'] should be checked in variable distributor
+        Checked variables: distributor
+            Yes 1. The function is named 'constructor', which explicitly indicates that it is a constructor function for the contract 'BabyDubbz'. Constructors are
+            typically identified if the function name matches exactly with the contract name or is explicitly named as 'constructor'. 2. The constructor function also
+            includes the statement 'distributor = new DividendDistributor(address(router));', which sets the state variable 'distributor' within the constructor,
+            confirming that it hardcodes the 'distributor' state variable.
+        There are ['distributor'] should be checked in variable distributor
+        Checked variables: distributor
+            Yes 1. The given code includes a constructor function. The function is explicitly named 'constructor', which matches the common pattern for an Ethereum
+            contract constructor.  2. The constructor function assigns a new DividendDistributor to the 'distributor' state variable. This is a hardcoded assignment of
+            the state variable within the constructor.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: BabyDubbz.swapBack()
+Function Security Analysis for BabyDubbz.swapBack()
+    The modifier of function swapBack are ['swapping']
+    The result of checking modifiers:
+        - modifier swapping is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier sets a flag (inSwap) to true before executing the function and resets it to false afterwards, thereby ensuring the function is entered only
+          once at a time. Both the lock (inSwap = true) and unlock (inSwap = false) operations are present and correctly formed according to the structure required.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: BabyDubbz.triggerAutoBuyback()
+Function Security Analysis for BabyDubbz.triggerAutoBuyback()
+    There are no modifiers should be examined in function triggerAutoBuyback.
+    Check direct function security
+        - function BabyDubbz.triggerAutoBuyback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'triggerAutoBuyback' does not contain any checks or assertions related to 'msg.sender'. There are no conditions or statements that involve
+          authorization checks based on the sender's address (such as checking if msg.sender is an owner or leader).
+        - function BabyDubbz.triggerAutoBuyback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require' statement or a 'throw' statement to enforce a condition on a boolean variable before changing its state. It also
+          does not follow any of the specified structures where a variable is explicitly required to be true or false before altering its state.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer', '_transferFrom']
+        Function Security Analysis for BabyDubbz.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function BabyDubbz.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified structures in the provided characteristics. It only checks and updates allowances without any
+                  conditions related to msg.sender being a particular owner, address, leader, or CEO.
+                - function BabyDubbz.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any 'require' statements nor 'if' with 'throw' statements that match the provided structures. Specifically, it does
+                  not have a 'require(xxx == True)' nor 'require(xxx == False)' condition with corresponding assignments to 'xxx', nor an 'if(!xxx) throw;' condition
+                  followed by 'xxx = true'.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: BabyDubbz.buyTokens(uint256,address)
+Function Security Analysis for BabyDubbz.buyTokens(uint256,address)
+    The modifier of function buyTokens are ['swapping']
+    The result of checking modifiers:
+        - modifier swapping is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'swapping' contains both a lock operation 'inSwap = true;' at the start and an unlock operation 'inSwap = false;' at the end. This
+          satisfies rule 2, where a function is locked at the beginning and unlocked afterward. Therefore, it qualifies as a lock operation as per the provided
+          characteristics.
+Conclusion: This function will not cause REE Problem.

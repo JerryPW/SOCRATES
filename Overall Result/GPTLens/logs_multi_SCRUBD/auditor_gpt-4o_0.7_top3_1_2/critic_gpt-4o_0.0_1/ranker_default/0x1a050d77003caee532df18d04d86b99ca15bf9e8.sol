@@ -1,0 +1,38 @@
+[
+    {
+        "function_name": "endRound",
+        "vulnerability": "Untrusted call vulnerability",
+        "criticism": "The reasoning correctly identifies the use of `call.value()` without error handling as a vulnerability. This can lead to reentrancy attacks or silent failures, similar to the `distributeExternal` function. The severity is moderate because the function deals with significant amounts of Ether, increasing the potential impact of an exploit. The profitability is also moderate, as an attacker could exploit this to manipulate the distribution of funds or disrupt the contract's operations.",
+        "correctness": 8,
+        "severity": 6,
+        "profitability": 5,
+        "reason": "Similar to the `distributeExternal` function, `endRound` makes a low-level call using `call.value()` without proper error handling. This can lead to security vulnerabilities such as reentrancy attacks, as well as the possibility of failing silently without reverting the transaction.",
+        "code": "function endRound(POOHMODatasets.EventReturns memory _eventData_) private returns (POOHMODatasets.EventReturns) { uint256 _rID = rID_; uint256 _winPID = round_[_rID].plyr; uint256 _winTID = round_[_rID].team; uint256 _pot = round_[_rID].pot; uint256 _win = (_pot.mul(48)) / 100; uint256 _dev = (_pot / 50); uint256 _gen = (_pot.mul(potSplit_[_winTID].gen)) / 100; uint256 _POOH = (_pot.mul(potSplit_[_winTID].pooh)) / 100; uint256 _res = (((_pot.sub(_win)).sub(_dev)).sub(_gen)).sub(_POOH); uint256 _ppt = (_gen.mul(1000000000000000000)) / (round_[_rID].keys); uint256 _dust = _gen.sub((_ppt.mul(round_[_rID].keys)) / 1000000000000000000); if (_dust > 0) { _gen = _gen.sub(_dust); _res = _res.add(_dust); } plyr_[_winPID].win = _win.add(plyr_[_winPID].win); admin.transfer(_dev); flushDivs.call.value(_POOH)(bytes4(keccak256(\"donate()\"))); round_[_rID].mask = _ppt.add(round_[_rID].mask); _eventData_.compressedData = _eventData_.compressedData + (round_[_rID].end * 1000000); _eventData_.compressedIDs = _eventData_.compressedIDs + (_winPID * 100000000000000000000000000) + (_winTID * 100000000000000000); _eventData_.winnerAddr = plyr_[_winPID].addr; _eventData_.winnerName = plyr_[_winPID].name; _eventData_.amountWon = _win; _eventData_.genAmount = _gen; _eventData_.POOHAmount = _POOH; _eventData_.newPot = _res; rID_++; _rID++; round_[_rID].strt = now; rndMax_ = timerLengths[determineNextRoundLength()]; round_[_rID].end = now.add(rndMax_); round_[_rID].pot = _res; return(_eventData_); }",
+        "file_name": "0x1a050d77003caee532df18d04d86b99ca15bf9e8.sol",
+        "final_score": 6.75
+    },
+    {
+        "function_name": "distributeExternal",
+        "vulnerability": "Untrusted call vulnerability",
+        "criticism": "The reasoning is correct in identifying the use of `call.value()` as a potential security risk. This method can indeed lead to reentrancy attacks if the called contract is malicious. The lack of error handling is also a valid concern, as it can result in silent failures. The severity is moderate because while the risk of reentrancy is present, the function does not directly handle user funds. The profitability is moderate as well, since an attacker could potentially exploit this to disrupt the contract's logic or siphon funds indirectly.",
+        "correctness": 8,
+        "severity": 5,
+        "profitability": 5,
+        "reason": "The function makes a low-level call using `call.value()()` to transfer Ether. This is a potential security risk as it can lead to reentrancy attacks or execution of fallback functions on untrusted contracts. The lack of error handling also means that any failure in this call will not revert the transaction, possibly leading to loss of funds.",
+        "code": "function distributeExternal(uint256 _rID, uint256 _pID, uint256 _eth, uint256 _affID, uint256 _team, POOHMODatasets.EventReturns memory _eventData_) private returns(POOHMODatasets.EventReturns) { uint256 _dev = _eth / 100; uint256 _POOH = 0; if (!address(admin).call.value(_dev)()) { _POOH = _dev; _dev = 0; } uint256 _aff = _eth / 10; if (_affID != _pID && plyr_[_affID].name != '') { plyr_[_affID].aff = _aff.add(plyr_[_affID].aff); emit POOHMOevents.onAffiliatePayout(_affID, plyr_[_affID].addr, plyr_[_affID].name, _rID, _pID, _aff, now); } else { _POOH = _POOH.add(_aff); } _POOH = _POOH.add((_eth.mul(fees_[_team].pooh)) / (100)); if (_POOH > 0) { flushDivs.call.value(_POOH)(bytes4(keccak256(\"donate()\"))); _eventData_.POOHAmount = _POOH.add(_eventData_.POOHAmount); } return(_eventData_); }",
+        "file_name": "0x1a050d77003caee532df18d04d86b99ca15bf9e8.sol",
+        "final_score": 6.5
+    },
+    {
+        "function_name": "withdraw",
+        "vulnerability": "Reentrancy vulnerability",
+        "criticism": "The reasoning is partially correct. While the use of `transfer` does limit the gas forwarded and mitigates reentrancy risks, it does not eliminate them entirely if combined with other vulnerabilities. The order of operations (state changes before transfer) is generally safe, but the suggestion to use a pull mechanism is a best practice for added security. The severity is low because `transfer` provides a reasonable safeguard, and the profitability is low as well, given the limited attack surface.",
+        "correctness": 6,
+        "severity": 3,
+        "profitability": 2,
+        "reason": "The `withdraw` function uses `transfer` to send Ether, which forwards a limited amount of gas and can be exploited in specific cases if combined with another vulnerability. Furthermore, the order of operations (state changes before transfer) does not strictly prevent reentrancy, though `transfer` mitigates this risk. However, a more secure pattern involves using a pull mechanism where users withdraw their funds.",
+        "code": "function withdraw() isActivated() isHuman() public { uint256 _rID = rID_; uint256 _now = now; uint256 _pID = pIDxAddr_[msg.sender]; uint256 _eth; if (_now > round_[_rID].end && round_[_rID].ended == false && round_[_rID].plyr != 0) { POOHMODatasets.EventReturns memory _eventData_; round_[_rID].ended = true; _eventData_ = endRound(_eventData_); _eth = withdrawEarnings(_pID); if (_eth > 0) plyr_[_pID].addr.transfer(_eth); _eventData_.compressedData = _eventData_.compressedData + (_now * 1000000000000000000); _eventData_.compressedIDs = _eventData_.compressedIDs + _pID; emit POOHMOevents.onWithdrawAndDistribute ( msg.sender, plyr_[_pID].name, _eth, _eventData_.compressedData, _eventData_.compressedIDs, _eventData_.winnerAddr, _eventData_.winnerName, _eventData_.amountWon, _eventData_.newPot, _eventData_.POOHAmount, _eventData_.genAmount ); } else { _eth = withdrawEarnings(_pID); if (_eth > 0) plyr_[_pID].addr.transfer(_eth); emit POOHMOevents.onWithdraw(_pID, msg.sender, plyr_[_pID].name, _eth, _now); } }",
+        "file_name": "0x1a050d77003caee532df18d04d86b99ca15bf9e8.sol",
+        "final_score": 4.25
+    }
+]

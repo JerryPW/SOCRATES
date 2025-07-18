@@ -1,0 +1,22 @@
+
+Start analyze function: Crowdsale.devResWithdrawal()
+Function Security Analysis for Crowdsale.devResWithdrawal()
+    There are no modifiers should be examined in function devResWithdrawal.
+    Check direct function security
+        - function Crowdsale.devResWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: The condition `if (!minimumTargetReached || !(beneficiary == msg.sender)) throw;` checks whether `beneficiary` is not equal to `msg.sender` (negates
+          `beneficiary == msg.sender`). However, the term 'beneficiary' does not correspond to common terms like 'Owner', 'Address', 'Leader', or 'CEO', and there's no
+          context linking it to such roles by a local variable 'xxx'. Thus, it doesn't satisfy the required structures.
+        - function Crowdsale.devResWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluating the code, the initial assessment was incorrect. The code does not have both the required elements for the `if(!xxx) throw; xxx =
+          true;` structure. The statement `if (!minimumTargetReached || !(beneficiary == msg.sender)) throw;` is present and matches the `if(!xxx) throw;` part. However,
+          there is no subsequent assignment `xxx = true;`, which would be necessary for a full match. Thus, the code does not fulfill the structural requirements.
+External Call Analysis
+    Direct external call: ['beneficiary.send(resAmount)']
+    Analyze Transfer
+        - beneficiary.send(resAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains the '.send(' keyword..
+        Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

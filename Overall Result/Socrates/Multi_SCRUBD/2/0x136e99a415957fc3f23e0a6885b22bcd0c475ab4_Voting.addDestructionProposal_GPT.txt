@@ -1,0 +1,57 @@
+
+Start analyze function: Voting.addDestructionProposal(string)
+Function Security Analysis for Voting.addDestructionProposal(string)
+    There are no modifiers should be examined in function addDestructionProposal.
+    Check direct function security
+        - function Voting.addDestructionProposal(string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function uses 'require' for a condition unrelated to 'msg.sender'.
+        - function Voting.addDestructionProposal(string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: In the given code, after the 'require' check '!queued[uint(Subject.Destruction)]', the state negation operation 'queued[uint(Subject.Destruction)] =
+          true;' happens after executing 'addProposal(Subject.Destruction, _reason);'. This means the state negation is not performed immediately after the check but
+          occurs after an intermediate function call. Therefore, it does not meet the requirement of performing the state negation immediately before the main logic
+          executes.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Voting.addProposal(Voting.Subject,string)
+Function Security Analysis for Voting.addProposal(Voting.Subject,string)
+    There are no modifiers should be examined in function addProposal.
+    Check direct function security
+        - function Voting.addProposal(Voting.Subject,string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any condition that explicitly checks if `msg.sender` is equal to a specific owner, address, or similar controlled entity. It
+          only contains requirements related to `msg.value` and the state of another contract.
+        - function Voting.addProposal(Voting.Subject,string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not satisfy any of the specified structures as it does not include any require statement with a variable comparison or any sequential
+          assignment of a boolean variable after a require statement according to the specified patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['addDestructionProposal', 'addRaiseTapProposal']
+        Function Security Analysis for Voting.addDestructionProposal(string)
+            There are no modifiers should be examined in function addDestructionProposal.
+            Check direct function security
+                - function Voting.addDestructionProposal(string) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not check for the msg.sender against any owner or authorized position. It only checks if a proposal is not yet queued, hence
+                  the function does not satisfy any of the specified characteristics.
+                - function Voting.addDestructionProposal(string) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: In the code, the check `require(!queued[uint(Subject.Destruction)]);` is followed by the call to `addProposal(Subject.Destruction, _reason);`
+                  before `queued[uint(Subject.Destruction)] = true;`. The state negation operation on `queued[uint(Subject.Destruction)]` does not occur immediately after
+                  the requirement check; instead, it happens after the main logic of the function that can affect the sequence. Therefore, it does not meet the
+                  requirement for immediate state negation.
+External Call Analysis
+    Direct external call: ['DaicoPool(poolAddr).isStateProjectInProgress()', 'poolAddr.transfer(msg.value)']
+    Analyze Transfer
+        - poolAddr.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: This external call contains
+        '.transfer(' keyword, satisfying the first instruction.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - DaicoPool(poolAddr).isStateProjectInProgress() ISN'T subjected to gas limits.
+    Remaining external call: ['DaicoPool(poolAddr).isStateProjectInProgress()']
+    Analyze External Address
+        There are ['poolAddr'] should be checked in variable poolAddr
+        Checked variables: poolAddr
+            Yes The provided code is a constructor because it is explicitly named 'constructor'. Constructors are special functions in Solidity that are only executed
+            once, when the contract is deployed, to initialize the contract's state variables.
+Conclusion: This function will not cause REE Problem.

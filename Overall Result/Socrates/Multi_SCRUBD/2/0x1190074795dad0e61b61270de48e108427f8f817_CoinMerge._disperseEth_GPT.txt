@@ -1,0 +1,40 @@
+
+Start analyze function: CoinMerge._disperseEth()
+Function Security Analysis for CoinMerge._disperseEth()
+    There are no modifiers should be examined in function _disperseEth.
+    Check direct function security
+        - function CoinMerge._disperseEth() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function _disperseEth does not include any require or assert statements, or conditional checks on msg.sender that match the specified patterns of
+          checking against xxxOwner/xxxAddress/Leader/CEO.
+        - function CoinMerge._disperseEth() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the required structures such as require(xxx == True), xxx = False or if(!xxx) throw, xxx = true, etc. There are no
+          conditional checks or logical negations that directly lead to variable assignments as specified.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom', '_tax', '_transfer']
+        Function Security Analysis for CoinMerge.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function CoinMerge.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any direct ownership checks or conditions involving msg.sender against an owner or similar role.
+                - function CoinMerge.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not include any require or if statement related to a variable, nor does it involve toggling a boolean variable between true
+                  and false around a require statement or conditional throw. Thus, none of the specified structures are present.
+External Call Analysis
+    Direct external call: ['External.deposit(_devBalance)', 'm_ProjectWallet.transfer(_projectBalance)', 'address(address(External)).transfer(_devBalance)',
+    'address(address(EthReflect)).transfer(_redistBalance)']
+    Analyze Transfer
+        - m_ProjectWallet.transfer(_projectBalance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'm_ProjectWallet.transfer(_projectBalance)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - address(address(External)).transfer(_devBalance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'address(address(External)).transfer(_devBalance)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - address(address(EthReflect)).transfer(_redistBalance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external
+        call 'address(address(EthReflect)).transfer(_redistBalance)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - External.deposit(_devBalance) ISN'T subjected to gas limits.
+    Remaining external call: ['External.deposit(_devBalance)']
+    Analyze External Address
+        There are ['External'] should be checked in variable External
+        Checked variables: External
+            Yes The provided code snippet demonstrates a constructor function. It is explicitly named 'constructor', which satisfies the first characteristic outlined.
+            Constructors are special functions in Solidity that are automatically executed upon contract creation and typically serve to initialize the contract state.
+Conclusion: This function will not cause REE Problem.

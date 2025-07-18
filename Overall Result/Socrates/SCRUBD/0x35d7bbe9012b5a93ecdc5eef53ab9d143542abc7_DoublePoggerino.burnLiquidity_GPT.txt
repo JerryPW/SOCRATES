@@ -1,0 +1,24 @@
+
+Start analyze function: DoublePoggerino.burnLiquidity()
+Function Security Analysis for DoublePoggerino.burnLiquidity()
+    There are no modifiers should be examined in function burnLiquidity.
+    Check direct function security
+        - function DoublePoggerino.burnLiquidity() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any form of authentication that checks if msg.sender is an owner or authorized address, using structures like 'require',
+          'if', or 'assert'.
+        - function DoublePoggerino.burnLiquidity() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures. The `require` statement checks if `balance` is not equal to 0, which doesn't fit any of the
+          outlined conditions where we specifically need a `require(xxx == True)` or `require(xxx == False)` or `require(!xxx)`. Furthermore, there's no assignment
+          operations for the same variable that mirror the criteria.
+External Call Analysis
+    Direct external call: ['ERC20(uniswapV2Pair).transfer(address(0),balance)']
+    Analyze Transfer
+        - ERC20(uniswapV2Pair).transfer(address(0),balance) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - ERC20(uniswapV2Pair).transfer(address(0),balance) ISN'T subjected to gas limits.
+    Remaining external call: ['ERC20(uniswapV2Pair).transfer(address(0),balance)']
+    Analyze External Address
+        There are ['uniswapV2Pair'] should be checked in variable uniswapV2Pair
+        Checked variables: uniswapV2Pair
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,31 @@
+
+Start analyze function: KittenSelfDrop.fallback()
+Function Security Analysis for KittenSelfDrop.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function KittenSelfDrop.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code checks conditions related to participants and tokens but does not have any checks or assertions specifically involving msg.sender being a
+          specific owner, address, or role such as Owner, Leader, CEO, etc.
+        - function KittenSelfDrop.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the defined structures with require statements relating to a boolean assignment post-require, or if statement that
+          throws with a boolean assignment. The requirements are dependent on conditions, but none follow the specified structures for analysis.
+External Call Analysis
+    Direct external call: ['kittenContract.balanceOf(msg.sender)', 'kittenContract.transfer(msg.sender,tokensIssued)']
+    Analyze Transfer
+        - kittenContract.transfer(msg.sender,tokensIssued) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - kittenContract.balanceOf(msg.sender) ISN'T subjected to gas limits.
+        - kittenContract.transfer(msg.sender,tokensIssued) ISN'T subjected to gas limits.
+    Remaining external call: ['kittenContract.balanceOf(msg.sender)', 'kittenContract.transfer(msg.sender,tokensIssued)']
+    Analyze External Address
+        There are ['kittenContract'] should be checked in variable kittenContract
+        Checked variables: kittenContract
+            Yes 1. The function `KittenSelfDrop` in the code matches the name of the contract, which suggests that it is a constructor function for the contract. 2. The
+            state variable `kittenContract` is assigned the value of `KittenCoin(c)`, where `c` is a hardcoded address set to
+            `0xac2BD14654BBf22F9d8f20c7b3a70e376d3436B4`. Therefore, this function also satisfies the second characteristic since it hardcodes the state variable.  Thus,
+            the function satisfies both characteristics of being a constructor and having a hardcoded state variable.
+        There are ['kittenContract'] should be checked in variable kittenContract
+        Checked variables: kittenContract
+            Yes The function is named 'KittenSelfDrop', which matches the contract name 'KittenSelfDrop', suggesting that it is likely a constructor function. Therefore,
+            the code satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

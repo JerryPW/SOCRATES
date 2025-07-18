@@ -1,0 +1,38 @@
+[
+    {
+        "function_name": "init",
+        "vulnerability": "Ownership takeover",
+        "criticism": "The reasoning is correct. The init function allows any caller to set themselves as the owner of the contract, which is a critical vulnerability. This can lead to a complete takeover of the contract by an unauthorized user. The severity is high because it compromises the entire contract's security, and the profitability is also high as an attacker can gain full control over the contract.",
+        "correctness": 9,
+        "severity": 9,
+        "profitability": 9,
+        "reason": "The init function allows the caller to set themselves as the owner of the contract without any restrictions on who can call this function. This enables any user to initialize the contract and potentially take control over it, leading to a complete takeover.",
+        "code": "function init( address summoner, string memory tokenSymbol, uint256 totalSupply_, uint256 totalFund, uint256 miniOffering, InitUint8 memory initUint8, uint256 periodTimestamp, uint256 duration, address summonerAddress, string memory targetSymbol ) external { require(_initialized == false, \"Daoclub: cannot be initialized repeatedly \"); _initialized = true; _owner = summoner; _daoStatus = 0; _name = tokenSymbol; _symbol = tokenSymbol; _miniOffering = miniOffering; _managementFee = initUint8.managementFee; _profitDistribution = initUint8.profitDistribution; _daoType = initUint8.daoType; _totalFund = totalFund; _mint(address(this), totalSupply_); _targetSymbol = targetSymbol; if (compareStr(targetSymbol, \"USDT\")) { _targetToken = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7); } else if(compareStr(targetSymbol, \"USDC\")) { _targetToken = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48); } else { } _periodTimestamp = periodTimestamp; _duration = duration; _summonerAddress = summonerAddress; _initTimestamp = block.timestamp; _exchangeRate = _totalSupply.div(_totalFund); }",
+        "file_name": "0x0a5b38ac2d24c4fafc19ceb2591b70ece0d005d1.sol",
+        "final_score": 9.0
+    },
+    {
+        "function_name": "withdraw",
+        "vulnerability": "Potential unauthorized access",
+        "criticism": "The reasoning is correct. The withdraw function relies on the _summonerAddress set during initialization, which can be controlled by an attacker if the init function is improperly secured. This allows unauthorized withdrawals, making the severity high. The profitability is also high as an attacker can withdraw funds to an address they control.",
+        "correctness": 9,
+        "severity": 8,
+        "profitability": 8,
+        "reason": "The withdraw function sends funds to _summonerAddress, which is set during initialization by the caller of the init function. If the contract is improperly initialized by an attacker, they can set _summonerAddress to an address they control, enabling unauthorized withdrawals.",
+        "code": "function withdraw(uint256 amount) onlyOwner external { require(daoStatus() == 1, \"Daoclub: Can only be withdrawn after the fundraising is completed\"); require(amount <= getBalance(), \"Daoclub: The withdrawal amount cannot be greater than the dao balance\"); fundraisingCompleted(); if(isETH()) { payable(_summonerAddress).transfer(amount); }else { _targetToken.safeTransfer(_summonerAddress, amount); } }",
+        "file_name": "0x0a5b38ac2d24c4fafc19ceb2591b70ece0d005d1.sol",
+        "final_score": 8.5
+    },
+    {
+        "function_name": "liquidate",
+        "vulnerability": "Improper fund distribution",
+        "criticism": "The reasoning is correct. The liquidate function prioritizes fund distribution to _summonerAddress, which can be maliciously set during initialization. This can lead to unfair distribution of funds, with the summoner receiving excessive amounts before other members. The severity is moderate to high due to the potential for significant financial loss to members, and the profitability is high for an attacker controlling the summoner address.",
+        "correctness": 9,
+        "severity": 7,
+        "profitability": 7,
+        "reason": "The liquidate function allows for the distribution of funds to _summonerAddress before distributing to members. If _summonerAddress is maliciously set during initialization, the summoner can receive excessive or all funds before members, leading to unfair distribution.",
+        "code": "function liquidate() onlyGpAndLp external { require(daoStatus() == 3, \"Daoclub: yes shares less than 70%\"); uint256 amountOfThisLiquidation_ = getBalance(); if(!_receivedManagementFee) { require(amountOfThisLiquidation_ > _receivableManagementFee, \"Daoclub: Insufficient amount\"); if(isETH()) { payable(_summonerAddress).transfer(_receivableManagementFee); }else { _targetToken.safeTransfer( _summonerAddress, _receivableManagementFee); } _receivedManagementFee = true; amountOfThisLiquidation_ = amountOfThisLiquidation_.sub(_receivableManagementFee); } uint256 gpProfit_ = 0; if((amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation) > _actualFund) { uint256 profit_; if(_amountOfGrandTotalLiquidation < _actualFund) { profit_ = amountOfThisLiquidation_ + _amountOfGrandTotalLiquidation - _actualFund; }else { profit_ = amountOfThisLiquidation_; } gpProfit_ = profit_.mul(_profitDistribution).div(100); if(isETH()) { payable(_summonerAddress).transfer(gpProfit_); }else { _targetToken.safeTransfer( _summonerAddress, gpProfit_); } amountOfThisLiquidation_ -= gpProfit_; } for(uint i = 0; i < _members.length; i++ ) { if(_balances[_members[i]] > 0) { uint256 distributeProfit_ = amountOfThisLiquidation_.mul(_balances[_members[i]]).div(_totalSupply); if(isETH()) { payable(_members[i]).transfer(distributeProfit_); }else { _targetToken.safeTransfer(_members[i], distributeProfit_); } emit LiquidationCompleted(address(this), _members[i], distributeProfit_, _fundShare(_members[i])); } } _amountOfGrandTotalLiquidation = _amountOfGrandTotalLiquidation + amountOfThisLiquidation_ + gpProfit_; }",
+        "file_name": "0x0a5b38ac2d24c4fafc19ceb2591b70ece0d005d1.sol",
+        "final_score": 8.0
+    }
+]

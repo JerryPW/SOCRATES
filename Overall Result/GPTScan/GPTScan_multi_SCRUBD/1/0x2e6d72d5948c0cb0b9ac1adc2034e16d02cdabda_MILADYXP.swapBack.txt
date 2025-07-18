@@ -1,0 +1,95 @@
+MILADYXP.swapBack: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapBack() internal lockTheSwap {
+        uint256 tokenBalance = _balances[address(this)];
+        uint256 tokensToBurn = tokenBalance.mul(toBurn).div(100);
+        uint256 tokensForLiquidity = tokenBalance.mul(toLiquidity).div(100).div(2);     
+        uint256 amountToSwap = tokenBalance.sub(tokensForLiquidity).sub(tokensToBurn);
+        
+        swapTokensForEth(amountToSwap);
+
+        IERC20(address(this)).transfer(DEAD, tokensToBurn);
+
+        uint256 totalEthBalance = address(this).balance;
+        uint256 ethForLiquidity = totalEthBalance.mul(toLiquidity).div(100).div(2);
+        
+        if (tokensForLiquidity > 0){
+            addLiquidity(tokensForLiquidity, ethForLiquidity);
+        }
+
+        if (totalEthBalance > 0){
+            payable(devWallet).transfer(address(this).balance);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapBack() internal lockTheSwap {
+        uint256 tokenBalance = _balances[address(this)];
+        uint256 tokensToBurn = tokenBalance.mul(toBurn).div(100);
+        uint256 tokensForLiquidity = tokenBalance.mul(toLiquidity).div(100).div(2);     
+        uint256 amountToSwap = tokenBalance.sub(tokensForLiquidity).sub(tokensToBurn);
+        
+        swapTokensForEth(amountToSwap);
+
+        IERC20(address(this)).transfer(DEAD, tokensToBurn);
+
+        uint256 totalEthBalance = address(this).balance;
+        uint256 ethForLiquidity = totalEthBalance.mul(toLiquidity).div(100).div(2);
+        
+        if (tokensForLiquidity > 0){
+            addLiquidity(tokensForLiquidity, ethForLiquidity);
+        }
+
+        if (totalEthBalance > 0){
+            payable(devWallet).transfer(address(this).balance);
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function swapBack() internal lockTheSwap {
+        uint256 tokenBalance = _balances[address(this)];
+        uint256 tokensToBurn = tokenBalance.mul(toBurn).div(100);
+        uint256 tokensForLiquidity = tokenBalance.mul(toLiquidity).div(100).div(2);     
+        uint256 amountToSwap = tokenBalance.sub(tokensForLiquidity).sub(tokensToBurn);
+        
+        swapTokensForEth(amountToSwap);
+
+        IERC20(address(this)).transfer(DEAD, tokensToBurn);
+
+        uint256 totalEthBalance = address(this).balance;
+        uint256 ethForLiquidity = totalEthBalance.mul(toLiquidity).div(100).div(2);
+        
+        if (tokensForLiquidity > 0){
+            addLiquidity(tokensForLiquidity, ethForLiquidity);
+        }
+
+        if (totalEthBalance > 0){
+            payable(devWallet).transfer(address(this).balance);
+        }
+    }
+Response:
+{"StatementsA": {"_balances[address(this)] = _balances[address(this)].sub(amountToSwap)":"Updates the state variable _balances by reducing the amountToSwap from the contract's balance."}, "StatementsB": {"payable(devWallet).transfer(address(this).balance)":"Executes an external call by transferring Ether to the devWallet."}, "VariableA": {"devWallet": "Holds the address to which the Ether is transferred externally."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _balances[address(this)] = _balances[address(this)].sub(amountToSwap)
+2.External Call: payable(devWallet).transfer(address(this).balance)
+3.Variable A: devWallet
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

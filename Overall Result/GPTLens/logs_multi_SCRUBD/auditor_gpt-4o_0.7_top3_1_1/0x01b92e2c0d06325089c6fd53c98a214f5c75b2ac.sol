@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "submitProposal",
+        "code": "function submitProposal( address applicant, uint256 sharesRequested, uint256 lootRequested, uint256 tributeOffered, address tributeToken, uint256 paymentRequested, address paymentToken, bytes32 details ) external nonReentrant payable returns (uint256 proposalId) { require(sharesRequested.add(lootRequested) <= MAX_GUILD_BOUND, \"guild maxed\"); require(tokenWhitelist[tributeToken], \"tributeToken != whitelist\"); require(tokenWhitelist[paymentToken], \"paymentToken != whitelist\"); require(applicant != GUILD && applicant != ESCROW && applicant != TOTAL, \"applicant unreservable\"); require(members[applicant].jailed == 0, \"applicant jailed\"); if (tributeOffered > 0 && userTokenBalances[GUILD][tributeToken] == 0) { require(totalGuildBankTokens < MAX_TOKEN_GUILDBANK_COUNT, \"guildbank maxed\"); } if (msg.value > 0) { require(tributeToken == wETH && msg.value == tributeOffered, \"!ethBalance\"); (bool success, ) = wETH.call{value: msg.value}(\"\"); require(success, \"!ethCall\"); IERC20(wETH).safeTransfer(address(this), msg.value); } else { IERC20(tributeToken).safeTransferFrom(msg.sender, address(this), tributeOffered); } unsafeAddToBalance(ESCROW, tributeToken, tributeOffered); uint8[8] memory flags; flags[7] = 1; _submitProposal(applicant, sharesRequested, lootRequested, tributeOffered, tributeToken, paymentRequested, paymentToken, details, flags, \"\"); return proposalCount - 1; }",
+        "vulnerability": "Reentrancy via external calls",
+        "reason": "The function makes an external call to transfer tokens or ETH which can be exploited for reentrancy attacks. It does not update the contract's state before making the call to `IERC20(tributeToken).safeTransferFrom` or `wETH.call`, allowing an attacker to re-enter the contract and manipulate the state.",
+        "file_name": "0x01b92e2c0d06325089c6fd53c98a214f5c75b2ac.sol"
+    },
+    {
+        "function_name": "processActionProposal",
+        "code": "function processActionProposal(uint256 proposalIndex) external nonReentrant returns (bool, bytes memory) { _validateProposalForProcessing(proposalIndex); uint256 proposalId = proposalQueue[proposalIndex]; bytes storage action = actions[proposalId]; Proposal storage proposal = proposals[proposalId]; require(proposal.flags[6] == 1, \"!action\"); proposal.flags[1] = 1; bool didPass = _didPass(proposalIndex); if (tokenWhitelist[proposal.applicant] && proposal.paymentRequested > userTokenBalances[GUILD][proposal.applicant]) { didPass = false; } if (proposal.tributeOffered > address(this).balance) { didPass = false; } if (didPass) { proposal.flags[2] = 1; (bool success, bytes memory returnData) = proposal.applicant.call{value: proposal.tributeOffered}(action); if (tokenWhitelist[proposal.applicant]) { unsafeSubtractFromBalance(GUILD, proposal.applicant, proposal.paymentRequested); if (userTokenBalances[GUILD][proposal.applicant] == 0 && proposal.paymentRequested > 0) {totalGuildBankTokens -= 1;} } return (success, returnData); } _returnDeposit(proposal.sponsor); emit ProcessActionProposal(proposalIndex, proposalId, didPass); }",
+        "vulnerability": "Arbitrary call execution",
+        "reason": "This function allows arbitrary call execution with the provided action data, which can be exploited to execute malicious code or drain funds if a malicious proposal is passed. The check for `didPass` is insufficient to prevent malicious actions from being executed, especially if governance is manipulated.",
+        "file_name": "0x01b92e2c0d06325089c6fd53c98a214f5c75b2ac.sol"
+    },
+    {
+        "function_name": "withdrawBalances",
+        "code": "function withdrawBalances(address[] calldata tokens, uint256[] calldata amounts, bool max) external nonReentrant { require(tokens.length == amounts.length, \"tokens != amounts\"); for (uint256 i=0; i < tokens.length; i++) { uint256 withdrawAmount = amounts[i]; if (max) { withdrawAmount = userTokenBalances[msg.sender][tokens[i]]; } _withdrawBalance(tokens[i], withdrawAmount); } }",
+        "vulnerability": "Incorrect balance withdrawal",
+        "reason": "The function allows withdrawal of maximum balances without proper checks on the `max` flag's usage. This could lead to unintended withdrawals if `max` is set without checking, allowing withdrawal of all balances regardless of original intention.",
+        "file_name": "0x01b92e2c0d06325089c6fd53c98a214f5c75b2ac.sol"
+    }
+]

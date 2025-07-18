@@ -1,0 +1,34 @@
+
+Start analyze function: DCY_preICO.bringBackTokens()
+Function Security Analysis for DCY_preICO.bringBackTokens()
+    The modifier of function bringBackTokens are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The code checks for a condition related to 'now >= deadline'. There is no ownership or specific address enforcement, nor is there a lock mechanism.
+          Hence, it does not fulfill any of the specified characteristics.
+    Check direct function security
+        - function DCY_preICO.bringBackTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any of the specified structures that involve checking if msg.sender is or is not a particular owner/address or leader/CEO
+          within a require, if, or assert statement.
+        - function DCY_preICO.bringBackTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match the specified structures. It contains a require statement for 'tokensLeft > 0', but does not perform any direct assignment to
+          the 'tokensLeft' variable involving True or False after that. Moreover, the pattern observed in the require statement does not involve flipping a boolean
+          variable as specified in the patterns, nor is there any boolean flipping through assignment after a conditional check that matches the specified scenarios.
+External Call Analysis
+    Direct external call: ['tokenReward.getBalanceOf(address(this))', 'tokenReward.transfer(beneficiary,tokensLeft)']
+    Analyze Transfer
+        - tokenReward.transfer(beneficiary,tokensLeft) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.getBalanceOf(address(this)) ISN'T subjected to gas limits.
+        - tokenReward.transfer(beneficiary,tokensLeft) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.getBalanceOf(address(this))', 'tokenReward.transfer(beneficiary,tokensLeft)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function name 'DCY_preICO' matches the contract name 'DCY_preICO', which indicates that it is a constructor function. Constructors satisfy
+            characteristic 1, as per the provided rules.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code is a constructor for the contract named 'DCY_preICO'. This can be determined because the function name matches the contract name, which
+            is a typical convention in Solidity to denote constructors (prior to version 0.4.22).
+Conclusion: This function will not cause REE Problem.

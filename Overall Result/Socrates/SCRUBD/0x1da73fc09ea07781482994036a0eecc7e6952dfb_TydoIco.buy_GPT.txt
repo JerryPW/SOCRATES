@@ -1,0 +1,22 @@
+
+Start analyze function: TydoIco.buy()
+Function Security Analysis for TydoIco.buy()
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function TydoIco.buy() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check if 'msg.sender' is equal to a defined xxxOwner/xxxAddress/Leader/CEO.
+        - function TydoIco.buy() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't match any of the specified conditions. It is a basic purchase function without the required structures using the 'require' statement or
+          the conditions outlined.
+External Call Analysis
+    Direct external call: ['token.transferFrom(address(owner),address(this),amount)']
+    Analyze Transfer
+    Analyze Gas
+        - token.transferFrom(address(owner),address(this),amount) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transferFrom(address(owner),address(this),amount)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The provided function's name is 'constructor', which explicitly identifies it as a constructor function in Solidity. This satisfies the first
+            characteristic in the given criteria.
+Conclusion: This function will not cause REE Problem.

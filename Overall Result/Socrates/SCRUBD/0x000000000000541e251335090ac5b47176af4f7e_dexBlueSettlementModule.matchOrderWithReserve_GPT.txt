@@ -1,0 +1,44 @@
+
+Start analyze function: dexBlueSettlementModule.matchOrderWithReserve(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade)
+Function Security Analysis for dexBlueSettlementModule.matchOrderWithReserve(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade)
+    There are no modifiers should be examined in function matchOrderWithReserve.
+    Check direct function security
+        - function dexBlueSettlementModule.matchOrderWithReserve(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade) has no security assurance protected by checking
+        the authority of msg.sender
+          Reason: The provided function 'matchOrderWithReserve' does not include any checks that directly compare `msg.sender` to an owner, address, leader, or CEO. There
+          are no usage patterns matching any of the specified structures in the criteria.
+        - function dexBlueSettlementModule.matchOrderWithReserve(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade) has no apparent security assurance by utilizing
+        a lock machinism.
+          Reason: The code does not contain any of the specified patterns. It does not have a 'require' statement checking a boolean followed by changing its value, nor
+          does it have an 'if' statement that throws if a condition is not met followed by setting a boolean variable to 'true'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['settleReserveTrade', 'batchSettleTrades']
+        Function Security Analysis for dexBlueSettlementModule.settleReserveTrade(dexBlueStructs.OrderInputPacked,dexBlueStructs.TradeInputPacked)
+            There are no modifiers should be examined in function settleReserveTrade.
+            Check direct function security
+                - function dexBlueSettlementModule.settleReserveTrade(dexBlueStructs.OrderInputPacked,dexBlueStructs.TradeInputPacked) has no security assurance protected
+                by checking the authority of msg.sender
+                  Reason: The function uses only 'require(arbiters[msg.sender] && marketActive)' and does not check with xxxOwner, xxxAddress, Leader, or CEO.
+                - function dexBlueSettlementModule.settleReserveTrade(dexBlueStructs.OrderInputPacked,dexBlueStructs.TradeInputPacked) has no apparent security assurance
+                by utilizing a lock machinism.
+                  Reason: The function does not satisfy any of the defined structures. It includes a require statement, but it does not manipulate the same variable in
+                  the manner specified by any of the conditions (such as setting a boolean to true or false following such a requirement). Therefore, no match with the
+                  given structures.
+External Call Analysis
+    Direct external call:
+    ['address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTrade.selector,abi.encode(order.sellToken,trade.orderAmount-
+    trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve)))']
+    Analyze Transfer
+    Analyze Gas
+        - address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTrade.selector,abi.encode(order.sellToken,trade.orderAmount-
+        trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve))) ISN'T subjected to gas limits. Here is the reason: The assignment statement is
+        empty. Since no value or function is defined to assign a value to `trade.gasLimit`, there is no logic to make a comparison. The variable stands undefined or has
+        no specific value assigned, making it impossible to ascertain whether it is <= 3000. Therefore, we cannot claim the value is always less than or equal to 3000.
+    Remaining external call:
+    ['address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTrade.selector,abi.encode(order.sellToken,trade.orderAmount-
+    trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve)))']
+    Analyze External Address
+        External call
+        address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTrade.selector,abi.encode(order.sellToken,trade.orderAmount-
+        trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve))) calls contract address, which consider no REE problem.
+Conclusion: This function will not cause REE Problem.

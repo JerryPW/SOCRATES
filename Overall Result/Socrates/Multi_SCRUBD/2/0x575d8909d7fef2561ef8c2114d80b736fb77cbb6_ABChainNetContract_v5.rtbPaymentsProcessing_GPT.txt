@@ -1,0 +1,39 @@
+
+Start analyze function: ABChainNetContract_v5.rtbPaymentsProcessing()
+Function Security Analysis for ABChainNetContract_v5.rtbPaymentsProcessing()
+    There are no modifiers should be examined in function rtbPaymentsProcessing.
+    Check direct function security
+        - function ABChainNetContract_v5.rtbPaymentsProcessing() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any require or if statements that compare msg.sender to a specific owner or leader address, nor does it include an
+          assert statement for the same purpose.
+        - function ABChainNetContract_v5.rtbPaymentsProcessing() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures. It does not contain any statements like 'require(xxx == True)' followed by 'xxx = False',
+          'require(xxx == False)' followed by 'xxx = True', 'require(!xxx)' followed by 'xxx = True', or 'if(!xxx) throw' followed by 'xxx = true'. The only 'require'
+          statement checks a numerical condition rather than a boolean variable, and there are no statements assigning a boolean value directly after such a check.
+External Call Analysis
+    Direct external call: ['ABChainRTBtoken(tokenAddress).transfer(ABChainPBudgetsAddress,_forPBudgets)', 'ABChainRTBtoken(tokenAddress).balanceOf(address(this))',
+    'ABChainRTBtoken(tokenAddress).transfer(ABChainRevenueAddress,_forRevenue)', 'ABChainRTBtoken(tokenAddress).burn(_forBurning)']
+    Analyze Transfer
+        - ABChainRTBtoken(tokenAddress).transfer(ABChainPBudgetsAddress,_forPBudgets) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - ABChainRTBtoken(tokenAddress).transfer(ABChainRevenueAddress,_forRevenue) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - ABChainRTBtoken(tokenAddress).transfer(ABChainPBudgetsAddress,_forPBudgets) ISN'T subjected to gas limits.
+        - ABChainRTBtoken(tokenAddress).balanceOf(address(this)) ISN'T subjected to gas limits.
+        - ABChainRTBtoken(tokenAddress).transfer(ABChainRevenueAddress,_forRevenue) ISN'T subjected to gas limits.
+        - ABChainRTBtoken(tokenAddress).burn(_forBurning) ISN'T subjected to gas limits.
+    Remaining external call: ['ABChainRTBtoken(tokenAddress).transfer(ABChainPBudgetsAddress,_forPBudgets)', 'ABChainRTBtoken(tokenAddress).balanceOf(address(this))',
+    'ABChainRTBtoken(tokenAddress).transfer(ABChainRevenueAddress,_forRevenue)', 'ABChainRTBtoken(tokenAddress).burn(_forBurning)']
+    Analyze External Address
+        There are ['tokenAddress'] should be checked in variable tokenAddress
+        Checked variables: tokenAddress
+            State variable tokenAddress has initialized in public area after declaration.
+        There are ['tokenAddress'] should be checked in variable tokenAddress
+        Checked variables: tokenAddress
+            State variable tokenAddress has initialized in public area after declaration.
+        There are ['tokenAddress'] should be checked in variable tokenAddress
+        Checked variables: tokenAddress
+            State variable tokenAddress has initialized in public area after declaration.
+        There are ['tokenAddress'] should be checked in variable tokenAddress
+        Checked variables: tokenAddress
+            State variable tokenAddress has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

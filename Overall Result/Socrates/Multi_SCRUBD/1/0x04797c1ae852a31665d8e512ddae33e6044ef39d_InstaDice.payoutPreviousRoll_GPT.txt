@@ -1,0 +1,51 @@
+
+Start analyze function: InstaDice.payoutPreviousRoll()
+Function Security Analysis for InstaDice.payoutPreviousRoll()
+    There are no modifiers should be examined in function payoutPreviousRoll.
+    Check direct function security
+        - function InstaDice.payoutPreviousRoll() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function `payoutPreviousRoll` does not have any require statements or conditions directly checking `msg.sender` against a specific owner or leader.
+          It primarily checks for user-specific roll data and updates user stats.
+        - function InstaDice.payoutPreviousRoll() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not satisfy any of the four specified structures. It checks conditions such as if a roll is being paid out in the same block or
+          if there's no roll to pay out, both if checks result in a return statement if true. There are no require statements with variable assignments within the same
+          scope, and the conditional logic does not involve any boolean assignments like `xxx = True` or `xxx = False` following a require or if (!xxx) throw statement,
+          as specified.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: InstaDice._finalizePreviousRoll(InstaDice.User,InstaDice.Stats)
+Function Security Analysis for InstaDice._finalizePreviousRoll(InstaDice.User,InstaDice.Stats)
+    There are no modifiers should be examined in function _finalizePreviousRoll.
+    Check direct function security
+        - function InstaDice._finalizePreviousRoll(InstaDice.User,InstaDice.Stats) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain the specified structures that involve directly checking if msg.sender equals or not equals
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function InstaDice._finalizePreviousRoll(InstaDice.User,InstaDice.Stats) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified structures as it uses assertions and a require statement for calling a function but does not modify
+          the same variable post a require/assert statement in the way specified.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['roll', 'payoutPreviousRoll']
+        Function Security Analysis for InstaDice.roll(uint8)
+            There are no modifiers should be examined in function roll.
+            Check direct function security
+                - function InstaDice.roll(uint8) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not perform any checks or assertions on whether msg.sender has to be a specific owner or address, it primarily deals with user
+                  input validation and interaction specific conditions.
+                - function InstaDice.roll(uint8) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not have any of the specified structures required to output 'Yes'. There is no 'require' statement, nor the expected pattern with
+                  variable updates paired with a specific initial condition check. Thus, the function will not match any of the given structures.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_user.r_payout)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_user.r_payout)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_user.r_payout)()']
+    Analyze External Address
+        External call msg.sender.call.value(_user.r_payout)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,56 @@
+
+Start analyze function: EasySmartolution.addParticipant(address,address)
+Function Security Analysis for EasySmartolution.addParticipant(address,address)
+    There are no modifiers should be examined in function addParticipant.
+    Check direct function security
+        - function EasySmartolution.addParticipant(address,address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given code does not contain any require, if, or assert statements that compare msg.sender to an owner, leader, or similar authority address.
+        - function EasySmartolution.addParticipant(address,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not exhibit any of the required structures. It includes require statements, but none of them match the specified pattern involving changes
+          to a particular variable from True/False and vice versa. It also does not include any 'if' statements that would throw, change a boolean, and possibly reset it,
+          as described in the given rules.
+External Call Analysis
+    Direct external call: ['_referrer.send(msg.value/20)', 'processing.send(msg.value/20)']
+    Analyze Transfer
+        - _referrer.send(msg.value/20) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword.. Parameter in 'transfer'/'send': 1.
+        - processing.send(msg.value/20) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: EasySmartolution.processPayment(address)
+Function Security Analysis for EasySmartolution.processPayment(address)
+    There are no modifiers should be examined in function processPayment.
+    Check direct function security
+        - function EasySmartolution.processPayment(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks or assertions involving msg.sender. It neither checks the sender against an owner or leader nor uses msg.sender
+          in a conditional statement that restricts function execution based on sender identity.
+        - function EasySmartolution.processPayment(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any "require" statements or any if/throw logic related to the specified conditions. The structure does not match any of the
+          listed patterns required: there is no require statement checking a boolean variable, and there is no modification of boolean variables like 'xxx = False' or
+          'xxx = True' after a require statement.
+External Call Analysis
+    Direct external call: ['participant.processPayment.value(participant.daily())()']
+    Analyze Transfer
+    Analyze Gas
+        - participant.processPayment.value(participant.daily())() ISN'T subjected to gas limits.
+    Remaining external call: ['participant.processPayment.value(participant.daily())()']
+    Analyze External Address
+        There are ['participants'] should be checked in variable participant
+        Checked variables: participants
+            No 1. The function 'addParticipant' and 'processPayment' are not constructors because their names do not match the contract name, 'EasySmartolution', nor are
+            they explicitly named 'constructor'.  2. There is no hardcoding of the 'participants' state variable, as the code dynamically assigns values to
+            'participants[_address]'.
+            Function Security Analysis for EasySmartolution.addParticipant(address,address)
+                There are no modifiers should be examined in function addParticipant.
+                Check direct function security
+                    - function EasySmartolution.addParticipant(address,address) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The provided code does not contain any of the specified structures that evaluate the msg.sender against a specific role or address such as
+                      Owner, Leader, CEO, or similar within a require, if, or assert statement.
+                    - function EasySmartolution.addParticipant(address,address) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code does not contain any of the structure patterns that would satisfy the conditions set out (i.e. no require statement that is
+                      immediately followed by a variable assignment to the opposite boolean value, or throw if the if condition fails pattern).
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,47 @@
+
+Start analyze function: BlackErc20.mintProof(uint256,address,bytes32[])
+Function Security Analysis for BlackErc20.mintProof(uint256,address,bytes32[])
+    There are no modifiers should be examined in function mintProof.
+    Check direct function security
+        - function BlackErc20.mintProof(uint256,address,bytes32[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any specific statements that compare `msg.sender` against an owner, leader, CEO, or similar privileged role to control
+          execution based on the sender identity.
+        - function BlackErc20.mintProof(uint256,address,bytes32[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any structure as described in the given rules. It mainly involves checking various conditions with `require` statements,
+          processing token transactions, and updating counters, but does not exhibit the specified variable assignment and condition pattern.
+External Call Analysis
+    Direct external call: ['IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}()', 'IUniswapV2Pair(lpContract).sync()']
+    Analyze Transfer
+    Analyze Gas
+        - IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000) ISN'T subjected to gas limits.
+        - IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000) ISN'T subjected to gas limits.
+        - IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}() ISN'T subjected to gas limits.
+        - IUniswapV2Pair(lpContract).sync() ISN'T subjected to gas limits.
+    Remaining external call: ['IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}()', 'IUniswapV2Pair(lpContract).sync()']
+    Analyze External Address
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+        There are ['lpContract'] should be checked in variable lpContract
+        Checked variables: lpContract
+            No 1. The function name 'setLPContract' does not match the contract name 'BlackErc20', nor is it explicitly named 'constructor'. This indicates that the code
+            provided is not a constructor, so characteristic 1 is not satisfied.  2. The function 'setLPContract' does not have hardcoded state variables. The value of
+            'lpContract' is set using the parameter 'lp', which is provided at runtime and not hardcoded within the function. Thus, characteristic 2 is not satisfied.
+            Function Security Analysis for BlackErc20.setLPContract(address)
+                The modifier of function setLPContract are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon re-evaluating the code, the modifier `onlyOwner` indicates that it likely checks if the caller is an owner based on its naming.
+                      However, the modulation code itself doesn't explicitly contain any enforcement condition visible here, but the name `onlyOwner` suggests it is for
+                      access control by owner. This inference is considered based on rule 3 and aligns correctly with the instruction given the name implication.
+Conclusion: This function will not cause REE Problem.

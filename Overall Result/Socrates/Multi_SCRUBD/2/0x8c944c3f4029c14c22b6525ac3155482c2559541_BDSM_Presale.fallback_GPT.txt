@@ -1,0 +1,54 @@
+
+Start analyze function: BDSM_Presale.fallback()
+Function Security Analysis for BDSM_Presale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function BDSM_Presale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any of the listed structures involving msg.sender with specific roles like Owner/Address/Leader/CEO.
+        - function BDSM_Presale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code, the structure 'require(xxx == True); xxx = False;' does not fully appear in the code. The relevant `require(tokenToBuy > 0);`
+          line does not have a corresponding `xxx = False;` statement for the same variable. The changes to `presaleClosed` do not align directly with those required by
+          the specified criteria. Additionally, there is no pattern like 'require(xxx == False); xxx = True;' or 'require(!xxx); xxx = True;' or 'if(!xxx) throw; xxx =
+          true;'. Therefore, none of the specified structures are present in the code.
+External Call Analysis
+    Direct external call: ['sharesTokenAddress.balanceOf(this)', 'sharesTokenAddress.transfer(msg.sender,tokenFree)', 'msg.sender.transfer(msg.value-sendETH)',
+    'owner.transfer(actualETHTransfer)', 'sharesTokenAddress.transfer(msg.sender,tokenToBuy)', 'msg.sender.transfer(msg.value-actualETHTransfer)',
+    'owner.transfer(sendETH)', 'msg.sender.transfer(msg.value)', 'sharesTokenAddress.transfer(safeContract,sharesTokenAddress.balanceOf(this))']
+    Analyze Transfer
+        - sharesTokenAddress.transfer(msg.sender,tokenFree) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.transfer(msg.value-sendETH) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(msg.value-sendETH)' contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - owner.transfer(actualETHTransfer) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'owner.transfer(actualETHTransfer)' contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - sharesTokenAddress.transfer(msg.sender,tokenToBuy) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.transfer(msg.value-actualETHTransfer) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(msg.value-actualETHTransfer)' contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - owner.transfer(sendETH) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call 'owner.transfer(sendETH)'
+        contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(msg.value)' contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - sharesTokenAddress.transfer(safeContract,sharesTokenAddress.balanceOf(this)) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - sharesTokenAddress.balanceOf(this) ISN'T subjected to gas limits.
+        - sharesTokenAddress.transfer(msg.sender,tokenFree) ISN'T subjected to gas limits.
+        - sharesTokenAddress.transfer(msg.sender,tokenToBuy) ISN'T subjected to gas limits.
+        - sharesTokenAddress.transfer(safeContract,sharesTokenAddress.balanceOf(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['sharesTokenAddress.balanceOf(this)', 'sharesTokenAddress.transfer(msg.sender,tokenFree)',
+    'sharesTokenAddress.transfer(msg.sender,tokenToBuy)', 'sharesTokenAddress.transfer(safeContract,sharesTokenAddress.balanceOf(this))']
+    Analyze External Address
+        There are ['sharesTokenAddress'] should be checked in variable sharesTokenAddress
+        Checked variables: sharesTokenAddress
+            Yes The function name 'BDSM_Presale' matches the contract name 'BDSM_Presale', indicating it is likely a constructor.
+        There are ['sharesTokenAddress'] should be checked in variable sharesTokenAddress
+        Checked variables: sharesTokenAddress
+            Yes 1. The function is named 'BDSM_Presale', which matches the contract name, indicating that it is a constructor. 2. The function also assigns a value to the
+            state variable 'sharesTokenAddress', fulfilling the second characteristic of hardcoding the provided state variable.
+        There are ['sharesTokenAddress'] should be checked in variable sharesTokenAddress
+        Checked variables: sharesTokenAddress
+            Yes The function named 'BDSM_Presale' matches the contract name 'BDSM_Presale', indicating that this code is a constructor. Constructors are special functions
+            called only once when a contract is created, and they usually have the same name as the contract in older Solidity versions, or are explicitly termed
+            'constructor' in newer versions. Hence, the function satisfies the first characteristic, marking it as a constructor.
+        There are ['sharesTokenAddress'] should be checked in variable sharesTokenAddress
+        Checked variables: sharesTokenAddress
+            Yes The provided code is a constructor because the function name matches the contract name 'BDSM_Presale'.
+Conclusion: This function will not cause REE Problem.

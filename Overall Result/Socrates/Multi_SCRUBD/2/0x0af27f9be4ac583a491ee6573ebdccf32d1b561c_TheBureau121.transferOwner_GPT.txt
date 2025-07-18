@@ -1,0 +1,9 @@
+
+Start analyze function: TheBureau121.transferOwner(address)
+Function Security Analysis for TheBureau121.transferOwner(address)
+    The modifier of function transferOwner are ['onlyOwner']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The code in the modifier enforces that only the owner can execute the function by using the statement require(_owner == _msgSender(), "Ownable: caller
+          is not the owner"), which matches rule 1. There are no lock operations present, so rule 2 does not apply.
+Conclusion: This function will not cause REE Problem.

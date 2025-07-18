@@ -1,0 +1,21 @@
+
+Start analyze function: DailyGreed.fallback()
+Function Security Analysis for DailyGreed.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function DailyGreed.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any explicit checks involving msg.sender compared to any xxxOwner/xxxAddress type variables.
+        - function DailyGreed.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code doesn't contain any of the specified structures. It lacks the 'require' statements or specific condition checks involving variables being
+          set from true to false or false to true. Instead, it performs some operations on balances and timestamps.
+External Call Analysis
+    Direct external call: ['owner.send(msg.value/10)', 'kashout.send(getout)']
+    Analyze Transfer
+        - owner.send(msg.value/10) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword, which meets the specified characteristic.. Parameter in 'transfer'/'send': 1.
+        - kashout.send(getout) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send(' keyword,
+        which meets the specified characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

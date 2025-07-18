@@ -1,0 +1,11 @@
+
+Start analyze function: Sargasso.tokenSend(address,uint256,uint256)
+Function Security Analysis for Sargasso.tokenSend(address,uint256,uint256)
+    There are no modifiers should be examined in function tokenSend.
+    Check direct function security
+        - function Sargasso.tokenSend(address,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks or assertions specifically involving 'msg.sender == xxxOwner/xxxAddress/Leader/CEO' or similar variations.
+        - function Sargasso.tokenSend(address,uint256,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: The require statement on 'secondaryUserLock[msg.sender]' is immediately followed by a state negation operation 'secondaryUserLock[msg.sender] = true;'
+          before the main logic of the function executes, thus satisfying the conditions.
+Conclusion: This function will not cause REE Problem.

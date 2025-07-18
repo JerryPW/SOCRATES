@@ -1,0 +1,177 @@
+Moloch.unwrapShares: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function unwrapShares(uint256 amount) external nonReentrant {
+        IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);
+        
+        // if the sender is already a member, add to their existing shares 
+        if (members[msg.sender].exists == 1) {
+            members[msg.sender].shares = members[msg.sender].shares.add(amount);
+
+            // if the sender is a new member, create a new record for them
+            } else {
+                registerMember(msg.sender, amount);
+            }
+
+            // mint new guild token & shares 
+            mintGuildToken(msg.sender, amount);
+            totalShares += amount;
+
+        if (userTokenBalances[GUILD][wrapperToken] == 0) {totalGuildBankTokens += 1;}
+        unsafeAddToBalance(GUILD, wrapperToken, amount);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function unwrapShares(uint256 amount) external nonReentrant {
+        IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);
+        
+        // if the sender is already a member, add to their existing shares 
+        if (members[msg.sender].exists == 1) {
+            members[msg.sender].shares = members[msg.sender].shares.add(amount);
+
+            // if the sender is a new member, create a new record for them
+            } else {
+                registerMember(msg.sender, amount);
+            }
+
+            // mint new guild token & shares 
+            mintGuildToken(msg.sender, amount);
+            totalShares += amount;
+
+        if (userTokenBalances[GUILD][wrapperToken] == 0) {totalGuildBankTokens += 1;}
+        unsafeAddToBalance(GUILD, wrapperToken, amount);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function unwrapShares(uint256 amount) external nonReentrant {
+        IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);
+        
+        // if the sender is already a member, add to their existing shares 
+        if (members[msg.sender].exists == 1) {
+            members[msg.sender].shares = members[msg.sender].shares.add(amount);
+
+            // if the sender is a new member, create a new record for them
+            } else {
+                registerMember(msg.sender, amount);
+            }
+
+            // mint new guild token & shares 
+            mintGuildToken(msg.sender, amount);
+            totalShares += amount;
+
+        if (userTokenBalances[GUILD][wrapperToken] == 0) {totalGuildBankTokens += 1;}
+        unsafeAddToBalance(GUILD, wrapperToken, amount);
+    }
+Response:
+{"StatementsA": {"totalShares += amount;":"Updates the totalShares state variable."}, "StatementsB": {"IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: totalShares += amount;
+2.External Call: IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function unwrapShares(uint256 amount) external nonReentrant {
+        IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);
+        
+        // if the sender is already a member, add to their existing shares 
+        if (members[msg.sender].exists == 1) {
+            members[msg.sender].shares = members[msg.sender].shares.add(amount);
+
+            // if the sender is a new member, create a new record for them
+            } else {
+                registerMember(msg.sender, amount);
+            }
+
+            // mint new guild token & shares 
+            mintGuildToken(msg.sender, amount);
+            totalShares += amount;
+
+        if (userTokenBalances[GUILD][wrapperToken] == 0) {totalGuildBankTokens += 1;}
+        unsafeAddToBalance(GUILD, wrapperToken, amount);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function unwrapShares(uint256 amount) external nonReentrant {
+        IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);
+        
+        // if the sender is already a member, add to their existing shares 
+        if (members[msg.sender].exists == 1) {
+            members[msg.sender].shares = members[msg.sender].shares.add(amount);
+
+            // if the sender is a new member, create a new record for them
+            } else {
+                registerMember(msg.sender, amount);
+            }
+
+            // mint new guild token & shares 
+            mintGuildToken(msg.sender, amount);
+            totalShares += amount;
+
+        if (userTokenBalances[GUILD][wrapperToken] == 0) {totalGuildBankTokens += 1;}
+        unsafeAddToBalance(GUILD, wrapperToken, amount);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function unwrapShares(uint256 amount) external nonReentrant {
+        IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);
+        
+        // if the sender is already a member, add to their existing shares 
+        if (members[msg.sender].exists == 1) {
+            members[msg.sender].shares = members[msg.sender].shares.add(amount);
+
+            // if the sender is a new member, create a new record for them
+            } else {
+                registerMember(msg.sender, amount);
+            }
+
+            // mint new guild token & shares 
+            mintGuildToken(msg.sender, amount);
+            totalShares += amount;
+
+        if (userTokenBalances[GUILD][wrapperToken] == 0) {totalGuildBankTokens += 1;}
+        unsafeAddToBalance(GUILD, wrapperToken, amount);
+    }
+Response:
+{"StatementsA": {"totalShares += amount;":"Updates the totalShares state variable."}, "StatementsB": {"IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: totalShares += amount;
+2.External Call: IERC20(wrapperToken).transferFrom(msg.sender, address(this), amount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

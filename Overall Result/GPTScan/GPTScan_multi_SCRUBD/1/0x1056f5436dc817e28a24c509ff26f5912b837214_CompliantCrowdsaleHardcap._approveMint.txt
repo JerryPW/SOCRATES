@@ -1,0 +1,101 @@
+CompliantCrowdsaleHardcap._approveMint: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _approveMint(uint256 nonce)
+        private
+        checkIsInvestorApproved(pendingMints[nonce].to)
+        returns (bool)
+    {
+        // update state
+        weiRaised = weiRaised.add(pendingMints[nonce].weiAmount);
+
+        //No need to use mint-approval on token side, since the minting is already approved in the crowdsale side
+        TokenInterface(token).mint(pendingMints[nonce].to, pendingMints[nonce].tokens);
+        
+        emit TokenPurchase(
+            msg.sender,
+            pendingMints[nonce].to,
+            pendingMints[nonce].weiAmount,
+            pendingMints[nonce].tokens
+        );
+
+        forwardFunds(pendingMints[nonce].weiAmount);
+        delete pendingMints[nonce];
+
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _approveMint(uint256 nonce)
+        private
+        checkIsInvestorApproved(pendingMints[nonce].to)
+        returns (bool)
+    {
+        // update state
+        weiRaised = weiRaised.add(pendingMints[nonce].weiAmount);
+
+        //No need to use mint-approval on token side, since the minting is already approved in the crowdsale side
+        TokenInterface(token).mint(pendingMints[nonce].to, pendingMints[nonce].tokens);
+        
+        emit TokenPurchase(
+            msg.sender,
+            pendingMints[nonce].to,
+            pendingMints[nonce].weiAmount,
+            pendingMints[nonce].tokens
+        );
+
+        forwardFunds(pendingMints[nonce].weiAmount);
+        delete pendingMints[nonce];
+
+        return true;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function _approveMint(uint256 nonce)
+        private
+        checkIsInvestorApproved(pendingMints[nonce].to)
+        returns (bool)
+    {
+        // update state
+        weiRaised = weiRaised.add(pendingMints[nonce].weiAmount);
+
+        //No need to use mint-approval on token side, since the minting is already approved in the crowdsale side
+        TokenInterface(token).mint(pendingMints[nonce].to, pendingMints[nonce].tokens);
+        
+        emit TokenPurchase(
+            msg.sender,
+            pendingMints[nonce].to,
+            pendingMints[nonce].weiAmount,
+            pendingMints[nonce].tokens
+        );
+
+        forwardFunds(pendingMints[nonce].weiAmount);
+        delete pendingMints[nonce];
+
+        return true;
+    }
+Response:
+{"StatementsA": {"weiRaised = weiRaised.add(pendingMints[nonce].weiAmount);":"This statement updates the state variable 'weiRaised' by adding the weiAmount from the pendingMints mapping."}, "StatementsB": {"TokenInterface(token).mint(pendingMints[nonce].to, pendingMints[nonce].tokens);":"This statement executes an external call to the 'mint' function of the TokenInterface contract."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call, as it is used in the emit statement for TokenPurchase."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: weiRaised = weiRaised.add(pendingMints[nonce].weiAmount);
+2.External Call: TokenInterface(token).mint(pendingMints[nonce].to, pendingMints[nonce].tokens);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

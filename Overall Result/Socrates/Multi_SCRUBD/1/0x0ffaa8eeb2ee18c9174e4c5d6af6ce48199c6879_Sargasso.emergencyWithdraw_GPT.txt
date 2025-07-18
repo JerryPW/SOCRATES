@@ -1,0 +1,11 @@
+
+Start analyze function: Sargasso.emergencyWithdraw(uint256)
+Function Security Analysis for Sargasso.emergencyWithdraw(uint256)
+    There are no modifiers should be examined in function emergencyWithdraw.
+    Check direct function security
+        - function Sargasso.emergencyWithdraw(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures where msg.sender is compared to xxxOwner/xxxAddress/Leader/CEO.
+        - function Sargasso.emergencyWithdraw(uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: In the code, userLock[msg.sender] is required to be false and immediately set to true after the require statement, achieving a state negation before the
+          main logic of the function executes. Therefore, it satisfies the condition.
+Conclusion: This function will not cause REE Problem.

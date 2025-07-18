@@ -1,0 +1,20 @@
+
+Start analyze function: MyAdvancedToken8.sell(uint256)
+Function Security Analysis for MyAdvancedToken8.sell(uint256)
+    There are no modifiers should be examined in function sell.
+    Check direct function security
+        - function MyAdvancedToken8.sell(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any message sender verification against predefined roles like xxxOwner/xxxAddress/Leader/CEO. It primarily checks the balance
+          and processes the sell transaction without such restrictions.
+        - function MyAdvancedToken8.sell(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. It does not use 'require' or any variable assignment logic that changes the state under given
+          conditions like in the specified patterns.
+External Call Analysis
+    Direct external call: ['msg.sender.send(amount*sellPrice)']
+    Analyze Transfer
+        - msg.sender.send(amount*sellPrice) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

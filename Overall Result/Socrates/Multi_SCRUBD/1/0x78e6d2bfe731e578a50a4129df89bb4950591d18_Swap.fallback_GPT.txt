@@ -1,0 +1,47 @@
+
+Start analyze function: Swap.fallback()
+Function Security Analysis for Swap.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Swap.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The given code does not have any structure that checks if `msg.sender` is an Owner, Address, Leader, or CEO. The only checks regarding `msg.sender`
+          involve the state of `check[msg.sender]` and sending or transferring ether to `msg.sender`. Therefore, the function does not meet any of the specified criteria.
+        - function Swap.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The structure {require(xxx == false);} immediately followed by {xxx = true;} should perform the negation operation right after the check, before any
+          main functionality. In this code, after the require statement for 'check[msg.sender] == false', the main logic of the function starts with updating 'amount' and
+          'balanceOf', before setting 'check[msg.sender] = true;'. Therefore, the state negation does not happen immediately and before the function's main logic. This
+          does not satisfy the revised criteria.
+External Call Analysis
+    Direct external call: ['swapaddress.transfer(msg.sender,amount/thirdvalue)', 'swapaddress.transfer(msg.sender,5000000)', 'msg.sender.send(msg.value)',
+    'beneficiary.send(msg.value)', 'swapaddress.transfer(msg.sender,amount/secondvalue)']
+    Analyze Transfer
+        - swapaddress.transfer(msg.sender,amount/thirdvalue) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - swapaddress.transfer(msg.sender,5000000) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.send(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.send(' keyword, which
+        satisfies the second characteristic.. Parameter in 'transfer'/'send': 1.
+        - beneficiary.send(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.send(' keyword,
+        which satisfies the second characteristic.. Parameter in 'transfer'/'send': 1.
+        - swapaddress.transfer(msg.sender,amount/secondvalue) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - swapaddress.transfer(msg.sender,amount/thirdvalue) ISN'T subjected to gas limits.
+        - swapaddress.transfer(msg.sender,5000000) ISN'T subjected to gas limits.
+        - swapaddress.transfer(msg.sender,amount/secondvalue) ISN'T subjected to gas limits.
+    Remaining external call: ['swapaddress.transfer(msg.sender,amount/thirdvalue)', 'swapaddress.transfer(msg.sender,5000000)',
+    'swapaddress.transfer(msg.sender,amount/secondvalue)']
+    Analyze External Address
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The provided code contains a function named 'constructor', which matches the contract constructor naming convention. This indicates that it is a
+            constructor function. Additionally, within this constructor, the state variable 'swapaddress' is assigned a value using the parameter
+            'addressOfCollectibleUsedAsReward'. This constitutes a form of hardcoding as it sets the initial value of 'swapaddress' at the time of contract deployment.
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The function is explicitly named 'constructor', which matches the second part of the first characteristic (functions named 'constructor'). Hence, it
+            satisfies the condition of being a constructor.
+        There are ['swapaddress'] should be checked in variable swapaddress
+        Checked variables: swapaddress
+            Yes The provided code is a constructor function for the contract named 'Swap'. The function name is 'constructor', which explicitly indicates that it is a
+            constructor. It initializes state variables such as 'beneficiary', 'price', and 'swapaddress'. Additionally, the state variable 'swapaddress' is being
+            assigned a value using the 'addressOfCollectibleUsedAsReward' parameter, but it is not hardcoded in the sense that 'swapaddress' is not directly assigned a
+            fixed value within the code. Therefore, the code satisfies the first characteristic of being a constructor.
+Conclusion: This function will not cause REE Problem.

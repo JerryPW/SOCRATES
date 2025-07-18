@@ -1,0 +1,19 @@
+
+Start analyze function: Web3NameService.register(address,string)
+Function Security Analysis for Web3NameService.register(address,string)
+    There are no modifiers should be examined in function register.
+    Check direct function security
+        - function Web3NameService.register(address,string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'register' does not contain any checks or assertions for msg.sender being equal or not equal to a specific owner, address, leader, or CEO.
+        - function Web3NameService.register(address,string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function contains a `bool is_ref` variable that is initialized to `false` and later set to `true` under certain conditions, but it does not use the
+          `require` statement to check `is_ref == true` or `is_ref == false`. None of the specified structures are found in the function.
+External Call Analysis
+    Direct external call: ['address(ref_address).transfer(ref_cost)']
+    Analyze Transfer
+        - address(ref_address).transfer(ref_cost) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        the '.transfer(' keyword, which matches the criteria provided.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

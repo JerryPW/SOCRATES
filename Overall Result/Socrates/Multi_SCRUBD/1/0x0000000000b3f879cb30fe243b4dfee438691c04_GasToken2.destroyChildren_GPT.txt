@@ -1,0 +1,31 @@
+
+Start analyze function: GasToken2.destroyChildren(uint256)
+Function Security Analysis for GasToken2.destroyChildren(uint256)
+    There are no modifiers should be examined in function destroyChildren.
+    Check direct function security
+        - function GasToken2.destroyChildren(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not involve any conditionals or assertions checking the msg.sender against an owner, address, or leader like structure. It simply
+          performs actions based on the current internal state of the contract.
+        - function GasToken2.destroyChildren(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified structures like require(xxx == True); xxx = False; or require(xxx == False); xxx = True; or
+          require(!xxx); xxx = True; or if(!xxx) throw; xxx = true;.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['freeUpTo', 'free', 'freeFromUpTo', 'freeFrom']
+        Function Security Analysis for GasToken2.freeUpTo(uint256)
+            There are no modifiers should be examined in function freeUpTo.
+            Check direct function security
+                - function GasToken2.freeUpTo(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any require, if, or assert statements that involve 'msg.sender' being checked against
+                  xxxOwner/xxxAddress/Leader/CEO.
+                - function GasToken2.freeUpTo(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided function does not contain any 'require(xxx)' or 'if(!xxx) throw' statements that fit the specified structures. It does not use
+                  'require' or any conditional statement with side effects that modify the value of a boolean variable, specifically according to the structures given.
+External Call Analysis
+    Direct external call: ['mk_contract_address(this,i).call()']
+    Analyze Transfer
+    Analyze Gas
+        - mk_contract_address(this,i).call() ISN'T subjected to gas limits.
+    Remaining external call: ['mk_contract_address(this,i).call()']
+    Analyze External Address
+        External call mk_contract_address(this,i).call() calls contract address, which consider no REE problem.
+Conclusion: This function will not cause REE Problem.

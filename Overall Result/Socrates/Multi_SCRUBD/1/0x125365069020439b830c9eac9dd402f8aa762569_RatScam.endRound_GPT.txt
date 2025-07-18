@@ -1,0 +1,43 @@
+
+Start analyze function: RatScam.endRound(RSdatasets.EventReturns)
+Function Security Analysis for RatScam.endRound(RSdatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function RatScam.endRound(RSdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function `endRound` does not contain any control structure related to msg.sender checks, like restricting access based on msg.sender or asserting
+          msg.sender roles. Therefore, it does not match any of the given structures.
+        - function RatScam.endRound(RSdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures requiring or checking a condition on a boolean variable and then modifying it
+          accordingly.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['reLoadXid', 'buyCore', 'reLoadXname', 'buyXname', 'reLoadCore', 'buyXaddr', 'fallback', 'buyXid', 'reLoadXaddr', 'withdraw']
+        Function Security Analysis for RatScam.reLoadXid(uint256,uint256)
+            The modifier of function reLoadXid are ['isActivated', 'isHuman', 'isWithinLimits']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier 'isActivated' does not explicitly indicate owner or specific address checks, nor does it involve a lock operation. It requires
+                  'activated_' to be true, ensuring a certain condition is met, but it doesn't directly relate to ownership or function reentrancy protection inferred
+                  from its name.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: The modifier checks if the sender of the transaction is the same as the original initiator of the transaction. This does not restrict execution
+                  to specific addresses or owners, nor does it use locking mechanisms.
+                - modifier isWithinLimits has no relation with controlled by owner.
+                  Reason: The code in the modifier does not check for ownership or specific addresses (rule 1), does not involve a lock operation (rule 2), and the name
+                  isWithinLimits does not imply such checks (rule 3).
+            Check direct function security
+                - function RatScam.reLoadXid(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function doesn't contain any of the specified patterns which involve checking msg.sender against an owner, address, Leader or CEO.
+                - function RatScam.reLoadXid(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not contain any of the defined structures. It involves checking conditions, assigning values, and calling functions, but none
+                  of those match the template provided of using 'require(xxx == True)' followed by 'xxx = False' or its variants.
+External Call Analysis
+    Direct external call: ['address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze Transfer
+    Analyze Gas
+        - address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit()))) ISN'T subjected to gas limits.
+    Remaining external call: ['address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze External Address
+        There are ['RatKingCorp'] should be checked in variable RatKingCorp
+        Checked variables: RatKingCorp
+            State variable RatKingCorp has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

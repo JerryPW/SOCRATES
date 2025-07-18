@@ -1,0 +1,10 @@
+
+Start analyze function: MYSTIC.processActionProposal(uint256)
+Function Security Analysis for MYSTIC.processActionProposal(uint256)
+    The modifier of function processActionProposal are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier named nonReentrant indicates that it is likely implementing a lock mechanism to prevent reentrancy (inference from the name). The code
+          enforces a lock by setting `_status = _ENTERED;` and then releases it with `_status = _NOT_ENTERED;`. Both lock and unlock operations are present, satisfying
+          both aspects of the second characteristic.
+Conclusion: This function will not cause REE Problem.

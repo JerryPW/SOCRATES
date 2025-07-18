@@ -1,0 +1,26 @@
+
+Start analyze function: PENGUDividendTracker.process(uint256)
+Function Security Analysis for PENGUDividendTracker.process(uint256)
+    There are no modifiers should be examined in function process.
+    Check direct function security
+        - function PENGUDividendTracker.process(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures related to msg.sender.
+        - function PENGUDividendTracker.process(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not have any of the specified structures. It does not contain the 'require' statement nor the specific sequence of setting a
+          variable conditionally before changing its logic afterward as described in any of the patterns.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: PENGUDividendTracker.processAccount(address,bool)
+Function Security Analysis for PENGUDividendTracker.processAccount(address,bool)
+    The modifier of function processAccount are ['onlyOwner']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier onlyOwner checks if the '_msgSender()' is equal to '_owner' using a 'require' statement. This enforces that only the owner can execute the
+          function, which matches rule 1.
+Conclusion: This function will not cause REE Problem.

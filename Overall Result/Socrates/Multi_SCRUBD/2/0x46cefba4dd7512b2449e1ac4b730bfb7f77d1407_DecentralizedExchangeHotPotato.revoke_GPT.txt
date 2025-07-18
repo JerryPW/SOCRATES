@@ -1,0 +1,34 @@
+
+Start analyze function: DecentralizedExchangeHotPotato.revoke(uint256)
+Function Security Analysis for DecentralizedExchangeHotPotato.revoke(uint256)
+    There are no modifiers should be examined in function revoke.
+    Check direct function security
+        - function DecentralizedExchangeHotPotato.revoke(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The check 'require(msg.sender == orderBook[_id].owner);' uses 'xxx.owner' where 'xxx' is a local variable, which does not fit the specified structures.
+          These structures involve explicit comparisons with fixed identifiers, such as 'xxxOwner', not dynamic references like 'orderBook[_id].owner'.
+        - function DecentralizedExchangeHotPotato.revoke(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified patterns. It includes require statements but not for Boolean conditions as specified in the patterns.
+External Call Analysis
+    Direct external call: ['issuer.transfer(msg.sender,orderBook[_id].tokenId)']
+    Analyze Transfer
+        - issuer.transfer(msg.sender,orderBook[_id].tokenId) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - issuer.transfer(msg.sender,orderBook[_id].tokenId) ISN'T subjected to gas limits.
+    Remaining external call: ['issuer.transfer(msg.sender,orderBook[_id].tokenId)']
+    Analyze External Address
+        There are ['orderBook'] should be checked in variable issuer
+        Checked variables: orderBook
+            No The provided code does not include a constructor or any function that hardcodes the state variable 'orderBook'. Therefore, the function does not satisfy
+            either of the characteristics outlined.
+            Function Security Analysis for DecentralizedExchangeHotPotato.put(address,uint256,uint256,uint256,uint256)
+                There are no modifiers should be examined in function put.
+                Check direct function security
+                    - function DecentralizedExchangeHotPotato.put(address,uint256,uint256,uint256,uint256) has no security assurance protected by checking the authority
+                    of msg.sender
+                      Reason: The function checks if the caller is the owner of the token using the line: require(issuer.ownerOf(_tokenId) == msg.sender);. However, as
+                      per the note, checking against xxx.owner where xxx is a local variable (Issuer in this case) does not count as part of the specified structure.
+                    - function DecentralizedExchangeHotPotato.put(address,uint256,uint256,uint256,uint256) has no apparent security assurance by utilizing a lock
+                    machinism.
+                      Reason: The given code doesn't include any of the specified structures: there is none of the 'require/if' statements with the specific format
+                      checking a boolean and then re-assigning that boolean within the function body.
+Conclusion: This function will cause REE Problem.

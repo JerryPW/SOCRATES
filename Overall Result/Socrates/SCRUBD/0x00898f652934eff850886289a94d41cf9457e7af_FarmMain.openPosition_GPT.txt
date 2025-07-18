@@ -1,0 +1,59 @@
+
+Start analyze function: FarmMain.openPosition(FarmingPositionRequest)
+Function Security Analysis for FarmMain.openPosition(FarmingPositionRequest)
+    The modifier of function openPosition are ['activeSetupOnly']
+    The result of checking modifiers:
+        - modifier activeSetupOnly has no relation with controlled by owner.
+          Reason: The modifier does not enforce owner-specific execution or a lock mechanism. It only checks if a particular setup is active and if the current block
+          number is within a specified range. No patterns match the given rules.
+    Check direct function security
+        - function FarmMain.openPosition(FarmingPositionRequest) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures involving `msg.sender`.
+        - function FarmMain.openPosition(FarmingPositionRequest) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not satisfy any of the described structures. It includes a 'require' statement, but it isn't followed by a reassignment of the
+          variable checked by the 'require'.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: FarmMain._addLiquidity(uint256,FarmingPositionRequest)
+Function Security Analysis for FarmMain._addLiquidity(uint256,FarmingPositionRequest)
+    There are no modifiers should be examined in function _addLiquidity.
+    Check direct function security
+        - function FarmMain._addLiquidity(uint256,FarmingPositionRequest) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check for msg.sender in any form that matches the specified structures.
+        - function FarmMain._addLiquidity(uint256,FarmingPositionRequest) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not fit any of the required structures. It uses a require statement for checking conditions but doesn't involve setting a variable
+          immediately after or matching the listed patterns (require with variable change or require followed by variable boolean assignment).
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['openPosition', 'addLiquidity']
+        Function Security Analysis for FarmMain.openPosition(FarmingPositionRequest)
+            The modifier of function openPosition are ['activeSetupOnly']
+            The result of checking modifiers:
+                - modifier activeSetupOnly has no relation with controlled by owner.
+                  Reason: None of the provided rules are satisfied in the given modifier code. There are no owner/address checks nor lock operations, and the modifier
+                  name does not suggest restricted access or non-reentrancy prevention.
+            Check direct function security
+                - function FarmMain.openPosition(FarmingPositionRequest) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code provided does not contain any of the specified structures related to 'msg.sender', such as require, if, or assert checks specifically
+                  involving msg.sender against a defined owner or address role.
+                - function FarmMain.openPosition(FarmingPositionRequest) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not include any of the specified structures, which involve requirements or conditions on the truth value of a boolean
+                  variable with immediate changes to that variable.
+External Call Analysis
+    Direct external call: ['amm.addLiquidity(liquidityPoolData)', 'amm.addLiquidity{value:msg.value}(liquidityPoolData)']
+    Analyze Transfer
+    Analyze Gas
+        - amm.addLiquidity(liquidityPoolData) ISN'T subjected to gas limits.
+        - amm.addLiquidity{value:msg.value}(liquidityPoolData) ISN'T subjected to gas limits.
+    Remaining external call: ['amm.addLiquidity(liquidityPoolData)', 'amm.addLiquidity{value:msg.value}(liquidityPoolData)']
+    Analyze External Address
+        The variable 'amm' in external call 'amm.addLiquidity(liquidityPoolData)' has no state variable assigned. Therefore we check whether it has been hardcoded in the
+        function.
+            No The variable `amm` is not hardcoded in the function. It is assigned the result of the call to `_transferToMeAndCheckAllowance`, which means that its value
+            is determined at runtime based on the function's inputs and not a fixed, hardcoded value within the function code itself.
+Conclusion: This function will cause REE Problem.

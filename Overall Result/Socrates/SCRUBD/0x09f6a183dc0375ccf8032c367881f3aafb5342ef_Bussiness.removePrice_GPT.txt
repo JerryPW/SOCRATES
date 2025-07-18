@@ -1,0 +1,23 @@
+
+Start analyze function: Bussiness.removePrice(uint256)
+Function Security Analysis for Bussiness.removePrice(uint256)
+    There are no modifiers should be examined in function removePrice.
+    Check direct function security
+        - function Bussiness.removePrice(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The condition erc721Address.ownerOf(tokenId) == msg.sender does not match the structures as it uses a call to another contract and not a direct
+          comparison to a locally defined xxxOwner.
+        - function Bussiness.removePrice(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code snippet does not contain any of the mentioned structures of requirement checks or conditional flows.
+External Call Analysis
+    Direct external call: ['erc721Address.ownerOf(tokenId)', 'msg.sender.transfer(prices[tokenId].fee)']
+    Analyze Transfer
+        - msg.sender.transfer(prices[tokenId].fee) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(prices[tokenId].fee)' contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - erc721Address.ownerOf(tokenId) ISN'T subjected to gas limits.
+    Remaining external call: ['erc721Address.ownerOf(tokenId)']
+    Analyze External Address
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

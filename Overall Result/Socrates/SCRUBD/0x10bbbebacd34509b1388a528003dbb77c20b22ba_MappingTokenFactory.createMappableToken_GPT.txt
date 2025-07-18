@@ -1,0 +1,28 @@
+
+Start analyze function: MappingTokenFactory.createMappableToken(string,string,uint8,uint256)
+Function Security Analysis for MappingTokenFactory.createMappableToken(string,string,uint8,uint256)
+    There are no modifiers should be examined in function createMappableToken.
+    Check direct function security
+        - function MappingTokenFactory.createMappableToken(string,string,uint8,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any conditions that involve checking if msg.sender is or is not equal to an owner or specific role directly like
+          xxxOwner, xxxAddress, Leader, or CEO so it does not match the given characteristic structures.
+        - function MappingTokenFactory.createMappableToken(string,string,uint8,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not match any of the specified structures where a variable is required to be True or False and then toggled. The code involves
+          creating a mappable token with a require statement ensuring a token hasn't already been created.
+External Call Analysis
+    Direct external call: ['InitializableProductProxy(address(mappableToken)).__InitializableProductProxy_init(address(this),_MappableToken_,abi.encodeWithSignature(__Map
+    pableToken_init(address,address,string,string,uint8,uint256),address(this),_msgSender(),name,symbol,decimals,totalSupply))']
+    Analyze Transfer
+    Analyze Gas
+        - InitializableProductProxy(address(mappableToken)).__InitializableProductProxy_init(address(this),_MappableToken_,abi.encodeWithSignature(__MappableToken_init(ad
+        dress,address,string,string,uint8,uint256),address(this),_msgSender(),name,symbol,decimals,totalSupply)) ISN'T subjected to gas limits.
+    Remaining external call: ['InitializableProductProxy(address(mappableToken)).__InitializableProductProxy_init(address(this),_MappableToken_,abi.encodeWithSignature(__
+    MappableToken_init(address,address,string,string,uint8,uint256),address(this),_msgSender(),name,symbol,decimals,totalSupply))']
+    Analyze External Address
+        The variable 'mappableToken' in external call 'InitializableProductProxy(address(mappableToken)).__InitializableProductProxy_init(address(this),_MappableToken_,ab
+        i.encodeWithSignature(__MappableToken_init(address,address,string,string,uint8,uint256),address(this),_msgSender(),name,symbol,decimals,totalSupply))' has no
+        state variable assigned. Therefore we check whether it has been hardcoded in the function.
+            No The variable `mappableToken` is not hardcoded, as it is dynamically created using the `create2` opcode with a salt and bytecode. The address for
+            `mappableToken` is calculated at runtime and depends on the inputs and the calling context. This shows that `mappableToken` is not set to a specific, constant
+            value and thus is not hardcoded.
+Conclusion: This function will cause REE Problem.

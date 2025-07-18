@@ -1,0 +1,42 @@
+
+Start analyze function: ViVICO.refund()
+Function Security Analysis for ViVICO.refund()
+    There are no modifiers should be examined in function refund.
+    Check direct function security
+        - function ViVICO.refund() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code uses require(level[msg.sender] >= 2) which restricts access based on sender's level instead of explicitly checking against
+          Owner/Address/Leader/CEO.
+        - function ViVICO.refund() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code contains the statement `require(state == State.Failed);`, followed by a series of condition checks and operations. The state
+          assignment altering the state variable, `state = True` or `state = False`, doesn't appear in the code, as those operations focus mainly on refund logic and
+          state checks like clearing balances and enabling refunds. Therefore, there's only an initial require check but it doesn't fulfill the required pattern
+          altogether.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(creator,remanent)', 'creator.transfer(address(this).balance)', 'msg.sender.transfer(holderETH)',
+    'tokenReward.transferFrom(msg.sender,address(this),holderTokens)', 'tokenReward.balanceOf(this)']
+    Analyze Transfer
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - creator.transfer(address(this).balance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(holderETH) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits.
+        - tokenReward.transferFrom(msg.sender,address(this),holderTokens) ISN'T subjected to gas limits.
+        - tokenReward.balanceOf(this) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(creator,remanent)', 'tokenReward.transferFrom(msg.sender,address(this),holderTokens)', 'tokenReward.balanceOf(this)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function provided is a constructor, as evident by its name 'constructor'. In Solidity, constructors are special functions executed during contract
+            deployment, and they typically have the name 'constructor' or match the contract name (ViVICO in this case). Additionally, it initializes the state variable
+            'tokenReward', but the value is not hardcoded since it takes '_addressOfTokenUsedAsReward' as a parameter.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code for the function is named 'constructor', indicating that it is the constructor of the contract ViVICO. Constructors are used for initial
+            setup when the contract is deployed, fitting the first characteristic.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code contains a constructor function, which is evident from the function being explicitly named 'constructor'. Constructors automatically
+            match the contract name or are explicitly labeled as 'constructor'. Therefore, this code satisfies condition 1.
+Conclusion: This function will not cause REE Problem.

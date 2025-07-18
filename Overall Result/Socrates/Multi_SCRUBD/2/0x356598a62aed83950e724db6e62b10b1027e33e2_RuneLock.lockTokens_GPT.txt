@@ -1,0 +1,42 @@
+
+Start analyze function: RuneLock.lockTokens(address,uint256,uint256)
+Function Security Analysis for RuneLock.lockTokens(address,uint256,uint256)
+    There are no modifiers should be examined in function lockTokens.
+    Check direct function security
+        - function RuneLock.lockTokens(address,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any structures that compare `msg.sender` with `xxxOwner/xxxAddress/Leader/CEO`. It only checks for allowances, release times, and
+          payment conditions.
+        - function RuneLock.lockTokens(address,uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match any of the specified patterns. It contains require statements to validate conditions but does not modify a boolean
+          variable based on these checks as described in structures 1-4.
+External Call Analysis
+    Direct external call: ['address(fee1Address).call{value:lockCost*98/100}()', 'address(fee2Address).call{value:lockCost*2/100}()',
+    'token.transferFrom(msg.sender,address(this),_amountToLock)']
+    Analyze Transfer
+    Analyze Gas
+        - address(fee1Address).call{value:lockCost*98/100}() ISN'T subjected to gas limits.
+        - address(fee2Address).call{value:lockCost*2/100}() ISN'T subjected to gas limits.
+        - token.transferFrom(msg.sender,address(this),_amountToLock) ISN'T subjected to gas limits.
+    Remaining external call: ['address(fee1Address).call{value:lockCost*98/100}()', 'address(fee2Address).call{value:lockCost*2/100}()',
+    'token.transferFrom(msg.sender,address(this),_amountToLock)']
+    Analyze External Address
+        There are ['fee1Address'] should be checked in variable fee1Address
+        Checked variables: fee1Address
+            No 1. The function 'updateFeeAddress' does not match the contract name 'RuneLock' nor is it explicitly named 'constructor', therefore it is not a constructor.
+            2. The function takes an external parameter '_newFeeAddress' which assigns a new value to the state variable 'fee1Address'. This means the state variable
+            'fee1Address' is not hardcoded in the function.  Thus, none of the given characteristics are satisfied.
+            Function Security Analysis for RuneLock.updateFeeAddress(address)
+                The modifier of function updateFeeAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon re-evaluation, the code in the modifier includes a 'require' statement verifying if 'msg.sender' equals 'owner', which matches the
+                      structure for enforcing ownership checks as per rule 1. There is no need for both lock and unlock operations since rule 2 is not applicable.
+                      Therefore, the original judgment is confirmed to be correct without structural omissions.
+        There are ['fee2Address'] should be checked in variable fee2Address
+        Checked variables: fee2Address
+            State variable fee2Address has initialized in public area after declaration.
+        The variable 'token' in external call 'token.transferFrom(msg.sender,address(this),_amountToLock)' has no state variable assigned in
+        RuneLock.lockTokens(address,uint256,uint256). Therefore we check whether it has been hardcoded in the function.
+            No The variable '_tokenAddress' is not hardcoded in the function. It is passed as an argument to the function, allowing for any address to be used when the
+            function is called.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,296 @@
+
+Start analyze function: YZYVault.stakeLPToken(uint256)
+Function Security Analysis for YZYVault.stakeLPToken(uint256)
+    There are no modifiers should be examined in function stakeLPToken.
+    Check direct function security
+        - function YZYVault.stakeLPToken(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the conditions or checks in the code provided relate to comparing msg.sender with an owner or specific privileged addresses like
+          Owner/Leader/CEO.
+        - function YZYVault.stakeLPToken(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code again, there is the statement 'require(!isContract(_msgSender()), ...);', which fits the initial part of structure 3
+          ('require(!xxx);'). However, there is no statement consistent with 'xxx = True;' following this. The function's logic continues without changing the value of
+          'isContract'. Therefore, the function does not fully satisfy any of the specified structures as both required statements are not present. Only one part of the
+          structure is matched, not both statements needed.
+External Call Analysis
+    Direct external call: ['_yzyETHV2Pair.transferFrom(_msgSender(),address(this),amount)']
+    Analyze Transfer
+    Analyze Gas
+        - _yzyETHV2Pair.transferFrom(_msgSender(),address(this),amount) ISN'T subjected to gas limits.
+    Remaining external call: ['_yzyETHV2Pair.transferFrom(_msgSender(),address(this),amount)']
+    Analyze External Address
+        There are ['_yzyETHV2Pair'] should be checked in variable _yzyETHV2Pair
+        Checked variables: _yzyETHV2Pair
+            No 1. The function 'changeYzyETHPair' does not match the contract name 'YZYVault' and is not named 'constructor', so it is not a constructor function. 2. The
+            state variable '_yzyETHV2Pair' is being assigned a value that is passed as an argument to the function, not a hardcoded value.
+            Function Security Analysis for YZYVault.changeYzyETHPair(address)
+                The modifier of function changeYzyETHPair are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The code contains 'require(_owner == _msgSender())', which enforces that only the owner can execute the function. This matches rule 1, which
+                      confirms that the function has an ownership control structure.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: YZYVault._sendLotteryAmount()
+Function Security Analysis for YZYVault._sendLotteryAmount()
+    There are no modifiers should be examined in function _sendLotteryAmount.
+    Check direct function security
+        - function YZYVault._sendLotteryAmount() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified patterns that restrict access based on the msg.sender being a specific owner or address, such as
+          require(msg.sender == ...), if (msg.sender != ...), or assert(msg.sender == ...).
+        - function YZYVault._sendLotteryAmount() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code checks a condition with `!_enabledLottery`, but it does not subsequently set `_enabledLottery` to `true`. Therefore, the function does not
+          match any of the specified patterns, i.e., setting a boolean variable after a check with `require`, `if` statements, and optional toggling back. Consequently,
+          the answer is 'No'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['claimYzyAvailableReward', 'claimYzyReward', 'claimSwapReward', 'unstake', 'stake', 'stakeLPToken', 'claimSwapAvailableReward']
+        Function Security Analysis for YZYVault.claimYzyAvailableReward()
+            There are no modifiers should be examined in function claimYzyAvailableReward.
+            Check direct function security
+                - function YZYVault.claimYzyAvailableReward() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not have any constraints or checks on the 'msg.sender' being a specific address such as xxxOwner/xxxAddress/Leader/CEO.
+                - function YZYVault.claimYzyAvailableReward() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not contain any of the specified structures. It uses 'require' statements, but doesn't set a boolean variable after it.
+External Call Analysis
+    Direct external call: ['_yzy.transfer(_msgSender(),amount)']
+    Analyze Transfer
+        - _yzy.transfer(_msgSender(),amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - _yzy.transfer(_msgSender(),amount) ISN'T subjected to gas limits.
+    Remaining external call: ['_yzy.transfer(_msgSender(),amount)']
+    Analyze External Address
+        There are ['_yzy'] should be checked in variable _yzy
+        Checked variables: _yzy
+            No 1. The function name 'changeYzyAddress' does not match the contract name 'YZYVault', and it is neither named 'constructor', so it is not a constructor.  2.
+            The function 'changeYzyAddress' allows setting the variable '_yzy' to a value given by the input parameter 'yzy'. This shows that the '_yzy' state variable is
+            not hardcoded in the function.
+            Function Security Analysis for YZYVault.changeYzyAddress(address)
+                The modifier of function changeYzyAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier `onlyOwner()` contains the statement `require(_owner == _msgSender())`, which is a direct enforcement that only the owner can
+                      execute the function, thus satisfying Rule 1. There is no need to check for Rule 2, as Rule 1 is already satisfied. No structural omissions are
+                      found as Rule 1 criteria is clearly met.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: YZYVault.claimYzyReward()
+Function Security Analysis for YZYVault.claimYzyReward()
+    There are no modifiers should be examined in function claimYzyReward.
+    Check direct function security
+        - function YZYVault.claimYzyReward() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any access control mechanisms related to 'msg.sender'. It doesn't check if 'msg.sender' is equal to any specific owner or
+          leader address, nor does it ensure the caller is in an authorized role.
+        - function YZYVault.claimYzyReward() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the required structures. The function 'claimYzyReward' does not have a require statement followed by an assignment to a
+          boolean variable 'xxx' with the specific values 'True' or 'False' as per the given structures.
+External Call Analysis
+    Direct external call: ['_yzy.burnFromVault(burnAmount)']
+    Analyze Transfer
+    Analyze Gas
+        - _yzy.burnFromVault(burnAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['_yzy.burnFromVault(burnAmount)']
+    Analyze External Address
+        There are ['_yzy'] should be checked in variable _yzy
+        Checked variables: _yzy
+            No The function 'changeYzyAddress' is neither a constructor nor does it hardcode the '_yzy' state variable. The function accesses the '_yzy' state variable
+            via a parameter 'yzy' passed to it, thus allowing for dynamic assignment rather than hardcoding. Additionally, the function name does not match the contract
+            name 'YZYVault', nor is it named 'constructor'.
+            Function Security Analysis for YZYVault.changeYzyAddress(address)
+                The modifier of function changeYzyAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The judgment is based on the first rule. The code in the modifier enforces that only the owner can execute the function by using the
+                      statement require(_owner == _msgSender(), "Ownable: caller is not the owner"). This matches the specified structure for checking ownership.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: YZYVault.claimSwapReward()
+Function Security Analysis for YZYVault.claimSwapReward()
+    There are no modifiers should be examined in function claimSwapReward.
+    Check direct function security
+        - function YZYVault.claimSwapReward() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any of the specific patterns such as require, if conditions, or assert related to msg.sender and predefined roles like Owner or
+          Address. It only operates on msg.sender with context-specific methods and manipulations, without access restriction based on msg.sender role.
+        - function YZYVault.claimSwapReward() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures, such as checking a condition with 'require' or throwing an exception based on a boolean
+          'xxx', and subsequently changing the value of 'xxx'.
+External Call Analysis
+    Direct external call: ['_yzy.burnFromVault(burnAmount)']
+    Analyze Transfer
+    Analyze Gas
+        - _yzy.burnFromVault(burnAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['_yzy.burnFromVault(burnAmount)']
+    Analyze External Address
+        There are ['_yzy'] should be checked in variable _yzy
+        Checked variables: _yzy
+            No 1. The provided function is not a constructor because its name is 'changeYzyAddress' and does not match the contract name 'YZYVault', nor is it explicitly
+            named 'constructor'.  2. The state variable '_yzy' is not hardcoded in the function 'changeYzyAddress'. It is assigned a value based on the parameter 'yzy',
+            which is passed to the function during its execution.  Since neither characteristic is met, the answer is 'No'.
+            Function Security Analysis for YZYVault.changeYzyAddress(address)
+                The modifier of function changeYzyAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier uses 'require(_owner == _msgSender())' statement to check if the caller is the owner, enforcing that only the owner can execute
+                      the function. This matches characteristic 1 as listed. There are no structural omissions for this characteristic. Characteristic 2 is not applicable
+                      since the code does not contain locking or unlocking operations.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: YZYVault.safeYzyTransfer(address,uint256)
+Function Security Analysis for YZYVault.safeYzyTransfer(address,uint256)
+    There are no modifiers should be examined in function safeYzyTransfer.
+    Check direct function security
+        - function YZYVault.safeYzyTransfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check msg.sender against any roles such as xxxOwner/xxxAddress/Leader/CEO using require, assert, if, or throw statements.
+        - function YZYVault.safeYzyTransfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not have any of the specified structures. It does not use a 'require' statement or 'if(!xxx) throw' pattern with variable toggling
+          of true/false.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['stake', 'claimYzyAvailableReward', 'unstake', 'claimYzyReward', 'stakeLPToken']
+        Function Security Analysis for YZYVault.stake()
+            There are no modifiers should be examined in function stake.
+            Check direct function security
+                - function YZYVault.stake() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code checks for contract addresses and minimum deposit but does not match any of the predefined structures where msg.sender is compared to
+                  an owner or similar roles.
+                - function YZYVault.stake() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: Upon reviewing the code again, there is 'require(!isContract(_msgSender()), ...)', but there is no subsequent statement
+                  'isContract(_msgSender()) = True;'. Therefore, the structure is incomplete based on the specified patterns which require both statements to be present.
+                  Hence, none of the full structures are matched.
+External Call Analysis
+    Direct external call: ['_yzy.transfer(to,yzyBal)', '_yzy.transfer(to,amount)']
+    Analyze Transfer
+        - _yzy.transfer(to,yzyBal) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - _yzy.transfer(to,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - _yzy.transfer(to,yzyBal) ISN'T subjected to gas limits.
+        - _yzy.transfer(to,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['_yzy.transfer(to,yzyBal)', '_yzy.transfer(to,amount)']
+    Analyze External Address
+        There are ['_yzy'] should be checked in variable _yzy
+        Checked variables: _yzy
+            No The function 'changeYzyAddress' neither has the name of the contract 'YZYVault' nor is it named 'constructor', so it is not a constructor. Additionally,
+            the function does not have any hardcoded value for the state variable '_yzy', as it assigns '_yzy' based on the input parameter 'yzy'. The state variable is
+            set by a dynamic address input, not a hardcoded value.
+            Function Security Analysis for YZYVault.changeYzyAddress(address)
+                The modifier of function changeYzyAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The code in the modifier uses a `require` statement that checks if the `_msgSender()` is equal to `_owner`, which matches characteristic 1,
+                      indicating enforcement of owner-only access.
+        There are ['_yzy'] should be checked in variable _yzy
+        Checked variables: _yzy
+            No The provided code does not match the contract name (YZYVault) and is not explicitly named 'constructor', so it is not a constructor function. The state
+            variable '_yzy' is not hardcoded in the provided function; it is set based on the input parameter value 'yzy', which is determined at runtime. Therefore,
+            neither of the specified characteristics are satisfied.
+            Function Security Analysis for YZYVault.changeYzyAddress(address)
+                The modifier of function changeYzyAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Rechecking the code, the modifier `onlyOwner` contains a `require` statement with the condition `_owner == _msgSender()`. This matches rule
+                      1, where the modifier enforces that only the owner can execute the function. There are no indications of a locking mechanism that would satisfy rule
+                      2. Thus, the previous judgment remains correct according to rule 1.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: YZYVault._swapAndClaimTokens(uint256)
+Function Security Analysis for YZYVault._swapAndClaimTokens(uint256)
+    There are no modifiers should be examined in function _swapAndClaimTokens.
+    Check direct function security
+        - function YZYVault._swapAndClaimTokens(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check or require anything related to msg.sender being a specific owner, address, leader, or CEO.
+        - function YZYVault._swapAndClaimTokens(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain a structure that matches any of the specified patterns: there are no require statements setting a variable (xxx) to either
+          True or False, or checking a variable (xxx) for equality or negation.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['claimSwapReward', 'unstake', 'stake', 'stakeLPToken', 'claimSwapAvailableReward']
+        Function Security Analysis for YZYVault.claimSwapReward()
+            There are no modifiers should be examined in function claimSwapReward.
+            Check direct function security
+                - function YZYVault.claimSwapReward() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any statement that checks whether `msg.sender` is equal to an owner or specific role like Leader, CEO, etc.
+                - function YZYVault.claimSwapReward() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not follow any of the four specified structures.
+External Call Analysis
+    Direct external call: ['IERC20(_weth).transfer(_msgSender(),wethTokenReward)']
+    Analyze Transfer
+        - IERC20(_weth).transfer(_msgSender(),wethTokenReward) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - IERC20(_weth).transfer(_msgSender(),wethTokenReward) ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(_weth).transfer(_msgSender(),wethTokenReward)']
+    Analyze External Address
+        There are ['_weth'] should be checked in variable _weth
+        Checked variables: _weth
+            Yes The function provided is named 'constructor' which indicates that it is a constructor function. Constructor functions are methods used in Solidity to
+            initialize new contracts and typically set the initial state of a contract. In this code snippet, the constructor is setting initial values for several state
+            variables, including '_weth'. Therefore, it satisfies the first characteristic for determining the judgment.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: YZYVault.swapTokensForTokens(address,address,uint256,address)
+Function Security Analysis for YZYVault.swapTokensForTokens(address,address,uint256,address)
+    There are no modifiers should be examined in function swapTokensForTokens.
+    Check direct function security
+        - function YZYVault.swapTokensForTokens(address,address,uint256,address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks on `msg.sender` against roles like xxxOwner, xxxAddress, Leader, or CEO with require, if, or assert statements.
+        - function YZYVault.swapTokensForTokens(address,address,uint256,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require' statements or 'if(!xxx) throw' constructs which are necessary for it to match any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_swapAndClaimTokens', 'claimSwapReward', 'unstake', 'stake', 'stakeLPToken', 'claimSwapAvailableReward']
+        Function Security Analysis for YZYVault._swapAndClaimTokens(uint256)
+            There are no modifiers should be examined in function _swapAndClaimTokens.
+            Check direct function security
+                - function YZYVault._swapAndClaimTokens(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any checks involving msg.sender against specific roles like owner, address, leader, or CEO as specified in the
+                  criteria.
+                - function YZYVault._swapAndClaimTokens(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code doesn't contain any of the specified structures involving setting a boolean variable after a require or through an if statement that
+                  results in a throw. It primarily consists of require statements that check conditions, but no boolean state changes directly after these checks within
+                  the function.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['claimSwapReward', 'unstake', 'stake', 'stakeLPToken', 'claimSwapAvailableReward']
+                Function Security Analysis for YZYVault.claimSwapReward()
+                    There are no modifiers should be examined in function claimSwapReward.
+                    Check direct function security
+                        - function YZYVault.claimSwapReward() has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not contain any requirement or condition checking for msg.sender against specific xxxOwner/xxxAddress/Leader/CEO, nor
+                          does it perform any assert or throw related to msg.sender. Therefore, it doesn't meet any of the specified patterns.
+                        - function YZYVault.claimSwapReward() has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not contain any of the required structures. Specifically, there are no statements using require() or if() to check for
+                          !xxx or xxx == True/False, followed by setting the same variable to True or False.
+External Call Analysis
+    Direct external call: ['IERC20(fromTokenAddress).approve(address(_uniswapV2Router),tokenAmount)',
+    '_uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(tokenAmount,0,path,receivedAddress,block.timestamp)']
+    Analyze Transfer
+    Analyze Gas
+        - IERC20(fromTokenAddress).approve(address(_uniswapV2Router),tokenAmount) ISN'T subjected to gas limits.
+        - _uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(tokenAmount,0,path,receivedAddress,block.timestamp) ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(fromTokenAddress).approve(address(_uniswapV2Router),tokenAmount)',
+    '_uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(tokenAmount,0,path,receivedAddress,block.timestamp)']
+    Analyze External Address
+        The variable 'fromTokenAddress' in external call 'IERC20(fromTokenAddress).approve(address(_uniswapV2Router),tokenAmount)' has no state variable assigned in
+        YZYVault.swapTokensForTokens(address,address,uint256,address). Considering that it is an internal/private function, we analyze the function inputs.
+        Analyze External Address
+            There are ['_yzy'] should be checked in variable _yzy
+            Checked variables: _yzy
+                No 1. The function is not a constructor because its name does not match the contract name 'YZYVault', and it is not explicitly named 'constructor'. 2. The
+                function 'changeYzyAddress' uses the state variable '_yzy', but it does not hardcode a value to it; instead, it assigns it based on an external input
+                parameter 'yzy'.
+            Function Security Analysis for YZYVault.changeYzyAddress(address)
+                The modifier of function changeYzyAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: 1. The modifier enforces that only the owner can execute the function. It uses `require(_owner == _msgSender())` to check if the caller is
+                      the owner.
+            There are ['_weth'] should be checked in variable _weth
+            Checked variables: _weth
+                Yes The given code is a constructor of the contract YZYVault. This is determined by the presence of the function named 'constructor', which is explicitly
+                indicated in the code. The code initializes various state variables, including '_weth'. However, the '_weth' variable is not hardcoded but rather is
+                assigned a value through a parameter passed to the constructor. Hence, only the first characteristic is satisfied.
+            There are ['_weth'] should be checked in variable _weth
+            Checked variables: _weth
+                Yes The provided code is indeed a constructor for the contract named 'YZYVault'. This is evident because the function name is 'constructor', which
+                explicitly makes it a constructor function. Constructors do not follow the rule of having the same name as the contract after Solidity version 0.4.22, and
+                instead use 'constructor' as the keyword to define them. Therefore, the code satisfies the first characteristic for checking a constructor.
+        There are ['_uniswapV2Router'] should be checked in variable _uniswapV2Router
+        Checked variables: _uniswapV2Router
+            Yes The given code represents a constructor function for the smart contract named YZYVault. This is evident because the function is explicitly defined as a
+            'constructor', which satisfies the first characteristic for determining the function's significance according to the provided rules. Even though the state
+            variable '_uniswapV2Router' is hardcoded within the constructor function, the primary reason this function satisfies the characteristic is that it is a
+            constructor; therefore, the function satisfies the condition.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,21 @@
+
+Start analyze function: GameWave.startPayments()
+Function Security Analysis for GameWave.startPayments()
+    There are no modifiers should be examined in function startPayments.
+    Check direct function security
+        - function GameWave.startPayments() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check the identity of `msg.sender`. It only has a `require` statement that checks `block.timestamp`. There is no condition involving
+          `msg.sender` which would fit the required characteristics.
+        - function GameWave.startPayments() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures (1) 'require(xxx == True); xxx = False;', or (2) 'require(xxx == False); xxx = True;', or (3)
+          'require(!xxx); xxx = True;', or (4) 'if (!xxx) throw; xxx = true;'. The require statement in the code checks 'block.timestamp >= paymentsTime + 30 days', which
+          doesn't match any of the specified patterns.
+External Call Analysis
+    Direct external call: ['owner.transfer(totalPaymentAmount.sub(lastTotalPaymentAmount))']
+    Analyze Transfer
+        - owner.transfer(totalPaymentAmount.sub(lastTotalPaymentAmount)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains the '.transfer(' keyword as shown in 'owner.transfer(totalPaymentAmount.sub(lastTotalPaymentAmount))'.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

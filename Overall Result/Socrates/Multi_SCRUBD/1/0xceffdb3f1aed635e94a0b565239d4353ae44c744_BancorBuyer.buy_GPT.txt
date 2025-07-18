@@ -1,0 +1,19 @@
+
+Start analyze function: BancorBuyer.buy()
+Function Security Analysis for BancorBuyer.buy()
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function BancorBuyer.buy() has no security assurance protected by checking the authority of msg.sender
+          Reason: The given code does not have any checks on msg.sender with any of the specified owner/address/leader roles as required by the listed patterns.
+        - function BancorBuyer.buy() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures for a 'Yes' judgment: there is no `require(xxx == True)`, `require(xxx == False)`,
+          `require(!xxx)`, or `if(!xxx) throw` followed by the specific modifications to the variable `xxx` as described in the characteristics.
+External Call Analysis
+    Direct external call: ['sale.transfer(this.balance)']
+    Analyze Transfer
+        - sale.transfer(this.balance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, which satisfies rule 1.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

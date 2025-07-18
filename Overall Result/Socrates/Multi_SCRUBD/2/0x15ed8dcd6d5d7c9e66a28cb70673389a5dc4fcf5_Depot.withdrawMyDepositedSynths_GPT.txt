@@ -1,0 +1,24 @@
+
+Start analyze function: Depot.withdrawMyDepositedSynths()
+Function Security Analysis for Depot.withdrawMyDepositedSynths()
+    There are no modifiers should be examined in function withdrawMyDepositedSynths.
+    Check direct function security
+        - function Depot.withdrawMyDepositedSynths() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any of the specified structures involving checks against msg.sender and a specific owner address or role such as
+          Owner, Address, Leader, or CEO.
+        - function Depot.withdrawMyDepositedSynths() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not include any of the specified structures that involve requiring a variable to be true or false, then changing its state.
+External Call Analysis
+    Direct external call: ['synth.transfer(msg.sender,synthsToSend)']
+    Analyze Transfer
+        - synth.transfer(msg.sender,synthsToSend) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - synth.transfer(msg.sender,synthsToSend) ISN'T subjected to gas limits.
+    Remaining external call: ['synth.transfer(msg.sender,synthsToSend)']
+    Analyze External Address
+        There are ['synth'] should be checked in variable synth
+        Checked variables: synth
+            Yes The provided code includes a constructor for a contract (since the first function is explicitly named "constructor"). Additionally, the state variable
+            'synth' is being set both in this constructor and in the external function 'setSynth'. As the constructor is present, the function meets the first criterion
+            (it's a constructor) in the list of characteristics.
+Conclusion: This function will not cause REE Problem.

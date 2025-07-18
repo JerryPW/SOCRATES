@@ -1,0 +1,33 @@
+
+Start analyze function: Infernu.claimETH(address)
+Function Security Analysis for Infernu.claimETH(address)
+    There are no modifiers should be examined in function claimETH.
+    Check direct function security
+        - function Infernu.claimETH(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not use any of the specified structures involving msg.sender.
+        - function Infernu.claimETH(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: In the code, after `require(!_isWithdrawing);`, the negation operation `_isWithdrawing=true;` is performed immediately. However, there is a significant
+          part of the main logic that executes between this and `_isWithdrawing=false;` which is intended to reset the flag. Hence, the negation operation does not
+          complete immediately before the main logic of the function, even though it sets the state initially. Therefore, it does not fully meet the requirement.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['Rewards', '_taxedTransfer', 'transferFrom', 'transfer', '_transfer']
+        Function Security Analysis for Infernu.Rewards()
+            There are no modifiers should be examined in function Rewards.
+            Check direct function security
+                - function Infernu.Rewards() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any conditional checks on 'msg.sender' related to owner or authority verification.
+                - function Infernu.Rewards() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not match any of the required structures: there are no conditional checks or modifications for any variable that match
+                  the criteria listed (require statement or if throw structure with a boolean variable set to both true and false).
+External Call Analysis
+    Direct external call: ['_uniswapv2Router.swapExactETHForTokensSupportingFeeOnTransferTokens{value:amount}(0,path,addr,block.timestamp)']
+    Analyze Transfer
+    Analyze Gas
+        - _uniswapv2Router.swapExactETHForTokensSupportingFeeOnTransferTokens{value:amount}(0,path,addr,block.timestamp) ISN'T subjected to gas limits.
+    Remaining external call: ['_uniswapv2Router.swapExactETHForTokensSupportingFeeOnTransferTokens{value:amount}(0,path,addr,block.timestamp)']
+    Analyze External Address
+        There are ['_uniswapv2Router'] should be checked in variable _uniswapv2Router
+        Checked variables: _uniswapv2Router
+            Yes 1. The provided code is a constructor. This is evident from its presence in the constructor function, which is explicitly named 'constructor'. 2. The
+            state variable '_uniswapv2Router' is assigned a hardcoded value 'IUniswapV2Router02(UniswapV2Router)' within this constructor code.
+Conclusion: This function will not cause REE Problem.

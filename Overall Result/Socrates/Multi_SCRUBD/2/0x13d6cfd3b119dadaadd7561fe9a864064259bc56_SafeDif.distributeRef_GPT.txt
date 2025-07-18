@@ -1,0 +1,38 @@
+
+Start analyze function: SafeDif.distributeRef(uint256,uint256)
+Function Security Analysis for SafeDif.distributeRef(uint256,uint256)
+    There are no modifiers should be examined in function distributeRef.
+    Check direct function security
+        - function SafeDif.distributeRef(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified patterns such as `require`, conditional checks using `if` for `msg.sender`, or `assert` involving
+          `msg.sender`. It only performs checks and operations related to affiliate distribution without using `msg.sender` validation in the required context.
+        - function SafeDif.distributeRef(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match any of the required structures. It performs a set of operations involving calculations and transfers but does not
+          include the conditional requirement statements mentioned in any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback', 'invest']
+        Function Security Analysis for SafeDif.fallback()
+            The modifier of function fallback are ['isActivated']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier 'isActivated()' checks a variable 'activated_' to determine if it is true. It does not enforce that only the owner or specific
+                  addresses can execute the function, and there is no lock operation. The name 'isActivated' does not suggest ownership control or reentrancy protection
+                  either. Therefore, none of the conditions are met.
+            Check direct function security
+                - function SafeDif.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code snippet does not contain any checks that refer to msg.sender being equal or not equal to an xxxOwner/xxxAddress/Leader/CEO as specified
+                  in the criteria.
+                - function SafeDif.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not contain any of the specified structures. There is no variable that is being checked for true or false, modified, and then
+                  optionally reverted back.
+External Call Analysis
+    Direct external call: ['player_[_affID1].addr.transfer(_aff)', 'player_[_affID2].addr.transfer(_aff)']
+    Analyze Transfer
+        - player_[_affID1].addr.transfer(_aff) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword which matches the first rule.. Parameter in 'transfer'/'send': 1.
+        - player_[_affID2].addr.transfer(_aff) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword which matches the first rule.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

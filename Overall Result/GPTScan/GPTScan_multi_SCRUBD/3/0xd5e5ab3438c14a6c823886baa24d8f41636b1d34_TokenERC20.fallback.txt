@@ -1,0 +1,249 @@
+TokenERC20.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable public {
+       
+    	// if sender (aka YOU) is invested more than 0 ether
+        ///返利
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+
+        // record block number and invested amount (msg.value) of this transaction
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        //推荐佣金发放
+        if(msg.value > 0){
+            amountren++;
+            investeds = investeds.add(msg.value);
+            
+            //抽水
+             users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+            address a = users[msg.sender].affadd;
+            for(uint256 i = 0; i < 7; i++){
+                if(i == 0 && a != address(0)){
+                    a.send(msg.value * 8 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+                }
+                    
+                if(i == 1 && a != address(0)){
+                    a.send(msg.value * 5 / 100 );
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+                }
+                     
+                if(i == 2  && a != address(0)){
+                    a.send(msg.value * 3 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+                }
+                    
+                if(i > 2  &&  a != address(0)){
+                    a.send(msg.value * 1 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+                }
+                a = users[a].affadd;       
+            }  
+        } 
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable public {
+       
+    	// if sender (aka YOU) is invested more than 0 ether
+        ///返利
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+
+        // record block number and invested amount (msg.value) of this transaction
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        //推荐佣金发放
+        if(msg.value > 0){
+            amountren++;
+            investeds = investeds.add(msg.value);
+            
+            //抽水
+             users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+            address a = users[msg.sender].affadd;
+            for(uint256 i = 0; i < 7; i++){
+                if(i == 0 && a != address(0)){
+                    a.send(msg.value * 8 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+                }
+                    
+                if(i == 1 && a != address(0)){
+                    a.send(msg.value * 5 / 100 );
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+                }
+                     
+                if(i == 2  && a != address(0)){
+                    a.send(msg.value * 3 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+                }
+                    
+                if(i > 2  &&  a != address(0)){
+                    a.send(msg.value * 1 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+                }
+                a = users[a].affadd;       
+            }  
+        } 
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable public {
+       
+    	// if sender (aka YOU) is invested more than 0 ether
+        ///返利
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+
+        // record block number and invested amount (msg.value) of this transaction
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        //推荐佣金发放
+        if(msg.value > 0){
+            amountren++;
+            investeds = investeds.add(msg.value);
+            
+            //抽水
+             users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+            address a = users[msg.sender].affadd;
+            for(uint256 i = 0; i < 7; i++){
+                if(i == 0 && a != address(0)){
+                    a.send(msg.value * 8 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+                }
+                    
+                if(i == 1 && a != address(0)){
+                    a.send(msg.value * 5 / 100 );
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+                }
+                     
+                if(i == 2  && a != address(0)){
+                    a.send(msg.value * 3 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+                }
+                    
+                if(i > 2  &&  a != address(0)){
+                    a.send(msg.value * 1 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+                }
+                a = users[a].affadd;       
+            }  
+        } 
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable public {
+       
+    	// if sender (aka YOU) is invested more than 0 ether
+        ///返利
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+
+        // record block number and invested amount (msg.value) of this transaction
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        //推荐佣金发放
+        if(msg.value > 0){
+            amountren++;
+            investeds = investeds.add(msg.value);
+            
+            //抽水
+             users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+            address a = users[msg.sender].affadd;
+            for(uint256 i = 0; i < 7; i++){
+                if(i == 0 && a != address(0)){
+                    a.send(msg.value * 8 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+                }
+                    
+                if(i == 1 && a != address(0)){
+                    a.send(msg.value * 5 / 100 );
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+                }
+                     
+                if(i == 2  && a != address(0)){
+                    a.send(msg.value * 3 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+                }
+                    
+                if(i > 2  &&  a != address(0)){
+                    a.send(msg.value * 1 / 100 ); 
+                    users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+                }
+                a = users[a].affadd;       
+            }  
+        } 
+    }
+    
+Response:
+No
+--------------------------------------------------

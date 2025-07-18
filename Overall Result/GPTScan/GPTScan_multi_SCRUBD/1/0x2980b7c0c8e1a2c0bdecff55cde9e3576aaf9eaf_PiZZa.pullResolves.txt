@@ -1,0 +1,59 @@
+PiZZa.pullResolves: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function pullResolves(uint amount) public returns (uint forfeiture){
+		address sender = msg.sender;
+		uint resolves = resolveWeight[ sender ];
+		require(amount <= resolves && amount > 0);
+		require(amount < dissolvingResolves);//"you can't forfeit the last resolve"
+
+		uint yourTotalEarnings = (uint)((int256)(resolves * earningsPerResolve) - payouts[sender]);
+		uint forfeitedEarnings = yourTotalEarnings * amount / resolves;
+
+		// Update the payout array so that the "resolve shareholder" cannot claim resolveEarnings on previous staked resolves.
+		payouts[sender] += (int256)(forfeitedEarnings) - (int256)(earningsPerResolve * amount);
+
+		resolveWeight[sender] -= amount;
+		dissolvingResolves -= amount;
+		// The Ether value per token is increased proportionally.
+		earningsPerResolve += forfeitedEarnings / dissolvingResolves;
+
+		resolveToken.transfer( sender, amount );
+		emit PullResolves( sender, amount, forfeitedEarnings / scaleFactor);
+		return forfeitedEarnings / scaleFactor;
+	}
+Response:
+{
+  "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function pullResolves(uint amount) public returns (uint forfeiture){
+		address sender = msg.sender;
+		uint resolves = resolveWeight[ sender ];
+		require(amount <= resolves && amount > 0);
+		require(amount < dissolvingResolves);//"you can't forfeit the last resolve"
+
+		uint yourTotalEarnings = (uint)((int256)(resolves * earningsPerResolve) - payouts[sender]);
+		uint forfeitedEarnings = yourTotalEarnings * amount / resolves;
+
+		// Update the payout array so that the "resolve shareholder" cannot claim resolveEarnings on previous staked resolves.
+		payouts[sender] += (int256)(forfeitedEarnings) - (int256)(earningsPerResolve * amount);
+
+		resolveWeight[sender] -= amount;
+		dissolvingResolves -= amount;
+		// The Ether value per token is increased proportionally.
+		earningsPerResolve += forfeitedEarnings / dissolvingResolves;
+
+		resolveToken.transfer( sender, amount );
+		emit PullResolves( sender, amount, forfeitedEarnings / scaleFactor);
+		return forfeitedEarnings / scaleFactor;
+	}
+    
+Response:
+No
+--------------------------------------------------

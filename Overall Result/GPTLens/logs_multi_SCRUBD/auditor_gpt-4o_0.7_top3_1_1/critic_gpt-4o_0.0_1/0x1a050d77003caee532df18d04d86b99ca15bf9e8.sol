@@ -1,0 +1,35 @@
+[
+    {
+        "function_name": "withdraw",
+        "vulnerability": "Reentrancy vulnerability",
+        "criticism": "The reasoning is correct. The function does not update the player's balance before sending Ether, which could potentially allow for a reentrancy attack. However, the severity and profitability of this vulnerability are dependent on the balance of the contract and the gas cost of the reentrant call. If the contract balance is low or the gas cost is high, the profitability of the attack could be low.",
+        "correctness": 8,
+        "severity": 7,
+        "profitability": 5,
+        "reason": "The `withdraw` function sends Ether to the player's address before updating the player's balance. This can allow a reentrant call back into the contract to withdraw funds multiple times before the balance is updated, potentially draining the contract.",
+        "code": "function withdraw() isActivated() isHuman() public {\n    uint256 _rID = rID_;\n    uint256 _now = now;\n    uint256 _pID = pIDxAddr_[msg.sender];\n    uint256 _eth;\n\n    if (_now > round_[_rID].end && round_[_rID].ended == false && round_[_rID].plyr != 0) {\n        POOHMODatasets.EventReturns memory _eventData_;\n        round_[_rID].ended = true;\n        _eventData_ = endRound(_eventData_);\n        _eth = withdrawEarnings(_pID);\n        if (_eth > 0)\n            plyr_[_pID].addr.transfer(_eth);\n\n        _eventData_.compressedData = _eventData_.compressedData + (_now * 1000000000000000000);\n        _eventData_.compressedIDs = _eventData_.compressedIDs + _pID;\n\n        emit POOHMOevents.onWithdrawAndDistribute (\n            msg.sender,\n            plyr_[_pID].name,\n            _eth,\n            _eventData_.compressedData,\n            _eventData_.compressedIDs,\n            _eventData_.winnerAddr,\n            _eventData_.winnerName,\n            _eventData_.amountWon,\n            _eventData_.newPot,\n            _eventData_.POOHAmount,\n            _eventData_.genAmount\n        );\n    } else {\n        _eth = withdrawEarnings(_pID);\n        if (_eth > 0)\n            plyr_[_pID].addr.transfer(_eth);\n        \n        emit POOHMOevents.onWithdraw(_pID, msg.sender, plyr_[_pID].name, _eth, _now);\n    }\n}",
+        "file_name": "0x1a050d77003caee532df18d04d86b99ca15bf9e8.sol"
+    },
+    {
+        "function_name": "distributeExternal",
+        "vulnerability": "Unchecked call vulnerability",
+        "criticism": "The reasoning is correct. The function does not check the success of the call, which could potentially leave the contract in an inconsistent state if the call fails. However, the severity and profitability of this vulnerability are dependent on the balance of the contract and the ability of an attacker to cause the call to fail. If the contract balance is low or the attacker cannot cause the call to fail, the profitability of the attack could be low.",
+        "correctness": 8,
+        "severity": 6,
+        "profitability": 4,
+        "reason": "The function sends Ether using `call` without checking the success of the transaction. This can be exploited by an attacker who can prevent the call from succeeding, potentially leaving the contract in an inconsistent state.",
+        "code": "function distributeExternal(uint256 _rID, uint256 _pID, uint256 _eth, uint256 _affID, uint256 _team, POOHMODatasets.EventReturns memory _eventData_) private returns(POOHMODatasets.EventReturns) {\n    uint256 _dev = _eth / 100;\n    uint256 _POOH = 0;\n\n    if (!address(admin).call.value(_dev)()) {\n        _POOH = _dev;\n        _dev = 0;\n    }\n\n    uint256 _aff = _eth / 10;\n\n    if (_affID != _pID && plyr_[_affID].name != '') {\n        plyr_[_affID].aff = _aff.add(plyr_[_affID].aff);\n        emit POOHMOevents.onAffiliatePayout(_affID, plyr_[_affID].addr, plyr_[_affID].name, _rID, _pID, _aff, now);\n    } else {\n        _POOH = _POOH.add(_aff);\n    }\n\n    _POOH = _POOH.add((_eth.mul(fees_[_team].pooh)) / (100));\n\n    if (_POOH > 0) {\n        flushDivs.call.value(_POOH)(bytes4(keccak256(\"donate()\")));\n        _eventData_.POOHAmount = _POOH.add(_eventData_.POOHAmount);\n    }\n\n    return(_eventData_);\n}",
+        "file_name": "0x1a050d77003caee532df18d04d86b99ca15bf9e8.sol"
+    },
+    {
+        "function_name": "endRound",
+        "vulnerability": "Unchecked call vulnerability",
+        "criticism": "The reasoning is correct. Similar to the `distributeExternal` function, `endRound` uses `call` to send Ether without verifying the success of the transaction, potentially leaving the contract vulnerable to unexpected behaviors if the call fails. However, the severity and profitability of this vulnerability are dependent on the balance of the contract and the ability of an attacker to cause the call to fail. If the contract balance is low or the attacker cannot cause the call to fail, the profitability of the attack could be low.",
+        "correctness": 8,
+        "severity": 6,
+        "profitability": 4,
+        "reason": "Similar to the `distributeExternal` function, `endRound` uses `call` to send Ether without verifying the success of the transaction, potentially leaving the contract vulnerable to unexpected behaviors if the call fails.",
+        "code": "function endRound(POOHMODatasets.EventReturns memory _eventData_) private returns (POOHMODatasets.EventReturns) {\n    uint256 _rID = rID_;\n    uint256 _winPID = round_[_rID].plyr;\n    uint256 _winTID = round_[_rID].team;\n    uint256 _pot = round_[_rID].pot;\n\n    uint256 _win = (_pot.mul(48)) / 100;\n    uint256 _dev = (_pot / 50);\n    uint256 _gen = (_pot.mul(potSplit_[_winTID].gen)) / 100;\n    uint256 _POOH = (_pot.mul(potSplit_[_winTID].pooh)) / 100;\n    uint256 _res = (((_pot.sub(_win)).sub(_dev)).sub(_gen)).sub(_POOH);\n\n    uint256 _ppt = (_gen.mul(1000000000000000000)) / (round_[_rID].keys);\n    uint256 _dust = _gen.sub((_ppt.mul(round_[_rID].keys)) / 1000000000000000000);\n    if (_dust > 0) {\n        _gen = _gen.sub(_dust);\n        _res = _res.add(_dust);\n    }\n\n    plyr_[_winPID].win = _win.add(plyr_[_winPID].win);\n    admin.transfer(_dev);\n    flushDivs.call.value(_POOH)(bytes4(keccak256(\"donate()\")));\n\n    round_[_rID].mask = _ppt.add(round_[_rID].mask);\n\n    _eventData_.compressedData = _eventData_.compressedData + (round_[_rID].end * 1000000);\n    _eventData_.compressedIDs = _eventData_.compressedIDs + (_winPID * 100000000000000000000000000) + (_winTID * 100000000000000000);\n    _eventData_.winnerAddr = plyr_[_winPID].addr;\n    _eventData_.winnerName = plyr_[_winPID].name;\n    _eventData_.amountWon = _win;\n    _eventData_.genAmount = _gen;\n    _eventData_.POOHAmount = _POOH;\n    _eventData_.newPot = _res;\n\n    rID_++;\n    _rID++;\n    round_[_rID].strt = now;\n    rndMax_ = timerLengths[determineNextRoundLength()];\n    round_[_rID].end = now.add(rndMax_);\n    round_[_rID].pot = _res;\n\n    return(_eventData_);\n}",
+        "file_name": "0x1a050d77003caee532df18d04d86b99ca15bf9e8.sol"
+    }
+]

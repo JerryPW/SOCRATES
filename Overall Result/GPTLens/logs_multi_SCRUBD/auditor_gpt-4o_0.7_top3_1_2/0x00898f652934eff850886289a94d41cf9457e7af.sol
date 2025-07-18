@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "withdrawLiquidity",
+        "code": "function withdrawLiquidity(uint256 positionId, uint256 objectId, bool unwrapPair, uint256 removedLiquidity) public {\n    FarmingPosition memory farmingPosition = _positions[positionId];\n    uint256 setupIndex = farmingPosition.setupIndex;\n    if (objectId != 0 && address(INativeV1(_farmTokenCollection).asInteroperable(objectId)) != address(0)) {\n        setupIndex = _objectIdSetup[objectId];\n    }\n    require((positionId != 0 && objectId == 0) || (objectId != 0 && positionId == 0 && _setups[setupIndex].objectId == objectId), \"Invalid position\");\n    require(\n        ( _setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free && farmingPosition.creationBlock != 0 && removedLiquidity <= farmingPosition.liquidityPoolTokenAmount && farmingPosition.uniqueOwner == msg.sender ) ||\n        (INativeV1(_farmTokenCollection).balanceOf(msg.sender, objectId) >= removedLiquidity && (_setups[setupIndex].endBlock <= block.number)),\n        \"Invalid withdraw\");\n    if (positionId == 0) {\n        _burnFarmTokenAmount(objectId, removedLiquidity);\n    } else {\n        withdrawReward(positionId);\n        _setups[farmingPosition.setupIndex].totalSupply -= removedLiquidity;\n    }\n    _removeLiquidity(positionId, setupIndex, unwrapPair, removedLiquidity, false);\n    if (positionId == 0) {\n        _setupPositionsCount[setupIndex] -= removedLiquidity;\n        if (_setupPositionsCount[setupIndex] == 0 && !_setups[setupIndex].active) {\n            _giveBack(_rewardReceived[setupIndex] - _rewardPaid[setupIndex]);\n            delete _setups[setupIndex];\n        }\n    }\n}",
+        "vulnerability": "Improper Access Control",
+        "reason": "The function allows unauthorized users to withdraw liquidity by transferring position ownership indirectly. This can be exploited if the attacker has access to the farm token without proper checks on ownership and block restrictions.",
+        "file_name": "0x00898f652934eff850886289a94d41cf9457e7af.sol"
+    },
+    {
+        "function_name": "_safeTransfer",
+        "code": "function _safeTransfer(address erc20TokenAddress, address to, uint256 value) internal virtual {\n    bytes memory returnData = _call(erc20TokenAddress, abi.encodeWithSelector(IERC20(erc20TokenAddress).transfer.selector, to, value));\n    require(returnData.length == 0 || abi.decode(returnData, (bool)), 'TRANSFER_FAILED');\n}",
+        "vulnerability": "Lack of Reentrancy Guard",
+        "reason": "The function executes external calls without a reentrancy guard, which could lead to reentrancy attacks if the ERC20 token is malicious or improperly implemented, allowing the attacker to manipulate token balances.",
+        "file_name": "0x00898f652934eff850886289a94d41cf9457e7af.sol"
+    },
+    {
+        "function_name": "_addLiquidity",
+        "code": "function _addLiquidity(uint256 setupIndex, FarmingPositionRequest memory request) private returns(LiquidityPoolData memory liquidityPoolData, uint256 tokenAmount) {\n    (IAMM amm, uint256 liquidityPoolAmount, uint256 mainTokenAmount) = _transferToMeAndCheckAllowance(_setups[setupIndex], request);\n    liquidityPoolData = LiquidityPoolData(\n        _setupsInfo[_setups[setupIndex].infoIndex].liquidityPoolTokenAddress,\n        request.amountIsLiquidityPool ? liquidityPoolAmount : mainTokenAmount,\n        _setupsInfo[_setups[setupIndex].infoIndex].mainTokenAddress,\n        request.amountIsLiquidityPool,\n        _setupsInfo[_setups[setupIndex].infoIndex].involvingETH,\n        address(this)\n    );\n    tokenAmount = mainTokenAmount;\n    if (liquidityPoolData.amountIsLiquidityPool || !_setupsInfo[_setups[setupIndex].infoIndex].involvingETH) {\n        require(msg.value == 0, \"ETH not involved\");\n    }\n    if (liquidityPoolData.amountIsLiquidityPool) {\n        return(liquidityPoolData, tokenAmount);\n    }\n    if(liquidityPoolData.involvingETH) {\n        (liquidityPoolData.amount,,) = amm.addLiquidity{value : msg.value}(liquidityPoolData);\n    } else {\n        (liquidityPoolData.amount,,) = amm.addLiquidity(liquidityPoolData);\n    }\n}",
+        "vulnerability": "Incorrect Token Handling",
+        "reason": "The function does not properly handle the token transfer and approval, potentially allowing the attacker to manipulate token balances or cause the contract to malfunction if the token contract is malicious or poorly implemented.",
+        "file_name": "0x00898f652934eff850886289a94d41cf9457e7af.sol"
+    }
+]

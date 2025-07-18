@@ -1,0 +1,13 @@
+
+Start analyze function: Emeejis.orderEmeejis(uint256)
+Function Security Analysis for Emeejis.orderEmeejis(uint256)
+    There are no modifiers should be examined in function orderEmeejis.
+    Check direct function security
+        - function Emeejis.orderEmeejis(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any statements with msg.sender directly being compared to xxxOwner/xxxAddress/Leader/CEO.
+        - function Emeejis.orderEmeejis(uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: In the code, there is a match for structure 3: 'require(!xxx); xxx = True; ... xxx = False;'. Specifically:  'require(!reentrancyLock);  //Lock up this
+          whole function just in case reentrancyLock = true;'  These two lines immediately perform a negation operation on 'reentrancyLock' after checking its state using
+          'require' and before the main logic of the function executes (aside from setting up some variables which is non-critical to the locking mechanism), fulfilling
+          the requirement.
+Conclusion: This function will not cause REE Problem.

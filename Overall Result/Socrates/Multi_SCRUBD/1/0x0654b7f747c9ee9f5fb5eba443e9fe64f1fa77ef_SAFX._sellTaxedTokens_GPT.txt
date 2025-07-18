@@ -1,0 +1,10 @@
+
+Start analyze function: SAFX._sellTaxedTokens()
+Function Security Analysis for SAFX._sellTaxedTokens()
+    The modifier of function _sellTaxedTokens are ['swapping']
+    The result of checking modifiers:
+        - modifier swapping is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'swapping' sets the '_swapping' variable to true before executing the function and resets it to false afterward, which matches both lock
+          (set to true) and unlock (set to false) operations. This indicates the use of a lock mechanism to ensure the function executes only once at a time, satisfying
+          the second characteristic.
+Conclusion: This function will not cause REE Problem.

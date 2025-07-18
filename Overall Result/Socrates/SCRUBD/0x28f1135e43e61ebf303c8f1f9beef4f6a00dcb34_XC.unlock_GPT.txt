@@ -1,0 +1,87 @@
+
+Start analyze function: XC.unlock(string,address,address,uint256)
+Function Security Analysis for XC.unlock(string,address,address,uint256)
+    The modifier of function unlock are ['nonzeroAddress']
+    The result of checking modifiers:
+        - modifier nonzeroAddress has no relation with controlled by owner.
+          Reason: The modifier checks for a nonzero address condition, which is unrelated to ownership or reentrancy protection. It does not match any of the specified
+          characteristics.
+    Check direct function security
+        - function XC.unlock(string,address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any address checking or permission assertions related to the sender (msg.sender). It uses require statements for status
+          and condition checks within the code, but none are related to msg.sender.
+        - function XC.unlock(string,address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain the specific structures mentioned. It lacks `require(xxx == True); xxx = False;`, `require(xxx == False); xxx = True;`,
+          `require(!xxx); xxx = True;`, or `if(!xxx) throw; xxx = true;`.
+External Call Analysis
+    Direct external call: ['xcPlugin.getTokenSymbol()', 'xcPlugin.commitProposal(txid)', 'token.transfer(toAccount,value)', 'xcPlugin.getTrustPlatform()',
+    'token.balanceOf(this)', 'xcPlugin.getStatus()', 'xcPlugin.verifyProposal(fromAccount,toAccount,value,txid)']
+    Analyze Transfer
+        - token.transfer(toAccount,value) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - xcPlugin.getTokenSymbol() ISN'T subjected to gas limits.
+        - xcPlugin.commitProposal(txid) ISN'T subjected to gas limits.
+        - token.transfer(toAccount,value) ISN'T subjected to gas limits.
+        - xcPlugin.getTrustPlatform() ISN'T subjected to gas limits.
+        - token.balanceOf(this) ISN'T subjected to gas limits.
+        - xcPlugin.getStatus() ISN'T subjected to gas limits.
+        - xcPlugin.verifyProposal(fromAccount,toAccount,value,txid) ISN'T subjected to gas limits.
+    Remaining external call: ['xcPlugin.getTokenSymbol()', 'xcPlugin.commitProposal(txid)', 'token.transfer(toAccount,value)', 'xcPlugin.getTrustPlatform()',
+    'token.balanceOf(this)', 'xcPlugin.getStatus()', 'xcPlugin.verifyProposal(fromAccount,toAccount,value,txid)']
+    Analyze External Address
+        There are ['xcPlugin'] should be checked in variable xcPlugin
+        Checked variables: xcPlugin
+            Yes The function 'init' is not a constructor and hardcodes the state variable 'xcPlugin' by assigning it a hardcoded address
+            '0x15782cc68d841416f73e8f352f27cc1bc5e76e11'.
+        There are ['xcPlugin'] should be checked in variable xcPlugin
+        Checked variables: xcPlugin
+            No The provided code snippet does not include a constructor since there is no function with the name 'XC' (matching the contract name) or explicitly named
+            'constructor'. The external function 'setXCPlugin' changes the state variable 'xcPlugin' and doesn't hardcode its value; instead, it uses the 'account'
+            parameter to set it. Therefore, none of the criteria are satisfied.
+            Function Security Analysis for XC.init()
+                There are no modifiers should be examined in function init.
+                Check direct function security
+                    - function XC.init() has no security assurance protected by checking the authority of msg.sender
+                      Reason: The code snippet does not contain any of the specified patterns that check if msg.sender is equal or not equal to a specific address or role
+                      such as xxxOwner, xxxAddress, Leader, or CEO.
+                    - function XC.init() has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code snippet provided does not contain any statement with the pattern 'require(xxx == True); xxx = False;' or 'require(xxx == False);
+                      xxx = True;' or 'require(!xxx); xxx = True;' nor 'if(!xxx) throw; xxx = true;'. Therefore, it does not meet any of the specified structures.
+                Since the function can only be called by functions, we start to analyze indirect function security.
+                The reachable functions are ['constructor']
+                    Function Security Analysis for XC.constructor()
+                        This is a constructor.
+            Function Security Analysis for XC.setXCPlugin(address)
+                The modifier of function setXCPlugin are ['onlyAdmin', 'nonzeroAddress']
+                The result of checking modifiers:
+                    - modifier onlyAdmin is controlled by owner, the function would not cause REE problem.
+                      Reason: The `onlyAdmin` modifier contains the statement `require(admin.account == msg.sender);`, which enforces that only the admin (a specific
+                      address) can execute the function. This matches the first characteristic, as the requirement explicitly checks if `msg.sender` equals
+                      `admin.account`. There are no indications of lock operations, so the second characteristic does not apply.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The state variable 'token' is hardcoded in the 'init' function with the address '0xf4c90e18727c5c76499ea6369c856a6d61d3e92e'. This satisfies the second
+            characteristic.
+        There are ['xcPlugin'] should be checked in variable xcPlugin
+        Checked variables: xcPlugin
+            Yes 1. Checking Constructor: The given function `init()` is not a constructor since its name does not match the contract name 'XC' and is not explicitly named
+            'constructor'.   2. Hardcoded State Variable: The function `init()` contains an assignment to the state variable `xcPlugin`, which is hardcoded to a specific
+            address `0x15782cc68d841416f73e8f352f27cc1bc5e76e11`. Therefore, it satisfies the characteristic of having a hardcoded state variable.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The provided code includes a function 'init' which is marked as internal. While this function hardcodes the state variable 'token' by assigning it the
+            address '0xf4c90e18727c5c76499ea6369c856a6d61d3e92e', it does not fulfill the requirements of being a constructor or explicitly named 'constructor' as it is
+            not named 'XC'. Therefore, it satisfies the second characteristic, which is whether the function has hardcoded the provided state variable.  Additionally, the
+            'setToken' function does not hardcode the state variable 'token', as it allows the token to be set dynamically to a given address and checks if it's different
+            from the current token address before setting it.  Thus, the code satisfies the characteristic of having a hardcoded state variable 'token'.
+        There are ['xcPlugin'] should be checked in variable xcPlugin
+        Checked variables: xcPlugin
+            Yes The code provided includes two functions: 'init' and 'setXCPlugin'. Neither of these functions are constructors nor have names that match the contract
+            name 'XC'. Additionally, the state variable 'xcPlugin' is hardcoded in the 'init' function with a specific address
+            '0x15782cc68d841416f73e8f352f27cc1bc5e76e11'. Therefore, the 'init' function satisfies the second characteristic of having a hardcoded state variable.
+        There are ['xcPlugin'] should be checked in variable xcPlugin
+        Checked variables: xcPlugin
+            Yes The code provided is not a constructor as the functions are named 'init' and 'setXCPlugin', which do not match the contract name 'XC' nor are they
+            explicitly named 'constructor'. The function 'init' does hardcode the 'xcPlugin' variable with the address '0x15782cc68d841416f73e8f352f27cc1bc5e76e11', which
+            satisfies characteristic 2.
+Conclusion: This function will not cause REE Problem.

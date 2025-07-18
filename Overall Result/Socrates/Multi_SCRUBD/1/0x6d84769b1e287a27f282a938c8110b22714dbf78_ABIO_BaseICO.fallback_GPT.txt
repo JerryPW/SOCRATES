@@ -1,0 +1,27 @@
+
+Start analyze function: ABIO_BaseICO.fallback()
+Function Security Analysis for ABIO_BaseICO.fallback()
+    The modifier of function fallback are ['stopOnPause']
+    The result of checking modifiers:
+        - modifier stopOnPause has no relation with controlled by owner.
+          Reason: The modifier checks for a condition 'paused == false', which is not related to ownership or reentrancy. It does not correspond to any of the specified
+          characteristics for judging 'Yes'.
+    Check direct function security
+        - function ABIO_BaseICO.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function code provided does not contain any check or enforcement related to msg.sender with respect to any ownerAddress or Leader entity. All the
+          required conditions are based on variables like `now`, `msg.value`, and `weiRaised`. None pattern matches with checking or requiring the identity of msg.sender
+          against an owner or another specified controlling entity.
+        - function ABIO_BaseICO.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: None of the patterns (1 to 4) specified in the rules are present in the given code.
+External Call Analysis
+    Direct external call: ['abioToken.transfer(msg.sender,ABIOAmount)']
+    Analyze Transfer
+        - abioToken.transfer(msg.sender,ABIOAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - abioToken.transfer(msg.sender,ABIOAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['abioToken.transfer(msg.sender,ABIOAmount)']
+    Analyze External Address
+        There are ['abioToken'] should be checked in variable abioToken
+        Checked variables: abioToken
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

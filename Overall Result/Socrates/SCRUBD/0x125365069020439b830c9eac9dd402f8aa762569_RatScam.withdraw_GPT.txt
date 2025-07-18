@@ -1,0 +1,68 @@
+
+Start analyze function: RatScam.withdraw()
+Function Security Analysis for RatScam.withdraw()
+    The modifier of function withdraw are ['isActivated', 'isHuman']
+    The result of checking modifiers:
+        - modifier isActivated has no relation with controlled by owner.
+          Reason: The modifier doesn't enforce owner-only execution or use lock operations. It only checks if 'activated_' is true, which doesn't relate to ownership
+          restrictions or reentrancy protection.
+        - modifier isHuman has no relation with controlled by owner.
+          Reason: The modifier checks if 'msg.sender' is equal to 'tx.origin', which is a common method to prevent calls from contracts. However, it does not explicitly
+          check against an owner or specific addresses, and it doesn't use a lock operation.
+    Check direct function security
+        - function RatScam.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified conditions or checks related to msg.sender against roles such as xxxOwner, xxxAddress, Leader, or CEO.
+        - function RatScam.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain a structure where a boolean variable is set using require or an if statement that exactly fulfills the given patterns, such as
+          flipping a variable's value from True to False or from False to True immediately after a require or if-throw statement.
+External Call Analysis
+    Direct external call: ['plyr_[_pID].addr.transfer(_eth)']
+    Analyze Transfer
+        - plyr_[_pID].addr.transfer(_eth) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword, indicating that it likely involves an ethereum transfer operation.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: RatScam.endRound(RSdatasets.EventReturns)
+Function Security Analysis for RatScam.endRound(RSdatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function RatScam.endRound(RSdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any access control logic that involves checking the identity of the caller based on msg.sender against an owner or leader
+          identifier placed in a require, if, or assert statement, as described in the listed characteristics.
+        - function RatScam.endRound(RSdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures: 'require(xxx == True); xxx = False;', 'require(xxx == False); xxx = True;', 'require(!xxx);
+          xxx = True;', or 'if(!xxx) throw; xxx = true;'. Therefore, it does not satisfy the conditions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['reLoadXname', 'buyXname', 'fallback', 'buyCore', 'reLoadXaddr', 'buyXaddr', 'withdraw', 'reLoadXid', 'buyXid', 'reLoadCore']
+        Function Security Analysis for RatScam.reLoadXname(bytes32,uint256)
+            The modifier of function reLoadXname are ['isActivated', 'isHuman', 'isWithinLimits']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier checks the state of a variable 'activated_' but does not check the sender's address or use a lock mechanism to restrict function
+                  entry.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: The code in the modifier enforces that only transactions initiated by an EOA (Externally Owned Account, human) can execute the function. It uses
+                  'require(msg.sender == tx.origin)', which is a check to prevent contract calls, not ownership or specific address enforcement.
+                - modifier isWithinLimits has no relation with controlled by owner.
+                  Reason: The modifier `isWithinLimits` neither checks for specific ownership nor does it use a lock mechanism. It only checks if a value is within
+                  certain limits.
+            Check direct function security
+                - function RatScam.reLoadXname(bytes32,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not perform any checks or assertions involving `msg.sender` against variables that resemble owner, address, leader, or CEO roles.
+                - function RatScam.reLoadXname(bytes32,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified patterns with 'require' or 'if' structures and variable state changes as described in the
+                  conditions.
+External Call Analysis
+    Direct external call: ['address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze Transfer
+    Analyze Gas
+        - address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit()))) ISN'T subjected to gas limits.
+    Remaining external call: ['address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze External Address
+        There are ['RatKingCorp'] should be checked in variable RatKingCorp
+        Checked variables: RatKingCorp
+            State variable RatKingCorp has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,29 @@
+
+Start analyze function: Crowdsale.safeWithdrawal()
+Function Security Analysis for Crowdsale.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier checks if the current time is greater than or equal to the deadline but does not enforce owner-specific restrictions or use a lock
+          operation. It only allows execution after a certain time.
+    Check direct function security
+        - function Crowdsale.safeWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any require, if throw, or assert statements that check if msg.sender is an owner, address, leader, or CEO.
+        - function Crowdsale.safeWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain the required structure of 'require(xxx == True); xxx = False;' or 'require(xxx == False); xxx = True;' or
+          'require(!xxx); xxx = True;' or 'if(!xxx) throw; xxx = true;' and therefore doesn't meet any of the listed conditions.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(beneficiary,tokenReward.balanceOf(this))', 'beneficiary.send(amountRaised)']
+    Analyze Transfer
+        - tokenReward.transfer(beneficiary,tokenReward.balanceOf(this)) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.send(' keyword, which matches the criteria.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(beneficiary,tokenReward.balanceOf(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(beneficiary,tokenReward.balanceOf(this))']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes 1. The function name 'Crowdsale' matches the contract name, indicating it is a constructor. 2. The 'tokenReward' state variable is being hardcoded with a
+            specific address '0x2ca8e1fbcde534c8c71d8f39864395c2ed76fb0e'.
+Conclusion: This function will not cause REE Problem.

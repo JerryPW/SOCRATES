@@ -1,0 +1,24 @@
+
+Start analyze function: Dividends.fallback()
+Function Security Analysis for Dividends.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Dividends.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: There is a check for admins[msg.sender] == 1, but it's not for a single owner or leader, therefore it doesn't match the characteristics listed.
+        - function Dividends.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not use require statements, which makes structures 1, 2, and 3 not applicable. It also does not throw an exception using if(!xxx), so
+          structure 4 is not applicable as well. Thus, none of the structures are present in the code.
+External Call Analysis
+    Direct external call: ['user.transfer(userether)', 'tokenReward.balanceOf(user)']
+    Analyze Transfer
+        - user.transfer(userether) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'user.transfer(userether)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.balanceOf(user) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.balanceOf(user)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The code provided is a constructor as the function name "Dividends" matches the contract name. Constructors are used to initialize the contract and its
+            state variables when the contract is deployed.
+Conclusion: This function will not cause REE Problem.

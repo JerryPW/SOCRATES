@@ -1,0 +1,31 @@
+
+Start analyze function: Crowdsale.safeWithdrawal()
+Function Security Analysis for Crowdsale.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier 'afterDeadline' does not match any of the specified characteristics: it does not enforce ownership or specific address restrictions, it
+          does not use a lock mechanism, and its name does not imply such functionality.
+    Check direct function security
+        - function Crowdsale.safeWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function safeWithdrawal does not contain any lines which directly check if msg.sender is an owner, address, leader, or CEO. The function only checks
+          the success of a transaction using beneficiary.send(amountRaised).
+        - function Crowdsale.safeWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the required structures of require(xxx == True); xxx = False; or require(xxx == False); xxx = True; or
+          require(!xxx); xxx = True; or if(!xxx) throw; xxx = true;. There are no variables set to true or false after a require or if statement as outlined in the
+          specifications.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(beneficiary,tokenReward.balanceOf(this))', 'beneficiary.send(amountRaised)']
+    Analyze Transfer
+        - tokenReward.transfer(beneficiary,tokenReward.balanceOf(this)) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'beneficiary.send(amountRaised)' contains the keyword '.send('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(beneficiary,tokenReward.balanceOf(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(beneficiary,tokenReward.balanceOf(this))']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided function is named 'Crowdsale', which matches the contract name, indicating that it is a constructor. Thus, it satisfies the first
+            characteristic.
+Conclusion: This function will not cause REE Problem.

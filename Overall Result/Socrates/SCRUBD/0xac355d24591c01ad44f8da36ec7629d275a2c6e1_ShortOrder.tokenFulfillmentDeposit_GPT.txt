@@ -1,0 +1,27 @@
+
+Start analyze function: ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function tokenFulfillmentDeposit.
+    Check direct function security
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The function does not include any condition or assertion involving specific roles like xxxOwner/xxxAddress/Leader/CEO being compared to msg.sender.
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code segment that matches Structure 3: `require(!orderRecord[msg.sender][orderHash].tokenDeposit);` and
+          `orderRecord[msg.sender][orderHash].tokenDeposit = true;`. However, after the `require` and before setting `orderRecord[msg.sender][orderHash].tokenDeposit =
+          true;`, other actions like `Token(tokenUser[0]).transferFrom(msg.sender,this,amount);` and modifying
+          `orderRecord[msg.sender][orderHash].shortBalance[tokenUser[0]]` take place. This results in the state negation not being immediate before the main logic of the
+          function, thus not fulfilling the requirement for immediate state negation.
+External Call Analysis
+    Direct external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze Transfer
+    Analyze Gas
+        - Token(tokenUser[0]).transferFrom(msg.sender,this,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze External Address
+        The variable 'tokenUser' in external call 'Token(tokenUser[0]).transferFrom(msg.sender,this,amount)' has no state variable assigned. Therefore we check whether it
+        has been hardcoded in the function.
+            No The `tokenUser` variable is used as a parameter in various places within the function, such as in `keccak256`, in the `require` checks, and when calling
+            the `Token(target).transferFrom` and `TokenFulfillment`. The value of `tokenUser` is obtained from the function's input parameters and not hard-coded within
+            the function itself.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,33 @@
+
+Start analyze function: DividendPayingToken._withdrawDividendOfUser(address)
+Function Security Analysis for DividendPayingToken._withdrawDividendOfUser(address)
+    There are no modifiers should be examined in function _withdrawDividendOfUser.
+    Check direct function security
+        - function DividendPayingToken._withdrawDividendOfUser(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have a condition checking for msg.sender's address against xxxOwner/xxxAddress/Leader/CEO.
+        - function DividendPayingToken._withdrawDividendOfUser(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not have the require statements or the if statements with throw as outlined in any of the specified structures. It contains normal
+          conditional checks and error handling through a boolean (success) without a require or throw statement.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawDividend']
+        Function Security Analysis for DividendPayingToken.withdrawDividend()
+            There are no modifiers should be examined in function withdrawDividend.
+            Check direct function security
+                - function DividendPayingToken.withdrawDividend() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code snippet does not include any checks or conditions related to msg.sender against an xxxOwner/xxxAddress/Leader/CEO or any
+                  authorization condition as described in the provided characteristics. It only uses msg.sender to pass as an argument to another function without any
+                  specific checks.
+                - function DividendPayingToken.withdrawDividend() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not contain any of the required structures like 'require(xxx == True)', 'require(xxx == False)', or 'require(!xxx)'.
+External Call Analysis
+    Direct external call: ['user.call{gas:gasForTransfer,value:_withdrawableDividend}()']
+    Analyze Transfer
+    Analyze Gas
+        - user.call{gas:gasForTransfer,value:_withdrawableDividend}() is subjected to gas limits gasForTransfer <= 3000. Therefore, it has no potential REE problem. Here
+        is the reason: In the provided code, the variable `gasForTransfer` is explicitly set to 3000 in the constructor of a contract. The constructor is executed at
+        contract deployment and would set the value of `gasForTransfer` to 3000. Since there is no other function or modification within the code snippet to increase this
+        value beyond 3000, the assignment to `gasForTransfer` will always result in a value less than or equal to 3000. Hence, the value is fixed at 3000 according to the
+        code.
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,197 @@
+yTUSD.withdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function withdraw(uint256 _shares)
+      external
+      nonReentrant
+  {
+      require(_shares > 0, "withdraw must be greater than 0");
+      uint256 ibalance = balanceOf(msg.sender);
+      require(_shares <= ibalance, "insufficient balance");
+      // Could have over value from cTokens
+      pool = _calcPoolValueInToken();
+      // Yeld
+      uint256 generatedYelds = getGeneratedYelds();
+      // Yeld
+      // Calc to redeem before updating balances
+      uint256 stablecoinsToWithdraw = (pool.mul(_shares)).div(_totalSupply);
+      _balances[msg.sender] = _balances[msg.sender].sub(_shares, "redeem amount exceeds balance");
+      _totalSupply = _totalSupply.sub(_shares);
+      emit Transfer(msg.sender, address(0), _shares);
+      // Check balance
+      uint256 b = IERC20(token).balanceOf(address(this));
+      if (b < stablecoinsToWithdraw) {
+        _withdrawSome(stablecoinsToWithdraw.sub(b));
+      }
+
+
+      // Yeld
+      // Take 1% of the amount to withdraw
+      uint256 onePercent = stablecoinsToWithdraw.div(100);
+      depositBlockStarts[msg.sender] = block.number;
+      yeldToken.transfer(msg.sender, generatedYelds);
+      // Take a portion of the profits for the buy and burn and retirement yeld
+      // Convert half the TUSD earned into ETH for the protocol algorithms
+      uint256 stakingProfits = tusdToETH(onePercent);
+      uint256 tokensAlreadyBurned = yeldToken.balanceOf(address(0));
+      if (tokensAlreadyBurned < maximumTokensToBurn) {
+        // 98% is the 49% doubled since we already took the 50%
+        uint256 ethToSwap = stakingProfits.mul(98).div(100);
+        // Buy and burn only applies up to 50k tokens burned
+        buyNBurn(ethToSwap);
+        // 1% for the Retirement Yield
+        uint256 retirementYeld = stakingProfits.mul(2).div(100);
+        // Send to the treasury
+        retirementYeldTreasury.transfer(retirementYeld);
+      } else {
+        // If we've reached the maximum burn point, send half the profits to the treasury to reward holders
+        uint256 retirementYeld = stakingProfits;
+        // Send to the treasury
+        retirementYeldTreasury.transfer(retirementYeld);
+      }
+      IERC20(token).safeTransfer(msg.sender, stablecoinsToWithdraw.sub(onePercent));
+      // Yeld
+
+
+      pool = _calcPoolValueInToken();
+      rebalance();
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function withdraw(uint256 _shares)
+      external
+      nonReentrant
+  {
+      require(_shares > 0, "withdraw must be greater than 0");
+      uint256 ibalance = balanceOf(msg.sender);
+      require(_shares <= ibalance, "insufficient balance");
+      // Could have over value from cTokens
+      pool = _calcPoolValueInToken();
+      // Yeld
+      uint256 generatedYelds = getGeneratedYelds();
+      // Yeld
+      // Calc to redeem before updating balances
+      uint256 stablecoinsToWithdraw = (pool.mul(_shares)).div(_totalSupply);
+      _balances[msg.sender] = _balances[msg.sender].sub(_shares, "redeem amount exceeds balance");
+      _totalSupply = _totalSupply.sub(_shares);
+      emit Transfer(msg.sender, address(0), _shares);
+      // Check balance
+      uint256 b = IERC20(token).balanceOf(address(this));
+      if (b < stablecoinsToWithdraw) {
+        _withdrawSome(stablecoinsToWithdraw.sub(b));
+      }
+
+
+      // Yeld
+      // Take 1% of the amount to withdraw
+      uint256 onePercent = stablecoinsToWithdraw.div(100);
+      depositBlockStarts[msg.sender] = block.number;
+      yeldToken.transfer(msg.sender, generatedYelds);
+      // Take a portion of the profits for the buy and burn and retirement yeld
+      // Convert half the TUSD earned into ETH for the protocol algorithms
+      uint256 stakingProfits = tusdToETH(onePercent);
+      uint256 tokensAlreadyBurned = yeldToken.balanceOf(address(0));
+      if (tokensAlreadyBurned < maximumTokensToBurn) {
+        // 98% is the 49% doubled since we already took the 50%
+        uint256 ethToSwap = stakingProfits.mul(98).div(100);
+        // Buy and burn only applies up to 50k tokens burned
+        buyNBurn(ethToSwap);
+        // 1% for the Retirement Yield
+        uint256 retirementYeld = stakingProfits.mul(2).div(100);
+        // Send to the treasury
+        retirementYeldTreasury.transfer(retirementYeld);
+      } else {
+        // If we've reached the maximum burn point, send half the profits to the treasury to reward holders
+        uint256 retirementYeld = stakingProfits;
+        // Send to the treasury
+        retirementYeldTreasury.transfer(retirementYeld);
+      }
+      IERC20(token).safeTransfer(msg.sender, stablecoinsToWithdraw.sub(onePercent));
+      // Yeld
+
+
+      pool = _calcPoolValueInToken();
+      rebalance();
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function withdraw(uint256 _shares)
+      external
+      nonReentrant
+  {
+      require(_shares > 0, "withdraw must be greater than 0");
+      uint256 ibalance = balanceOf(msg.sender);
+      require(_shares <= ibalance, "insufficient balance");
+      // Could have over value from cTokens
+      pool = _calcPoolValueInToken();
+      // Yeld
+      uint256 generatedYelds = getGeneratedYelds();
+      // Yeld
+      // Calc to redeem before updating balances
+      uint256 stablecoinsToWithdraw = (pool.mul(_shares)).div(_totalSupply);
+      _balances[msg.sender] = _balances[msg.sender].sub(_shares, "redeem amount exceeds balance");
+      _totalSupply = _totalSupply.sub(_shares);
+      emit Transfer(msg.sender, address(0), _shares);
+      // Check balance
+      uint256 b = IERC20(token).balanceOf(address(this));
+      if (b < stablecoinsToWithdraw) {
+        _withdrawSome(stablecoinsToWithdraw.sub(b));
+      }
+
+
+      // Yeld
+      // Take 1% of the amount to withdraw
+      uint256 onePercent = stablecoinsToWithdraw.div(100);
+      depositBlockStarts[msg.sender] = block.number;
+      yeldToken.transfer(msg.sender, generatedYelds);
+      // Take a portion of the profits for the buy and burn and retirement yeld
+      // Convert half the TUSD earned into ETH for the protocol algorithms
+      uint256 stakingProfits = tusdToETH(onePercent);
+      uint256 tokensAlreadyBurned = yeldToken.balanceOf(address(0));
+      if (tokensAlreadyBurned < maximumTokensToBurn) {
+        // 98% is the 49% doubled since we already took the 50%
+        uint256 ethToSwap = stakingProfits.mul(98).div(100);
+        // Buy and burn only applies up to 50k tokens burned
+        buyNBurn(ethToSwap);
+        // 1% for the Retirement Yield
+        uint256 retirementYeld = stakingProfits.mul(2).div(100);
+        // Send to the treasury
+        retirementYeldTreasury.transfer(retirementYeld);
+      } else {
+        // If we've reached the maximum burn point, send half the profits to the treasury to reward holders
+        uint256 retirementYeld = stakingProfits;
+        // Send to the treasury
+        retirementYeldTreasury.transfer(retirementYeld);
+      }
+      IERC20(token).safeTransfer(msg.sender, stablecoinsToWithdraw.sub(onePercent));
+      // Yeld
+
+
+      pool = _calcPoolValueInToken();
+      rebalance();
+  }
+Response:
+{"StatementsA": {"_balances[msg.sender] = _balances[msg.sender].sub(_shares, \"redeem amount exceeds balance\");": "Updates the _balances state variable for the sender.", "_totalSupply = _totalSupply.sub(_shares);": "Updates the _totalSupply state variable."}, "StatementsB": {"yeldToken.transfer(msg.sender, generatedYelds);": "Executes an external call to transfer yeldToken to the sender.", "retirementYeldTreasury.transfer(retirementYeld);": "Executes an external call to transfer retirementYeld to the treasury.", "IERC20(token).safeTransfer(msg.sender, stablecoinsToWithdraw.sub(onePercent));": "Executes an external call to transfer tokens to the sender."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _balances[msg.sender] = _balances[msg.sender].sub(_shares, "redeem amount exceeds balance");
+2.External Call: yeldToken.transfer(msg.sender, generatedYelds);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

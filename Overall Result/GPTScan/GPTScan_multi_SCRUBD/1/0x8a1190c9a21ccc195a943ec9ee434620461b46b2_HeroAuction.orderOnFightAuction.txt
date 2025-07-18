@@ -1,0 +1,131 @@
+HeroAuction.orderOnFightAuction: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function orderOnFightAuction(
+        uint256 _yangId,
+        uint256 _yinId,
+        uint256 orderAmount
+    )
+        public
+        whenNotPaused
+    {
+        require(_owns(msg.sender, _yinId));
+        require(isReadyToFight(_yinId));
+        require(_yinId !=_yangId);
+        require(ownerIndexToERC20Balance[msg.sender] >= orderAmount);
+        
+        address saller= fightAuction.getSeller(_yangId);
+        uint256 price = fightAuction.getCurrentPrice(_yangId,1);
+      
+        require( price <= orderAmount && saller != address(0));
+        
+        if(fightAuction.order(_yangId, orderAmount, msg.sender)){
+	         _fight(uint32(_yinId), uint32(_yangId));
+	        ownerIndexToERC20Balance[msg.sender] -= orderAmount;
+	    		ownerIndexToERC20Used[msg.sender] += orderAmount;  
+	    		
+    		  if( saller == address(this)){
+    		     totalUsed +=orderAmount;
+    		  }else{
+    		     uint256 cut = _computeCut(price);
+    		     totalUsed += (orderAmount - price+cut);
+    		     ownerIndexToERC20Balance[saller] += price-cut;
+    		  }	  
+	        
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function orderOnFightAuction(
+        uint256 _yangId,
+        uint256 _yinId,
+        uint256 orderAmount
+    )
+        public
+        whenNotPaused
+    {
+        require(_owns(msg.sender, _yinId));
+        require(isReadyToFight(_yinId));
+        require(_yinId !=_yangId);
+        require(ownerIndexToERC20Balance[msg.sender] >= orderAmount);
+        
+        address saller= fightAuction.getSeller(_yangId);
+        uint256 price = fightAuction.getCurrentPrice(_yangId,1);
+      
+        require( price <= orderAmount && saller != address(0));
+        
+        if(fightAuction.order(_yangId, orderAmount, msg.sender)){
+	         _fight(uint32(_yinId), uint32(_yangId));
+	        ownerIndexToERC20Balance[msg.sender] -= orderAmount;
+	    		ownerIndexToERC20Used[msg.sender] += orderAmount;  
+	    		
+    		  if( saller == address(this)){
+    		     totalUsed +=orderAmount;
+    		  }else{
+    		     uint256 cut = _computeCut(price);
+    		     totalUsed += (orderAmount - price+cut);
+    		     ownerIndexToERC20Balance[saller] += price-cut;
+    		  }	  
+	        
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function orderOnFightAuction(
+        uint256 _yangId,
+        uint256 _yinId,
+        uint256 orderAmount
+    )
+        public
+        whenNotPaused
+    {
+        require(_owns(msg.sender, _yinId));
+        require(isReadyToFight(_yinId));
+        require(_yinId !=_yangId);
+        require(ownerIndexToERC20Balance[msg.sender] >= orderAmount);
+        
+        address saller= fightAuction.getSeller(_yangId);
+        uint256 price = fightAuction.getCurrentPrice(_yangId,1);
+      
+        require( price <= orderAmount && saller != address(0));
+        
+        if(fightAuction.order(_yangId, orderAmount, msg.sender)){
+	         _fight(uint32(_yinId), uint32(_yangId));
+	        ownerIndexToERC20Balance[msg.sender] -= orderAmount;
+	    		ownerIndexToERC20Used[msg.sender] += orderAmount;  
+	    		
+    		  if( saller == address(this)){
+    		     totalUsed +=orderAmount;
+    		  }else{
+    		     uint256 cut = _computeCut(price);
+    		     totalUsed += (orderAmount - price+cut);
+    		     ownerIndexToERC20Balance[saller] += price-cut;
+    		  }	  
+	        
+        }
+    }
+Response:
+{"StatementsA": {"ownerIndexToERC20Balance[msg.sender] -= orderAmount;":"Updates the sender's ERC20 balance by subtracting the order amount."}, "StatementsB": {"if(fightAuction.order(_yangId, orderAmount, msg.sender)){":"Executes an external call to the fightAuction contract."}, "VariableA": {"saller":"Holds the seller's address obtained from the external call to fightAuction."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: ownerIndexToERC20Balance[msg.sender] -= orderAmount;
+2.External Call: if(fightAuction.order(_yangId, orderAmount, msg.sender)){
+3.Variable A: saller
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

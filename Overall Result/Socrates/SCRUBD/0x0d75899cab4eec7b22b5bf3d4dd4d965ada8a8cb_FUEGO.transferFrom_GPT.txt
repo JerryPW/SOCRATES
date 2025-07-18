@@ -1,0 +1,53 @@
+
+Start analyze function: FUEGO.transferFrom(address,address,uint256)
+Function Security Analysis for FUEGO.transferFrom(address,address,uint256)
+    There are no modifiers should be examined in function transferFrom.
+    Check direct function security
+        - function FUEGO.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any condition checking if 'msg.sender' is equal to or not equal to Owner/xxxAddress/Leader/CEO roles.
+        - function FUEGO.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not fulfill any of the required structures. The 'require' keyword is used but not with a boolean variable being explicitly set to True or
+          False afterwards.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: FUEGO._transfer(address,address,uint256)
+Function Security Analysis for FUEGO._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function FUEGO._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks where `msg.sender` is directly compared to an owner, leader, or CEO address, which are the conditions listed in the
+          provided characteristics.
+        - function FUEGO._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any structures matching the defined patterns, which involve checking and flipping boolean variable states.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', '_transfer', 'transfer', 'swapForTokenomics']
+        Function Security Analysis for FUEGO.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function FUEGO.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any of the specified structures that involve checking 'msg.sender'.
+                - function FUEGO.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not satisfy any of the given structures because it contains a 'require' statement with a condition on 'amount', not a boolean
+                  variable being set to true or false. The pattern requires checking a boolean variable, which is not present in the require statement of this function.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: FUEGO.swapForTokenomics(uint256)
+Function Security Analysis for FUEGO.swapForTokenomics(uint256)
+    The modifier of function swapForTokenomics are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier `lockTheSwap` sets the variable `inSwapAndLiquify` to true before the function execution and resets it to false afterward, fulfilling both
+          conditions of a lock-then-unlock mechanism, indicating a reentrancy lock.
+Conclusion: This function will not cause REE Problem.

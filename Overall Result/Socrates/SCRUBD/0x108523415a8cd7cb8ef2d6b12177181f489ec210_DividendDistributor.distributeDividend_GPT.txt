@@ -1,0 +1,46 @@
+
+Start analyze function: DividendDistributor.distributeDividend(address)
+Function Security Analysis for DividendDistributor.distributeDividend(address)
+    There are no modifiers should be examined in function distributeDividend.
+    Check direct function security
+        - function DividendDistributor.distributeDividend(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures related to checking msg.sender against an owner or leader role.
+        - function DividendDistributor.distributeDividend(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures involving the 'require' statement or conditional throw in combination with variable
+          assignments following the pattern described (setting a boolean to true and then optionally to false or vice versa). Instead, it contains conditional checks and
+          return statements without the required pattern.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['process', 'setShare', 'claimDividend']
+        Function Security Analysis for DividendDistributor.process(uint256)
+            The modifier of function process are ['onlyToken']
+            The result of checking modifiers:
+                - modifier onlyToken is controlled by owner, the function would not cause REE problem.
+                  Reason: Rule 1: The structure 'require(msg.sender == token);' in the code enforces that only a specific address (token) can execute the function. This
+                  matches the criteria for Rule 1, which involves checking if the code structure enforces specific addresses to execute the function.
+        Function Security Analysis for DividendDistributor.setShare(address,uint256)
+            The modifier of function setShare are ['onlyToken']
+            The result of checking modifiers:
+                - modifier onlyToken is controlled by owner, the function would not cause REE problem.
+                  Reason: The code uses 'require(msg.sender == token);' which means only the specific address 'token' can execute the function. This satisfies the first
+                  characteristic because it restricts function execution to a specific address.
+        Function Security Analysis for DividendDistributor.claimDividend(address)
+            There are no modifiers should be examined in function claimDividend.
+            Check direct function security
+                - function DividendDistributor.claimDividend(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any structure that checks or enforces that 'msg.sender' is equal or not equal to any
+                  xxxOwner/xxxAddress/Leader/CEO.
+                - function DividendDistributor.claimDividend(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not have any 'require' or 'if' statements checking a condition on a boolean variable and subsequently modifying that boolean
+                  variable. None of the specified structures are present.
+External Call Analysis
+    Direct external call: ['USDC.transfer(shareholder,amount)']
+    Analyze Transfer
+        - USDC.transfer(shareholder,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - USDC.transfer(shareholder,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['USDC.transfer(shareholder,amount)']
+    Analyze External Address
+        There are ['USDC'] should be checked in variable USDC
+        Checked variables: USDC
+            State variable USDC has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

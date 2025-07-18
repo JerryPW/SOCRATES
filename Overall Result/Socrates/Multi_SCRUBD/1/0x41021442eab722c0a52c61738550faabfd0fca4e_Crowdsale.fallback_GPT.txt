@@ -1,0 +1,27 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any require, if, or assert statements that check for the sender's address against a predefined owner-like address.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function checks if the crowdsale is closed using 'require(!crowdsaleClosed && msg.value >= 1 ether)'. It has the structure where 'require(!xxx)' is
+          present, but it does not set 'crowdsaleClosed = True' after the check within the function, which is required by the pattern 3 or 4. Therefore, none of the
+          defined structures are fully matched.
+External Call Analysis
+    Direct external call: ['beneficiary.send(amount)', 'tokenReward.transfer(msg.sender,sendTokens)']
+    Analyze Transfer
+        - beneficiary.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(amount)' contains the keyword '.send('.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(msg.sender,sendTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,sendTokens) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,sendTokens)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The code provided is a constructor function because its name matches the contract name 'Crowdsale'. Moreover, the state variable 'tokenReward' is
+            hardcoded within this constructor using the address '0x12AC8d8F0F48b7954bcdA736AF0576a12Dc8C387'. Therefore, the function satisfies both characteristics
+            listed in the instructions.
+Conclusion: This function will not cause REE Problem.

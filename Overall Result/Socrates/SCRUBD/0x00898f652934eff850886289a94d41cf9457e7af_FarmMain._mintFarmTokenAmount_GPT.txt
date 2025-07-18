@@ -1,0 +1,51 @@
+
+Start analyze function: FarmMain._mintFarmTokenAmount(address,uint256,uint256)
+Function Security Analysis for FarmMain._mintFarmTokenAmount(address,uint256,uint256)
+    There are no modifiers should be examined in function _mintFarmTokenAmount.
+    Check direct function security
+        - function FarmMain._mintFarmTokenAmount(address,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any conditional structure related to msg.sender with conditions checking against xxxOwner/xxxAddress/Leader/CEO.
+        - function FarmMain._mintFarmTokenAmount(address,uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['openPosition']
+        Function Security Analysis for FarmMain.openPosition(FarmingPositionRequest)
+            The modifier of function openPosition are ['activeSetupOnly']
+            The result of checking modifiers:
+                - modifier activeSetupOnly has no relation with controlled by owner.
+                  Reason: The modifier activeSetupOnly does not explicitly enforce ownership or a specific address restriction, nor does it use a lock mechanism to ensure
+                  single entry during execution. It only checks the status and timing of a setup.
+            Check direct function security
+                - function FarmMain.openPosition(FarmingPositionRequest) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not have any of the specified structures involving msg.sender.
+                - function FarmMain.openPosition(FarmingPositionRequest) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures. It utilizes the 'require' statement to enforce conditions, but it does not involve
+                  setting the same variable to both 'True' and 'False' as per the outlined patterns. The require statements are checking various conditions and not
+                  setting a variable based on those checks. Also, the 'if' condition does not throw an error directly and is also not related to setting a boolean
+                  condition to true or false.
+External Call Analysis
+    Direct external call: ['INativeV1(_farmTokenCollection).mint(amount,string(abi.encodePacked(FarmingLP,_toString(_setupsInfo[_setups[setupIndex].infoIndex].liquidityPo
+    olTokenAddress))),fLP,IFarmFactory(_factory).getFarmTokenURI(),true)']
+    Analyze Transfer
+    Analyze Gas
+        - INativeV1(_farmTokenCollection).mint(amount,string(abi.encodePacked(FarmingLP,_toString(_setupsInfo[_setups[setupIndex].infoIndex].liquidityPoolTokenAddress))),
+        fLP,IFarmFactory(_factory).getFarmTokenURI(),true) ISN'T subjected to gas limits.
+    Remaining external call: ['INativeV1(_farmTokenCollection).mint(amount,string(abi.encodePacked(FarmingLP,_toString(_setupsInfo[_setups[setupIndex].infoIndex].liquidit
+    yPoolTokenAddress))),fLP,IFarmFactory(_factory).getFarmTokenURI(),true)']
+    Analyze External Address
+        There are ['_farmTokenCollection'] should be checked in variable _farmTokenCollection
+        Checked variables: _farmTokenCollection
+            No The provided function is named 'init', which does not match the contract name 'FarmMain' or is not explicitly named 'constructor', hence it is not a
+            constructor. However, the function modifies the state variable '_farmTokenCollection' by assigning to it the result of
+            'IEthItemOrchestrator(orchestrator).createNative(...)'. Since '_farmTokenCollection' is being assigned a computed value rather than a hardcoded one, it does
+            not satisfy the characteristic of having a hardcoded state variable modification.
+            Function Security Analysis for FarmMain.init(address,bytes,address,address,bytes)
+                There are no modifiers should be examined in function init.
+                Check direct function security
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The code does not contain any of the specified structures that directly check msg.sender against an XxxOwner/XxxAddress/Leader/CEO. It
+                      assigns msg.sender to _factory, but doesn't check it against a specified address or condition listed.
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The function does not meet any of the specified structures. It includes `require` statements but does not pair them with direct variable
+                      assignment as specified.
+Conclusion: This function will cause REE Problem.

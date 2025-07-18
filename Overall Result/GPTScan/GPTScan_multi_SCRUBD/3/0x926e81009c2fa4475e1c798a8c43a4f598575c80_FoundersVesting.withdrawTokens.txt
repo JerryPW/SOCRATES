@@ -1,0 +1,203 @@
+FoundersVesting.withdrawTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+     function withdrawTokens() public {
+          // 1 - wait for next month!
+          uint64 oneMonth = lastWithdrawTime + 30 days;  
+          require(uint(now) >= oneMonth);
+
+          // 2 - calculate amount (only first time)
+          if(withdrawsCount==0){
+               amountToSend = mntToken.balanceOf(this) / 10;
+          }
+
+          require(amountToSend!=0);
+
+          // 3 - send 1/10th
+          uint currentBalance = mntToken.balanceOf(this);
+          if(currentBalance<amountToSend){
+             amountToSend = currentBalance;  
+          }
+          mntToken.transfer(teamAccountAddress,amountToSend);
+
+          // 4 - update counter
+          withdrawsCount++;
+          lastWithdrawTime = uint64(now);
+     }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+     function withdrawTokens() public {
+          // 1 - wait for next month!
+          uint64 oneMonth = lastWithdrawTime + 30 days;  
+          require(uint(now) >= oneMonth);
+
+          // 2 - calculate amount (only first time)
+          if(withdrawsCount==0){
+               amountToSend = mntToken.balanceOf(this) / 10;
+          }
+
+          require(amountToSend!=0);
+
+          // 3 - send 1/10th
+          uint currentBalance = mntToken.balanceOf(this);
+          if(currentBalance<amountToSend){
+             amountToSend = currentBalance;  
+          }
+          mntToken.transfer(teamAccountAddress,amountToSend);
+
+          // 4 - update counter
+          withdrawsCount++;
+          lastWithdrawTime = uint64(now);
+     }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+     function withdrawTokens() public {
+          // 1 - wait for next month!
+          uint64 oneMonth = lastWithdrawTime + 30 days;  
+          require(uint(now) >= oneMonth);
+
+          // 2 - calculate amount (only first time)
+          if(withdrawsCount==0){
+               amountToSend = mntToken.balanceOf(this) / 10;
+          }
+
+          require(amountToSend!=0);
+
+          // 3 - send 1/10th
+          uint currentBalance = mntToken.balanceOf(this);
+          if(currentBalance<amountToSend){
+             amountToSend = currentBalance;  
+          }
+          mntToken.transfer(teamAccountAddress,amountToSend);
+
+          // 4 - update counter
+          withdrawsCount++;
+          lastWithdrawTime = uint64(now);
+     }
+Response:
+{"StatementsA": {"withdrawsCount++;":"Increments the withdrawsCount state variable.", "lastWithdrawTime = uint64(now);":"Updates the lastWithdrawTime state variable."}, "StatementsB": {"mntToken.transfer(teamAccountAddress,amountToSend);":"Executes an external call to transfer tokens."}, "VariableA": {"teamAccountAddress": "Holds the recipient's address for the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: withdrawsCount++;
+2.External Call: mntToken.transfer(teamAccountAddress,amountToSend);
+3.Variable A: teamAccountAddress
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+     function withdrawTokens() public {
+          // 1 - wait for next month!
+          uint64 oneMonth = lastWithdrawTime + 30 days;  
+          require(uint(now) >= oneMonth);
+
+          // 2 - calculate amount (only first time)
+          if(withdrawsCount==0){
+               amountToSend = mntToken.balanceOf(this) / 10;
+          }
+
+          require(amountToSend!=0);
+
+          // 3 - send 1/10th
+          uint currentBalance = mntToken.balanceOf(this);
+          if(currentBalance<amountToSend){
+             amountToSend = currentBalance;  
+          }
+          mntToken.transfer(teamAccountAddress,amountToSend);
+
+          // 4 - update counter
+          withdrawsCount++;
+          lastWithdrawTime = uint64(now);
+     }
+Response:
+{
+  "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+     function withdrawTokens() public {
+          // 1 - wait for next month!
+          uint64 oneMonth = lastWithdrawTime + 30 days;  
+          require(uint(now) >= oneMonth);
+
+          // 2 - calculate amount (only first time)
+          if(withdrawsCount==0){
+               amountToSend = mntToken.balanceOf(this) / 10;
+          }
+
+          require(amountToSend!=0);
+
+          // 3 - send 1/10th
+          uint currentBalance = mntToken.balanceOf(this);
+          if(currentBalance<amountToSend){
+             amountToSend = currentBalance;  
+          }
+          mntToken.transfer(teamAccountAddress,amountToSend);
+
+          // 4 - update counter
+          withdrawsCount++;
+          lastWithdrawTime = uint64(now);
+     }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+     function withdrawTokens() public {
+          // 1 - wait for next month!
+          uint64 oneMonth = lastWithdrawTime + 30 days;  
+          require(uint(now) >= oneMonth);
+
+          // 2 - calculate amount (only first time)
+          if(withdrawsCount==0){
+               amountToSend = mntToken.balanceOf(this) / 10;
+          }
+
+          require(amountToSend!=0);
+
+          // 3 - send 1/10th
+          uint currentBalance = mntToken.balanceOf(this);
+          if(currentBalance<amountToSend){
+             amountToSend = currentBalance;  
+          }
+          mntToken.transfer(teamAccountAddress,amountToSend);
+
+          // 4 - update counter
+          withdrawsCount++;
+          lastWithdrawTime = uint64(now);
+     }
+Response:
+{"StatementsA": {"withdrawsCount++;":"Increments the withdrawsCount state variable.", "lastWithdrawTime = uint64(now);":"Updates the lastWithdrawTime state variable."}, "StatementsB": {"mntToken.transfer(teamAccountAddress,amountToSend);":"Executes an external call to transfer tokens."}, "VariableA": {"teamAccountAddress": "Holds the recipient's address for the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: withdrawsCount++;
+2.External Call: mntToken.transfer(teamAccountAddress,amountToSend);
+3.Variable A: teamAccountAddress
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

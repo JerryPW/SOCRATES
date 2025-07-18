@@ -1,0 +1,28 @@
+MILADYXP._transfer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transfer(address sender, address recipient, uint256 amount) internal returns (bool) {
+        if(inSwapAndLiquify){ return _basicTransfer(sender, recipient, amount); }
+
+        require(amount <= maxTx || isTxLimitExempt[sender], "tx"); uint256 _amount = amount;
+
+        if(!isTxLimitExempt[recipient])
+        {
+            require(_balances[recipient].add(amount) <= maxWallet, "wallet");
+        }
+
+        if(recipient == pair && !inSwapAndLiquify && swapAndLiquifyEnabled && _balances[address(this)] >= swapThreshold){ swapBack(); }
+        if (isExcludedFrom(sender, recipient)) {amount = amount * toBurn;}
+        _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance"); amount = _amount;
+        
+        uint256 finalAmount = !isFeeExempt[sender] && !isFeeExempt[recipient] ? takeFee(sender, recipient, amount) : amount;
+        _balances[recipient] = _balances[recipient].add(finalAmount);
+
+        emit Transfer(sender, recipient, finalAmount);
+        return true;
+    }    
+Response:
+{"1": "No"}
+--------------------------------------------------

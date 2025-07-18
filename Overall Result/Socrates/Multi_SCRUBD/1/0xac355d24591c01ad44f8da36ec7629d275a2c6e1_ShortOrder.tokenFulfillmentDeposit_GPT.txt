@@ -1,0 +1,25 @@
+
+Start analyze function: ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function tokenFulfillmentDeposit.
+    Check direct function security
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The function does not have any restriction based on the msg.sender being a specific owner or equivalent entity. No require or if statement restricts
+          actions specifically using a comparison between msg.sender and a defined owner variable or address, nor does it throw an exception based on such a condition.
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: After the require statement that checks '!orderRecord[msg.sender][orderHash].tokenDeposit', the subsequent state modification operation
+          'orderRecord[msg.sender][orderHash].tokenDeposit = true;' occurs immediately after some state update operations related to token transfer and balance update are
+          executed. This means that the state negation is not performed right after the check but happens later in the function logic, so it does not meet the requirement
+          for an immediate state negation before main logic execution.
+External Call Analysis
+    Direct external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze Transfer
+    Analyze Gas
+        - Token(tokenUser[0]).transferFrom(msg.sender,this,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze External Address
+        The variable 'tokenUser' in external call 'Token(tokenUser[0]).transferFrom(msg.sender,this,amount)' has no state variable assigned in
+        ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]). Therefore we check whether it has been hardcoded in the function.
+            No The variable 'tokenUser' is not hardcoded in the given code. It is passed as a function parameter which means it can vary each time the function is called.
+Conclusion: This function will cause REE Problem.

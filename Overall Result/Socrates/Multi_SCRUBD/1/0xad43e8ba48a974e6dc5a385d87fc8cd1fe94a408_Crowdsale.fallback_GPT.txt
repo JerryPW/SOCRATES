@@ -1,0 +1,27 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code function does not include any authorization checks involving specific address comparisons such as msg.sender == xxxOwner/xxxAddress/Leader/CEO
+          or msg.sender != xxxOwner/xxxAddress/Leader/CEO. It only checks the state of the crowdsale and contribution amount limits.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reevaluating the code, it contains 'require(!crowdsaleClosed)', which is part of a structure similar to {require(!xxx);}. However, for condition 3,
+          the structure also requires 'xxx = True;', which is missing in the provided code. Therefore, the previous judgment was incorrect as there is no complete
+          matching structure present.
+External Call Analysis
+    Direct external call: ['beneficiary.send(amount)', 'tokenReward.transfer(msg.sender,sendTokens)']
+    Analyze Transfer
+        - beneficiary.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(msg.sender,sendTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,sendTokens) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,sendTokens)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function 'Crowdsale' has the same name as the contract 'Crowdsale', indicating it is a constructor. Additionally, the state variable 'tokenReward' is
+            hardcoded within this function.
+Conclusion: This function will not cause REE Problem.

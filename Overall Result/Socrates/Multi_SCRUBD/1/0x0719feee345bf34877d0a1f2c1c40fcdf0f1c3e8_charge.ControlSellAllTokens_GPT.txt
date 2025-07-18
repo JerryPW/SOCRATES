@@ -1,0 +1,10 @@
+
+Start analyze function: charge.ControlSellAllTokens()
+Function Security Analysis for charge.ControlSellAllTokens()
+    The modifier of function ControlSellAllTokens are ['onlyAuth']
+    The result of checking modifiers:
+        - modifier onlyAuth is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier explicitly uses require( is_auth[msg.sender] || msg.sender==owner ) to ensure that only specific authorized addresses or the owner can
+          execute the function. This matches the characteristic 1, which checks whether the code enforces that only the owner or specific addresses can execute the
+          function.
+Conclusion: This function will not cause REE Problem.

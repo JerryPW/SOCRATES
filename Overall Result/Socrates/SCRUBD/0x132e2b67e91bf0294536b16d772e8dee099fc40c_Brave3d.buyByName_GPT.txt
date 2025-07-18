@@ -1,0 +1,58 @@
+
+Start analyze function: Brave3d.buyByName(string)
+Function Security Analysis for Brave3d.buyByName(string)
+    There are no modifiers should be examined in function buyByName.
+    Check direct function security
+        - function Brave3d.buyByName(string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any conditional structure that specifically checks if 'msg.sender' is equal to or not equal to a specific owner, address,
+          leader, or CEO. Instead, it operates based on conditions related to 'msg.value' and initializes or modifies mappings based on the input and internal mappings.
+        - function Brave3d.buyByName(string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't have the required specific variable assignment structure with 'require' or 'if-throw' statements listed in the characteristics.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Brave3d.overStage(uint8)
+Function Security Analysis for Brave3d.overStage(uint8)
+    There are no modifiers should be examined in function overStage.
+    Check direct function security
+        - function Brave3d.overStage(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any checks or assertions involving 'msg.sender'.
+        - function Brave3d.overStage(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reevaluating the code, it indeed contains `assert(!finishStage.isFinish);` which follows the `require(!xxx);` pattern. However, the subsequent `xxx
+          = True;` assignment is not found immediately after this assertion. The code only has the `finishStage.isFinish = true;` statement towards the end. Therefore,
+          the entire structure required by the rule is not fulfilled as the two required statements are not in sequence. This was a structural omission in the previous
+          assessment.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyFromValue', 'buyByAddress', 'buyByName', 'withdraw', 'setName', 'forceOverStage']
+        Function Security Analysis for Brave3d.buyFromValue(uint8)
+            There are no modifiers should be examined in function buyFromValue.
+            Check direct function security
+                - function Brave3d.buyFromValue(uint8) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any checks involving msg.sender comparing it to xxxOwner, xxxAddress, Leader, or CEO using require, if-else
+                  conditions, or assert statements as specified in the characteristics.
+                - function Brave3d.buyFromValue(uint8) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not include any of the specified structures with the 'require' statement and the variable assignment sequences described.
+External Call Analysis
+    Direct external call: ['p3dContract.withdraw()', 'p3dContract.myDividends(true)', 'p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D))']
+    Analyze Transfer
+    Analyze Gas
+        - p3dContract.withdraw() ISN'T subjected to gas limits.
+        - p3dContract.myDividends(true) ISN'T subjected to gas limits.
+        - p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D)) ISN'T subjected to gas limits.
+    Remaining external call: ['p3dContract.withdraw()', 'p3dContract.myDividends(true)', 'p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D))']
+    Analyze External Address
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,28 @@
+
+Start analyze function: bebBUYtwo.setUSDT(uint256)
+Function Security Analysis for bebBUYtwo.setUSDT(uint256)
+    There are no modifiers should be examined in function setUSDT.
+    Check direct function security
+        - function bebBUYtwo.setUSDT(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any constructs where it checks if msg.sender is or is not a specific owner, address, leader, or CEO using require, if, or
+          assert statements.
+        - function bebBUYtwo.setUSDT(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified patterns (1 to 4), as it primarily uses 'require' for checking a condition without setting a boolean
+          variable to true or false afterwards.
+External Call Analysis
+    Direct external call: ['bebTokenTransferUSDT.transferFrom(msg.sender,address(this),_value)', 'bebTokenTransfer.transferFrom(msg.sender,address(this),_usdtex)']
+    Analyze Transfer
+    Analyze Gas
+        - bebTokenTransferUSDT.transferFrom(msg.sender,address(this),_value) ISN'T subjected to gas limits.
+        - bebTokenTransfer.transferFrom(msg.sender,address(this),_usdtex) ISN'T subjected to gas limits.
+    Remaining external call: ['bebTokenTransferUSDT.transferFrom(msg.sender,address(this),_value)', 'bebTokenTransfer.transferFrom(msg.sender,address(this),_usdtex)']
+    Analyze External Address
+        There are ['bebTokenTransferUSDT'] should be checked in variable bebTokenTransferUSDT
+        Checked variables: bebTokenTransferUSDT
+            Yes The provided code is named 'bebBUYtwo', which matches the name of the contract, 'bebBUYtwo'. Therefore, it satisfies the first characteristic of being a
+            constructor based on the naming convention.
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes The function name matches the contract name ('bebBUYtwo'), indicating that it is likely a constructor. Additionally, the state variable 'bebTokenTransfer'
+            is hardcoded with the value from 'tokenTransfer(_tokenAddress)' within the function.
+Conclusion: This function will not cause REE Problem.

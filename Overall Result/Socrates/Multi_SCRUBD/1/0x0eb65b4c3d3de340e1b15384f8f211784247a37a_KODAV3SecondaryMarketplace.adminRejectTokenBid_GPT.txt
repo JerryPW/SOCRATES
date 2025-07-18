@@ -1,0 +1,10 @@
+
+Start analyze function: KODAV3SecondaryMarketplace.adminRejectTokenBid(uint256)
+Function Security Analysis for KODAV3SecondaryMarketplace.adminRejectTokenBid(uint256)
+    The modifier of function adminRejectTokenBid are ['nonReentrant', 'onlyAdmin']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'nonReentrant' contains a lock operation where '_status' is checked and then set to a locked state ('_ENTERED'). After the function
+          executes, '_status' is reset to '_NOT_ENTERED'. Both lock and unlock operations are present, which satisfy rule 2. The name of the modifier, 'nonReentrant',
+          also suggests it prevents reentrancy, satisfying rule 3.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,67 @@
+ExclusiveDividendTracker.process: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function process(uint256 gas) public returns (uint256, uint256, uint256) {
+        uint256 numberOfTokenHolders = tokenHoldersMap.size();
+        if (numberOfTokenHolders == 0) {
+            return (0, 0, lastProcessedIndex); }
+        uint256 _lastProcessedIndex = lastProcessedIndex;
+        uint256 gasUsed = 0;
+        uint256 gasLeft = gasleft();
+        uint256 iterations = 0;
+        uint256 claims = 0;
+        while (gasUsed < gas && iterations < numberOfTokenHolders) {
+            _lastProcessedIndex++;
+            if (_lastProcessedIndex >= tokenHoldersMap.size()) {
+                _lastProcessedIndex = 0; }
+            address account = tokenHoldersMap.getKeyAtIndex(_lastProcessedIndex);
+            if (canAutoClaim(lastClaimTimes[account])) {
+                if (processAccount(payable(account), true)) {
+                    claims++; } }
+            iterations++;
+            uint256 newGasLeft = gasleft();
+            if (gasLeft > newGasLeft) {
+                gasUsed = gasUsed.add(gasLeft.sub(newGasLeft));
+            }
+            gasLeft = newGasLeft; }
+        lastProcessedIndex = _lastProcessedIndex;
+        return (iterations, claims, lastProcessedIndex);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function process(uint256 gas) public returns (uint256, uint256, uint256) {
+        uint256 numberOfTokenHolders = tokenHoldersMap.size();
+        if (numberOfTokenHolders == 0) {
+            return (0, 0, lastProcessedIndex); }
+        uint256 _lastProcessedIndex = lastProcessedIndex;
+        uint256 gasUsed = 0;
+        uint256 gasLeft = gasleft();
+        uint256 iterations = 0;
+        uint256 claims = 0;
+        while (gasUsed < gas && iterations < numberOfTokenHolders) {
+            _lastProcessedIndex++;
+            if (_lastProcessedIndex >= tokenHoldersMap.size()) {
+                _lastProcessedIndex = 0; }
+            address account = tokenHoldersMap.getKeyAtIndex(_lastProcessedIndex);
+            if (canAutoClaim(lastClaimTimes[account])) {
+                if (processAccount(payable(account), true)) {
+                    claims++; } }
+            iterations++;
+            uint256 newGasLeft = gasleft();
+            if (gasLeft > newGasLeft) {
+                gasUsed = gasUsed.add(gasLeft.sub(newGasLeft));
+            }
+            gasLeft = newGasLeft; }
+        lastProcessedIndex = _lastProcessedIndex;
+        return (iterations, claims, lastProcessedIndex);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

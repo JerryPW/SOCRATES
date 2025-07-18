@@ -1,0 +1,24 @@
+
+Start analyze function: EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address)
+Function Security Analysis for EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address)
+    There are no modifiers should be examined in function createSwapTarget.
+    Check direct function security
+        - function EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: None of the require/assert conditions involve checking if msg.sender is equal to a specific owner or leader address, nor does it check for inequality.
+          Hence, the function does not match any of the specified structures.
+        - function EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not implement any of the required structures. It uses `require` statements to enforce conditions for executing the function but
+          does not change the value of a specified variable as per the required patterns (like `require(xxx == True)` followed by `xxx = False`, etc.).
+External Call Analysis
+    Direct external call: ['ERC20(_token).transferFrom(msg.sender,this,_value)']
+    Analyze Transfer
+    Analyze Gas
+        - ERC20(_token).transferFrom(msg.sender,this,_value) ISN'T subjected to gas limits.
+    Remaining external call: ['ERC20(_token).transferFrom(msg.sender,this,_value)']
+    Analyze External Address
+        The variable '_token' in external call 'ERC20(_token).transferFrom(msg.sender,this,_value)' has no state variable assigned in
+        EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address). Therefore we check whether it has been hardcoded in the function.
+            No The function takes '_token' as a parameter and uses it dynamically through the 'ERC20(_token)' which indicates it's not hardcoded within the function body.
+            The '_token' variable determines the specific ERC20 token involved in the transfer operation, meaning it can vary based on the function call.
+Conclusion: This function will cause REE Problem.

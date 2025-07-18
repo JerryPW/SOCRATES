@@ -1,0 +1,24 @@
+
+Start analyze function: TrustlessOTC.cancelTrade(uint256)
+Function Security Analysis for TrustlessOTC.cancelTrade(uint256)
+    There are no modifiers should be examined in function cancelTrade.
+    Check direct function security
+        - function TrustlessOTC.cancelTrade(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The 'require' statement uses a local variable 'o.creator', not a fixed variable like xxxOwner or similar, which disqualifies it based on the given
+          rules.
+        - function TrustlessOTC.cancelTrade(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function contains a 'require' condition, but it does not set the tested variable to True or False afterward. Therefore, it does not match any of the
+          specified structures.
+External Call Analysis
+    Direct external call: ['Token(o.tokenFrom).transfer(o.creator,o.amountFrom)']
+    Analyze Transfer
+        - Token(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - Token(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(o.tokenFrom).transfer(o.creator,o.amountFrom)']
+    Analyze External Address
+        The variable 'o' in external call 'Token(o.tokenFrom).transfer(o.creator,o.amountFrom)' has no state variable assigned. Therefore we check whether it has been
+        hardcoded in the function.
+            No The variable 'o' is not hardcoded. It is dynamically assigned from the 'offers' array using the provided 'tradeID', which is a parameter of the function
+            and can change depending on the function call.
+Conclusion: This function will cause REE Problem.

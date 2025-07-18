@@ -1,0 +1,76 @@
+
+Start analyze function: Lottery10ETH.drawing()
+Function Security Analysis for Lottery10ETH.drawing()
+    There are no modifiers should be examined in function drawing.
+    Check direct function security
+        - function Lottery10ETH.drawing() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any statement with 'msg.sender' being compared to an 'xxxOwner/xxxAddress/Leader/CEO'. It does not meet any of the specified
+          characteristics.
+        - function Lottery10ETH.drawing() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not include any of the specified patterns. The only 'require' statement checks a condition on 'block.number' and there are no require
+          statements that assign to a variable after the check in the specified manner.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback']
+        Function Security Analysis for Lottery10ETH.fallback()
+            The modifier of function fallback are ['notFromContract']
+            The result of checking modifiers:
+                - modifier notFromContract has no relation with controlled by owner.
+                  Reason: The modifier does not check for ownership or specific addresses and doesn't implement a lock mechanism, nor does it have a name suggesting such
+                  a mechanism.
+            Check direct function security
+                - function Lottery10ETH.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code does not contain any checks or assertions involving 'msg.sender == xxxOwner/xxxAddress/Leader/CEO'. It also does not contain
+                  checks where 'msg.sender != xxxOwner/xxxAddress/Leader/CEO' is in a conditional that leads to an error or early exit in the function.
+                - function Lottery10ETH.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not match any of the specified structures. There is no use of 'require' with 'xxx == True' or 'xxx == False', and the same
+                  applies for 'require(!xxx)'. Additionally, there is no 'if(!xxx) throw;' structure followed by setting 'xxx = true'. Therefore, none of the outlined
+                  characteristics are present.
+External Call Analysis
+    Direct external call: ['x.draw(goldenWinners)', 'owner.send(fee)', 'players[winnerIdx].send(brilliant[1])', 'winner.send(silver[1])', 'RS.sendBonus(addresses[k])',
+    'WT.emitEvent(players[winnerIdx])', 'x.count()', 'addresses[k].send(goldenPrize)', 'WT.emitEvent(addresses[k])', 'msg.sender.send(txCost)', 'WT.emitEvent(winner)']
+    Analyze Transfer
+        - owner.send(fee) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call 'owner.send(fee)' contains '.send('..
+        Parameter in 'transfer'/'send': 1.
+        - players[winnerIdx].send(brilliant[1]) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'players[winnerIdx].send(brilliant[1])' contains '.send('.. Parameter in 'transfer'/'send': 1.
+        - winner.send(silver[1]) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call 'winner.send(silver[1])' contains
+        '.send('.. Parameter in 'transfer'/'send': 1.
+        - addresses[k].send(goldenPrize) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'addresses[k].send(goldenPrize)' contains '.send('.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.send(txCost) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call 'msg.sender.send(txCost)' contains
+        '.send('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - x.draw(goldenWinners) ISN'T subjected to gas limits.
+        - RS.sendBonus(addresses[k]) ISN'T subjected to gas limits.
+        - WT.emitEvent(players[winnerIdx]) ISN'T subjected to gas limits.
+        - x.count() ISN'T subjected to gas limits.
+        - WT.emitEvent(addresses[k]) ISN'T subjected to gas limits.
+        - WT.emitEvent(winner) ISN'T subjected to gas limits.
+    Remaining external call: ['x.draw(goldenWinners)', 'RS.sendBonus(addresses[k])', 'WT.emitEvent(players[winnerIdx])', 'x.count()', 'WT.emitEvent(addresses[k])',
+    'WT.emitEvent(winner)']
+    Analyze External Address
+        There are ['x'] should be checked in variable x
+        Checked variables: x
+            Yes The provided code contains a constructor function as its first line defines a function named 'constructor'. This matches the characteristic of being
+            explicitly named 'constructor', satisfying the first condition.
+        There are ['RS'] should be checked in variable RS
+        Checked variables: RS
+            Yes The provided function is a constructor as it matches the contract name 'Lottery10ETH'. Constructors are special functions in Ethereum smart contracts that
+            are executed during the contract's deployment and are used to initialize the contract's state variables.
+        There are ['WT'] should be checked in variable WT
+        Checked variables: WT
+            Yes The provided code snippet is confirmed to be a constructor function because it is explicitly named 'constructor'. The function also assigns a new instance
+            to the state variable 'WT', but this does not count as hardcoding a value since it's an assignment of an instance.
+        There are ['x'] should be checked in variable x
+        Checked variables: x
+            Yes 1. The provided code contains a function which is named 'constructor', so it meets the criteria for a constructor. 2. The state variable 'x' is assigned a
+            new instance of 'Storage' in the constructor, which is considered as a hardcoded assignment.
+        There are ['WT'] should be checked in variable WT
+        Checked variables: WT
+            Yes The provided code is a constructor because the function name is 'constructor'. In Solidity, if a function is explicitly named 'constructor', it is treated
+            as a constructor function, regardless of the contract's name. This satisfies the first characteristic we are checking for.
+        There are ['WT'] should be checked in variable WT
+        Checked variables: WT
+            Yes The function provided is explicitly named 'constructor', indicating that it is a constructor function. Constructor functions are used for initializing a
+            contract, and they do not need to check or modify specific state variables unless required by the contract's logic.
+Conclusion: This function will not cause REE Problem.

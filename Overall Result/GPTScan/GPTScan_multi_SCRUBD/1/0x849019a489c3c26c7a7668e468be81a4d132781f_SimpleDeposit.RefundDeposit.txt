@@ -1,0 +1,77 @@
+SimpleDeposit.RefundDeposit: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function RefundDeposit(address _addr, uint _wei) 
+    public 
+    payable
+    {
+        if(Depositors[_addr]>0)
+        {
+            if(isAllowed())
+            {
+                _addr.send(_wei);
+                Available-=_wei;
+                Withdrew(_addr,_wei);
+                 
+            }
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function RefundDeposit(address _addr, uint _wei) 
+    public 
+    payable
+    {
+        if(Depositors[_addr]>0)
+        {
+            if(isAllowed())
+            {
+                _addr.send(_wei);
+                Available-=_wei;
+                Withdrew(_addr,_wei);
+                 
+            }
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function RefundDeposit(address _addr, uint _wei) 
+    public 
+    payable
+    {
+        if(Depositors[_addr]>0)
+        {
+            if(isAllowed())
+            {
+                _addr.send(_wei);
+                Available-=_wei;
+                Withdrew(_addr,_wei);
+                 
+            }
+        }
+    }
+Response:
+{"StatementsA": {"Available-=_wei;":"This statement updates the state variable 'Available' by subtracting '_wei' from it."}, "StatementsB": {"_addr.send(_wei);":"This statement executes an external call by sending '_wei' amount to the address '_addr'."}, "VariableA": {"_addr": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: Available-=_wei;
+2.External Call: _addr.send(_wei);
+3.Variable A: _addr
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

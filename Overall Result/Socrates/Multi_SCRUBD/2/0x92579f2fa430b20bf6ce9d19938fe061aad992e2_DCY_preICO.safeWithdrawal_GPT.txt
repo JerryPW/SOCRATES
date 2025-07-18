@@ -1,0 +1,28 @@
+
+Start analyze function: DCY_preICO.safeWithdrawal()
+Function Security Analysis for DCY_preICO.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier checks if the current time is after a certain deadline but does not enforce ownership or lock the function execution.
+    Check direct function security
+        - function DCY_preICO.safeWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function checks if the beneficiary is the same as msg.sender before allowing the withdrawal if the funding goal is reached, but it doesn't require
+          or assert msg.sender to be a specific role directly by the structures defined.
+        - function DCY_preICO.safeWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluation, the code does not meet the specified structures' requirements. Although the code checks if 'fundingGoalReached == false' later on,
+          it does not follow that by setting 'fundingGoalReached = true'. Instead, it only conditionally sets 'fundingGoalReached = false'. Subsequently, it does not
+          satisfy any of the listed structures because none have the first two required matching statements correctly. Structure 2 requires 'require(xxx == False)'
+          followed by setting 'xxx = True', which does not appear in this code. Structure 3 needs '!xxx' to precede 'xxx = True', and structure 4 requires the same
+          condition before 'xxx = true', neither of which are present.
+External Call Analysis
+    Direct external call: ['msg.sender.send(amount)', 'beneficiary.send(amountRaised)']
+    Analyze Transfer
+        - msg.sender.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, hence it satisfies one of the characteristics.. Parameter in 'transfer'/'send': 1.
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.send(' keyword, hence it satisfies one of the characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

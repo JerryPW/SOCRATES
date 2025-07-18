@@ -1,0 +1,74 @@
+EthTokenToSmthSwaps.withdrawNoMoney: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function withdrawNoMoney(bytes32 _secret, address participantAddress) public {
+    Swap memory swap = swaps[msg.sender][participantAddress];
+
+    require(swap.secretHash == ripemd160(_secret));
+    require(swap.balance > uint256(0));
+    require(swap.createdAt.add(SafeTime) > now);
+
+    ERC20(swap.token).transfer(swap.targetWallet, swap.balance);
+
+    swaps[msg.sender][participantAddress].balance = 0;
+    swaps[msg.sender][participantAddress].secret = _secret;
+
+    Withdraw(participantAddress, msg.sender, now); 
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function withdrawNoMoney(bytes32 _secret, address participantAddress) public {
+    Swap memory swap = swaps[msg.sender][participantAddress];
+
+    require(swap.secretHash == ripemd160(_secret));
+    require(swap.balance > uint256(0));
+    require(swap.createdAt.add(SafeTime) > now);
+
+    ERC20(swap.token).transfer(swap.targetWallet, swap.balance);
+
+    swaps[msg.sender][participantAddress].balance = 0;
+    swaps[msg.sender][participantAddress].secret = _secret;
+
+    Withdraw(participantAddress, msg.sender, now); 
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function withdrawNoMoney(bytes32 _secret, address participantAddress) public {
+    Swap memory swap = swaps[msg.sender][participantAddress];
+
+    require(swap.secretHash == ripemd160(_secret));
+    require(swap.balance > uint256(0));
+    require(swap.createdAt.add(SafeTime) > now);
+
+    ERC20(swap.token).transfer(swap.targetWallet, swap.balance);
+
+    swaps[msg.sender][participantAddress].balance = 0;
+    swaps[msg.sender][participantAddress].secret = _secret;
+
+    Withdraw(participantAddress, msg.sender, now); 
+  }
+Response:
+{"StatementsA": {"swaps[msg.sender][participantAddress].balance = 0;":"Updates the balance of the swap to 0", "swaps[msg.sender][participantAddress].secret = _secret;":"Updates the secret of the swap"}, "StatementsB": {"ERC20(swap.token).transfer(swap.targetWallet, swap.balance);":"Executes a transfer of tokens to the target wallet"}, "VariableA": {"msg.sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: swaps[msg.sender][participantAddress].balance = 0;
+2.External Call: ERC20(swap.token).transfer(swap.targetWallet, swap.balance);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

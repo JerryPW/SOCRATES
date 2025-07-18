@@ -1,0 +1,33 @@
+
+Start analyze function: Deposit.ClaimMTU(bool)
+Function Security Analysis for Deposit.ClaimMTU(bool)
+    The modifier of function ClaimMTU are ['paused']
+    The result of checking modifiers:
+        - modifier paused has no relation with controlled by owner.
+          Reason: The modifier checks a boolean variable `Paused` to assert that it is not true. It does not enforce specific address access nor does it implement a lock
+          mechanism. It simply allows functions to be paused, which does not satisfy any of the listed conditions.
+    Check direct function security
+        - function Deposit.ClaimMTU(bool) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'ClaimMTU' does not have any structure where 'msg.sender' is directly compared against an owner-like address or role such as 'xxxOwner',
+          'xxxAddress', 'Leader', or 'CEO' using require, if, or assert statements as described in the given characteristics.
+        - function Deposit.ClaimMTU(bool) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures. It has two require statements but they don't follow the given patterns that conclude with
+          setting the boolean to True or False after a require statement.
+External Call Analysis
+    Direct external call: ['tokenTransfer.transfer(msg.sender,claimTokens)', 'getAddress(team).transfer(ethVal/20)', 'msg.sender.transfer(ethVal)']
+    Analyze Transfer
+        - tokenTransfer.transfer(msg.sender,claimTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - getAddress(team).transfer(ethVal/20) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(ethVal) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer('
+        keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenTransfer.transfer(msg.sender,claimTokens) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenTransfer.transfer(msg.sender,claimTokens)']
+    Analyze External Address
+        The variable 'tokenTransfer' in external call 'tokenTransfer.transfer(msg.sender,claimTokens)' has no state variable assigned in Deposit.ClaimMTU(bool). Therefore
+        we check whether it has been hardcoded in the function.
+            No The variable 'tokenTransfer' is initialized dynamically by calling 'token(tokenAddress)'. Here, 'tokenAddress' is obtained through a function call
+            'getAddress('unit')', implying it can change based on external conditions or configurations. Thus, 'tokenTransfer' is not directly hardcoded but derived from
+            potentially variable external data.
+Conclusion: This function will cause REE Problem.

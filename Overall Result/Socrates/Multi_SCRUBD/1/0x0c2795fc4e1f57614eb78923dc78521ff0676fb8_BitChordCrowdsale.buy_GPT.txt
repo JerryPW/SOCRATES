@@ -1,0 +1,50 @@
+
+Start analyze function: BitChordCrowdsale.buy(address,uint256,uint256)
+Function Security Analysis for BitChordCrowdsale.buy(address,uint256,uint256)
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function BitChordCrowdsale.buy(address,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'buy' does not check the identity of 'msg.sender' by comparing it to any ownership or leader address. Therefore, none of the conditions
+          specified are met.
+        - function BitChordCrowdsale.buy(address,uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the structure 'if(!phase2Flag) phase2Flag = true;', which matches the pattern 3. However, the main logic code starts executing between
+          the check and the assignment: 'stage_2_maxcap = stage_2_maxcap.add(STAGE_1_MAXCAP.sub(stage_1_TokensSold));'  is executed before 'phase2Flag = true;'. This
+          means the negation operation is not performed immediately after the state check and instead some logic (stage_2_maxcap calculation) is performed in between.
+          Therefore, it does not meet the specific requirement of immediate negation after state check before any main logic execution.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback']
+        Function Security Analysis for BitChordCrowdsale.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function BitChordCrowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any checks relating to msg.sender being equal or not equal to a specific owner or address like xxxOwner,
+                  xxxAddress, Leader, CEO, as per the specified characteristics.
+                - function BitChordCrowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code snippet has a `require` statement, but it doesn't follow any of the specific patterns outlined in the characteristics. All the given
+                  structures need a boolean variable to be required false/true and then be set to true/false. The snippet is missing the part where the variable is set to
+                  true/false after the require statement.
+External Call Analysis
+    Direct external call: ['token.transfer(_address,availableTokens)', 'msg.sender.transfer(_value.sub(ethRequire))',
+    'distributionAddress.transfer(address(this).balance.sub(oraclizeBalance))', 'token.transfer(_address,tokensToSend)']
+    Analyze Transfer
+        - token.transfer(_address,availableTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.transfer(_value.sub(ethRequire)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(_value.sub(ethRequire))' contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - distributionAddress.transfer(address(this).balance.sub(oraclizeBalance)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the
+        reason: The external call 'distributionAddress.transfer(address(this).balance.sub(oraclizeBalance))' contains '.transfer(' keyword.. Parameter in
+        'transfer'/'send': 1.
+        - token.transfer(_address,tokensToSend) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(_address,availableTokens) ISN'T subjected to gas limits.
+        - token.transfer(_address,tokensToSend) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(_address,availableTokens)', 'token.transfer(_address,tokensToSend)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function 'BitChordCrowdsale' has the same name as the contract 'BitChordCrowdsale', which implies that it is a constructor for the contract. As per
+            Solidity pre-0.5.0 convention, constructors are defined by naming the function the same as the contract name.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function 'BitChordCrowdsale' matches the contract name 'BitChordCrowdsale'. According to the first characteristic, if the function name matches the
+            contract name, it indicates that the function is a constructor.
+Conclusion: This function will not cause REE Problem.

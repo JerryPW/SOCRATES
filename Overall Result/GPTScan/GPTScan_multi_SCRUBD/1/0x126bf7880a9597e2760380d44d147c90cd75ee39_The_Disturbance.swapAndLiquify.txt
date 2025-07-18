@@ -1,0 +1,87 @@
+The_Disturbance.swapAndLiquify: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
+        uint256 totalFee = _sellLiquidityFee + _sellDevFee + _sellMarketingFee;
+        if (totalFee == 0)
+            return;
+        uint256 toLiquify = (contractTokenBalance * _sellLiquidityFee) / (totalFee);
+        uint256 toDev = ((contractTokenBalance * _sellDevFee) / (totalFee)) / 2;
+        uint256 toMarketing = ((contractTokenBalance * _sellMarketingFee) / (totalFee)) / 2;
+        if(!getTokens){
+            toDev = 0;
+            toMarketing = 0;
+        }
+        uint256 ethOut = contractTokenBalance - toLiquify - toDev - toMarketing;
+        uint256 half = toLiquify / 2;
+        uint256 otherHalf = toLiquify - half;
+        uint256 initialBalance = address(this).balance;
+        uint256 toSwapForEth = half + ethOut;
+        swapTokensForEth(toSwapForEth);
+
+        uint256 fromSwap = address(this).balance - initialBalance;
+        uint256 liquidityBalance = (fromSwap * half) / toSwapForEth;
+
+        if (toLiquify > 0) {
+            addLiquidity(otherHalf, liquidityBalance);
+            emit SwapAndLiquify(half, liquidityBalance, otherHalf);
+        }
+        if (toDev > 0) {
+            _transfer(address(this), _devWallet, toMarketing);
+        }
+        if (toMarketing > 0) {
+            _transfer(address(this), _marketingWallet, toMarketing);
+        }
+        if (ethOut > 0) {
+            transferETHOut(fromSwap - liquidityBalance);
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
+        uint256 totalFee = _sellLiquidityFee + _sellDevFee + _sellMarketingFee;
+        if (totalFee == 0)
+            return;
+        uint256 toLiquify = (contractTokenBalance * _sellLiquidityFee) / (totalFee);
+        uint256 toDev = ((contractTokenBalance * _sellDevFee) / (totalFee)) / 2;
+        uint256 toMarketing = ((contractTokenBalance * _sellMarketingFee) / (totalFee)) / 2;
+        if(!getTokens){
+            toDev = 0;
+            toMarketing = 0;
+        }
+        uint256 ethOut = contractTokenBalance - toLiquify - toDev - toMarketing;
+        uint256 half = toLiquify / 2;
+        uint256 otherHalf = toLiquify - half;
+        uint256 initialBalance = address(this).balance;
+        uint256 toSwapForEth = half + ethOut;
+        swapTokensForEth(toSwapForEth);
+
+        uint256 fromSwap = address(this).balance - initialBalance;
+        uint256 liquidityBalance = (fromSwap * half) / toSwapForEth;
+
+        if (toLiquify > 0) {
+            addLiquidity(otherHalf, liquidityBalance);
+            emit SwapAndLiquify(half, liquidityBalance, otherHalf);
+        }
+        if (toDev > 0) {
+            _transfer(address(this), _devWallet, toMarketing);
+        }
+        if (toMarketing > 0) {
+            _transfer(address(this), _marketingWallet, toMarketing);
+        }
+        if (ethOut > 0) {
+            transferETHOut(fromSwap - liquidityBalance);
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

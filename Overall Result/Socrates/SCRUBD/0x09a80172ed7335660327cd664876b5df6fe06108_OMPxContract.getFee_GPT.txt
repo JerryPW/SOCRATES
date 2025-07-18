@@ -1,0 +1,31 @@
+
+Start analyze function: OMPxContract.getFee()
+Function Security Analysis for OMPxContract.getFee()
+    There are no modifiers should be examined in function getFee.
+    Check direct function security
+        - function OMPxContract.getFee() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any condition or assertion that directly checks if msg.sender is an owner, address, or similar role, nor a check that throws
+          or performs an action if such a condition is not met.
+        - function OMPxContract.getFee() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided function does not match any of the specified structures. It contains an if statement checking a condition (if(feeBalance > 1e15)), but it
+          does not have a 'require(xxx == True)', 'require(xxx == False)', 'require(!xxx)', or 'if(!xxx) throw' condition followed by 'xxx = True' or 'xxx = False'.
+External Call Analysis
+    Direct external call: ['feeReceiverContract.receiveFunds.value(feeBalance).gas(150000)()']
+    Analyze Transfer
+    Analyze Gas
+        - The gas limit in feeReceiverContract.receiveFunds.value(feeBalance).gas(150000)() is 150000, which is too high. Therefore, it will not prevent REE problem.
+    Remaining external call: ['feeReceiverContract.receiveFunds.value(feeBalance).gas(150000)()']
+    Analyze External Address
+        There are ['feeReceiverContract'] should be checked in variable feeReceiverContract
+        Checked variables: feeReceiverContract
+            No The provided function code is setting a new value to the state variable 'feeReceiverContract' through an external call 'feeReceiverContract =
+            Distribution(newReceiver)'. However, the function is designed to update the state variable dynamically based on the input parameter 'newReceiver' and is not
+            using a hardcoded address for this state variable. Furthermore, the function name 'setFeeReceiver' does not match the contract name 'OMPxContract', nor is it
+            explicitly named as 'constructor'. Therefore, this function neither matches the constructor criterion nor the hardcoding criterion for the state variable.
+            Function Security Analysis for OMPxContract.setFeeReceiver(address)
+                The modifier of function setFeeReceiver are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon re-evaluating the modifier onlyOwner, the code contains require(msg.sender == owner);, which enforces ownership access control. This
+                      satisfies criterion 1, as it checks if the function is restricted to the owner, thereby prohibiting unauthorized access.
+Conclusion: This function will not cause REE Problem.

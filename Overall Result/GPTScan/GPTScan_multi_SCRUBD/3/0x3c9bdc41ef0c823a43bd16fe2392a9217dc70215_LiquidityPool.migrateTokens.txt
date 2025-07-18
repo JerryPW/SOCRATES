@@ -1,0 +1,105 @@
+LiquidityPool.migrateTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function migrateTokens() external {
+        staker storage thisStaker = stakers[msg.sender]; 
+        require(!thisStaker.hasMigrated, "You have already migrated");
+        require(migrationEnabled, "Migration is disabled");
+        
+        uint previousBalance = previousContractBalances[msg.sender];
+        
+        require(previousBalance > 0, "You have no tokens to migrate");
+        
+        require(uniswapPair.transferFrom(msg.sender, address(this), previousBalance), "Failure transferring UNI-V2");      // Must already be approved
+        
+        thisStaker.poolTokenBalance = previousBalance;
+        
+        delete previousContractBalances[msg.sender];
+        
+        thisStaker.hasMigrated = true;
+        
+        thisStaker.lockedRewardBalance = 10E18;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function migrateTokens() external {
+        staker storage thisStaker = stakers[msg.sender]; 
+        require(!thisStaker.hasMigrated, "You have already migrated");
+        require(migrationEnabled, "Migration is disabled");
+        
+        uint previousBalance = previousContractBalances[msg.sender];
+        
+        require(previousBalance > 0, "You have no tokens to migrate");
+        
+        require(uniswapPair.transferFrom(msg.sender, address(this), previousBalance), "Failure transferring UNI-V2");      // Must already be approved
+        
+        thisStaker.poolTokenBalance = previousBalance;
+        
+        delete previousContractBalances[msg.sender];
+        
+        thisStaker.hasMigrated = true;
+        
+        thisStaker.lockedRewardBalance = 10E18;
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function migrateTokens() external {
+        staker storage thisStaker = stakers[msg.sender]; 
+        require(!thisStaker.hasMigrated, "You have already migrated");
+        require(migrationEnabled, "Migration is disabled");
+        
+        uint previousBalance = previousContractBalances[msg.sender];
+        
+        require(previousBalance > 0, "You have no tokens to migrate");
+        
+        require(uniswapPair.transferFrom(msg.sender, address(this), previousBalance), "Failure transferring UNI-V2");      // Must already be approved
+        
+        thisStaker.poolTokenBalance = previousBalance;
+        
+        delete previousContractBalances[msg.sender];
+        
+        thisStaker.hasMigrated = true;
+        
+        thisStaker.lockedRewardBalance = 10E18;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function migrateTokens() external {
+        staker storage thisStaker = stakers[msg.sender]; 
+        require(!thisStaker.hasMigrated, "You have already migrated");
+        require(migrationEnabled, "Migration is disabled");
+        
+        uint previousBalance = previousContractBalances[msg.sender];
+        
+        require(previousBalance > 0, "You have no tokens to migrate");
+        
+        require(uniswapPair.transferFrom(msg.sender, address(this), previousBalance), "Failure transferring UNI-V2");      // Must already be approved
+        
+        thisStaker.poolTokenBalance = previousBalance;
+        
+        delete previousContractBalances[msg.sender];
+        
+        thisStaker.hasMigrated = true;
+        
+        thisStaker.lockedRewardBalance = 10E18;
+    }
+    
+Response:
+No
+--------------------------------------------------

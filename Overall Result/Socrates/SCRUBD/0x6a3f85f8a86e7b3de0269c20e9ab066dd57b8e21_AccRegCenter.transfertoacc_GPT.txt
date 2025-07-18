@@ -1,0 +1,9 @@
+
+Start analyze function: AccRegCenter.transfertoacc(string,uint256)
+Function Security Analysis for AccRegCenter.transfertoacc(string,uint256)
+    The modifier of function transfertoacc are ['onlyOwner']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The code includes 'require(msg.sender == owner);' which is a direct enforcement that only the owner can execute the function. This corresponds with rule
+          1. No need for structure 2 checks as there is no lock pattern in the modifier.
+Conclusion: This function will not cause REE Problem.

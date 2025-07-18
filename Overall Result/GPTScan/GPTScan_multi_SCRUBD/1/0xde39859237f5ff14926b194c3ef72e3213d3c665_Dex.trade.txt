@@ -1,0 +1,91 @@
+Dex.trade: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function trade(uint256 tradingProxyIndex, ERC20 src, uint256 srcAmount, ERC20 dest, uint256 minDestAmount) payable public returns(uint256)  {
+        uint256 destAmount;
+
+        // Trade ETH -> Any
+        if (etherERC20 == src) {
+            destAmount = _trade(tradingProxyIndex, src, srcAmount, dest, 1);
+
+            // Throw exception if destination amount doesn't meet user requirement.
+            assert(destAmount >= minDestAmount);
+
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        
+        // Trade Any -> ETH
+        } else if (etherERC20 == dest) {
+            // Transfer token to This address
+            src.transferFrom(msg.sender, address(this), srcAmount);
+
+            destAmount = _trade(tradingProxyIndex, src, srcAmount, dest, 1);
+
+            // Throw exception if destination amount doesn't meet user requirement.
+            assert(destAmount >= minDestAmount);
+
+            // Send back ether to sender
+            // TODO: Check if amount send correctly, because solidty will not raise error when not enough amount
+            msg.sender.send(destAmount);
+
+        // Trade Any -> Any
+        } else {
+
+        }
+
+        Trade( src, srcAmount, dest, destAmount);
+
+        return destAmount;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function trade(uint256 tradingProxyIndex, ERC20 src, uint256 srcAmount, ERC20 dest, uint256 minDestAmount) payable public returns(uint256)  {
+        uint256 destAmount;
+
+        // Trade ETH -> Any
+        if (etherERC20 == src) {
+            destAmount = _trade(tradingProxyIndex, src, srcAmount, dest, 1);
+
+            // Throw exception if destination amount doesn't meet user requirement.
+            assert(destAmount >= minDestAmount);
+
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        
+        // Trade Any -> ETH
+        } else if (etherERC20 == dest) {
+            // Transfer token to This address
+            src.transferFrom(msg.sender, address(this), srcAmount);
+
+            destAmount = _trade(tradingProxyIndex, src, srcAmount, dest, 1);
+
+            // Throw exception if destination amount doesn't meet user requirement.
+            assert(destAmount >= minDestAmount);
+
+            // Send back ether to sender
+            // TODO: Check if amount send correctly, because solidty will not raise error when not enough amount
+            msg.sender.send(destAmount);
+
+        // Trade Any -> Any
+        } else {
+
+        }
+
+        Trade( src, srcAmount, dest, destAmount);
+
+        return destAmount;
+    }
+    
+Response:
+No
+--------------------------------------------------

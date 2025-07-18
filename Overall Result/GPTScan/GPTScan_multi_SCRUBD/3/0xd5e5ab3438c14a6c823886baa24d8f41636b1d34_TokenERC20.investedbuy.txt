@@ -1,0 +1,357 @@
+TokenERC20.investedbuy: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function investedbuy(address _owner)public payable  {
+        require(msg.sender != _owner); 
+        amountren++;
+        investeds = investeds.add(msg.value);
+        users[msg.sender].affadd = _owner;
+        users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+        address a = users[msg.sender].affadd;
+         
+        for(uint256 i = 0; i < 7; i++){
+            if(i == 0 && a != address(0)){
+                a.send(msg.value * 8 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+            }
+                    
+            if(i == 1 && a != address(0)){
+                a.send(msg.value * 5 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+            }
+                     
+            if(i == 2  && a != address(0)){
+                a.send(msg.value * 3 / 100 ); 
+                users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+            }
+                    
+            if(i > 2  &&  a != address(0)){
+                a.send(msg.value * 1 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+            }
+             a = users[a].affadd;           
+        } 
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+     
+    } 
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function investedbuy(address _owner)public payable  {
+        require(msg.sender != _owner); 
+        amountren++;
+        investeds = investeds.add(msg.value);
+        users[msg.sender].affadd = _owner;
+        users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+        address a = users[msg.sender].affadd;
+         
+        for(uint256 i = 0; i < 7; i++){
+            if(i == 0 && a != address(0)){
+                a.send(msg.value * 8 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+            }
+                    
+            if(i == 1 && a != address(0)){
+                a.send(msg.value * 5 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+            }
+                     
+            if(i == 2  && a != address(0)){
+                a.send(msg.value * 3 / 100 ); 
+                users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+            }
+                    
+            if(i > 2  &&  a != address(0)){
+                a.send(msg.value * 1 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+            }
+             a = users[a].affadd;           
+        } 
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+     
+    } 
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function investedbuy(address _owner)public payable  {
+        require(msg.sender != _owner); 
+        amountren++;
+        investeds = investeds.add(msg.value);
+        users[msg.sender].affadd = _owner;
+        users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+        address a = users[msg.sender].affadd;
+         
+        for(uint256 i = 0; i < 7; i++){
+            if(i == 0 && a != address(0)){
+                a.send(msg.value * 8 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+            }
+                    
+            if(i == 1 && a != address(0)){
+                a.send(msg.value * 5 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+            }
+                     
+            if(i == 2  && a != address(0)){
+                a.send(msg.value * 3 / 100 ); 
+                users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+            }
+                    
+            if(i > 2  &&  a != address(0)){
+                a.send(msg.value * 1 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+            }
+             a = users[a].affadd;           
+        } 
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+     
+    } 
+Response:
+{"StatementsA": {"amountren++;": "Increments the amountren state variable.", "investeds = investeds.add(msg.value);": "Updates the investeds state variable with the added msg.value.", "users[msg.sender].affadd = _owner;": "Sets the affadd property of the user to _owner.", "users[owner].pot = users[owner].pot + (msg.value * commission / 100);": "Updates the pot property of the owner.", "users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 );": "Updates the yongjin property of the user.", "users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);": "Updates the touzizongshu property of the user.", "users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu);": "Updates the tixianzongshu property of the user.", "users[msg.sender].atblock = now;": "Updates the atblock property of the user.", "users[msg.sender].invested += msg.value;": "Increments the invested property of the user by msg.value."}, "StatementsB": {"a.send(msg.value * 8 / 100 );": "Sends ether to address a.", "a.send(msg.value * 5 / 100 );": "Sends ether to address a.", "a.send(msg.value * 3 / 100 );": "Sends ether to address a.", "a.send(msg.value * 1 / 100 );": "Sends ether to address a.", "sender.send(amount);": "Sends ether to the sender."}, "VariableA": {"sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: amountren++;
+2.External Call: a.send(msg.value * 8 / 100 );
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function investedbuy(address _owner)public payable  {
+        require(msg.sender != _owner); 
+        amountren++;
+        investeds = investeds.add(msg.value);
+        users[msg.sender].affadd = _owner;
+        users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+        address a = users[msg.sender].affadd;
+         
+        for(uint256 i = 0; i < 7; i++){
+            if(i == 0 && a != address(0)){
+                a.send(msg.value * 8 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+            }
+                    
+            if(i == 1 && a != address(0)){
+                a.send(msg.value * 5 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+            }
+                     
+            if(i == 2  && a != address(0)){
+                a.send(msg.value * 3 / 100 ); 
+                users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+            }
+                    
+            if(i > 2  &&  a != address(0)){
+                a.send(msg.value * 1 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+            }
+             a = users[a].affadd;           
+        } 
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+     
+    } 
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function investedbuy(address _owner)public payable  {
+        require(msg.sender != _owner); 
+        amountren++;
+        investeds = investeds.add(msg.value);
+        users[msg.sender].affadd = _owner;
+        users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+        address a = users[msg.sender].affadd;
+         
+        for(uint256 i = 0; i < 7; i++){
+            if(i == 0 && a != address(0)){
+                a.send(msg.value * 8 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+            }
+                    
+            if(i == 1 && a != address(0)){
+                a.send(msg.value * 5 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+            }
+                     
+            if(i == 2  && a != address(0)){
+                a.send(msg.value * 3 / 100 ); 
+                users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+            }
+                    
+            if(i > 2  &&  a != address(0)){
+                a.send(msg.value * 1 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+            }
+             a = users[a].affadd;           
+        } 
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+     
+    } 
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function investedbuy(address _owner)public payable  {
+        require(msg.sender != _owner); 
+        amountren++;
+        investeds = investeds.add(msg.value);
+        users[msg.sender].affadd = _owner;
+        users[owner].pot = users[owner].pot + (msg.value * commission / 100);
+        address a = users[msg.sender].affadd;
+         
+        for(uint256 i = 0; i < 7; i++){
+            if(i == 0 && a != address(0)){
+                a.send(msg.value * 8 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 ); 
+            }
+                    
+            if(i == 1 && a != address(0)){
+                a.send(msg.value * 5 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 5 / 100 ); 
+            }
+                     
+            if(i == 2  && a != address(0)){
+                a.send(msg.value * 3 / 100 ); 
+                users[a].yongjin = users[a].yongjin.add(msg.value * 3 / 100 ); 
+            }
+                    
+            if(i > 2  &&  a != address(0)){
+                a.send(msg.value * 1 / 100 );
+                users[a].yongjin = users[a].yongjin.add(msg.value * 1 / 100 ); 
+            }
+             a = users[a].affadd;           
+        } 
+        users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);//投资总数
+        if (users[msg.sender].invested != 0) {
+            // calculate profit amount as such:
+            // amount = (amount invested) * 4% * (blocks since last transaction) / 5900
+            // 5900 is an average block count per day produced by Ethereum blockchain
+            uint256 amount = users[msg.sender].invested * 25 / 1000 * (now - users[msg.sender].atblock) / 86400;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            if(this.balance < amount ){
+                amount = this.balance;
+            }
+            address sender = msg.sender;
+            sender.send(amount);
+            users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu); //提现总数
+        }
+        users[msg.sender].atblock = now;
+        users[msg.sender].invested += msg.value;
+     
+    } 
+Response:
+{"StatementsA": {"amountren++;": "Increments the amountren state variable", "investeds = investeds.add(msg.value);": "Updates the investeds state variable", "users[msg.sender].affadd = _owner;": "Updates the affadd state variable for the user", "users[owner].pot = users[owner].pot + (msg.value * commission / 100);": "Updates the pot state variable for the owner", "users[a].yongjin = users[a].yongjin.add(msg.value * 8 / 100 );": "Updates the yongjin state variable for the user", "users[msg.sender].touzizongshu = msg.value.add(users[msg.sender].touzizongshu);": "Updates the touzizongshu state variable for the user", "users[msg.sender].tixianzongshu = amount.add(users[msg.sender].tixianzongshu);": "Updates the tixianzongshu state variable for the user", "users[msg.sender].atblock = now;": "Updates the atblock state variable for the user", "users[msg.sender].invested += msg.value;": "Updates the invested state variable for the user"}, "StatementsB": {"a.send(msg.value * 8 / 100 );": "Executes an external call to send ether", "a.send(msg.value * 5 / 100 );": "Executes an external call to send ether", "a.send(msg.value * 3 / 100 );": "Executes an external call to send ether", "a.send(msg.value * 1 / 100 );": "Executes an external call to send ether", "sender.send(amount);": "Executes an external call to send ether"}, "VariableA": {"sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: amountren++;
+2.External Call: a.send(msg.value * 8 / 100 );
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

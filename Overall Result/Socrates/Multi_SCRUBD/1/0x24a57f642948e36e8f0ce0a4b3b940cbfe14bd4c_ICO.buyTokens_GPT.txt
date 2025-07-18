@@ -1,0 +1,43 @@
+
+Start analyze function: ICO.buyTokens(uint256,uint256)
+Function Security Analysis for ICO.buyTokens(uint256,uint256)
+    There are no modifiers should be examined in function buyTokens.
+    Check direct function security
+        - function ICO.buyTokens(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures involving msg.sender.
+        - function ICO.buyTokens(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not have any of the required structures mentioned. It does not include any `require(xxx == True);`, `require(xxx == False);`,
+          `require(!xxx);`, or `if(!xxx) throw;` statements where a variable is explicitly set to the opposite boolean value after the requirement. The conditions in the
+          code are just using throw statements for error handling without following up with setting the examined variable to any boolean value.
+External Call Analysis
+    Direct external call: ['erc20TokensContract.balanceOf(this)', 'erc20TokensContract.transfer(msg.sender,_quantity)']
+    Analyze Transfer
+        - erc20TokensContract.transfer(msg.sender,_quantity) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - erc20TokensContract.balanceOf(this) ISN'T subjected to gas limits.
+        - erc20TokensContract.transfer(msg.sender,_quantity) ISN'T subjected to gas limits.
+    Remaining external call: ['erc20TokensContract.balanceOf(this)', 'erc20TokensContract.transfer(msg.sender,_quantity)']
+    Analyze External Address
+        There are ['erc20TokensContract'] should be checked in variable erc20TokensContract
+        Checked variables: erc20TokensContract
+            No The function 'setErc20TokensContract' is not a constructor as its name does not match the contract name 'ICO' and neither is it explicitly named
+            'constructor'. Furthermore, the function does not hardcode the state variable 'erc20TokensContract'. Instead, it sets this variable using the passed argument
+            '_erc20TokensContractAddress', which is dynamic and not fixed within the code.
+            Function Security Analysis for ICO.setErc20TokensContract(address)
+                There are no modifiers should be examined in function setErc20TokensContract.
+                Check direct function security
+                    - function ICO.setErc20TokensContract(address) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                    REE problem.
+                      Reason: The function uses `if (msg.sender != owner) {throw;}` which matches characteristic 3 as it directly compares msg.sender with a variable
+                      named owner, not a local variable with a .owner pattern.
+        There are ['erc20TokensContract'] should be checked in variable erc20TokensContract
+        Checked variables: erc20TokensContract
+            No 1. The function name does not match the contract name 'ICO', nor is it explicitly named 'constructor'. 2. The function modifies the state variable
+            'erc20TokensContract' but does not hardcode it; it sets the variable based on the provided address parameter.
+            Function Security Analysis for ICO.setErc20TokensContract(address)
+                There are no modifiers should be examined in function setErc20TokensContract.
+                Check direct function security
+                    - function ICO.setErc20TokensContract(address) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                    REE problem.
+                      Reason: The function checks if `msg.sender != owner` and throws, which matches structure 3.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,47 @@
+MappingTokenFactory._createMappingToken: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _createMappingToken(uint mainChainId, address token, address creator, string memory name, string memory symbol, uint8 decimals, uint cap) internal returns (address mappingToken) {
+        _chargeFee();
+        address tokenOrCreator = (token == address(0)) ? creator : token;
+        require(mappingTokens[mainChainId][tokenOrCreator] == address(0), 'MappingToken created already');
+
+        bytes32 salt = keccak256(abi.encodePacked(mainChainId, tokenOrCreator));
+
+        bytes memory bytecode = type(InitializableProductProxy).creationCode;
+        assembly {
+            mappingToken := create2(0, add(bytecode, 32), mload(bytecode), salt)
+        }
+        InitializableProductProxy(payable(mappingToken)).__InitializableProductProxy_init(address(this), _MappingToken_, abi.encodeWithSignature('__MappingToken_init(address,uint256,address,address,string,string,uint8,uint256)', address(this), mainChainId, token, creator, name, symbol, decimals, cap));
+        
+        mappingTokens[mainChainId][tokenOrCreator] = mappingToken;
+        emit CreateMappingToken(mainChainId, token, creator, name, symbol, decimals, cap, mappingToken);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _createMappingToken(uint mainChainId, address token, address creator, string memory name, string memory symbol, uint8 decimals, uint cap) internal returns (address mappingToken) {
+        _chargeFee();
+        address tokenOrCreator = (token == address(0)) ? creator : token;
+        require(mappingTokens[mainChainId][tokenOrCreator] == address(0), 'MappingToken created already');
+
+        bytes32 salt = keccak256(abi.encodePacked(mainChainId, tokenOrCreator));
+
+        bytes memory bytecode = type(InitializableProductProxy).creationCode;
+        assembly {
+            mappingToken := create2(0, add(bytecode, 32), mload(bytecode), salt)
+        }
+        InitializableProductProxy(payable(mappingToken)).__InitializableProductProxy_init(address(this), _MappingToken_, abi.encodeWithSignature('__MappingToken_init(address,uint256,address,address,string,string,uint8,uint256)', address(this), mainChainId, token, creator, name, symbol, decimals, cap));
+        
+        mappingTokens[mainChainId][tokenOrCreator] = mappingToken;
+        emit CreateMappingToken(mainChainId, token, creator, name, symbol, decimals, cap, mappingToken);
+    }
+    
+Response:
+No
+--------------------------------------------------

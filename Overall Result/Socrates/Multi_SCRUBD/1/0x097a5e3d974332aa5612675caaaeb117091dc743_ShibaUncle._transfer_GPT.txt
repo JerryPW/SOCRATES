@@ -1,0 +1,48 @@
+
+Start analyze function: ShibaUncle._transfer(address,address,uint256)
+Function Security Analysis for ShibaUncle._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function ShibaUncle._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks where msg.sender is compared to an owner, address, leader, or CEO role, as specifically required by the
+          structures. The condition 'if (msg.sender != pair ...)' does not refer to an entity like an owner or leader which the guidelines describe, so it doesn't satisfy
+          any of the check structures.
+        - function ShibaUncle._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code doesn't satisfy any of the given structures. It uses require statements, but these do not fit the specific patterns described in the
+          criteria, such as checking for a variable and subsequently setting it to a boolean value. Instead, they perform checks on function parameters and call external
+          functions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for ShibaUncle.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function ShibaUncle.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any checks or assertions related to msg.sender being compared against a specific owner, address, or role such as
+                  Leader or CEO.
+                - function ShibaUncle.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures related to requirement or conditional assignment of a boolean variable as described.
+External Call Analysis
+    Direct external call: ['coolUncle.setShare(sender,_balances[sender])', 'coolUncle.setShare(recipient,_balances[recipient])']
+    Analyze Transfer
+    Analyze Gas
+        - coolUncle.setShare(sender,_balances[sender]) ISN'T subjected to gas limits.
+        - coolUncle.setShare(recipient,_balances[recipient]) ISN'T subjected to gas limits.
+    Remaining external call: ['coolUncle.setShare(sender,_balances[sender])', 'coolUncle.setShare(recipient,_balances[recipient])']
+    Analyze External Address
+        There are ['coolUncle'] should be checked in variable coolUncle
+        Checked variables: coolUncle
+            Yes The function provided is a constructor for the contract as it is explicitly named 'constructor'.
+        There are ['coolUncle'] should be checked in variable coolUncle
+        Checked variables: coolUncle
+            Yes The provided code contains a constructor function for the contract. The function is named 'constructor', which matches the criteria for identifying a
+            constructor function.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ShibaUncle.swapBack()
+Function Security Analysis for ShibaUncle.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: Upon reviewing the modifier 'lockTheSwap', it sets 'inSwapAndLiquify' to true before the function runs and sets it to false afterward. This fulfills the
+          requirement of both lock and unlock operations, hence it matches rule 2 correctly.
+Conclusion: This function will not cause REE Problem.

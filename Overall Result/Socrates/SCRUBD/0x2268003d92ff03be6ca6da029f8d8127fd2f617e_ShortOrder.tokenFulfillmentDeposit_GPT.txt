@@ -1,0 +1,26 @@
+
+Start analyze function: ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function tokenFulfillmentDeposit.
+    Check direct function security
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The function does not have a require or if statement checking for msg.sender to be equal to an owner or equivalent role. It only checks for equality
+          with addresses derived from signature verification, which does not match the specified patterns.
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: In the given code, the require statement checks that `orderRecord[msg.sender][orderHash].tokenDeposit` is false. Later, the assignment
+          `orderRecord[msg.sender][orderHash].tokenDeposit = true;` sets it to true. However, this assignment is not immediately after the require statement; main
+          function logic such as transfers and balance updates occur in between. The requirement for immediate negation after state check is not met.
+External Call Analysis
+    Direct external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze Transfer
+    Analyze Gas
+        - Token(tokenUser[0]).transferFrom(msg.sender,this,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze External Address
+        The variable 'tokenUser' in external call 'Token(tokenUser[0]).transferFrom(msg.sender,this,amount)' has no state variable assigned. Therefore we check whether it
+        has been hardcoded in the function.
+            No In examining the provided code, the variable `tokenUser` is passed into the function `tokenFulfillmentDeposit` as an argument, specifically as an array of
+            addresses. Throughout the function, it is treated dynamically without any indication of being hardcoded. It is used in operations like computing hashes and
+            transferring tokens, indicating that its value can vary based on the function's input.
+Conclusion: This function will cause REE Problem.

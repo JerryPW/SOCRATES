@@ -1,0 +1,24 @@
+
+Start analyze function: HoldPresaleContract.unlockTokens()
+Function Security Analysis for HoldPresaleContract.unlockTokens()
+    There are no modifiers should be examined in function unlockTokens.
+    Check direct function security
+        - function HoldPresaleContract.unlockTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function checks for active status and withdrawal status using holderList, but it does not use msg.sender with any specified roles like Owner,
+          Leader, or CEO in a conditional statement as described.
+        - function HoldPresaleContract.unlockTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the provided structures. It contains conditional checks and reverts, but none of the specific patterns described in the
+          instructions (i.e., 'require' statements with specific assignment patterns).
+External Call Analysis
+    Direct external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze Transfer
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze External Address
+        There are ['OppToken'] should be checked in variable OppToken
+        Checked variables: OppToken
+            Yes The function provided is a constructor because its name "HoldPresaleContract" matches the contract name. This satisfies the first characteristic,
+            determining it as a constructor function.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "destroyBeneficiary",
+        "code": "function destroyBeneficiary(address _beneficiary) public onlyOwner { Beneficiary storage beneficiary = beneficiaries[_beneficiary]; uint256 balance = beneficiary.vested.sub(beneficiary.released); token.transfer(owner, balance); totalReleased = totalReleased.add(balance); beneficiary.isBeneficiary = false; beneficiary.released = beneficiary.released.add(balance); for (uint i = 0; i < addresses.length - 1; i++) if (addresses[i] == _beneficiary) { addresses[i] = addresses[addresses.length - 1]; break; } addresses.length -= 1; emit BeneficiaryDestroyed(_beneficiary); }",
+        "vulnerability": "Unauthorized fund transfer",
+        "reason": "The function allows the contract owner to transfer the entire remaining vested balance of a beneficiary to themselves and mark the beneficiary as inactive. This can be done without the beneficiary's consent, which could potentially result in unauthorized fund transfers.",
+        "file_name": "0x1d86a854da490ff74dedc7abe281fb468f8c19ee.sol"
+    },
+    {
+        "function_name": "clearAll",
+        "code": "function clearAll() public onlyOwner { token.transfer(owner, token.balanceOf(this)); for (uint i = 0; i < addresses.length; i++) { Beneficiary storage beneficiary = beneficiaries[addresses[i]]; beneficiary.isBeneficiary = false; beneficiary.released = 0; beneficiary.vested = 0; beneficiary.start = 0; beneficiary.cliff = 0; beneficiary.duration = 0; beneficiary.revoked = false; beneficiary.revocable = false; beneficiary.description = \"\"; } addresses.length = 0; }",
+        "vulnerability": "Destructive clear functionality",
+        "reason": "The function allows the contract owner to transfer all tokens held by the contract to themselves and then clear all beneficiary data. This effectively destroys all vesting agreements, which could be done maliciously or accidentally by the owner, leading to loss of funds for all beneficiaries.",
+        "file_name": "0x1d86a854da490ff74dedc7abe281fb468f8c19ee.sol"
+    },
+    {
+        "function_name": "revoke",
+        "code": "function revoke(address _beneficiary) public onlyOwner { Beneficiary storage beneficiary = beneficiaries[_beneficiary]; require(beneficiary.revocable); require(!beneficiary.revoked); uint256 balance = beneficiary.vested.sub(beneficiary.released); uint256 unreleased = releasableAmount(_beneficiary); uint256 refund = balance.sub(unreleased); token.transfer(owner, refund); totalReleased = totalReleased.add(refund); beneficiary.revoked = true; beneficiary.released = beneficiary.released.add(refund); emit Revoked(_beneficiary); }",
+        "vulnerability": "Potential loss of unreleased funds",
+        "reason": "This function allows the owner to revoke a beneficiary's vesting agreement and transfer the unreleased funds to themselves. This can lead to potential loss of funds for the beneficiary, especially if done without proper checks or maliciously.",
+        "file_name": "0x1d86a854da490ff74dedc7abe281fb468f8c19ee.sol"
+    }
+]

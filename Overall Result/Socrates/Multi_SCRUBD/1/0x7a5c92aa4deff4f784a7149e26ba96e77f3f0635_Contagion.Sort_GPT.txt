@@ -1,0 +1,30 @@
+
+Start analyze function: Contagion.Sort()
+Function Security Analysis for Contagion.Sort()
+    There are no modifiers should be examined in function Sort.
+    Check direct function security
+        - function Contagion.Sort() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any require or assert statements that involve checking msg.sender against any specific owner or address variable like
+          xxxOwner, xxxAddress, Leader, CEO.
+        - function Contagion.Sort() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function `Sort` does not contain any `require` statement or `if` statement with a `throw`. Additionally, it does not set a boolean variable to both
+          `True` and `False` within the specified structures. Thus, it doesn't match any of the given structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback']
+        Function Security Analysis for Contagion.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function Contagion.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function uses a require statement, but it does not involve checking msg.sender against an owner or leader address.
+                - function Contagion.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures involving the same variable being checked by a require statement with specific
+                  conditions (i.e., 'xxx == True', 'xxx == False', '!xxx') followed by setting the same variable to True or False.
+External Call Analysis
+    Direct external call: ['owner.send(feecounter)']
+    Analyze Transfer
+        - owner.send(feecounter) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, which satisfies one of the characteristics specified.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

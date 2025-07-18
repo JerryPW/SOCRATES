@@ -1,0 +1,12 @@
+
+Start analyze function: AirDropLight.transferDirect(address,uint256)
+Function Security Analysis for AirDropLight.transferDirect(address,uint256)
+    There are no modifiers should be examined in function transferDirect.
+    Check direct function security
+        - function AirDropLight.transferDirect(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks comparing msg.sender to an owner or leader variable.
+        - function AirDropLight.transferDirect(address,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: The structure matches Structure 3: 'require(!xxx); xxx = true;'. The first two operations are 'require(!recipients[_recipient]);' followed by
+          'recipients[_recipient] = true;', which immediately performs a negation operation on 'recipients[_recipient]' before proceeding to the main logic of the
+          function.
+Conclusion: This function will not cause REE Problem.

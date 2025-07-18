@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "withdrawBody",
+        "code": "function withdrawBody(address addr, uint limit) public onlyOwner returns (uint) { Investment[] investments = investors[addr].investments; uint valueToWithdraw = 0; for (uint i = 0; i < investments.length; i++) { if (!investments[i].partiallyWithdrawn && investments[i].date <= now - 30 days && valueToWithdraw + investments[i].value/2 <= limit) { investments[i].partiallyWithdrawn = true; valueToWithdraw += investments[i].value/2; investors[addr].overallInvestment -= investments[i].value/2; } if (!investments[i].fullyWithdrawn && investments[i].date <= now - 60 days && valueToWithdraw + investments[i].value/2 <= limit) { investments[i].fullyWithdrawn = true; valueToWithdraw += investments[i].value/2; investors[addr].overallInvestment -= investments[i].value/2; } return valueToWithdraw; } return valueToWithdraw; }",
+        "vulnerability": "Logic Error - Immediate Return",
+        "reason": "The function returns immediately after processing the first investment, which means only the first investment can ever be partially or fully withdrawn. This is likely not the intended behavior and could lead to investors being unable to fully withdraw their investments.",
+        "file_name": "0x04d660832910ff492e940daff9ec7b3497e886ac.sol"
+    },
+    {
+        "function_name": "doInvest",
+        "code": "function doInvest(address referrerAddr) public payable notFromContract balanceChanged { uint investment = msg.value; uint receivedEther = msg.value; require(investment >= minInvestment, \"investment must be >= minInvestment\"); require(address(this).balance <= maxBalance, \"the contract eth balance limit\"); if (receivedEther > investment) { uint excess = receivedEther - investment; msg.sender.transfer(excess); receivedEther = investment; emit LogSendExcessOfEther(msg.sender, now, msg.value, investment, excess); } advertisingAddress.send(m_advertisingPercent.mul(receivedEther)); adminsAddress.send(m_adminsPercent.mul(receivedEther)); bool senderIsInvestor = m_investors.isInvestor(msg.sender); if (referrerAddr.notZero() && !senderIsInvestor && !m_referrals[msg.sender] && referrerAddr != msg.sender && m_investors.isInvestor(referrerAddr)) { m_referrals[msg.sender] = true; uint referrerBonus = m_referrer_percent.mmul(investment); uint referalBonus = m_referal_percent.mmul(investment); assert(m_investors.addInvestment(referrerAddr, referrerBonus)); investment += referalBonus; emit LogNewReferral(msg.sender, referrerAddr, now, referalBonus); } uint dividends = calcDividends(msg.sender); if (senderIsInvestor && dividends.notZero()) { investment += dividends; emit LogAutomaticReinvest(msg.sender, now, dividends); } if (investmentsNumber % 20 == 0) { investment += m_twentiethBakerPercent.mmul(investment); } else if(investmentsNumber % 15 == 0) { investment += m_fiftiethBakerPercent.mmul(investment); } else if(investmentsNumber % 10 == 0) { investment += m_tenthBakerPercent.mmul(investment); } if (senderIsInvestor) { assert(m_investors.addInvestment(msg.sender, investment)); assert(m_investors.setPaymentTime(msg.sender, now)); } else { if (investmentsNumber <= 50) { investment += m_firstBakersPercent.mmul(investment); } assert(m_investors.newInvestor(msg.sender, investment, now)); emit LogNewInvestor(msg.sender, now); } investmentsNumber++; emit LogNewInvestment(msg.sender, now, investment, receivedEther); }",
+        "vulnerability": "Unsafe Ether Transfer",
+        "reason": "The function uses 'send' to transfer Ether to 'advertisingAddress' and 'adminsAddress', which only forwards 2300 gas and does not throw on failure. This can cause the transaction to fail silently if the transfer does not succeed, potentially leading to Ether being locked in the contract without the recipients being aware.",
+        "file_name": "0x04d660832910ff492e940daff9ec7b3497e886ac.sol"
+    },
+    {
+        "function_name": "nextWave",
+        "code": "function nextWave() private { m_investors = new InvestorsStorage(); investmentsNumber = 0; waveStartup = now; emit LogNextWave(now); }",
+        "vulnerability": "State Reset Vulnerability",
+        "reason": "The function resets the entire 'm_investors' storage by assigning a new instance of 'InvestorsStorage'. This effectively wipes out all previous investor data and investments, which could be exploited by an attacker to erase all investment records, causing a loss of funds for all investors.",
+        "file_name": "0x04d660832910ff492e940daff9ec7b3497e886ac.sol"
+    }
+]

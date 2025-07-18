@@ -1,0 +1,37 @@
+Auction.start: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function start() external lock {
+        require(block.timestamp > MIN_START, "wait");
+
+        uint256 balance = address(this).balance;
+
+        require(balance != 0, "empty");
+        require(started == 0, "on");
+
+        WRAPPED_ETH.deposit.value(balance)();
+        started = block.timestamp;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function start() external lock {
+        require(block.timestamp > MIN_START, "wait");
+
+        uint256 balance = address(this).balance;
+
+        require(balance != 0, "empty");
+        require(started == 0, "on");
+
+        WRAPPED_ETH.deposit.value(balance)();
+        started = block.timestamp;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

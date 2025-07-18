@@ -1,0 +1,25 @@
+
+Start analyze function: ABIO_BaseICO.burnRestTokens()
+Function Security Analysis for ABIO_BaseICO.burnRestTokens()
+    The modifier of function burnRestTokens are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier does not contain any owner or specific address checks, lock operations, or a name suggesting specific access control (Onlyxxx or
+          nonReentrant). It only checks whether the current time is past a deadline.
+    Check direct function security
+        - function ABIO_BaseICO.burnRestTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code doesn't check the identity of the msg.sender to ensure it's a specific owner or address.
+        - function ABIO_BaseICO.burnRestTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The structure does not immediately perform the state negation on 'restTokensBurned' after checking with 'require'. The state negation happens after the
+          main logic (abioToken.burnMyBalance()) is executed.
+External Call Analysis
+    Direct external call: ['abioToken.burnMyBalance()']
+    Analyze Transfer
+    Analyze Gas
+        - abioToken.burnMyBalance() ISN'T subjected to gas limits.
+    Remaining external call: ['abioToken.burnMyBalance()']
+    Analyze External Address
+        There are ['abioToken'] should be checked in variable abioToken
+        Checked variables: abioToken
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,401 @@
+BrokerV2.collect: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function collect(uint256 tokenID, address _mintableToken)
+        public
+    {
+        IMintableToken Token = IMintableToken(_mintableToken);
+        auction memory _auction = auctions[_mintableToken][tokenID];
+        TokenDetArrayLib.TokenDet memory _tokenDet = TokenDetArrayLib.TokenDet(_mintableToken,tokenID);
+
+        require(
+            block.timestamp > _auction.closingTime,
+            "Auction Not Over!"
+        );
+
+        address payable lastOwner2 = _auction.lastOwner;
+        uint256 royalities = Token.royalities(tokenID);
+        address payable creator = Token.creators(tokenID);
+
+        uint256 royality = (royalities * _auction.currentBid) / 10000;
+        uint256 brokerageAmount = (brokerage * _auction.currentBid) / 10000;
+
+        // uint256 lastOwner_funds = ((10000 - royalities - brokerage) *
+        //     _auction.currentBid) / 10000;
+
+        uint256 lastOwner_funds = _auction.currentBid - royality - brokerageAmount;
+        
+        if (_auction.buyer == true) {
+            if (_auction.erc20Token == address(0)) {
+                creator.transfer(royality);
+                lastOwner2.transfer(lastOwner_funds);
+            } else {
+                IERC20 erc20Token = IERC20(_auction.erc20Token);
+                // transfer royalitiy to creator
+                erc20Token.transfer(creator, royality);
+                erc20Token.transfer(lastOwner2, lastOwner_funds);
+            }
+            brokerageBalance[_auction.erc20Token] += brokerageAmount;
+            tokenOpenForSale[_mintableToken][tokenID] = false;
+            Token.safeTransferFrom(
+                Token.ownerOf(tokenID),
+                _auction.highestBidder,
+                tokenID
+            );
+
+            // Buy event
+            emit Buy(
+                _tokenDet.NFTAddress,
+                _tokenDet.tokenID,
+                lastOwner2,
+                _auction.highestBidder,
+                _auction.currentBid,
+                block.timestamp,
+                _auction.erc20Token
+            );
+        }
+
+        // Collect event
+        emit Collect(
+            _tokenDet.NFTAddress,
+            _tokenDet.tokenID,
+            lastOwner2,
+            _auction.highestBidder,
+            msg.sender,
+            block.timestamp,
+            _auction.erc20Token
+        );
+
+        tokensForSale.removeTokenDet(_tokenDet);
+
+        tokensForSalePerUser[lastOwner2].removeTokenDet(_tokenDet);
+        auctionTokens.removeTokenDet(_tokenDet);
+        delete auctions[_mintableToken][tokenID];
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function collect(uint256 tokenID, address _mintableToken)
+        public
+    {
+        IMintableToken Token = IMintableToken(_mintableToken);
+        auction memory _auction = auctions[_mintableToken][tokenID];
+        TokenDetArrayLib.TokenDet memory _tokenDet = TokenDetArrayLib.TokenDet(_mintableToken,tokenID);
+
+        require(
+            block.timestamp > _auction.closingTime,
+            "Auction Not Over!"
+        );
+
+        address payable lastOwner2 = _auction.lastOwner;
+        uint256 royalities = Token.royalities(tokenID);
+        address payable creator = Token.creators(tokenID);
+
+        uint256 royality = (royalities * _auction.currentBid) / 10000;
+        uint256 brokerageAmount = (brokerage * _auction.currentBid) / 10000;
+
+        // uint256 lastOwner_funds = ((10000 - royalities - brokerage) *
+        //     _auction.currentBid) / 10000;
+
+        uint256 lastOwner_funds = _auction.currentBid - royality - brokerageAmount;
+        
+        if (_auction.buyer == true) {
+            if (_auction.erc20Token == address(0)) {
+                creator.transfer(royality);
+                lastOwner2.transfer(lastOwner_funds);
+            } else {
+                IERC20 erc20Token = IERC20(_auction.erc20Token);
+                // transfer royalitiy to creator
+                erc20Token.transfer(creator, royality);
+                erc20Token.transfer(lastOwner2, lastOwner_funds);
+            }
+            brokerageBalance[_auction.erc20Token] += brokerageAmount;
+            tokenOpenForSale[_mintableToken][tokenID] = false;
+            Token.safeTransferFrom(
+                Token.ownerOf(tokenID),
+                _auction.highestBidder,
+                tokenID
+            );
+
+            // Buy event
+            emit Buy(
+                _tokenDet.NFTAddress,
+                _tokenDet.tokenID,
+                lastOwner2,
+                _auction.highestBidder,
+                _auction.currentBid,
+                block.timestamp,
+                _auction.erc20Token
+            );
+        }
+
+        // Collect event
+        emit Collect(
+            _tokenDet.NFTAddress,
+            _tokenDet.tokenID,
+            lastOwner2,
+            _auction.highestBidder,
+            msg.sender,
+            block.timestamp,
+            _auction.erc20Token
+        );
+
+        tokensForSale.removeTokenDet(_tokenDet);
+
+        tokensForSalePerUser[lastOwner2].removeTokenDet(_tokenDet);
+        auctionTokens.removeTokenDet(_tokenDet);
+        delete auctions[_mintableToken][tokenID];
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function collect(uint256 tokenID, address _mintableToken)
+        public
+    {
+        IMintableToken Token = IMintableToken(_mintableToken);
+        auction memory _auction = auctions[_mintableToken][tokenID];
+        TokenDetArrayLib.TokenDet memory _tokenDet = TokenDetArrayLib.TokenDet(_mintableToken,tokenID);
+
+        require(
+            block.timestamp > _auction.closingTime,
+            "Auction Not Over!"
+        );
+
+        address payable lastOwner2 = _auction.lastOwner;
+        uint256 royalities = Token.royalities(tokenID);
+        address payable creator = Token.creators(tokenID);
+
+        uint256 royality = (royalities * _auction.currentBid) / 10000;
+        uint256 brokerageAmount = (brokerage * _auction.currentBid) / 10000;
+
+        // uint256 lastOwner_funds = ((10000 - royalities - brokerage) *
+        //     _auction.currentBid) / 10000;
+
+        uint256 lastOwner_funds = _auction.currentBid - royality - brokerageAmount;
+        
+        if (_auction.buyer == true) {
+            if (_auction.erc20Token == address(0)) {
+                creator.transfer(royality);
+                lastOwner2.transfer(lastOwner_funds);
+            } else {
+                IERC20 erc20Token = IERC20(_auction.erc20Token);
+                // transfer royalitiy to creator
+                erc20Token.transfer(creator, royality);
+                erc20Token.transfer(lastOwner2, lastOwner_funds);
+            }
+            brokerageBalance[_auction.erc20Token] += brokerageAmount;
+            tokenOpenForSale[_mintableToken][tokenID] = false;
+            Token.safeTransferFrom(
+                Token.ownerOf(tokenID),
+                _auction.highestBidder,
+                tokenID
+            );
+
+            // Buy event
+            emit Buy(
+                _tokenDet.NFTAddress,
+                _tokenDet.tokenID,
+                lastOwner2,
+                _auction.highestBidder,
+                _auction.currentBid,
+                block.timestamp,
+                _auction.erc20Token
+            );
+        }
+
+        // Collect event
+        emit Collect(
+            _tokenDet.NFTAddress,
+            _tokenDet.tokenID,
+            lastOwner2,
+            _auction.highestBidder,
+            msg.sender,
+            block.timestamp,
+            _auction.erc20Token
+        );
+
+        tokensForSale.removeTokenDet(_tokenDet);
+
+        tokensForSalePerUser[lastOwner2].removeTokenDet(_tokenDet);
+        auctionTokens.removeTokenDet(_tokenDet);
+        delete auctions[_mintableToken][tokenID];
+    }
+Response:
+{"StatementsA": {"brokerageBalance[_auction.erc20Token] += brokerageAmount;":"Updates the brokerageBalance state variable.", "tokenOpenForSale[_mintableToken][tokenID] = false;":"Updates the tokenOpenForSale state variable.", "delete auctions[_mintableToken][tokenID];":"Deletes the auction from the auctions mapping."}, "StatementsB": {"Token.safeTransferFrom(Token.ownerOf(tokenID), _auction.highestBidder, tokenID);":"Executes an external call to transfer the token."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: brokerageBalance[_auction.erc20Token] += brokerageAmount;
+2.External Call: Token.safeTransferFrom(Token.ownerOf(tokenID), _auction.highestBidder, tokenID);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function collect(uint256 tokenID, address _mintableToken)
+        public
+    {
+        IMintableToken Token = IMintableToken(_mintableToken);
+        auction memory _auction = auctions[_mintableToken][tokenID];
+        TokenDetArrayLib.TokenDet memory _tokenDet = TokenDetArrayLib.TokenDet(_mintableToken,tokenID);
+
+        require(
+            block.timestamp > _auction.closingTime,
+            "Auction Not Over!"
+        );
+
+        address payable lastOwner2 = _auction.lastOwner;
+        uint256 royalities = Token.royalities(tokenID);
+        address payable creator = Token.creators(tokenID);
+
+        uint256 royality = (royalities * _auction.currentBid) / 10000;
+        uint256 brokerageAmount = (brokerage * _auction.currentBid) / 10000;
+
+        // uint256 lastOwner_funds = ((10000 - royalities - brokerage) *
+        //     _auction.currentBid) / 10000;
+
+        uint256 lastOwner_funds = _auction.currentBid - royality - brokerageAmount;
+        
+        if (_auction.buyer == true) {
+            if (_auction.erc20Token == address(0)) {
+                creator.transfer(royality);
+                lastOwner2.transfer(lastOwner_funds);
+            } else {
+                IERC20 erc20Token = IERC20(_auction.erc20Token);
+                // transfer royalitiy to creator
+                erc20Token.transfer(creator, royality);
+                erc20Token.transfer(lastOwner2, lastOwner_funds);
+            }
+            brokerageBalance[_auction.erc20Token] += brokerageAmount;
+            tokenOpenForSale[_mintableToken][tokenID] = false;
+            Token.safeTransferFrom(
+                Token.ownerOf(tokenID),
+                _auction.highestBidder,
+                tokenID
+            );
+
+            // Buy event
+            emit Buy(
+                _tokenDet.NFTAddress,
+                _tokenDet.tokenID,
+                lastOwner2,
+                _auction.highestBidder,
+                _auction.currentBid,
+                block.timestamp,
+                _auction.erc20Token
+            );
+        }
+
+        // Collect event
+        emit Collect(
+            _tokenDet.NFTAddress,
+            _tokenDet.tokenID,
+            lastOwner2,
+            _auction.highestBidder,
+            msg.sender,
+            block.timestamp,
+            _auction.erc20Token
+        );
+
+        tokensForSale.removeTokenDet(_tokenDet);
+
+        tokensForSalePerUser[lastOwner2].removeTokenDet(_tokenDet);
+        auctionTokens.removeTokenDet(_tokenDet);
+        delete auctions[_mintableToken][tokenID];
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function collect(uint256 tokenID, address _mintableToken)
+        public
+    {
+        IMintableToken Token = IMintableToken(_mintableToken);
+        auction memory _auction = auctions[_mintableToken][tokenID];
+        TokenDetArrayLib.TokenDet memory _tokenDet = TokenDetArrayLib.TokenDet(_mintableToken,tokenID);
+
+        require(
+            block.timestamp > _auction.closingTime,
+            "Auction Not Over!"
+        );
+
+        address payable lastOwner2 = _auction.lastOwner;
+        uint256 royalities = Token.royalities(tokenID);
+        address payable creator = Token.creators(tokenID);
+
+        uint256 royality = (royalities * _auction.currentBid) / 10000;
+        uint256 brokerageAmount = (brokerage * _auction.currentBid) / 10000;
+
+        // uint256 lastOwner_funds = ((10000 - royalities - brokerage) *
+        //     _auction.currentBid) / 10000;
+
+        uint256 lastOwner_funds = _auction.currentBid - royality - brokerageAmount;
+        
+        if (_auction.buyer == true) {
+            if (_auction.erc20Token == address(0)) {
+                creator.transfer(royality);
+                lastOwner2.transfer(lastOwner_funds);
+            } else {
+                IERC20 erc20Token = IERC20(_auction.erc20Token);
+                // transfer royalitiy to creator
+                erc20Token.transfer(creator, royality);
+                erc20Token.transfer(lastOwner2, lastOwner_funds);
+            }
+            brokerageBalance[_auction.erc20Token] += brokerageAmount;
+            tokenOpenForSale[_mintableToken][tokenID] = false;
+            Token.safeTransferFrom(
+                Token.ownerOf(tokenID),
+                _auction.highestBidder,
+                tokenID
+            );
+
+            // Buy event
+            emit Buy(
+                _tokenDet.NFTAddress,
+                _tokenDet.tokenID,
+                lastOwner2,
+                _auction.highestBidder,
+                _auction.currentBid,
+                block.timestamp,
+                _auction.erc20Token
+            );
+        }
+
+        // Collect event
+        emit Collect(
+            _tokenDet.NFTAddress,
+            _tokenDet.tokenID,
+            lastOwner2,
+            _auction.highestBidder,
+            msg.sender,
+            block.timestamp,
+            _auction.erc20Token
+        );
+
+        tokensForSale.removeTokenDet(_tokenDet);
+
+        tokensForSalePerUser[lastOwner2].removeTokenDet(_tokenDet);
+        auctionTokens.removeTokenDet(_tokenDet);
+        delete auctions[_mintableToken][tokenID];
+    }
+    
+Response:
+No
+--------------------------------------------------

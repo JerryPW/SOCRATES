@@ -1,0 +1,29 @@
+
+Start analyze function: Button.close()
+Function Security Analysis for Button.close()
+    There are no modifiers should be examined in function close.
+    Check direct function security
+        - function Button.close() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function uses "require(block.number > endBlock);" but does not use any condition that involves checking msg.sender against an owner or leader
+          address.
+        - function Button.close() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not meet any of the provided structures, as it lacks statements for requiring a boolean variable to be true or false and
+          subsequently changing its value, nor does it include the alternative structure involving a conditional exception.
+External Call Analysis
+    Direct external call: ['f.announceWinner.value(rake/4)(lastPresser,address(this).balance)', 'owner.send(3*rake/4)',
+    'f.announceWinner.value(rake)(lastPresser,address(this).balance)']
+    Analyze Transfer
+        - owner.send(3*rake/4) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call 'owner.send(3*rake/4)'
+        contains the keyword '.send('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - f.announceWinner.value(rake/4)(lastPresser,address(this).balance) ISN'T subjected to gas limits.
+        - f.announceWinner.value(rake)(lastPresser,address(this).balance) ISN'T subjected to gas limits.
+    Remaining external call: ['f.announceWinner.value(rake/4)(lastPresser,address(this).balance)', 'f.announceWinner.value(rake)(lastPresser,address(this).balance)']
+    Analyze External Address
+        There are ['factory'] should be checked in variable f
+        Checked variables: factory
+            State variable factory has initialized in public area after declaration.
+        There are ['factory'] should be checked in variable f
+        Checked variables: factory
+            State variable factory has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

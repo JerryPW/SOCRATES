@@ -1,0 +1,23 @@
+
+Start analyze function: LetsBreakThings.checkBalanceSendEth(address)
+Function Security Analysis for LetsBreakThings.checkBalanceSendEth(address)
+    There are no modifiers should be examined in function checkBalanceSendEth.
+    Check direct function security
+        - function LetsBreakThings.checkBalanceSendEth(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The condition 'require(creator == msg.sender' uses 'creator', a variable not explicitly referring to an 'Owner', 'Address', 'Leader', or 'CEO' as
+          defined in the characteristic structures.
+        - function LetsBreakThings.checkBalanceSendEth(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not contain any of the required structures: it does not have any of the specific patterns where a variable is set to True or
+          False after a require statement checking a specific condition on the same variable, or the alternative "if(!xxx) throw" structure. It mainly includes transfers
+          and logging operations without explicitly changing a variable's state as per the outlined conditions.
+External Call Analysis
+    Direct external call: ['_recipient.send(1)', '_recipient.transfer(1)']
+    Analyze Transfer
+        - _recipient.send(1) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: 'send' keyword is present in the call
+        '_recipient.send(1)'.. Parameter in 'transfer'/'send': 1.
+        - _recipient.transfer(1) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: 'transfer' keyword is present in the call
+        '_recipient.transfer(1)'.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

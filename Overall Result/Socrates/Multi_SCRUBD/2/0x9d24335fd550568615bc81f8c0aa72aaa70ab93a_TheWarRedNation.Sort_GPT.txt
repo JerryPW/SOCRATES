@@ -1,0 +1,30 @@
+
+Start analyze function: TheWarRedNation.Sort()
+Function Security Analysis for TheWarRedNation.Sort()
+    There are no modifiers should be examined in function Sort.
+    Check direct function security
+        - function TheWarRedNation.Sort() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures that explicitly check msg.sender against an owner or leader variable before allowing
+          execution.
+        - function TheWarRedNation.Sort() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any 'require' statement or 'if' statements with throw, so it doesn't match with any given structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback']
+        Function Security Analysis for TheWarRedNation.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function TheWarRedNation.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not have any checks related to msg.sender being compared to an ownership or authorized role like xxxOwner or xxxAddress.
+                - function TheWarRedNation.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not match any of the specified structures. There's a 'require' statement, but it is not checking a boolean variable for true or
+                  false. Instead, it checks if 'msg.value' is greater than or equal to '0.01 ether', which does not conform to the patterns requiring a boolean check
+                  followed by an assignment to the boolean variable.
+External Call Analysis
+    Direct external call: ['owner.send(feecounter)']
+    Analyze Transfer
+        - owner.send(feecounter) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, which satisfies one of the specified characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

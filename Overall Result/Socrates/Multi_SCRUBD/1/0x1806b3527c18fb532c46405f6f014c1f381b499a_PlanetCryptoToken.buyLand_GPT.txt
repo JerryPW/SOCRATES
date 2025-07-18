@@ -1,0 +1,246 @@
+
+Start analyze function: PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address)
+Function Security Analysis for PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address)
+    The modifier of function buyLand are ['validatePurchase', 'validateLand', 'updateUsersLastAccess']
+    The result of checking modifiers:
+        - modifier validatePurchase has no relation with controlled by owner.
+          Reason: The modifier `validatePurchase` does not contain code that checks for ownership or specific addresses executing the function. It also does not implement
+          a lock mechanism to ensure the function is only entered once. Additionally, the modifier's function name `validatePurchase` does not imply any of the
+          characteristics in rule 1 or rule 2. Therefore, it does not meet any of the criteria for a 'Yes' judgment.
+        - modifier validateLand has no relation with controlled by owner.
+          Reason: The modifier does not include any checks for ownership or specific addresses (rule 1), nor does it implement a lock mechanism (rule 2). The name
+          'validateLand' does not suggest it restricts the function to owners or uses a lock mechanism (rule 3).
+        - modifier updateUsersLastAccess has no relation with controlled by owner.
+          Reason: The code in the modifier does not enforce any ownership or address-based restrictions and does not involve any locking mechanism. Therefore, it does not
+          satisfy the characteristics mentioned in the instructions.
+    Check direct function security
+        - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not check msg.sender in the control flow in any of the specified formats for ownership or role-based access control.
+        - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: None of the structures specified are present in the code. There is a require statement 'require(_name.length > 4);', but it isn't followed by
+          reassigning the referred variable in the context of True/False as per the given structures.
+External Call Analysis
+    Direct external call: ['planetCryptoCoin_interface.transfer(msg.sender,_token_rewards)']
+    Analyze Transfer
+        - planetCryptoCoin_interface.transfer(msg.sender,_token_rewards) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - planetCryptoCoin_interface.transfer(msg.sender,_token_rewards) ISN'T subjected to gas limits.
+    Remaining external call: ['planetCryptoCoin_interface.transfer(msg.sender,_token_rewards)']
+    Analyze External Address
+        There are ['planetCryptoCoin_interface'] should be checked in variable planetCryptoCoin_interface
+        Checked variables: planetCryptoCoin_interface
+            Yes The provided code includes a constructor function, and the code is indeed named 'constructor'. The constructor sets up initial values and dependencies for
+            the contract, which includes assigning values to the state variable 'planetCryptoCoin_interface'. Since one of the characteristics is to check if the code is
+            for a constructor, and in this case it is, the answer is 'Yes'. Additionally, in the constructor there's a statement where 'planetCryptoCoin_interface' is set
+            via contract instantiation, but the determination of 'Yes' here is based primarily on the presence of the constructor.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: PlanetCryptoToken.processDevPayment(uint256)
+Function Security Analysis for PlanetCryptoToken.processDevPayment(uint256)
+    There are no modifiers should be examined in function processDevPayment.
+    Check direct function security
+        - function PlanetCryptoToken.processDevPayment(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any of the specified structures related to checking 'msg.sender' against 'xxxOwner', 'xxxAddress', 'Leader', or
+          'CEO'. It deals with sending funds and updating balances based on a condition but lacks the mentioned access control checks.
+        - function PlanetCryptoToken.processDevPayment(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain the specified structure. It has an if statement checking a condition but does not throw an exception or explicitly require a
+          boolean variable to be true or false with subsequent assignment and (optional) resetting.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['updateCardDetail', 'buyLand', 'buyCard']
+        Function Security Analysis for PlanetCryptoToken.updateCardDetail(uint256,uint256,bytes32)
+            There are no modifiers should be examined in function updateCardDetail.
+            Check direct function security
+                - function PlanetCryptoToken.updateCardDetail(uint256,uint256,bytes32) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The local variable 'ownerOf(_token_id)' is not in the specific format 'xxxOwner' as required by the condition. Therefore, 'require(msg.sender ==
+                  ownerOf(_token_id));' does not meet the criteria specified in any of the structures.
+                - function PlanetCryptoToken.updateCardDetail(uint256,uint256,bytes32) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain the specific structure mentioned in the evaluation criteria, such as 'require(xxx == True); xxx = False;' or others.
+                  It uses neither a chain of 'require' statements with matching variable modifications nor the exact control flow involving 'if(!xxx) throw; xxx = true;'.
+External Call Analysis
+    Direct external call: ['devBankAddress.send(m_newPlot_devPercent.mul(_runningTotal))']
+    Analyze Transfer
+        - devBankAddress.send(m_newPlot_devPercent.mul(_runningTotal)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: PlanetCryptoToken.processReferer(address)
+Function Security Analysis for PlanetCryptoToken.processReferer(address)
+    There are no modifiers should be examined in function processReferer.
+    Check direct function security
+        - function PlanetCryptoToken.processReferer(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code checks if _referrer is different from msg.sender and not equal to zero address, but does not involve checking if msg.sender is an Owner or
+          similar privileged roles. Thus, it does not match any of the required structures.
+        - function PlanetCryptoToken.processReferer(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not satisfy any of the listed structures as it does not contain any 'require' statements or any of the specified control structures
+          related to a variable being checked and subsequently modified.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyLand', 'buyCard']
+        Function Security Analysis for PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address)
+            The modifier of function buyLand are ['validatePurchase', 'validateLand', 'updateUsersLastAccess']
+            The result of checking modifiers:
+                - modifier validatePurchase has no relation with controlled by owner.
+                  Reason: The modifier does not satisfy any of the specified rules. There is no enforcement of execution by a specific address or owner, no lock
+                  mechanism, and neither the name nor behavior of this modifier suggests such characteristics.
+                - modifier validateLand has no relation with controlled by owner.
+                  Reason: The modifier does not contain any conditions that restrict function execution to only the contract owner or specific addresses. It does not
+                  perform a lock operation. The function calls another function for validation but does not fit the characteristics outlined in the given rules, nor does
+                  it have a suggestive name resembling Onlyxxx or nonReentrant.
+                - modifier updateUsersLastAccess has no relation with controlled by owner.
+                  Reason: The modifier `updateUsersLastAccess` does not explicitly check for an owner or specific address requirement, nor does it implement any lock or
+                  reentrancy guard mechanism. It only updates the player's last access time, without any constraints on who can execute it or protections against
+                  reentrant calls.
+            Check direct function security
+                - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any checks or conditions that involve 'msg.sender' being equal to or not equal to an owner, address, leader, or CEO
+                  role. There are no 'require', 'if', or 'assert' statements with 'msg.sender' directly compared to a role or address in the code provided.
+                - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain the required structures according to any of the specified patterns. It uses a `require` statement to check if
+                  the name length is greater than 4, but this is not related to changing a boolean variable between true and false as specified in the guidelines.
+External Call Analysis
+    Direct external call: ['_referrer.send(_referrerAmnt)']
+    Analyze Transfer
+        - _referrer.send(_referrerAmnt) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.send(' keyword, which matches one of the specified characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: PlanetCryptoToken.processPurchase(bytes32,int256[],int256[])
+Function Security Analysis for PlanetCryptoToken.processPurchase(bytes32,int256[],int256[])
+    There are no modifiers should be examined in function processPurchase.
+    Check direct function security
+        - function PlanetCryptoToken.processPurchase(bytes32,int256[],int256[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures related to checking msg.sender against an owner or authorised address.
+        - function PlanetCryptoToken.processPurchase(bytes32,int256[],int256[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code sample does not contain any "require" or "if(!xxx) throw" statements, which are essential for it to match one of the predefined
+          structures. The logic of the function is focused on minting tokens, setting up plot ownership, calculating scores, updating player objects, and handling events,
+          none of which involves the specific condition and assignment patterns required by the structures. Thus, it does not meet the criteria for any of the listed
+          cases.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyLand', 'buyLandWithTokens']
+        Function Security Analysis for PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address)
+            The modifier of function buyLand are ['validatePurchase', 'validateLand', 'updateUsersLastAccess']
+            The result of checking modifiers:
+                - modifier validatePurchase has no relation with controlled by owner.
+                  Reason: The provided modifier does not enforce that only the owner or specific addresses can execute the function, neither does it use a lock operation
+                  to ensure single entry. It only checks for a purchase validation using an external interface. Also, the modifier name 'validatePurchase' does not
+                  inherently suggest any ownership or locking mechanism.
+                - modifier validateLand has no relation with controlled by owner.
+                  Reason: The modifier does not enforce execution restrictions based on the msg.sender (like checking if the sender is the owner or a specific address),
+                  nor does it use a locking mechanism to ensure single execution. It simply uses a require statement to validate the land ownership via an external
+                  method, without restricting it to specific users or employing any locking mechanism.
+                - modifier updateUsersLastAccess has no relation with controlled by owner.
+                  Reason: The modifier does not make any owner or specific address checks, nor does it implement a lock mechanism. It simply updates the user's last
+                  access time.
+            Check direct function security
+                - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any of the specified structures related to checking or asserting the identity of msg.sender against an owner, address,
+                  leader, or CEO.
+                - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given function does not contain any of the specific required structures 1, 2, 3, or 4 based on the defined patterns. The 'require'
+                  statements do not correspond to checking a boolean condition and then flipping its value, nor is there a preparatory 'if' condition followed by throwing
+                  an exception with subsequent boolean flag processing as defined in the structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: PlanetCryptoToken.setupPlotOwnership(uint256,int256[],int256[])
+Function Security Analysis for PlanetCryptoToken.setupPlotOwnership(uint256,int256[],int256[])
+    There are no modifiers should be examined in function setupPlotOwnership.
+    Check direct function security
+        - function PlanetCryptoToken.setupPlotOwnership(uint256,int256[],int256[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any conditions or assertions that involve the 'msg.sender', such as checks for equality or inequality with specific roles
+          or addresses mentioned, like Owner, Address, Leader, or CEO.
+        - function PlanetCryptoToken.setupPlotOwnership(uint256,int256[],int256[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any `require` statements or `if(!xxx) throw` constructs. Therefore, it does not match any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyLand', 'transferTokens', 'processPurchase', 'transferCards', 'buyLandWithTokens']
+        Function Security Analysis for PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address)
+            The modifier of function buyLand are ['validatePurchase', 'validateLand', 'updateUsersLastAccess']
+            The result of checking modifiers:
+                - modifier validatePurchase has no relation with controlled by owner.
+                  Reason: The modifier does not explicitly check for specific ownership or address permissions, nor does it implement a lock mechanism or flag-based lock.
+                  Without a suggestive name like Onlyxxx or nonReentrant, it does not satisfy any of the conditions outlined in the task.
+                - modifier validateLand has no relation with controlled by owner.
+                  Reason: Upon reviewing the code again, the modifier 'validateLand' checks if the land can be validated for the sender. However, it does not include
+                  explicit permission checks based on ownership, specific addresses or utilize a lock mechanism to ensure single entry. The modifier does not contain any
+                  operations that would fall under rule 1 or rule 2. The name 'validateLand' itself does not inherently imply any owner or access restriction, nor does it
+                  suggest a reentrancy protection, which would have aligned with rule 3. Thus, the initial interpretation was incorrect based on the structure provided.
+                - modifier updateUsersLastAccess has no relation with controlled by owner.
+                  Reason: The code does not contain any owner address or lock operation identifiers. The modifier name updateUsersLastAccess does not suggest restricted
+                  access or one-time entry enforcement.
+            Check direct function security
+                - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code lacks any checks or assertions related to msg.sender. It neither performs a direct comparison or evaluates conditional logic involving
+                  msg.sender with owner, address, or any such role.
+                - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures. While it uses require statement, it does not change the value of any variable
+                  immediately afterwards in the manner described.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: PlanetCryptoToken.setupZoomLvl(uint8,int256,int256,uint256)
+Function Security Analysis for PlanetCryptoToken.setupZoomLvl(uint8,int256,int256,uint256)
+    There are no modifiers should be examined in function setupZoomLvl.
+    Check direct function security
+        - function PlanetCryptoToken.setupZoomLvl(uint8,int256,int256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not include any condition checking the identity of msg.sender against roles like xxxOwner, xxxAddress, Leader, or CEO.
+        - function PlanetCryptoToken.setupZoomLvl(uint8,int256,int256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided does not have any 'require' or 'if (!xxx) throw' statements, therefore it doesn't match any of the specified structures or patterns
+          given in the task.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyLand', 'transferTokens', 'setupPlotOwnership', 'processPurchase', 'transferCards', 'buyLandWithTokens']
+        Function Security Analysis for PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address)
+            The modifier of function buyLand are ['validatePurchase', 'validateLand', 'updateUsersLastAccess']
+            The result of checking modifiers:
+                - modifier validatePurchase has no relation with controlled by owner.
+                  Reason: The modifier validatePurchase does not have explicit code that enforces specific sender address checks (such as ownership) or locking
+                  mechanisms. The function checks some conditions using an external utility, but this doesn't match any of the specific characteristics mentioned in the
+                  question for a 'Yes' judgment.
+                - modifier validateLand has no relation with controlled by owner.
+                  Reason: The modifier uses the function 'validateLand' to check if the land can be validated, and it doesn't specifically restrict access based on a
+                  message sender identity nor does it implement a lock or non-reentrancy check. It also doesn't use a function name implying an ownership or reentrancy
+                  restriction.
+                - modifier updateUsersLastAccess has no relation with controlled by owner.
+                  Reason: The code in the modifier does not enforce that only the owner or specific addresses can execute the function, nor does it use a lock operation.
+                  It also doesn't have a name that suggests it's meant for access control or reentrancy protection.
+            Check direct function security
+                - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function doesn't have any of the listed structures involving 'msg.sender'.
+                - function PlanetCryptoToken.buyLand(bytes32,int256[],int256[],address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain either of the required patterns mentioned. Specifically, it does not contain a, `require(xxx == True)` or `require(xxx
+                  == False)` followed by `xxx = False` or `xxx = True`, nor an `if(!xxx) throw` followed by `xxx = true`.
+External Call Analysis
+    Direct external call: ['planetCryptoUtils_interface.roundLatLngFull(zoom,lng)', 'planetCryptoUtils_interface.roundLatLngFull(zoom,lat)']
+    Analyze Transfer
+    Analyze Gas
+        - planetCryptoUtils_interface.roundLatLngFull(zoom,lng) ISN'T subjected to gas limits.
+        - planetCryptoUtils_interface.roundLatLngFull(zoom,lat) ISN'T subjected to gas limits.
+    Remaining external call: ['planetCryptoUtils_interface.roundLatLngFull(zoom,lng)', 'planetCryptoUtils_interface.roundLatLngFull(zoom,lat)']
+    Analyze External Address
+        There are ['planetCryptoUtils_interface'] should be checked in variable planetCryptoUtils_interface
+        Checked variables: planetCryptoUtils_interface
+            Yes The provided code contains a function explicitly named 'constructor', which matches the characteristic of a constructor function by definition.
+            Constructors typically initialize state variables or perform other initial setup tasks, which is evident from the use of state variables like
+            'planetCryptoUtils_interface' within the constructor. Additionally, the state variable 'planetCryptoUtils_interface' is accessed in the constructor, but it is
+            not hardcoded, meaning its value is not directly assigned a literal value within the code but is instead set via a function call. Nevertheless, the presence
+            of a constructor is sufficient to satisfy the required characteristic.
+        There are ['planetCryptoUtils_interface'] should be checked in variable planetCryptoUtils_interface
+        Checked variables: planetCryptoUtils_interface
+            Yes The provided code contains a constructor function for the contract, as indicated by the function explicitly named 'constructor'. This matches the first
+            characteristic of being a constructor function. Additionally, the code within the constructor references and initializes the 'planetCryptoUtils_interface',
+            but it does not hardcode any values related to it, so the second characteristic is not met.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,24 @@
+
+Start analyze function: Canvas.buy()
+Function Security Analysis for Canvas.buy()
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function Canvas.buy() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not use msg.sender in the context required by the specified structures.
+        - function Canvas.buy() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not utilize a variable in the specific require or if structure described by the characteristics. The conditions mentioned involve toggling
+          a boolean variable or using it in a thrown or reverted context, but this code checks if 'msg.value' is equal to 'price' without modifying any boolean variable
+          in continuation, hence does not meet any of the characteristics.
+External Call Analysis
+    Direct external call: ['hodler.call{gas:20000,value:hodler_share}()']
+    Analyze Transfer
+    Analyze Gas
+        - The gas limit in hodler.call{gas:20000,value:hodler_share}() is 20000, which is too high. Therefore, it will not prevent REE problem.
+    Remaining external call: ['hodler.call{gas:20000,value:hodler_share}()']
+    Analyze External Address
+        There are ['hodler'] should be checked in variable hodler
+        Checked variables: hodler
+            Yes The given function '_transferBase' is neither a constructor function nor does it have the same name as the contract 'Canvas'. Therefore, it does not
+            satisfy condition 1. However, the function uses 'hodler', the provided state variable, within its logic. The state variable 'hodler' is updated/hardcoded with
+            the new address 'to'. Thus, it satisfies condition 2.
+Conclusion: This function will not cause REE Problem.

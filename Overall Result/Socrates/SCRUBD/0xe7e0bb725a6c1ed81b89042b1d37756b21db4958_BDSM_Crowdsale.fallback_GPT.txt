@@ -1,0 +1,51 @@
+
+Start analyze function: BDSM_Crowdsale.fallback()
+Function Security Analysis for BDSM_Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function BDSM_Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check msg.sender against any specific owner or address.
+        - function BDSM_Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluating the code, it does not fully match any of the specified structures. Although there is a conditional check `if(!tokenWithdraw)` and
+          then setting `tokenWithdraw = true;`, it does not include a `throw` statement or equivalent (such as reverting) in case of the condition being true prior to
+          that. Therefore, none of the required structures are fully matched.
+External Call Analysis
+    Direct external call: ['owner.transfer(actualETHTransfer)', 'msg.sender.transfer(msg.value-sendETH)', 'owner.transfer(sendETH)', 'sharesTokenAddress.balanceOf(this)',
+    'sharesTokenAddress.transfer(msg.sender,tokenToBuy)', 'msg.sender.transfer(msg.value-actualETHTransfer)',
+    'sharesTokenAddress.transfer(safeContract,sharesTokenAddress.balanceOf(this))', 'msg.sender.transfer(msg.value)', 'sharesTokenAddress.transfer(msg.sender,tokenFree)']
+    Analyze Transfer
+        - owner.transfer(actualETHTransfer) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(msg.value-sendETH) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - owner.transfer(sendETH) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer('
+        keyword.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(msg.value-actualETHTransfer) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - sharesTokenAddress.balanceOf(this) ISN'T subjected to gas limits.
+        - sharesTokenAddress.transfer(msg.sender,tokenToBuy) ISN'T subjected to gas limits.
+        - sharesTokenAddress.transfer(safeContract,sharesTokenAddress.balanceOf(this)) ISN'T subjected to gas limits.
+        - sharesTokenAddress.transfer(msg.sender,tokenFree) ISN'T subjected to gas limits.
+    Remaining external call: ['sharesTokenAddress.balanceOf(this)', 'sharesTokenAddress.transfer(msg.sender,tokenToBuy)',
+    'sharesTokenAddress.transfer(safeContract,sharesTokenAddress.balanceOf(this))', 'sharesTokenAddress.transfer(msg.sender,tokenFree)']
+    Analyze External Address
+        There are ['sharesTokenAddress'] should be checked in variable sharesTokenAddress
+        Checked variables: sharesTokenAddress
+            Yes The provided function is named 'BDSM_Crowdsale', which matches the contract name 'BDSM_Crowdsale'. This indicates that the function is a constructor,
+            satisfying the first characteristic.
+        There are ['sharesTokenAddress'] should be checked in variable sharesTokenAddress
+        Checked variables: sharesTokenAddress
+            Yes The function in the provided code is a constructor because its name 'BDSM_Crowdsale' matches the name of the contract 'BDSM_Crowdsale'.
+        There are ['sharesTokenAddress'] should be checked in variable sharesTokenAddress
+        Checked variables: sharesTokenAddress
+            Yes 1. The function name 'BDSM_Crowdsale' matches the contract name, indicating that this is the constructor of the contract. 2. The function does not
+            hardcode the state variable 'sharesTokenAddress', as it assigns the value from the parameter '_tokenAddress'.
+        There are ['sharesTokenAddress'] should be checked in variable sharesTokenAddress
+        Checked variables: sharesTokenAddress
+            Yes The code snippet is a constructor for the BDSM_Crowdsale contract. The function name matches the contract name, which is an indicator of a constructor in
+            older versions of Solidity (pre-0.4.22). The constructor assigns the argument '_tokenAddress' to the state variable 'sharesTokenAddress', thus it is not
+            hardcoded.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,10 @@
+
+Start analyze function: Third_Degree_Burn.ReleaseLP()
+Function Security Analysis for Third_Degree_Burn.ReleaseLP()
+    The modifier of function ReleaseLP are ['onlyOwner']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The code in the 'onlyOwner' modifier enforces that the function can only be executed by the owner by using 'require(owner() == msg.sender,...)'. This
+          clearly satisfies the first criterion: 'require(msg.sender == xxxOwner)'. There are no lock operations in the code, which means only the first criteria is
+          fulfilled.
+Conclusion: This function will not cause REE Problem.

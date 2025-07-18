@@ -1,0 +1,72 @@
+
+Start analyze function: MonkeyScam.withdraw()
+Function Security Analysis for MonkeyScam.withdraw()
+    The modifier of function withdraw are ['isActivated', 'isHuman']
+    The result of checking modifiers:
+        - modifier isActivated has no relation with controlled by owner.
+          Reason: The modifier `isActivated` checks a condition unrelated to address ownership or lock mechanism. It verifies whether a certain state (`activated_`) is
+          true. This condition doesn't enforce ownership restrictions or ensure the function runs only once.
+        - modifier isHuman has no relation with controlled by owner.
+          Reason: The modifier 'isHuman' checks and ensures that the sender is a non-smart contract address by verifying that the code size associated with the address is
+          zero. This is unrelated to ownership or lock mechanisms based on the provided characteristics.
+    Check direct function security
+        - function MonkeyScam.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any statements checking authority conditions involving msg.sender with Owners, Leaders, CEOs or similar roles.
+        - function MonkeyScam.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't contain any of the specified structures involving 'require' statements or if conditions with variable checks that change their truth
+          value subsequently. It does check for 'round_.ended == false' but doesn't match the specific patterns given.
+External Call Analysis
+    Direct external call: ['plyr_[_pID].addr.transfer(_eth)']
+    Analyze Transfer
+        - plyr_[_pID].addr.transfer(_eth) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: MonkeyScam.endRound(LDdatasets.EventReturns)
+Function Security Analysis for MonkeyScam.endRound(LDdatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function MonkeyScam.endRound(LDdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'endRound' does not contain any of the specified structures related to 'msg.sender'. There are no require, if, or assert statements
+          comparing 'msg.sender' to any owner or address in the provided code.
+        - function MonkeyScam.endRound(LDdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified patterns. The closest condition is checking if
+          (!address(MonkeyKingCorp).call.value(_com)(bytes4(keccak256("deposit()")))), but it does not strictly follow the structures outlined as it does not set a
+          variable to true or false after the check.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['reLoadXname', 'buyCore', 'reLoadCore', 'buyXid', 'reLoadXaddr', 'withdraw', 'fallback', 'reLoadXid', 'buyXaddr', 'buyXname']
+        Function Security Analysis for MonkeyScam.reLoadXname(bytes32,uint256)
+            The modifier of function reLoadXname are ['isActivated', 'isHuman', 'isWithinLimits']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier checks for a condition related to activation status, not ownership or reentrancy. It does not satisfy any of the three specified
+                  characteristics.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: None of the rules specified are matched. The code checks if the sender is a human by ensuring that the address is not a smart contract address,
+                  but doesn't enforce any ownership or locking mechanism.
+                - modifier isWithinLimits has no relation with controlled by owner.
+                  Reason: The modifier 'isWithinLimits' does not enforce owner or specific address restrictions (criterion 1) or use a lock operation (criterion 2). It
+                  checks whether a given Ethereum amount is within specified limits, which does not match any of the criteria. Additionally, the modifier's name does not
+                  imply restrictions based on ownership or reentrancy (criterion 3).
+            Check direct function security
+                - function MonkeyScam.reLoadXname(bytes32,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified structures that involve checking caller authorization based on the msg.sender against an
+                  Owner/Leader/CEO address.
+                - function MonkeyScam.reLoadXname(bytes32,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code snippet does not contain any of the required structures with variable assignment and conditions as specified. The structures
+                  involve conditional checks specifically with 'require' or 'if' for a boolean variable, followed by an assignment that changes the boolean state of the
+                  variable, and potentially another assignment that changes it back. The code does not fulfill such requirements.
+External Call Analysis
+    Direct external call: ['address(MonkeyKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze Transfer
+    Analyze Gas
+        - address(MonkeyKingCorp).call.value(_com)(bytes4(keccak256()(deposit()))) ISN'T subjected to gas limits.
+    Remaining external call: ['address(MonkeyKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze External Address
+        There are ['MonkeyKingCorp'] should be checked in variable MonkeyKingCorp
+        Checked variables: MonkeyKingCorp
+            State variable MonkeyKingCorp has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

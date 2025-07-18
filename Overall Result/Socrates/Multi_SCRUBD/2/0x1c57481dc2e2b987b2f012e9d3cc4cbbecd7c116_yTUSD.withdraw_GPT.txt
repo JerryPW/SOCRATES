@@ -1,0 +1,10 @@
+
+Start analyze function: yTUSD.withdraw(uint256)
+Function Security Analysis for yTUSD.withdraw(uint256)
+    The modifier of function withdraw are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier uses a local `localCounter` variable to ensure that the function does not re-enter, achieved by incrementing `_guardCounter` at the
+          beginning and checking its value at the end. This is a form of lock operation to prevent reentrant calls. Both lock and unlock/check operations are present,
+          thus satisfying rule 2.
+Conclusion: This function will not cause REE Problem.

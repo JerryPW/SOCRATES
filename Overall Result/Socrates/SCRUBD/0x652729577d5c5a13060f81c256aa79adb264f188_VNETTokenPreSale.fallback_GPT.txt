@@ -1,0 +1,38 @@
+
+Start analyze function: VNETTokenPreSale.fallback()
+Function Security Analysis for VNETTokenPreSale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function VNETTokenPreSale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks for msg.sender against specific addresses like xxxOwner/xxxAddress/Leader/CEO using require(), if(), or
+          assert() as per the specified structures.
+        - function VNETTokenPreSale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not utilize boolean variables with 'require' or 'if(!xxx) throw' as specified in the stated structures.
+External Call Analysis
+    Direct external call: ['vnetToken.balanceOf(address(this))', 'msg.sender.transfer(weiAmount.sub(weiExpend))', 'vnetToken.transfer(msg.sender,vnetAmount)',
+    'vnetToken.transfer(msg.sender,vnetBalance)']
+    Analyze Transfer
+        - msg.sender.transfer(weiAmount.sub(weiExpend)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'msg.sender.transfer(weiAmount.sub(weiExpend))' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - vnetToken.transfer(msg.sender,vnetAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - vnetToken.transfer(msg.sender,vnetBalance) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - vnetToken.balanceOf(address(this)) ISN'T subjected to gas limits.
+        - vnetToken.transfer(msg.sender,vnetAmount) ISN'T subjected to gas limits.
+        - vnetToken.transfer(msg.sender,vnetBalance) ISN'T subjected to gas limits.
+    Remaining external call: ['vnetToken.balanceOf(address(this))', 'vnetToken.transfer(msg.sender,vnetAmount)', 'vnetToken.transfer(msg.sender,vnetBalance)']
+    Analyze External Address
+        There are ['vnetToken'] should be checked in variable vnetToken
+        Checked variables: vnetToken
+            Yes The provided code contains a constructor function, as it is explicitly labeled with the keyword 'constructor'. This marks it as the initialization
+            function of the contract 'VNETTokenPreSale'.
+        There are ['vnetToken'] should be checked in variable vnetToken
+        Checked variables: vnetToken
+            Yes The provided code snippet is a constructor because the function has the same name as the contract or uses the keyword 'constructor'. Therefore, it
+            satisfies the first characteristic that identifies it as a constructor. Additionally, there is no hardcoding of the provided state variable 'vnetToken' within
+            this snippet, as it is assigned a value from the input parameter.
+        There are ['vnetToken'] should be checked in variable vnetToken
+        Checked variables: vnetToken
+            Yes The code snippet provided contains a constructor for the smart contract 'VNETTokenPreSale', as indicated by the use of the 'constructor' keyword. The
+            constructor uses the state variable 'vnetToken' in its initialization, as seen in the line 'vnetToken = _vnetToken;'.
+Conclusion: This function will not cause REE Problem.

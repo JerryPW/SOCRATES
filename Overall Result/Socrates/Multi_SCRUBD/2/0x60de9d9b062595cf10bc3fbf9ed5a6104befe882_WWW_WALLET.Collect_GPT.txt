@@ -1,0 +1,20 @@
+
+Start analyze function: WWW_WALLET.Collect(uint256)
+Function Security Analysis for WWW_WALLET.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function WWW_WALLET.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any access control checks involving msg.sender against an xxxOwner/xxxAddress/Leader/CEO. It's checking conditions against the
+          account's balance and unlock time, but not against specific addresses with elevated permissions.
+        - function WWW_WALLET.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided does not contain any of the specified structures. It checks specific conditions and performs actions based on those conditions, but it
+          doesn't use the 'require' or 'if' statements with a 'throw', followed by toggling a boolean variable as specified in the patterns.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

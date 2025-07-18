@@ -1,0 +1,169 @@
+TrustlessOTC.take: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function take(uint tradeID) public payable returns (bool) {
+        TradeOffer storage o = offers[tradeID];
+        require(o.optionalTaker == msg.sender || o.optionalTaker == address(0));
+        require(o.active == true);
+        o.active = false; 
+        balanceTracker[o.tokenFrom] = balanceTracker[o.tokenFrom].sub(o.amountFrom);
+        uint256 fee = o.amountFrom.mul(feeBasisPoints).div(10000);
+        feeTracker[o.tokenFrom] = feeTracker[o.tokenFrom].add(fee);
+        tradeTracker[msg.sender].push(tradeID);
+
+        if (o.tokenFrom == address(0)) {
+            msg.sender.transfer(o.amountFrom.sub(fee));
+        } else {
+          if(noERC20Return[o.tokenFrom]) {
+            TokenNoReturn(o.tokenFrom).transfer(msg.sender, o.amountFrom.sub(fee));
+          } else {
+            Token(o.tokenFrom).transfer(msg.sender, o.amountFrom.sub(fee));
+          }
+        }
+
+        if (o.tokenTo == address(0)) {
+            require(msg.value == o.amountTo);
+            o.creator.transfer(msg.value);
+        } else {
+            require(msg.value == 0);
+            if(noERC20Return[o.tokenTo]) {
+              TokenNoReturn(o.tokenTo).transferFrom(msg.sender, o.creator, o.amountTo);
+            } else {
+              Token(o.tokenTo).transferFrom(msg.sender, o.creator, o.amountTo);
+            }
+        }
+        o.completed = true;
+        emit OfferTaken(tradeID);
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function take(uint tradeID) public payable returns (bool) {
+        TradeOffer storage o = offers[tradeID];
+        require(o.optionalTaker == msg.sender || o.optionalTaker == address(0));
+        require(o.active == true);
+        o.active = false; 
+        balanceTracker[o.tokenFrom] = balanceTracker[o.tokenFrom].sub(o.amountFrom);
+        uint256 fee = o.amountFrom.mul(feeBasisPoints).div(10000);
+        feeTracker[o.tokenFrom] = feeTracker[o.tokenFrom].add(fee);
+        tradeTracker[msg.sender].push(tradeID);
+
+        if (o.tokenFrom == address(0)) {
+            msg.sender.transfer(o.amountFrom.sub(fee));
+        } else {
+          if(noERC20Return[o.tokenFrom]) {
+            TokenNoReturn(o.tokenFrom).transfer(msg.sender, o.amountFrom.sub(fee));
+          } else {
+            Token(o.tokenFrom).transfer(msg.sender, o.amountFrom.sub(fee));
+          }
+        }
+
+        if (o.tokenTo == address(0)) {
+            require(msg.value == o.amountTo);
+            o.creator.transfer(msg.value);
+        } else {
+            require(msg.value == 0);
+            if(noERC20Return[o.tokenTo]) {
+              TokenNoReturn(o.tokenTo).transferFrom(msg.sender, o.creator, o.amountTo);
+            } else {
+              Token(o.tokenTo).transferFrom(msg.sender, o.creator, o.amountTo);
+            }
+        }
+        o.completed = true;
+        emit OfferTaken(tradeID);
+        return true;
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function take(uint tradeID) public payable returns (bool) {
+        TradeOffer storage o = offers[tradeID];
+        require(o.optionalTaker == msg.sender || o.optionalTaker == address(0));
+        require(o.active == true);
+        o.active = false; 
+        balanceTracker[o.tokenFrom] = balanceTracker[o.tokenFrom].sub(o.amountFrom);
+        uint256 fee = o.amountFrom.mul(feeBasisPoints).div(10000);
+        feeTracker[o.tokenFrom] = feeTracker[o.tokenFrom].add(fee);
+        tradeTracker[msg.sender].push(tradeID);
+
+        if (o.tokenFrom == address(0)) {
+            msg.sender.transfer(o.amountFrom.sub(fee));
+        } else {
+          if(noERC20Return[o.tokenFrom]) {
+            TokenNoReturn(o.tokenFrom).transfer(msg.sender, o.amountFrom.sub(fee));
+          } else {
+            Token(o.tokenFrom).transfer(msg.sender, o.amountFrom.sub(fee));
+          }
+        }
+
+        if (o.tokenTo == address(0)) {
+            require(msg.value == o.amountTo);
+            o.creator.transfer(msg.value);
+        } else {
+            require(msg.value == 0);
+            if(noERC20Return[o.tokenTo]) {
+              TokenNoReturn(o.tokenTo).transferFrom(msg.sender, o.creator, o.amountTo);
+            } else {
+              Token(o.tokenTo).transferFrom(msg.sender, o.creator, o.amountTo);
+            }
+        }
+        o.completed = true;
+        emit OfferTaken(tradeID);
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function take(uint tradeID) public payable returns (bool) {
+        TradeOffer storage o = offers[tradeID];
+        require(o.optionalTaker == msg.sender || o.optionalTaker == address(0));
+        require(o.active == true);
+        o.active = false; 
+        balanceTracker[o.tokenFrom] = balanceTracker[o.tokenFrom].sub(o.amountFrom);
+        uint256 fee = o.amountFrom.mul(feeBasisPoints).div(10000);
+        feeTracker[o.tokenFrom] = feeTracker[o.tokenFrom].add(fee);
+        tradeTracker[msg.sender].push(tradeID);
+
+        if (o.tokenFrom == address(0)) {
+            msg.sender.transfer(o.amountFrom.sub(fee));
+        } else {
+          if(noERC20Return[o.tokenFrom]) {
+            TokenNoReturn(o.tokenFrom).transfer(msg.sender, o.amountFrom.sub(fee));
+          } else {
+            Token(o.tokenFrom).transfer(msg.sender, o.amountFrom.sub(fee));
+          }
+        }
+
+        if (o.tokenTo == address(0)) {
+            require(msg.value == o.amountTo);
+            o.creator.transfer(msg.value);
+        } else {
+            require(msg.value == 0);
+            if(noERC20Return[o.tokenTo]) {
+              TokenNoReturn(o.tokenTo).transferFrom(msg.sender, o.creator, o.amountTo);
+            } else {
+              Token(o.tokenTo).transferFrom(msg.sender, o.creator, o.amountTo);
+            }
+        }
+        o.completed = true;
+        emit OfferTaken(tradeID);
+        return true;
+    }
+    
+Response:
+No
+--------------------------------------------------

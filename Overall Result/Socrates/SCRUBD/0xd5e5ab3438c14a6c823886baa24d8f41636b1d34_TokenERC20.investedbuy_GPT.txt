@@ -1,0 +1,28 @@
+
+Start analyze function: TokenERC20.investedbuy(address)
+Function Security Analysis for TokenERC20.investedbuy(address)
+    There are no modifiers should be examined in function investedbuy.
+    Check direct function security
+        - function TokenERC20.investedbuy(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The check uses `require(msg.sender != _owner);` where `_owner` is a function parameter, making it a local variable rather than a predefined role like
+          xxxOwner/xxxAddress/Leader/CEO specified in the rule.
+        - function TokenERC20.investedbuy(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any require statements checking for a boolean condition directly. Neither does it contain an 'if(!xxx) throw;'
+          structure. The require statement used checks for inequality of addresses, not equality of a boolean.
+External Call Analysis
+    Direct external call: ['sender.send(amount)', 'a.send(msg.value*8/100)', 'a.send(msg.value*3/100)', 'a.send(msg.value*1/100)', 'a.send(msg.value*5/100)']
+    Analyze Transfer
+        - sender.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send(' keyword,
+        therefore it satisfies characteristic 2.. Parameter in 'transfer'/'send': 1.
+        - a.send(msg.value*8/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, therefore it satisfies characteristic 2.. Parameter in 'transfer'/'send': 1.
+        - a.send(msg.value*3/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, therefore it satisfies characteristic 2.. Parameter in 'transfer'/'send': 1.
+        - a.send(msg.value*1/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, therefore it satisfies characteristic 2.. Parameter in 'transfer'/'send': 1.
+        - a.send(msg.value*5/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, therefore it satisfies characteristic 2.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,111 @@
+CharityMiner.deposit: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function deposit(uint8 feeDivisor) payable public {
+	    require(msg.value > 100000 && !paused);
+	    require(feeDivisor >= 2 && feeDivisor <= 10); // 50% to 10% donation range
+	    
+	    // If we have divs, withdraw them
+	    uint divs = myDividends();
+	    if(divs > 0){
+	        p3d.withdraw();
+	    }
+	    
+	    // Split deposit
+	    uint fee = msg.value.div(feeDivisor);
+	    uint purchase = msg.value.sub(fee);
+	    uint donation = divs.add(fee);
+	    
+	    // Send donation
+	    charityAddress.transfer(donation);
+	    
+	    // Buy tokens
+	    uint tokens = myTokens();
+	    p3d.buy.value(purchase)(msg.sender);
+	    uint newTokens = myTokens().sub(tokens);
+	    
+	    // If new donor, add them to stats
+	    if(!donor[msg.sender]){
+	        donor[msg.sender] = true;
+	        totalDonors += 1;
+	        currentHolders += 1;
+	    }
+	    
+	    // If largest donor, update stats
+	    // Don't include dividends or token value in user donations
+	    if(fee > largestDonation){ 
+	        largestDonation = fee;
+	        largestDonor = msg.sender;
+	    }
+	    
+	    // Update stats and storage
+	    totalDonations += 1;
+	    totalDonated += donation;
+	    totalDividends += divs;
+	    lastDonor = msg.sender;
+	    userDonations[msg.sender] = userDonations[msg.sender].add(fee); 
+	    userTokens[msg.sender] = userTokens[msg.sender].add(newTokens);
+	    
+	    // Deposit event
+	    emit Deposit(purchase, msg.sender, donation);
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function deposit(uint8 feeDivisor) payable public {
+	    require(msg.value > 100000 && !paused);
+	    require(feeDivisor >= 2 && feeDivisor <= 10); // 50% to 10% donation range
+	    
+	    // If we have divs, withdraw them
+	    uint divs = myDividends();
+	    if(divs > 0){
+	        p3d.withdraw();
+	    }
+	    
+	    // Split deposit
+	    uint fee = msg.value.div(feeDivisor);
+	    uint purchase = msg.value.sub(fee);
+	    uint donation = divs.add(fee);
+	    
+	    // Send donation
+	    charityAddress.transfer(donation);
+	    
+	    // Buy tokens
+	    uint tokens = myTokens();
+	    p3d.buy.value(purchase)(msg.sender);
+	    uint newTokens = myTokens().sub(tokens);
+	    
+	    // If new donor, add them to stats
+	    if(!donor[msg.sender]){
+	        donor[msg.sender] = true;
+	        totalDonors += 1;
+	        currentHolders += 1;
+	    }
+	    
+	    // If largest donor, update stats
+	    // Don't include dividends or token value in user donations
+	    if(fee > largestDonation){ 
+	        largestDonation = fee;
+	        largestDonor = msg.sender;
+	    }
+	    
+	    // Update stats and storage
+	    totalDonations += 1;
+	    totalDonated += donation;
+	    totalDividends += divs;
+	    lastDonor = msg.sender;
+	    userDonations[msg.sender] = userDonations[msg.sender].add(fee); 
+	    userTokens[msg.sender] = userTokens[msg.sender].add(newTokens);
+	    
+	    // Deposit event
+	    emit Deposit(purchase, msg.sender, donation);
+	}
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,76 @@
+
+Start analyze function: Finplether.doInvest(address)
+Function Security Analysis for Finplether.doInvest(address)
+    The modifier of function doInvest are ['notFromContract', 'balanceChanged']
+    The result of checking modifiers:
+        - modifier notFromContract has no relation with controlled by owner.
+          Reason: The function name 'notFromContract' suggests an access control mechanism, but there is no explicit indication of an owner or specific addresses
+          enforcement, nor a lock operation.
+        - modifier balanceChanged has no relation with controlled by owner.
+          Reason: The modifier `balanceChanged` only emits an event 'LogBalanceChanged' and does not contain code enforcing owner-specific restrictions or lock
+          mechanisms. The name itself does not suggest any particular function restriction or lock mechanism either.
+    Check direct function security
+        - function Finplether.doInvest(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any direct checks involving `msg.sender == xxxOwner/xxxAddress/Leader/CEO` or any similar constructs for restricting access
+          based on specific ownership or authority. There are checks involving conditions for referrers and investors, but these do not match the criteria provided for
+          outputting 'Yes'. Therefore, the function does not meet any of the specified structures.
+        - function Finplether.doInvest(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified patterns. There are no require statements followed by variable assignments in the prescribed
+          pattern.
+External Call Analysis
+    Direct external call: ['m_investors.addInvestment(referrerAddr,referrerBonus)', 'm_privEnter.maxInvestmentFor(msg.sender)', 'm_investors.isInvestor(msg.sender)',
+    'adminsAddress.send(m_adminsPercent.mul(receivedEther))', 'm_investors.newInvestor(msg.sender,investment,now)', 'm_investors.isInvestor(referrerAddr)',
+    'msg.sender.transfer(excess)', 'm_investors.addInvestment(msg.sender,investment)', 'referrerAddr.notZero()', 'm_investors.setPaymentTime(msg.sender,now)',
+    'advertisingAddress.send(m_advertisingPercent.mul(receivedEther))']
+    Analyze Transfer
+        - adminsAddress.send(m_adminsPercent.mul(receivedEther)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        contains '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(excess) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.transfer(' keyword..
+        Parameter in 'transfer'/'send': 1.
+        - advertisingAddress.send(m_advertisingPercent.mul(receivedEther)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        call contains '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - m_investors.addInvestment(referrerAddr,referrerBonus) ISN'T subjected to gas limits.
+        - m_privEnter.maxInvestmentFor(msg.sender) ISN'T subjected to gas limits.
+        - m_investors.isInvestor(msg.sender) ISN'T subjected to gas limits.
+        - m_investors.newInvestor(msg.sender,investment,now) ISN'T subjected to gas limits.
+        - m_investors.isInvestor(referrerAddr) ISN'T subjected to gas limits.
+        - m_investors.addInvestment(msg.sender,investment) ISN'T subjected to gas limits.
+        - referrerAddr.notZero() ISN'T subjected to gas limits.
+        - m_investors.setPaymentTime(msg.sender,now) ISN'T subjected to gas limits.
+    Remaining external call: ['m_investors.addInvestment(referrerAddr,referrerBonus)', 'm_privEnter.maxInvestmentFor(msg.sender)', 'm_investors.isInvestor(msg.sender)',
+    'm_investors.newInvestor(msg.sender,investment,now)', 'm_investors.isInvestor(referrerAddr)', 'm_investors.addInvestment(msg.sender,investment)',
+    'referrerAddr.notZero()', 'm_investors.setPaymentTime(msg.sender,now)']
+    Analyze External Address
+        There are ['m_investors'] should be checked in variable m_investors
+        Checked variables: m_investors
+            Yes The code for the function 'nextWave' contains hardcoded assignment to the provided state variable 'm_investors', where 'm_investors' is explicitly
+            assigned a new instance of 'InvestorsStorage'. This satisfies the second characteristic mentioned.
+        There are ['m_privEnter'] should be checked in variable m_privEnter
+        Checked variables: m_privEnter
+            Yes The function 'init' does not share its name with the contract 'Finplether' nor is it explicitly named 'constructor', so it is not a constructor. However,
+            within the code of 'init', the state variable 'm_privEnter' is being directly assigned values (like 'rev1Storage', 'rev2Storage', 'investorMaxInvestment', and
+            'endTimestamp'), indicating the state variable is being hardcoded. Hence, it satisfies the second characteristic.
+        There are ['m_investors'] should be checked in variable m_investors
+        Checked variables: m_investors
+            Yes The function 'nextWave' contains a hardcoded assignment to the state variable 'm_investors'.
+        There are ['m_investors'] should be checked in variable m_investors
+        Checked variables: m_investors
+            Yes The function 'nextWave' has a line 'm_investors = new InvestorsStorage();', which directly assigns a new value to the state variable 'm_investors'. This
+            satisfies the characteristic of having hardcoded the provided state variable.
+        There are ['m_investors'] should be checked in variable m_investors
+        Checked variables: m_investors
+            Yes The code provided shows a private function named `nextWave`, which is not a constructor because its name does not match the contract name 'Finplether' and
+            it is not explicitly named 'constructor'. However, the function does hardcode the state variable 'm_investors' by assigning it a new instance of
+            'InvestorsStorage'. This satisfies the second characteristic.
+        There are ['m_investors'] should be checked in variable m_investors
+        Checked variables: m_investors
+            Yes The function 'nextWave' is a private function, not a constructor, as its name does not match the contract name 'Finplether' nor is it explicitly named
+            'constructor'. However, the code shows that the state variable 'm_investors' is hardcoded in this function, where 'm_investors' is being assigned a new
+            instance of 'InvestorsStorage', hence satisfying the second characteristic.
+        The variable 'referrerAddr' in external call 'referrerAddr.notZero()' has no state variable assigned. Therefore we check whether it has been hardcoded in the
+        function.
+            No The variable "referrerAddr" is not hardcoded in the provided function. It is used as a parameter to the function, meaning its value is supplied by the
+            function caller every time the function is called. The function does not assign a fixed value within its body to "referrerAddr", which is what constitutes
+            hardcoding.
+Conclusion: This function will cause REE Problem.

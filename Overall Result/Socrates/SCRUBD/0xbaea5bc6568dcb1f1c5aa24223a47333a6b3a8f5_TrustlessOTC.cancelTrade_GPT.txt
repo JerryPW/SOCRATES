@@ -1,0 +1,31 @@
+
+Start analyze function: TrustlessOTC.cancelTrade(uint256)
+Function Security Analysis for TrustlessOTC.cancelTrade(uint256)
+    There are no modifiers should be examined in function cancelTrade.
+    Check direct function security
+        - function TrustlessOTC.cancelTrade(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The check 'require(msg.sender == o.creator);' uses 'o.creator', which is derived from a local variable 'o' of type 'TradeOffer', not directly from terms
+          like 'xxxOwner', 'xxxAddress', 'Leader', or 'CEO'. Hence, it does not satisfy the specific characteristics provided.
+        - function TrustlessOTC.cancelTrade(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any structure matching the given conditions. There are no `require(xxx == True)` or `require(xxx == False)` followed by the same
+          variable being reassigned to False or True, respectively. There is also no `require(!xxx)` followed by reassignment, nor `if(!xxx) throw;` followed by
+          reassignment.
+External Call Analysis
+    Direct external call: ['Token(o.tokenFrom).transfer(o.creator,o.amountFrom)', 'TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom)',
+    'msg.sender.transfer(o.amountFrom)']
+    Analyze Transfer
+        - Token(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.transfer(o.amountFrom) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains the '.transfer('
+        keyword, which matches rule 1.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - Token(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits.
+        - TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(o.tokenFrom).transfer(o.creator,o.amountFrom)', 'TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom)']
+    Analyze External Address
+        The variable 'o' in external call 'Token(o.tokenFrom).transfer(o.creator,o.amountFrom)' has no state variable assigned. Therefore we check whether it has been
+        hardcoded in the function.
+            No In the provided code, the variable 'o' is not hardcoded. It is dynamically assigned and represents a TradeOffer struct that is retrieved from the 'offers'
+            mapping using the tradeID that is passed as a parameter to the function. Thus, 'o' depends on the function input and is not set to a constant or hardcoded
+            value.
+Conclusion: This function will cause REE Problem.

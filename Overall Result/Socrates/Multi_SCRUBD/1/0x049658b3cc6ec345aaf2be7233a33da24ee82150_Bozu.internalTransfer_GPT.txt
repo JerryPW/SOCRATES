@@ -1,0 +1,39 @@
+
+Start analyze function: Bozu.internalTransfer(address,address,uint256)
+Function Security Analysis for Bozu.internalTransfer(address,address,uint256)
+    There are no modifiers should be examined in function internalTransfer.
+    Check direct function security
+        - function Bozu.internalTransfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any condition that directly matches the characteristics listed: there's no use of 'require', 'if', or 'assert'
+          specifically asserting or throwing an error based on 'msg.sender' being an owner, leader, CEO, or specific address as the characteristic requires.
+        - function Bozu.internalTransfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function contains the structure `require(!isBot[from], "ERC20: Can not transfer from BOT");` and the variable `isBot[from]` is not set to `True`
+          thereafter in this function. This partially matches structure 3 `{require(!xxx); xxx = True; ... xxx = False;}` but without setting the variable to True, the
+          structure is incomplete as per the provided criteria.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom', 'withdrawStuckTokens', 'manualBurnTokensFromLP', 'AirDrop']
+        Function Security Analysis for Bozu.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function Bozu.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The given function does not contain any of the specified structures related to checking the identity of the transaction sender against an owner,
+                  address, leader, or CEO. It mainly focuses on transferring and returning a boolean outcome without performing sender verification.
+                - function Bozu.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code doesn't meet any of the specified structures; there are no require statements or if conditions related to a boolean variable being
+                  checked and then modified. It only defines a function for transferring tokens and returns true, which doesn't align with the required patterns.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Bozu.taxTokenSwap()
+Function Security Analysis for Bozu.taxTokenSwap()
+    The modifier of function taxTokenSwap are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: Upon re-evaluation, the modifier 'lockTheSwap' includes setting 'inSwapAndLiquify' to true before execution and resetting it to false afterward. This
+          complete structure matches the lock operation requirement which ensures the function enters only once and is characteristic 2.
+Conclusion: This function will not cause REE Problem.

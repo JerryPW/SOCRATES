@@ -1,0 +1,102 @@
+
+Start analyze function: Nothing.mintNOTHING(uint256)
+Function Security Analysis for Nothing.mintNOTHING(uint256)
+    There are no modifiers should be examined in function mintNOTHING.
+    Check direct function security
+        - function Nothing.mintNOTHING(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check for msg.sender against an owner or administrative address using require, if, or assert statements with or without logical
+          operators. It only checks general sale conditions and minting limits.
+        - function Nothing.mintNOTHING(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the structures outlined in the conditions. It has `require` statements, but none of them are followed by
+          assignments to a boolean variable fulfilling the described structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ERC721._safeMint(address,uint256)
+Function Security Analysis for ERC721._safeMint(address,uint256)
+    There are no modifiers should be examined in function _safeMint.
+    Check direct function security
+        - function ERC721._safeMint(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any requirement or conditional check involving 'msg.sender'.
+        - function ERC721._safeMint(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any require statements or logical structures that match the specified patterns. Those patterns involve setting a boolean
+          variable based on a condition, which isn't present in this function.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['mintNOTHING']
+        Function Security Analysis for Nothing.mintNOTHING(uint256)
+            There are no modifiers should be examined in function mintNOTHING.
+            Check direct function security
+                - function Nothing.mintNOTHING(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The given code does not contain any of the specified structures involving msg.sender.
+                - function Nothing.mintNOTHING(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not fit any of the structures described in the conditions. There are no statements with the pattern 'require(xxx ==
+                  True)', 'require(xxx == False)', and no statements that throw an exception based on 'if(!xxx)'. Also, the modification of xxx from false to true or true
+                  to false does not occur between the require and after a logical condition.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ERC721._checkOnERC721Received(address,address,uint256,bytes)
+Function Security Analysis for ERC721._checkOnERC721Received(address,address,uint256,bytes)
+    There are no modifiers should be examined in function _checkOnERC721Received.
+    Check direct function security
+        - function ERC721._checkOnERC721Received(address,address,uint256,bytes) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not perform any checks related to `msg.sender` being equal to or not equal to any specified address/role like xxxOwner,
+          xxxAddress, Leader, or CEO. It only involves calling a function and checking if the contract address can handle ERC721 tokens.
+        - function ERC721._checkOnERC721Received(address,address,uint256,bytes) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. It only consists of an if statement that checks if an address is not a contract and then
+          returns true. The remaining part of the function executes a function call and checks a return value but does not modify the state of a variable with a require
+          statement or throw an exception in the specified manner.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_safeTransfer', 'safeTransferFrom', '_safeMint', 'mintNOTHING', 'safeTransferFrom', '_safeMint']
+        Function Security Analysis for ERC721._safeTransfer(address,address,uint256,bytes)
+            There are no modifiers should be examined in function _safeTransfer.
+            Check direct function security
+                - function ERC721._safeTransfer(address,address,uint256,bytes) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified structures relating to 'msg.sender'. It deals with internal logic related to token transfer
+                  and receiver checking without involving a specific sender ownership or authority check.
+                - function ERC721._safeTransfer(address,address,uint256,bytes) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function contains a require statement but does not alter the value of any variable in the form of setting a boolean variable to true/false
+                  as required by the structures.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['safeTransferFrom', 'safeTransferFrom']
+                Function Security Analysis for ERC721.safeTransferFrom(address,address,uint256,bytes)
+                    There are no modifiers should be examined in function safeTransferFrom.
+                    Check direct function security
+                        - function ERC721.safeTransferFrom(address,address,uint256,bytes) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not contain any conditional checks for msg.sender against Owner/Leader/CEO addresses directly as per the specified
+                          structures.
+                        - function ERC721.safeTransferFrom(address,address,uint256,bytes) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not satisfy any of the provided structures. It contains a require statement for `_isApprovedOrOwner` but does not contain
+                          a matching assignment statement to the same variable before or after the require.
+External Call Analysis
+    Direct external call: ['to.functionCall(abi.encodeWithSelector(IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data),ERC721:transfertononERC7
+    21Receiverimplementer)']
+    Analyze Transfer
+    Analyze Gas
+        - to.functionCall(abi.encodeWithSelector(IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data),ERC721:transfertononERC721Receiverimplemen
+        ter) ISN'T subjected to gas limits.
+    Remaining external call: ['to.functionCall(abi.encodeWithSelector(IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data),ERC721:transfertononE
+    RC721Receiverimplementer)']
+    Analyze External Address
+        The variable 'to' in external call 'to.functionCall(abi.encodeWithSelector(IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data),ERC721:t
+        ransfertononERC721Receiverimplementer)' has no state variable assigned in ERC721._checkOnERC721Received(address,address,uint256,bytes). Considering that it is an
+        internal/private function, we analyze the function inputs.
+        Analyze External Address
+            The variable 'to' in external call 'to' has no state variable assigned in ERC721._safeTransfer(address,address,uint256,bytes). Considering that it is an
+            internal/private function, we analyze the function inputs.
+            Analyze External Address
+                The variable 'to' in external call 'to' has no state variable assigned in ERC721.safeTransferFrom(address,address,uint256,bytes). Therefore we check
+                whether it has been hardcoded in the function.
+                    No The variable 'to' in the function safeTransferFrom is a function parameter and is not hardcoded within the function body, as it is used to
+                    determine the recipient of a token transfer during execution.
+Conclusion: This function will cause REE Problem.

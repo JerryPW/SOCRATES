@@ -1,0 +1,42 @@
+
+Start analyze function: CoolUncle.distributeDividend(address)
+Function Security Analysis for CoolUncle.distributeDividend(address)
+    There are no modifiers should be examined in function distributeDividend.
+    Check direct function security
+        - function CoolUncle.distributeDividend(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any structure matching the specified patterns involving msg.sender checks against owner, address, leader, or CEO.
+        - function CoolUncle.distributeDividend(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function contains an if statement to check if an action should be taken but does not include any of the specified logical structures like require
+          statements or the specific modifications to a boolean variable.  Specifically, the code lacks any require statements that involve checking a boolean variable
+          before altering its value. It only has conditional logic with if clauses without modifying a corresponding boolean variable as required.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['setShare', 'process', 'gibSHIL']
+        Function Security Analysis for CoolUncle.setShare(address,uint256)
+            The modifier of function setShare are ['onlyToken']
+            The result of checking modifiers:
+                - modifier onlyToken is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier onlyToken enforces that only the address equal to _token can execute the function by using require(msg.sender == _token);. This
+                  matches Rule 1 about restricting execution to specific addresses by verifying msg.sender, thus satisfying the condition.
+        Function Security Analysis for CoolUncle.process(uint256)
+            There are no modifiers should be examined in function process.
+            Check direct function security
+                - function CoolUncle.process(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function `process` does not contain any of the required structures like require, if, or assert with conditions involving `msg.sender` and an
+                  owner or leader address.
+                - function CoolUncle.process(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the required structures (require(xxx == True), xxx = False or require(xxx == False), xxx = True or
+                  require(!xxx), xxx = True or if(!xxx) throw, xxx = true). The code primarily focuses on looping through shareholders and checking/distributing dividends
+                  without any require or if-throw statements related to variable toggling between true and false.
+External Call Analysis
+    Direct external call: ['IERC20(SHIL).transfer(shareholder,amount)']
+    Analyze Transfer
+        - IERC20(SHIL).transfer(shareholder,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - IERC20(SHIL).transfer(shareholder,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(SHIL).transfer(shareholder,amount)']
+    Analyze External Address
+        There are ['SHIL'] should be checked in variable SHIL
+        Checked variables: SHIL
+            Yes The function is explicitly named 'constructor', which establishes it as a constructor function. In this constructor, the state variable 'SHIL' is
+            hardcoded to the address '0x20c3fa331A385b63EE39137e99d0cF2db142fCe1'. Since it satisfies one of the given characteristics, the answer is 'Yes'.
+Conclusion: This function will not cause REE Problem.

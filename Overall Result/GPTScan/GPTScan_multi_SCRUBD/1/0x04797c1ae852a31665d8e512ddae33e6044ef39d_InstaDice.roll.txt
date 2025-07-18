@@ -1,0 +1,48 @@
+InstaDice.roll: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function roll(uint8 _number)
+        public
+        payable
+        returns (bool _success)
+    {
+        // Ensure bet and number are valid.
+        if (!_validateBetOrRefund(_number)) return;
+
+        // Ensure one bet per block.
+        User memory _prevUser = users[msg.sender];
+        if (_prevUser.r_block == uint32(block.number)){
+            _errorAndRefund("Only one bet per block allowed.", msg.value, _number);
+            return false;
+        }
+
+        // Create and write new user data before finalizing last roll
+        Stats memory _stats = stats;
+        User memory _newUser = User({
+            id: _prevUser.id == 0 ? _stats.numUsers + 1 : _prevUser.id,
+            r_id: _stats.numRolls + 1,
+            r_block: uint32(block.number),
+            r_number: _number,
+            r_payout: computePayout(msg.value, _number)
+        });
+        users[msg.sender] = _newUser;
+
+        // Finalize last roll, if there was one.
+        // This will throw if user won, but we couldn't pay.
+        if (_prevUser.r_block != 0) _finalizePreviousRoll(_prevUser, _stats);
+
+        // Increment additional stats data
+        _stats.numUsers = _prevUser.id == 0 ? _stats.numUsers + 1 : _stats.numUsers;
+        _stats.numRolls = stats.numRolls + 1;
+        _stats.totalWagered = stats.totalWagered + uint96(msg.value);
+        stats = _stats;
+
+        // Save user in one write.
+        emit RollWagered(now, _newUser.r_id, msg.sender, msg.value, _newUser.r_number, _newUser.r_payout);
+        return true;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

@@ -1,0 +1,35 @@
+
+Start analyze function: SafeDif.distributeRef(uint256,uint256)
+Function Security Analysis for SafeDif.distributeRef(uint256,uint256)
+    There are no modifiers should be examined in function distributeRef.
+    Check direct function security
+        - function SafeDif.distributeRef(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code lacks any checks on message sender's identity using constructs like require, if, or assert.
+        - function SafeDif.distributeRef(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures. It does not have specific require statements or an if-then-throw structure as described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['invest', 'fallback']
+        Function Security Analysis for SafeDif.invest(uint256,uint256)
+            The modifier of function invest are ['isActivated']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier isActivated checks whether a certain variable 'activated_' is true before allowing the function to proceed but it does not directly
+                  enforce execution restrictions based on the sender's address or lock the function with a reentrancy guard. None of the stipulated characteristics are
+                  satisfied here.
+            Check direct function security
+                - function SafeDif.invest(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: None of the specified conditions involving msg.sender as xxxOwner/xxxAddress/Leader/CEO are present.
+                - function SafeDif.invest(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not contain any of the specified structures. It does not have a require statement checking the truthiness or falsiness of a
+                  variable followed by altering that variable directly after it, nor does it throw an exception under those conditions.
+External Call Analysis
+    Direct external call: ['player_[_affID2].addr.transfer(_aff)', 'player_[_affID1].addr.transfer(_aff)']
+    Analyze Transfer
+        - player_[_affID2].addr.transfer(_aff) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - player_[_affID1].addr.transfer(_aff) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

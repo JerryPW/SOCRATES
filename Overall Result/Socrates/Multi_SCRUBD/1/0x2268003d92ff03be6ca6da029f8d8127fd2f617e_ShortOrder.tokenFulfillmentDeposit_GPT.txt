@@ -1,0 +1,25 @@
+
+Start analyze function: ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function tokenFulfillmentDeposit.
+    Check direct function security
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The function does not contain any checks or assertions specifically involving msg.sender and ownership or specific roles such as xxxOwner, xxxAddress,
+          Leader, or CEO.
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The structure in the code matches the requirements: `require(!orderRecord[msg.sender][orderHash].tokenDeposit);` checks if the condition is not true,
+          and `orderRecord[msg.sender][orderHash].tokenDeposit = true;` sets it to true. However, the state change occurs after the main function logic begins executing
+          with `Token(tokenUser[0]).transferFrom`, thus it does not meet the requirement of performing the negation immediately after the check.
+External Call Analysis
+    Direct external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze Transfer
+    Analyze Gas
+        - Token(tokenUser[0]).transferFrom(msg.sender,this,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze External Address
+        The variable 'tokenUser' in external call 'Token(tokenUser[0]).transferFrom(msg.sender,this,amount)' has no state variable assigned in
+        ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]). Therefore we check whether it has been hardcoded in the function.
+            No The variable `tokenUser` is used as a parameter in the function signature and is referenced by its indexes within the function. Since `tokenUser` is
+            accessed as an input parameter that can be provided externally by whoever is calling the function, it is not hardcoded within the function itself.
+Conclusion: This function will cause REE Problem.

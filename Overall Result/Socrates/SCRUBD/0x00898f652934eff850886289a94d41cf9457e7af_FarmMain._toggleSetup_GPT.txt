@@ -1,0 +1,126 @@
+
+Start analyze function: FarmMain._toggleSetup(uint256)
+Function Security Analysis for FarmMain._toggleSetup(uint256)
+    There are no modifiers should be examined in function _toggleSetup.
+    Check direct function security
+        - function FarmMain._toggleSetup(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the four specified characteristics relating to msg.sender checks or assertions against an Owner, Address, Leader, or
+          CEO role.
+        - function FarmMain._toggleSetup(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any `require(xxx == True); xxx = False;`, `require(xxx == False); xxx = True;`, `require(!xxx); xxx = True;`, or `if(!xxx)
+          throw; xxx = true;` structures as described in the instructions. It does have a `require(block.number > _setupsInfo[setup.infoIndex].startBlock, "Too early for
+          this setup");` statement, but it doesn't change the same variable within the following lines that match the criteria given. Thus, based on the outlined
+          structures, the answer is 'No'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['setFarmingSetups', '_setOrAddFarmingSetupInfo', 'init', '_removeLiquidity', 'withdrawReward', 'withdrawLiquidity', 'unlock',
+    'activateSetup']
+        Function Security Analysis for FarmMain.setFarmingSetups(FarmingSetupConfiguration[])
+            The modifier of function setFarmingSetups are ['byExtension']
+            The result of checking modifiers:
+                - modifier byExtension is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier 'byExtension' includes a 'require' statement that ensures 'msg.sender' is equal to '_extension'. This matches the first
+                  characteristic of checking if only specific addresses can execute the function.
+        Function Security Analysis for FarmMain._setOrAddFarmingSetupInfo(FarmingSetupInfo,bool,bool,uint256)
+            There are no modifiers should be examined in function _setOrAddFarmingSetupInfo.
+            Check direct function security
+                - function FarmMain._setOrAddFarmingSetupInfo(FarmingSetupInfo,bool,bool,uint256) has no security assurance protected by checking the authority of
+                msg.sender
+                  Reason: The code doesn't contain any conditions checking msg.sender for specific roles or addresses like Owner, Address, Leader, or CEO.
+                - function FarmMain._setOrAddFarmingSetupInfo(FarmingSetupInfo,bool,bool,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not match any of the listed structures in terms of conditional checking and assignments related to the same variable. While it
+                  does use `require` statements to check conditions, it does not flip the boolean values of a single variable in a sequence that matches any of the
+                  specified structures.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['setFarmingSetups', 'init']
+                Function Security Analysis for FarmMain.setFarmingSetups(FarmingSetupConfiguration[])
+                    The modifier of function setFarmingSetups are ['byExtension']
+                    The result of checking modifiers:
+                        - modifier byExtension is controlled by owner, the function would not cause REE problem.
+                          Reason: The code uses 'require(msg.sender == _extension, "Unauthorized");', which enforces that only the address _extension can execute the
+                          function. This matches characteristic 1. There are no lock operations in the code that would match characteristic 2.
+                Function Security Analysis for FarmMain.init(address,bytes,address,address,bytes)
+                    There are no modifiers should be examined in function init.
+                    Check direct function security
+                        - function FarmMain.init(address,bytes,address,address,bytes) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not contain any of the specified structural requirements such as checks or assertions on the msg.sender compared to
+                          certain roles like xxxOwner, xxxAddress, Leader, or CEO.
+                        - function FarmMain.init(address,bytes,address,address,bytes) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The given code snippet does not match any of the specified structures. It includes 'require' statements, but none of them are checking a
+                          boolean variable for a state and altering it as per the given structure.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: FarmMain._ensureTransfer(uint256)
+Function Security Analysis for FarmMain._ensureTransfer(uint256)
+    There are no modifiers should be examined in function _ensureTransfer.
+    Check direct function security
+        - function FarmMain._ensureTransfer(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks on msg.sender for roles like xxxOwner, xxxAddress, Leader, or CEO. It focuses on balance ensuring and
+          transferring tokens.
+        - function FarmMain._ensureTransfer(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't meet any of the specified structures as it does not contain any 'require' or 'if' statements that manipulate a single boolean variable
+          through checks and assignments as described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['setFarmingSetups', '_setOrAddFarmingSetupInfo', 'init', '_toggleSetup', '_removeLiquidity', 'withdrawReward', 'withdrawLiquidity',
+    'unlock', 'activateSetup']
+        Function Security Analysis for FarmMain.setFarmingSetups(FarmingSetupConfiguration[])
+            The modifier of function setFarmingSetups are ['byExtension']
+            The result of checking modifiers:
+                - modifier byExtension is controlled by owner, the function would not cause REE problem.
+                  Reason: Re-evaluating the modifier, it uses 'require(msg.sender == _extension, "Unauthorized")'. This directly checks if the caller's address
+                  ('msg.sender') matches a specific address stored in '_extension'. This aligns with the first rule that enforces function execution by specific addresses
+                  only. The modifier does not contain lock/unlock operations, so rule two is not applicable here.
+        Function Security Analysis for FarmMain._setOrAddFarmingSetupInfo(FarmingSetupInfo,bool,bool,uint256)
+            There are no modifiers should be examined in function _setOrAddFarmingSetupInfo.
+            Check direct function security
+                - function FarmMain._setOrAddFarmingSetupInfo(FarmingSetupInfo,bool,bool,uint256) has no security assurance protected by checking the authority of
+                msg.sender
+                  Reason: The provided function does not contain any statement that checks msg.sender against xxxOwner/xxxAddress/Leader/CEO, which are necessary
+                  conditions to return 'Yes'.
+                - function FarmMain._setOrAddFarmingSetupInfo(FarmingSetupInfo,bool,bool,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not contain any of the specified structures. It uses require statements, but none of them match the particular patterns
+                  described (require(xxx == True); xxx = False or require(xxx == False); xxx = True or require(!xxx); xxx = True or if(!xxx) throw; xxx = true).
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['setFarmingSetups', 'init']
+                Function Security Analysis for FarmMain.setFarmingSetups(FarmingSetupConfiguration[])
+                    The modifier of function setFarmingSetups are ['byExtension']
+                    The result of checking modifiers:
+                        - modifier byExtension is controlled by owner, the function would not cause REE problem.
+                          Reason: The code uses 'require(msg.sender == _extension, "Unauthorized");', which restricts execution to a specific address, fulfilling the
+                          first characteristic.
+                Function Security Analysis for FarmMain.init(address,bytes,address,address,bytes)
+                    There are no modifiers should be examined in function init.
+                    Check direct function security
+                        - function FarmMain.init(address,bytes,address,address,bytes) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not contain any require/assert statements, 'if' condition blocks or throw statements that specifically check if msg.sender
+                          is equal or not equal to an owner/leader/CEO address.
+                        - function FarmMain.init(address,bytes,address,address,bytes) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided code does not have any of the specified structures (require(xxx == True/False) or require(!xxx) or if(!xxx) throw, followed
+                          by xxx assignment).
+External Call Analysis
+    Direct external call: ['IFarmExtension(_extension).transferTo(amount)']
+    Analyze Transfer
+    Analyze Gas
+        - IFarmExtension(_extension).transferTo(amount) ISN'T subjected to gas limits.
+    Remaining external call: ['IFarmExtension(_extension).transferTo(amount)']
+    Analyze External Address
+        There are ['_extension'] should be checked in variable _extension
+        Checked variables: _extension
+            No 1. The function is not a constructor because its name 'init' does not match the contract name 'FarmMain', nor is it explicitly named 'constructor'. 2. The
+            state variable '_extension' is being set with the argument 'extension', which is not hardcoded. The condition is checked using `require((_extension =
+            extension) != address(0), "extension");`, where 'extension' is a parameter, not a hardcoded value. Therefore, neither characteristic is satisfied.
+            Function Security Analysis for FarmMain.init(address,bytes,address,address,bytes)
+                There are no modifiers should be examined in function init.
+                Check direct function security
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The provided function does not contain any of the specified structures that involve checking `msg.sender` against an owner address, leader,
+                      or CEO with `require`, `if`, `assert` statements.
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The function does not contain 'require(xxx == True); xxx = False;', 'require(xxx == False); xxx = True;', 'require(!xxx); xxx = True;', or
+                      'if(!xxx) throw; xxx = true;' structures. Although it uses 'require' statements, they don't follow the specified patterns.
+Conclusion: This function will cause REE Problem.

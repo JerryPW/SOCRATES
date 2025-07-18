@@ -1,0 +1,12 @@
+
+Start analyze function: Sargasso.deposit(uint256,uint256)
+Function Security Analysis for Sargasso.deposit(uint256,uint256)
+    There are no modifiers should be examined in function deposit.
+    Check direct function security
+        - function Sargasso.deposit(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any "require", "if", or "assert" statements checking if msg.sender is equal or not equal to xxxOwner/xxxAddress/Leader/CEO.
+        - function Sargasso.deposit(uint256,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: The code satisfies Structure 2, but the state negation operation (setting 'userLock[msg.sender] = true;' after 'require(userLock[msg.sender] ==
+          false);') is immediately performed before the main logic of the function executes. Although there are some non-critical statements initializing pool info
+          variables, the negation is completed before the main functional lines of code (such as updating the pool and handling transfers) run.
+Conclusion: This function will not cause REE Problem.

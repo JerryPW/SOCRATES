@@ -1,0 +1,25 @@
+KODAV3SecondaryMarketplace.adminRejectTokenBid: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function adminRejectTokenBid(uint256 _tokenId)
+    public
+    nonReentrant
+    onlyAdmin {
+        Offer memory offer = tokenBids[_tokenId];
+        require(offer.bidder != address(0), "No open bid");
+
+        // send money back to top bidder
+        if (offer.offer > 0) {
+            _refundBidder(_tokenId, offer.bidder, offer.offer, address(0), 0);
+        }
+
+        // delete offer
+        delete tokenBids[_tokenId];
+
+        emit TokenBidRejected(_tokenId, koda.ownerOf(_tokenId), offer.bidder, offer.offer);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

@@ -1,0 +1,23 @@
+
+Start analyze function: Crowdsale.safeWithdrawal()
+Function Security Analysis for Crowdsale.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier 'afterDeadline' only checks if the current time is greater than or equal to a specified deadline. There is no check related to ownership or
+          specific address, lock operation, or any inference from the modifier name that aligns with any specified characteristics.
+    Check direct function security
+        - function Crowdsale.safeWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function checks if 'beneficiary == msg.sender' but does not check 'msg.sender' against 'Owner', 'Address', 'Leader', or 'CEO'.
+        - function Crowdsale.safeWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any 'require' statement or any structures throwing exceptions based on a condition, nor does it modify a boolean conditionally
+          based on a 'require' or 'if(!condition) throw' pattern.
+External Call Analysis
+    Direct external call: ['beneficiary.send(amountRemaining)']
+    Analyze Transfer
+        - beneficiary.send(amountRemaining) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.send(' keyword, which satisfies rule 2.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,19 @@
+
+Start analyze function: BANK_SAFE.Collect(uint256)
+Function Security Analysis for BANK_SAFE.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function BANK_SAFE.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not specifically check if msg.sender is a certain owner, address, leader, or CEO using the listed patterns.
+        - function BANK_SAFE.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code snippet does not implement a require statement or use a throwing mechanism. It checks a condition with `if`, and if true, runs a code block
+          without changing any variables to true or false directly after the check. Therefore, the provided structures do not match.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

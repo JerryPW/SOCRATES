@@ -1,0 +1,68 @@
+Slaughter3D.DivsToRefundpot: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function DivsToRefundpot ()public
+    {
+        //allocate p3d dividends to contract 
+            uint256 dividends = p3dContract.myDividends(true);
+            require(dividends > 0);
+            uint256 base = dividends.div(100);
+            p3dContract.withdraw();
+            SPASM_.disburse.value(base)();// to dev fee sharing contract SPASM
+            Refundpot = Refundpot.add(base.mul(94));
+            Jackpot = Jackpot.add(base.mul(5)); // allocation to jackpot
+            //
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function DivsToRefundpot ()public
+    {
+        //allocate p3d dividends to contract 
+            uint256 dividends = p3dContract.myDividends(true);
+            require(dividends > 0);
+            uint256 base = dividends.div(100);
+            p3dContract.withdraw();
+            SPASM_.disburse.value(base)();// to dev fee sharing contract SPASM
+            Refundpot = Refundpot.add(base.mul(94));
+            Jackpot = Jackpot.add(base.mul(5)); // allocation to jackpot
+            //
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function DivsToRefundpot ()public
+    {
+        //allocate p3d dividends to contract 
+            uint256 dividends = p3dContract.myDividends(true);
+            require(dividends > 0);
+            uint256 base = dividends.div(100);
+            p3dContract.withdraw();
+            SPASM_.disburse.value(base)();// to dev fee sharing contract SPASM
+            Refundpot = Refundpot.add(base.mul(94));
+            Jackpot = Jackpot.add(base.mul(5)); // allocation to jackpot
+            //
+    }
+Response:
+{"StatementsA": {"Refundpot = Refundpot.add(base.mul(94));":"Updates the Refundpot state variable."}, "StatementsB": {"p3dContract.withdraw();":"Executes an external call to the p3dContract."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: Refundpot = Refundpot.add(base.mul(94));
+2.External Call: p3dContract.withdraw();
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

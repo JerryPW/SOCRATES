@@ -1,0 +1,53 @@
+
+Start analyze function: HeroAuction.orderOnSaleAuction(uint256,uint256)
+Function Security Analysis for HeroAuction.orderOnSaleAuction(uint256,uint256)
+    There are no modifiers should be examined in function orderOnSaleAuction.
+    Check direct function security
+        - function HeroAuction.orderOnSaleAuction(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any owner-oriented checks on msg.sender for controlling access.
+        - function HeroAuction.orderOnSaleAuction(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: None of the specified code structures are present. The code contains 'require' statements and other logic, but does not match any of the listed
+          patterns.
+External Call Analysis
+    Direct external call: ['saleAuction.getCurrentPrice(_heroId,1)', 'saleAuction.getSeller(_heroId)', 'saleAuction.order(_heroId,orderAmount,msg.sender)']
+    Analyze Transfer
+    Analyze Gas
+        - saleAuction.getCurrentPrice(_heroId,1) ISN'T subjected to gas limits.
+        - saleAuction.getSeller(_heroId) ISN'T subjected to gas limits.
+        - saleAuction.order(_heroId,orderAmount,msg.sender) ISN'T subjected to gas limits.
+    Remaining external call: ['saleAuction.getCurrentPrice(_heroId,1)', 'saleAuction.getSeller(_heroId)', 'saleAuction.order(_heroId,orderAmount,msg.sender)']
+    Analyze External Address
+        There are ['saleAuction'] should be checked in variable saleAuction
+        Checked variables: saleAuction
+            No 1. The function given is not a constructor, as its name 'setSaleAuctionAddress' does not match the contract name 'HeroAuction', nor is it named
+            'constructor'.  2. The function updates the state variable 'saleAuction' with the input '_address', which is not hardcoded. It is dynamically set based on the
+            input parameter 'address _address'.  Therefore, neither condition is satisfied in this function.
+            Function Security Analysis for HeroAuction.setSaleAuctionAddress(address)
+                The modifier of function setSaleAuctionAddress are ['onlyLeader']
+                The result of checking modifiers:
+                    - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+                      Reason: The code includes a require statement that checks if msg.sender is equal to leaderAddress, fulfilling rule 1, which requires that the
+                      function enforces only the owner or a specific address can execute it. There are no omissions in structure 1, and structure 2 is not relevant here.
+        There are ['saleAuction'] should be checked in variable saleAuction
+        Checked variables: saleAuction
+            No The provided function `setSaleAuctionAddress` is not a constructor since its name does not match the contract name `HeroAuction` nor is it explicitly named
+            'constructor'. Additionally, the function uses a parameter `_address` to set the `saleAuction` state variable, which means it is not hardcoded.
+            Function Security Analysis for HeroAuction.setSaleAuctionAddress(address)
+                The modifier of function setSaleAuctionAddress are ['onlyLeader']
+                The result of checking modifiers:
+                    - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+                      Reason: The code contains 'require(msg.sender == leaderAddress);', which directly matches rule 1, enforcing that only the specific address
+                      'leaderAddress' can execute the function. There are no omissions or structural issues regarding this requirement.
+        There are ['saleAuction'] should be checked in variable saleAuction
+        Checked variables: saleAuction
+            No The function `setSaleAuctionAddress` does not have the same name as the contract name `HeroAuction`, nor is it explicitly named 'constructor'. Thus, it is
+            not a constructor. Additionally, the function sets the state variable `saleAuction` using a parameter `_address` and not a hardcoded value. Therefore, it does
+            not satisfy either characteristic.
+            Function Security Analysis for HeroAuction.setSaleAuctionAddress(address)
+                The modifier of function setSaleAuctionAddress are ['onlyLeader']
+                The result of checking modifiers:
+                    - modifier onlyLeader is controlled by owner, the function would not cause REE problem.
+                      Reason: Rechecking the provided modifier code, the statement 'require(msg.sender == leaderAddress);' is present, confirming the enforcement that
+                      only the address stored in 'leaderAddress' can execute the function. There are no structural omissions, as this fully satisfies Rule 1 of requiring
+                      control by specific addresses. Rule 2 does not apply here because there's no lock operation present in this code.
+Conclusion: This function will not cause REE Problem.

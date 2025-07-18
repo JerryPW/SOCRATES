@@ -1,0 +1,108 @@
+
+Start analyze function: WithdrawContract.withdraw()
+Function Security Analysis for WithdrawContract.withdraw()
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function WithdrawContract.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any conditions or assertions that compare `msg.sender` to any specified owner, address, Leader, or CEO.
+        - function WithdrawContract.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not satisfy any of the specified structures. It contains some `require` statements but none of them follow the pattern of requiring
+          a variable's truth value and then modifying that variable.
+External Call Analysis
+    Direct external call: ['rewardToken.totalSupplyAt(d.block)', 'rewardToken.balanceOfAt(msg.sender,d.block)']
+    Analyze Transfer
+    Analyze Gas
+        - rewardToken.totalSupplyAt(d.block) ISN'T subjected to gas limits.
+        - rewardToken.balanceOfAt(msg.sender,d.block) ISN'T subjected to gas limits.
+    Remaining external call: ['rewardToken.totalSupplyAt(d.block)', 'rewardToken.balanceOfAt(msg.sender,d.block)']
+    Analyze External Address
+        There are ['rewardToken'] should be checked in variable rewardToken
+        Checked variables: rewardToken
+            Yes The function name 'WithdrawContract' matches the contract name 'WithdrawContract', indicating it is a constructor.
+        There are ['rewardToken'] should be checked in variable rewardToken
+        Checked variables: rewardToken
+            Yes The function named 'WithdrawContract' matches the name of the contract 'WithdrawContract'. Therefore, it is a constructor.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: WithdrawContract.doPayment(uint256,address,ERC20,uint256)
+Function Security Analysis for WithdrawContract.doPayment(uint256,address,ERC20,uint256)
+    There are no modifiers should be examined in function doPayment.
+    Check direct function security
+        - function WithdrawContract.doPayment(uint256,address,ERC20,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any access control based on 'msg.sender'.
+        - function WithdrawContract.doPayment(uint256,address,ERC20,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not contain any of the specified patterns. There are no require statements, logical negation/throw combinations, or variable
+          assignments in the form described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdraw']
+        Function Security Analysis for WithdrawContract.withdraw()
+            There are no modifiers should be examined in function withdraw.
+            Check direct function security
+                - function WithdrawContract.withdraw() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code provided does not utilize msg.sender in any authorization checks such as requiring, asserting, or throwing based on msg.sender being a
+                  particular owner or leadership role.
+                - function WithdrawContract.withdraw() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not contain any of the specified structures. There's no use of 'require' with changing the state of the same variable from
+                  'True' to 'False' or vice versa. Additionally, the conditional statements don't execute state changes as described in the characteristics.
+External Call Analysis
+    Direct external call: ['_token.transfer(_dest,_amount)', '_dest.send(_amount)']
+    Analyze Transfer
+        - _token.transfer(_dest,_amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - _dest.send(_amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call '_dest.send(_amount)' contains
+        the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - _token.transfer(_dest,_amount) ISN'T subjected to gas limits.
+    Remaining external call: ['_token.transfer(_dest,_amount)']
+    Analyze External Address
+        The variable '_token' in external call '_token.transfer(_dest,_amount)' has no state variable assigned in
+        WithdrawContract.doPayment(uint256,address,ERC20,uint256). Considering that it is an internal/private function, we analyze the function inputs.
+        Analyze External Address
+            There are ['deposits'] should be checked in variable currentToken
+            Checked variables: deposits
+                No The functions provided are neither constructers nor do they contain hardcoded state variables. The functions `newEtherDeposit`, `newTokenDeposit`, and
+                `cancelPaymentGlobally` don't match the contract name `WithdrawContract`, nor are they explicitly named 'constructor'. Also, the state variable 'deposits'
+                is not hardcoded in the sense of having a fixed, pre-defined value directly in the code that cannot be changed during execution.
+            Function Security Analysis for WithdrawContract.newEtherDeposit(uint256)
+                The modifier of function newEtherDeposit are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The code contains the statement 'require(msg.sender == owner);', which enforces that only the owner can execute functions using this
+                      modifier. This satisfies characteristic 1. There are no additional structural omissions or matches needed based on the provided code.
+            Function Security Analysis for WithdrawContract.newTokenDeposit(ERC20,uint256,uint256)
+                The modifier of function newTokenDeposit are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The code uses 'require(msg.sender == owner);' to enforce that only the owner can execute the function, which satisfies the first
+                      characteristic.
+            Function Security Analysis for WithdrawContract.cancelPaymentGlobally(uint256)
+                The modifier of function cancelPaymentGlobally are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier 'onlyOwner' contains a single require statement checking if msg.sender is equal to owner, which matches the first
+                      characteristic. There are no structural omissions here related to lock operations as it is specifically fulfilling characteristic one.
+            There are ['deposits'] should be checked in variable currentToken
+            Checked variables: deposits
+                No The code provided consists of three functions: newEtherDeposit, newTokenDeposit, and cancelPaymentGlobally. None of these functions have the same name
+                as the contract name, 'WithdrawContract', nor are they explicitly named 'constructor'. Therefore, they do not satisfy the first characteristic.
+                Additionally, the state variable 'deposits' is used and modified in the code (e.g., its length is incremented), but it is not hardcoded with a specific
+                value. Therefore, the functions do not satisfy the second characteristic.
+            Function Security Analysis for WithdrawContract.newEtherDeposit(uint256)
+                The modifier of function newEtherDeposit are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon double-checking, the code for the modifier uses a require statement which matches rule 1 for ensuring only the owner can execute the
+                      function. The relevant part of the code is 'require (msg.sender == owner);'. There are no omissions since there is no lock operation related to rule
+                      2.
+            Function Security Analysis for WithdrawContract.newTokenDeposit(ERC20,uint256,uint256)
+                The modifier of function newTokenDeposit are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Rule 1: The code in the modifier enforces that only the owner can execute the function by using the statement 'require(msg.sender ==
+                      owner)'. There are no structural omissions as this single statement sufficiently ensures only the owner can run the function, conforming to Rule 1.
+            Function Security Analysis for WithdrawContract.cancelPaymentGlobally(uint256)
+                The modifier of function cancelPaymentGlobally are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier code 'require(msg.sender == owner);' explicitly checks if the caller of the function is the owner, fulfilling the first
+                      characteristic condition that enforces execution only by the owner.
+Conclusion: This function will not cause REE Problem.

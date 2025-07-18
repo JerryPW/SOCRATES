@@ -1,0 +1,113 @@
+GFarm.POOL1_unstake: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function POOL1_unstake(uint amount) external{
+        User storage u = users[msg.sender];
+        require(amount > 0, "Unstaking 0 lp.");
+        require(u.POOL1_provided >= amount, "Unstaking more than currently staked.");
+
+        _POOL1_harvest(msg.sender);
+        lp.transfer(msg.sender, amount);
+
+        u.POOL1_provided = u.POOL1_provided.sub(amount);
+        u.POOL1_rewardDebt = u.POOL1_provided.mul(POOL1_accTokensPerLP).div(1e18);
+
+        uint lpSupply = lp.balanceOf(address(this));
+
+        if(u.NFT_CREDITS_receiving
+            && u.POOL1_provided < lpSupply.mul(POOL1_CREDITS_MIN_P).div(100)
+            || u.NFT_CREDITS_receiving && lpSupply == 0){
+            u.NFT_CREDITS_amount = NFT_CREDITS_amount(msg.sender);
+            u.NFT_CREDITS_receiving = false;
+            u.NFT_CREDITS_lastUpdated = block.number;
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function POOL1_unstake(uint amount) external{
+        User storage u = users[msg.sender];
+        require(amount > 0, "Unstaking 0 lp.");
+        require(u.POOL1_provided >= amount, "Unstaking more than currently staked.");
+
+        _POOL1_harvest(msg.sender);
+        lp.transfer(msg.sender, amount);
+
+        u.POOL1_provided = u.POOL1_provided.sub(amount);
+        u.POOL1_rewardDebt = u.POOL1_provided.mul(POOL1_accTokensPerLP).div(1e18);
+
+        uint lpSupply = lp.balanceOf(address(this));
+
+        if(u.NFT_CREDITS_receiving
+            && u.POOL1_provided < lpSupply.mul(POOL1_CREDITS_MIN_P).div(100)
+            || u.NFT_CREDITS_receiving && lpSupply == 0){
+            u.NFT_CREDITS_amount = NFT_CREDITS_amount(msg.sender);
+            u.NFT_CREDITS_receiving = false;
+            u.NFT_CREDITS_lastUpdated = block.number;
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function POOL1_unstake(uint amount) external{
+        User storage u = users[msg.sender];
+        require(amount > 0, "Unstaking 0 lp.");
+        require(u.POOL1_provided >= amount, "Unstaking more than currently staked.");
+
+        _POOL1_harvest(msg.sender);
+        lp.transfer(msg.sender, amount);
+
+        u.POOL1_provided = u.POOL1_provided.sub(amount);
+        u.POOL1_rewardDebt = u.POOL1_provided.mul(POOL1_accTokensPerLP).div(1e18);
+
+        uint lpSupply = lp.balanceOf(address(this));
+
+        if(u.NFT_CREDITS_receiving
+            && u.POOL1_provided < lpSupply.mul(POOL1_CREDITS_MIN_P).div(100)
+            || u.NFT_CREDITS_receiving && lpSupply == 0){
+            u.NFT_CREDITS_amount = NFT_CREDITS_amount(msg.sender);
+            u.NFT_CREDITS_receiving = false;
+            u.NFT_CREDITS_lastUpdated = block.number;
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function POOL1_unstake(uint amount) external{
+        User storage u = users[msg.sender];
+        require(amount > 0, "Unstaking 0 lp.");
+        require(u.POOL1_provided >= amount, "Unstaking more than currently staked.");
+
+        _POOL1_harvest(msg.sender);
+        lp.transfer(msg.sender, amount);
+
+        u.POOL1_provided = u.POOL1_provided.sub(amount);
+        u.POOL1_rewardDebt = u.POOL1_provided.mul(POOL1_accTokensPerLP).div(1e18);
+
+        uint lpSupply = lp.balanceOf(address(this));
+
+        if(u.NFT_CREDITS_receiving
+            && u.POOL1_provided < lpSupply.mul(POOL1_CREDITS_MIN_P).div(100)
+            || u.NFT_CREDITS_receiving && lpSupply == 0){
+            u.NFT_CREDITS_amount = NFT_CREDITS_amount(msg.sender);
+            u.NFT_CREDITS_receiving = false;
+            u.NFT_CREDITS_lastUpdated = block.number;
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

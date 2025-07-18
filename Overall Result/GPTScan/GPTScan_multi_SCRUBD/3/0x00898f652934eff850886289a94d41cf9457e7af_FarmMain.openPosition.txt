@@ -1,0 +1,85 @@
+FarmMain.openPosition: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function openPosition(FarmingPositionRequest memory request) public override payable activeSetupOnly(request.setupIndex) returns(uint256 positionId) {
+        // retrieve the setup
+        FarmingSetup storage chosenSetup = _setups[request.setupIndex];
+        // retrieve the unique owner
+        address uniqueOwner = (request.positionOwner != address(0)) ? request.positionOwner : msg.sender;
+        // create the position id
+        positionId = uint256(keccak256(abi.encode(uniqueOwner, _setupsInfo[chosenSetup.infoIndex].free ? 0 : block.number, request.setupIndex)));
+        require(_positions[positionId].creationBlock == 0, "Invalid open");
+        // create the lp data for the amm
+        (LiquidityPoolData memory liquidityPoolData, uint256 mainTokenAmount) = _addLiquidity(request.setupIndex, request);
+        // calculate the reward
+        uint256 reward;
+        uint256 lockedRewardPerBlock;
+        if (!_setupsInfo[chosenSetup.infoIndex].free) {
+            (reward, lockedRewardPerBlock) = calculateLockedFarmingReward(request.setupIndex, mainTokenAmount, false, 0);
+            require(reward > 0 && lockedRewardPerBlock > 0, "Insufficient staked amount");
+            chosenSetup.totalSupply = chosenSetup.totalSupply + mainTokenAmount;
+            chosenSetup.lastUpdateBlock = block.number;
+            _mintFarmTokenAmount(uniqueOwner, liquidityPoolData.amount, request.setupIndex);
+        } else {
+            _updateFreeSetup(request.setupIndex, liquidityPoolData.amount, positionId, false);
+        }
+        _positions[positionId] = FarmingPosition({
+            uniqueOwner: uniqueOwner,
+            setupIndex : request.setupIndex,
+            liquidityPoolTokenAmount: liquidityPoolData.amount,
+            mainTokenAmount: mainTokenAmount,
+            reward: reward,
+            lockedRewardPerBlock: lockedRewardPerBlock,
+            creationBlock: block.number
+        });
+        _setupPositionsCount[request.setupIndex] += (1 + (_setupsInfo[chosenSetup.infoIndex].free ? 0 : liquidityPoolData.amount));
+        emit Transfer(positionId, address(0), uniqueOwner);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function openPosition(FarmingPositionRequest memory request) public override payable activeSetupOnly(request.setupIndex) returns(uint256 positionId) {
+        // retrieve the setup
+        FarmingSetup storage chosenSetup = _setups[request.setupIndex];
+        // retrieve the unique owner
+        address uniqueOwner = (request.positionOwner != address(0)) ? request.positionOwner : msg.sender;
+        // create the position id
+        positionId = uint256(keccak256(abi.encode(uniqueOwner, _setupsInfo[chosenSetup.infoIndex].free ? 0 : block.number, request.setupIndex)));
+        require(_positions[positionId].creationBlock == 0, "Invalid open");
+        // create the lp data for the amm
+        (LiquidityPoolData memory liquidityPoolData, uint256 mainTokenAmount) = _addLiquidity(request.setupIndex, request);
+        // calculate the reward
+        uint256 reward;
+        uint256 lockedRewardPerBlock;
+        if (!_setupsInfo[chosenSetup.infoIndex].free) {
+            (reward, lockedRewardPerBlock) = calculateLockedFarmingReward(request.setupIndex, mainTokenAmount, false, 0);
+            require(reward > 0 && lockedRewardPerBlock > 0, "Insufficient staked amount");
+            chosenSetup.totalSupply = chosenSetup.totalSupply + mainTokenAmount;
+            chosenSetup.lastUpdateBlock = block.number;
+            _mintFarmTokenAmount(uniqueOwner, liquidityPoolData.amount, request.setupIndex);
+        } else {
+            _updateFreeSetup(request.setupIndex, liquidityPoolData.amount, positionId, false);
+        }
+        _positions[positionId] = FarmingPosition({
+            uniqueOwner: uniqueOwner,
+            setupIndex : request.setupIndex,
+            liquidityPoolTokenAmount: liquidityPoolData.amount,
+            mainTokenAmount: mainTokenAmount,
+            reward: reward,
+            lockedRewardPerBlock: lockedRewardPerBlock,
+            creationBlock: block.number
+        });
+        _setupPositionsCount[request.setupIndex] += (1 + (_setupsInfo[chosenSetup.infoIndex].free ? 0 : liquidityPoolData.amount));
+        emit Transfer(positionId, address(0), uniqueOwner);
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------

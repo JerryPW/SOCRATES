@@ -1,0 +1,21 @@
+
+Start analyze function: Emeejis.orderEmeejis(uint256)
+Function Security Analysis for Emeejis.orderEmeejis(uint256)
+    There are no modifiers should be examined in function orderEmeejis.
+    Check direct function security
+        - function Emeejis.orderEmeejis(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not contain any of the specified structures involving msg.sender and xxxOwner/xxxAddress/Leader/CEO. It mainly includes logic
+          for validating order parameters, managing NFTs, handling payments, and ensuring reentrancy protection.
+        - function Emeejis.orderEmeejis(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code satisfies structure 3 with the statement `require(!reentrancyLock);` followed by `reentrancyLock = true;`. However, after the require statement
+          and before the state negation occurs, several other require statements are executed, potentially part of the function's main logic. Therefore, the structure
+          does not meet the specified condition for immediate state negation.
+External Call Analysis
+    Direct external call: ['msg.sender.call{value:cashChange}()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call{value:cashChange}() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call{value:cashChange}()']
+    Analyze External Address
+        External call msg.sender.call{value:cashChange}() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,26 @@
+Nothing.mintNOTHING: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function mintNOTHING(uint numberOfTokens) public payable {
+        require(canIBuyThese, "Sale must be active to mint ...");
+        require(numberOfTokens <= noMoreNothings, "Can only mint 20 tokens at a time");
+        require(totalSupply().add(numberOfTokens) <= TOO_MANY_NOTHINGS, "Purchase would exceed max supply of ...");
+        require(nothingWhatIsThis.mul(numberOfTokens) <= msg.value, "Ether value sent is not correct");
+        
+        for(uint i = 0; i < numberOfTokens; i++) {
+            uint mintIndex = totalSupply();
+            if (totalSupply() < TOO_MANY_NOTHINGS) {
+                _safeMint(msg.sender, mintIndex);
+                count += 1;
+            }
+        }
+
+        emit Increment(msg.sender);
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------

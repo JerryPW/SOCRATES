@@ -1,0 +1,35 @@
+GLITCH.swapAndLiquifyForEth: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapAndLiquifyForEth(uint256 lockedBalanceForPool) private lockTheSwap {
+        // split the contract balance except swapCallerFee into halves
+        uint256 lockedForSwap = lockedBalanceForPool.sub(_autoSwapCallerFee);
+        uint256 half = lockedForSwap.div(2);
+        uint256 otherHalf = lockedForSwap.sub(half);
+
+        // capture the contract's current ETH balance.
+        // this is so that we can capture exactly the amount of ETH that the
+        // swap creates, and not make the liquidity event include any ETH that
+        // has been manually sent to the contract
+        uint256 initialBalance = address(this).balance;
+
+        // swap tokens for ETH
+        swapTokensForEth(half);
+        
+        // how much ETH did we just swap into?
+        uint256 newBalance = address(this).balance.sub(initialBalance);
+
+        // add liquidity to uniswap
+        addLiquidityForEth(otherHalf, newBalance);
+        
+        emit SwapAndLiquify(_uniswapV2Router.WETH(), half, newBalance, otherHalf);
+        
+        _transfer(address(this), tx.origin, _autoSwapCallerFee);
+        
+        _sendRewardInterestToPool();
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

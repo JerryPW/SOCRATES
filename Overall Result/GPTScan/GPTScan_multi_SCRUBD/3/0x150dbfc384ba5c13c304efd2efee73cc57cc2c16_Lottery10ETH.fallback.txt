@@ -1,0 +1,219 @@
+Lottery10ETH.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function() public payable notFromContract {
+
+        if (players.length == 0 && paused) {
+            revert();
+        }
+
+        if (players.length == limit) {
+            drawing();
+
+            if (players.length == 0 && paused || msg.value < PRICE) {
+                msg.sender.transfer(msg.value);
+                return;
+            }
+
+        }
+
+        require(msg.value >= PRICE);
+
+        if (msg.value > PRICE) {
+            msg.sender.transfer(msg.value - PRICE);
+        }
+
+        if (msg.data.length != 0) {
+            RS.addReferrer(bytesToAddress(bytes(msg.data)));
+        }
+
+        players.push(msg.sender);
+        x.purchase(msg.sender);
+        RS.newTicket();
+        LT.emitEvent(msg.sender);
+        emit NewPlayer(msg.sender, gameCount);
+
+        if (players.length == limit) {
+            drawing();
+        }
+
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function() public payable notFromContract {
+
+        if (players.length == 0 && paused) {
+            revert();
+        }
+
+        if (players.length == limit) {
+            drawing();
+
+            if (players.length == 0 && paused || msg.value < PRICE) {
+                msg.sender.transfer(msg.value);
+                return;
+            }
+
+        }
+
+        require(msg.value >= PRICE);
+
+        if (msg.value > PRICE) {
+            msg.sender.transfer(msg.value - PRICE);
+        }
+
+        if (msg.data.length != 0) {
+            RS.addReferrer(bytesToAddress(bytes(msg.data)));
+        }
+
+        players.push(msg.sender);
+        x.purchase(msg.sender);
+        RS.newTicket();
+        LT.emitEvent(msg.sender);
+        emit NewPlayer(msg.sender, gameCount);
+
+        if (players.length == limit) {
+            drawing();
+        }
+
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    constructor(address RS_Addr) public {
+        x = new Storage();
+        LT = new LotteryTicket();
+        WT = new WinnerTicket();
+        RS = RefStorage(RS_Addr);
+        gameCount++;
+    }
+Response:
+{"StatementsA": {"gameCount++;":"Increments the gameCount state variable."}, "StatementsB": {},"VariableA": {}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: gameCount++;
+2.External Call: None
+3.Variable A: None
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function() public payable notFromContract {
+
+        if (players.length == 0 && paused) {
+            revert();
+        }
+
+        if (players.length == limit) {
+            drawing();
+
+            if (players.length == 0 && paused || msg.value < PRICE) {
+                msg.sender.transfer(msg.value);
+                return;
+            }
+
+        }
+
+        require(msg.value >= PRICE);
+
+        if (msg.value > PRICE) {
+            msg.sender.transfer(msg.value - PRICE);
+        }
+
+        if (msg.data.length != 0) {
+            RS.addReferrer(bytesToAddress(bytes(msg.data)));
+        }
+
+        players.push(msg.sender);
+        x.purchase(msg.sender);
+        RS.newTicket();
+        LT.emitEvent(msg.sender);
+        emit NewPlayer(msg.sender, gameCount);
+
+        if (players.length == limit) {
+            drawing();
+        }
+
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function() public payable notFromContract {
+
+        if (players.length == 0 && paused) {
+            revert();
+        }
+
+        if (players.length == limit) {
+            drawing();
+
+            if (players.length == 0 && paused || msg.value < PRICE) {
+                msg.sender.transfer(msg.value);
+                return;
+            }
+
+        }
+
+        require(msg.value >= PRICE);
+
+        if (msg.value > PRICE) {
+            msg.sender.transfer(msg.value - PRICE);
+        }
+
+        if (msg.data.length != 0) {
+            RS.addReferrer(bytesToAddress(bytes(msg.data)));
+        }
+
+        players.push(msg.sender);
+        x.purchase(msg.sender);
+        RS.newTicket();
+        LT.emitEvent(msg.sender);
+        emit NewPlayer(msg.sender, gameCount);
+
+        if (players.length == limit) {
+            drawing();
+        }
+
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    constructor(address RS_Addr) public {
+        x = new Storage();
+        LT = new LotteryTicket();
+        WT = new WinnerTicket();
+        RS = RefStorage(RS_Addr);
+        gameCount++;
+    }
+Response:
+{"StatementsA": {"gameCount++;":"Increments the gameCount state variable."}, "StatementsB": {},"VariableA": {}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: gameCount++;
+2.External Call: None
+3.Variable A: None

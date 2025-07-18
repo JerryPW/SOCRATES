@@ -1,0 +1,25 @@
+
+Start analyze function: HoldPresaleContract.unlockTokens()
+Function Security Analysis for HoldPresaleContract.unlockTokens()
+    There are no modifiers should be examined in function unlockTokens.
+    Check direct function security
+        - function HoldPresaleContract.unlockTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any 'require', 'if' with throw, or 'assert' statements checking msg.sender against a specific owner or CEO address.
+        - function HoldPresaleContract.unlockTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code checks for certain conditions using if statements and reverts if they evaluate to false, however, it doesn't modify a variable to toggle
+          between boolean states as required by the specified structures, it simply performs a check on existing conditions.
+External Call Analysis
+    Direct external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze Transfer
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze External Address
+        There are ['OppToken'] should be checked in variable OppToken
+        Checked variables: OppToken
+            Yes The function provided is named 'HoldPresaleContract', which matches the contract name 'HoldPresaleContract', indicating that this is the constructor of
+            the contract. Constructors are used to initialize the state of the contract when it is deployed. The constructor has a parameter '_OppToken', which is
+            assigned to the state variable 'OppToken'. The state variable is not hardcoded as it takes a value from the argument '_OppToken'.  Given that the function is
+            identified as a constructor, it satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

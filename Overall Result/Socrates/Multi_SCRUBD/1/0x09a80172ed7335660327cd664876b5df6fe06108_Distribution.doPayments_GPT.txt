@@ -1,0 +1,19 @@
+
+Start analyze function: Distribution.doPayments()
+Function Security Analysis for Distribution.doPayments()
+    There are no modifiers should be examined in function doPayments.
+    Check direct function security
+        - function Distribution.doPayments() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any structures that check if msg.sender is equal to or not equal to a specific owner or address.
+        - function Distribution.doPayments() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function contains a 'require' statement, but the structure does not match any of the specified patterns involving setting a boolean variable to True
+          or False.
+External Call Analysis
+    Direct external call: ['rec.addr.transfer(rec.balance)']
+    Analyze Transfer
+        - rec.addr.transfer(rec.balance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, hence it satisfies one of the characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

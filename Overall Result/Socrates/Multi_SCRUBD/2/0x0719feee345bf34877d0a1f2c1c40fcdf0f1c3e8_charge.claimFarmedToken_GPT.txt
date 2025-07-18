@@ -1,0 +1,12 @@
+
+Start analyze function: charge.claimFarmedToken(address,address,uint8)
+Function Security Analysis for charge.claimFarmedToken(address,address,uint8)
+    There are no modifiers should be examined in function claimFarmedToken.
+    Check direct function security
+        - function charge.claimFarmedToken(address,address,uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any of the specified conditions regarding msg.sender and any owner/address check such as msg.sender != xxxOwner, therefore it
+          does not meet the required structures.
+        - function charge.claimFarmedToken(address,address,uint8) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: In the code provided, the switch of the _isWithdrawing variable occurs immediately after its state check with 'require(!_isWithdrawing);'. This is done
+          before any major logic of the function is executed. Therefore, it satisfies the negation requirements of the structure.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,75 @@
+
+Start analyze function: EscrowGoods.getMoney(uint256)
+Function Security Analysis for EscrowGoods.getMoney(uint256)
+    There are no modifiers should be examined in function getMoney.
+    Check direct function security
+        - function EscrowGoods.getMoney(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any of the specified structures where conditions related to msg.sender are checked with respect to certain roles like xxxOwner,
+          xxxAddress, Leader, or CEO.
+        - function EscrowGoods.getMoney(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any structure that matches the descriptions given for judging. There is no use of 'require' or 'if' with 'throw' in
+          relation to setting a boolean variable to True or False as specified by the structures required for a 'Yes'.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: EscrowGoods.safeSend(address,uint256)
+Function Security Analysis for EscrowGoods.safeSend(address,uint256)
+    There are no modifiers should be examined in function safeSend.
+    Check direct function security
+        - function EscrowGoods.safeSend(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks or assertions involving msg.sender. It only modifies and checks the atomicLock variable and performs a call
+          operation to a specified address with a certain gas limit.
+        - function EscrowGoods.safeSend(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code matches structure 4 with 'if(atomicLock) throw;' and 'atomicLock = true;'. However, the negation 'atomicLock = false;' occurs after the main
+          logic, which is the call to 'addr.call'. The negation does not occur immediately after setting 'atomicLock = true;' and before executing the function's main
+          logic. Thus, it does not satisfy the requirement of negating the state immediately after checking and before moving into the main logic.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['reject', 'arbYes', 'yes', 'getMoney', 'getFees']
+        Function Security Analysis for EscrowGoods.reject(uint256,string,uint256)
+            The modifier of function reject are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The code explicitly checks if msg.sender (the person calling the function) is not equal to seller and throws an exception if it isn't, ensuring
+                  that only the seller can execute the function. This matches the first characteristic where only specific addresses can execute it.
+        Function Security Analysis for EscrowGoods.arbYes(uint256,address,uint256,string,uint256)
+            The modifier of function arbYes are ['onlyArbiter']
+            The result of checking modifiers:
+                - modifier onlyArbiter is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier code checks if the 'msg.sender' is not equal to 'arbiter' and throws if not, which aligns with rule 1 where access is restricted to
+                  a specific address ('arbiter'). There are no omissions as rule 1 has been correctly identified and applied.
+        Function Security Analysis for EscrowGoods.yes(uint256,string,uint256)
+            There are no modifiers should be examined in function yes.
+            Check direct function security
+                - function EscrowGoods.yes(uint256,string,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function uses 'msg.sender != info.buyer && msg.sender != seller' which is checking against buyers and sellers from the contract data, but
+                  does not conform to any of the defined structures based on specific roles like xxxOwner/xxxAddress/Leader/CEO that are not derived from local variables.
+                - function EscrowGoods.yes(uint256,string,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain the specific structure outlined in any of the given characteristics, such as requiring a boolean to be
+                  checked and set within the conditions specified (like require(xxx == True), xxx = False; etc.). The code involves checks based on conditions around
+                  'lockedFunds' and 'msg.sender', but these do not align with any specified pattern involving a boolean variable being toggled.
+External Call Analysis
+    Direct external call: ['addr.call.gas(safeGas).value(value)()']
+    Analyze Transfer
+    Analyze Gas
+        - addr.call.gas(safeGas).value(value)() ISN'T subjected to gas limits. Here is the reason: In the provided code, the `safeGas` variable is declared as a constant
+        with the value 25000:  ```solidity uint constant safeGas = 25000; ```  This is the only place where the `safeGas` variable is defined and assigned. Since it is
+        declared as a constant, its value cannot be changed anywhere in the contract. As a constant variable, the value of `safeGas` is fixed at 25000 and cannot increase
+        or decrease during the contract's execution. Thus, it is always less than or equal to 3000.  Checking the rest of the code, no other assignments or functions
+        modify the `safeGas` variable. Therefore, its assignment is always 25000, which is less than 3000, leading to the consistent conclusion across the contract's
+        lifespan.
+    Remaining external call: ['addr.call.gas(safeGas).value(value)()']
+    Analyze External Address
+        There are ['seller', 'arbiter'] should be checked in variable addr
+        Checked variables: seller
+            Yes The provided code is a constructor for the contract named 'EscrowGoods'. The function name matches the contract name, which indicates that it is a
+            constructor. Additionally, the state variable 'seller' is being hardcoded to the value of 'msg.sender'. Therefore, it satisfies both characteristics: it is a
+            constructor, and it hardcodes the 'seller' state variable.
+        Checked variables: arbiter
+            Yes The function provided in the code is named 'EscrowGoods', which matches the contract name. This indicates that the function is a constructor, satisfying
+            characteristic 1.
+Conclusion: This function will not cause REE Problem.

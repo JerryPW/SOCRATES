@@ -1,0 +1,20 @@
+
+Start analyze function: Piggy_BNK.Collect(uint256)
+Function Security Analysis for Piggy_BNK.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function Piggy_BNK.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any statement with msg.sender being directly compared to an owner, address, leader, or CEO entity as specified by the
+          characteristics. It checks the balance and unlockTime but not specific sender roles.
+        - function Piggy_BNK.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specific structures defined for 'require' or 'if' statements with variable assignments as mentioned in the
+          characteristics. It includes conditional checks and a function call but none of the specified patterns.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

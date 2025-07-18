@@ -1,0 +1,193 @@
+PiZZa.pullResolves: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function pullResolves(uint amount) public returns (uint forfeiture){
+		address sender = msg.sender;
+		uint resolves = resolveWeight[ sender ];
+		require(amount <= resolves && amount > 0);
+		require(amount < dissolvingResolves);//"you can't forfeit the last resolve"
+
+		uint yourTotalEarnings = (uint)((int256)(resolves * earningsPerResolve) - payouts[sender]);
+		uint forfeitedEarnings = yourTotalEarnings * amount / resolves;
+
+		// Update the payout array so that the "resolve shareholder" cannot claim resolveEarnings on previous staked resolves.
+		payouts[sender] += (int256)(forfeitedEarnings) - (int256)(earningsPerResolve * amount);
+
+		resolveWeight[sender] -= amount;
+		dissolvingResolves -= amount;
+		// The Ether value per token is increased proportionally.
+		earningsPerResolve += forfeitedEarnings / dissolvingResolves;
+
+		resolveToken.transfer( sender, amount );
+		emit PullResolves( sender, amount, forfeitedEarnings / scaleFactor);
+		return forfeitedEarnings / scaleFactor;
+	}
+Response:
+{
+  "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function pullResolves(uint amount) public returns (uint forfeiture){
+		address sender = msg.sender;
+		uint resolves = resolveWeight[ sender ];
+		require(amount <= resolves && amount > 0);
+		require(amount < dissolvingResolves);//"you can't forfeit the last resolve"
+
+		uint yourTotalEarnings = (uint)((int256)(resolves * earningsPerResolve) - payouts[sender]);
+		uint forfeitedEarnings = yourTotalEarnings * amount / resolves;
+
+		// Update the payout array so that the "resolve shareholder" cannot claim resolveEarnings on previous staked resolves.
+		payouts[sender] += (int256)(forfeitedEarnings) - (int256)(earningsPerResolve * amount);
+
+		resolveWeight[sender] -= amount;
+		dissolvingResolves -= amount;
+		// The Ether value per token is increased proportionally.
+		earningsPerResolve += forfeitedEarnings / dissolvingResolves;
+
+		resolveToken.transfer( sender, amount );
+		emit PullResolves( sender, amount, forfeitedEarnings / scaleFactor);
+		return forfeitedEarnings / scaleFactor;
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function pullResolves(uint amount) public returns (uint forfeiture){
+		address sender = msg.sender;
+		uint resolves = resolveWeight[ sender ];
+		require(amount <= resolves && amount > 0);
+		require(amount < dissolvingResolves);//"you can't forfeit the last resolve"
+
+		uint yourTotalEarnings = (uint)((int256)(resolves * earningsPerResolve) - payouts[sender]);
+		uint forfeitedEarnings = yourTotalEarnings * amount / resolves;
+
+		// Update the payout array so that the "resolve shareholder" cannot claim resolveEarnings on previous staked resolves.
+		payouts[sender] += (int256)(forfeitedEarnings) - (int256)(earningsPerResolve * amount);
+
+		resolveWeight[sender] -= amount;
+		dissolvingResolves -= amount;
+		// The Ether value per token is increased proportionally.
+		earningsPerResolve += forfeitedEarnings / dissolvingResolves;
+
+		resolveToken.transfer( sender, amount );
+		emit PullResolves( sender, amount, forfeitedEarnings / scaleFactor);
+		return forfeitedEarnings / scaleFactor;
+	}
+Response:
+{"StatementsA": {"resolveWeight[sender] -= amount;":"Updates the resolveWeight state variable for the sender", "dissolvingResolves -= amount;":"Updates the dissolvingResolves state variable", "earningsPerResolve += forfeitedEarnings / dissolvingResolves;":"Updates the earningsPerResolve state variable"}, "StatementsB": {"resolveToken.transfer( sender, amount );":"Executes an external call to transfer tokens"}, "VariableA": {"sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: resolveWeight[sender] -= amount;
+2.External Call: resolveToken.transfer( sender, amount );
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function pullResolves(uint amount) public returns (uint forfeiture){
+		address sender = msg.sender;
+		uint resolves = resolveWeight[ sender ];
+		require(amount <= resolves && amount > 0);
+		require(amount < dissolvingResolves);//"you can't forfeit the last resolve"
+
+		uint yourTotalEarnings = (uint)((int256)(resolves * earningsPerResolve) - payouts[sender]);
+		uint forfeitedEarnings = yourTotalEarnings * amount / resolves;
+
+		// Update the payout array so that the "resolve shareholder" cannot claim resolveEarnings on previous staked resolves.
+		payouts[sender] += (int256)(forfeitedEarnings) - (int256)(earningsPerResolve * amount);
+
+		resolveWeight[sender] -= amount;
+		dissolvingResolves -= amount;
+		// The Ether value per token is increased proportionally.
+		earningsPerResolve += forfeitedEarnings / dissolvingResolves;
+
+		resolveToken.transfer( sender, amount );
+		emit PullResolves( sender, amount, forfeitedEarnings / scaleFactor);
+		return forfeitedEarnings / scaleFactor;
+	}
+Response:
+{
+  "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function pullResolves(uint amount) public returns (uint forfeiture){
+		address sender = msg.sender;
+		uint resolves = resolveWeight[ sender ];
+		require(amount <= resolves && amount > 0);
+		require(amount < dissolvingResolves);//"you can't forfeit the last resolve"
+
+		uint yourTotalEarnings = (uint)((int256)(resolves * earningsPerResolve) - payouts[sender]);
+		uint forfeitedEarnings = yourTotalEarnings * amount / resolves;
+
+		// Update the payout array so that the "resolve shareholder" cannot claim resolveEarnings on previous staked resolves.
+		payouts[sender] += (int256)(forfeitedEarnings) - (int256)(earningsPerResolve * amount);
+
+		resolveWeight[sender] -= amount;
+		dissolvingResolves -= amount;
+		// The Ether value per token is increased proportionally.
+		earningsPerResolve += forfeitedEarnings / dissolvingResolves;
+
+		resolveToken.transfer( sender, amount );
+		emit PullResolves( sender, amount, forfeitedEarnings / scaleFactor);
+		return forfeitedEarnings / scaleFactor;
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function pullResolves(uint amount) public returns (uint forfeiture){
+		address sender = msg.sender;
+		uint resolves = resolveWeight[ sender ];
+		require(amount <= resolves && amount > 0);
+		require(amount < dissolvingResolves);//"you can't forfeit the last resolve"
+
+		uint yourTotalEarnings = (uint)((int256)(resolves * earningsPerResolve) - payouts[sender]);
+		uint forfeitedEarnings = yourTotalEarnings * amount / resolves;
+
+		// Update the payout array so that the "resolve shareholder" cannot claim resolveEarnings on previous staked resolves.
+		payouts[sender] += (int256)(forfeitedEarnings) - (int256)(earningsPerResolve * amount);
+
+		resolveWeight[sender] -= amount;
+		dissolvingResolves -= amount;
+		// The Ether value per token is increased proportionally.
+		earningsPerResolve += forfeitedEarnings / dissolvingResolves;
+
+		resolveToken.transfer( sender, amount );
+		emit PullResolves( sender, amount, forfeitedEarnings / scaleFactor);
+		return forfeitedEarnings / scaleFactor;
+	}
+Response:
+{"StatementsA": {"resolveWeight[sender] -= amount;":"Updates the resolveWeight state variable for the sender", "dissolvingResolves -= amount;":"Updates the dissolvingResolves state variable", "earningsPerResolve += forfeitedEarnings / dissolvingResolves;":"Updates the earningsPerResolve state variable"}, "StatementsB": {"resolveToken.transfer( sender, amount );":"Executes an external call to transfer tokens"}, "VariableA": {"sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: resolveWeight[sender] -= amount;
+2.External Call: resolveToken.transfer( sender, amount );
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

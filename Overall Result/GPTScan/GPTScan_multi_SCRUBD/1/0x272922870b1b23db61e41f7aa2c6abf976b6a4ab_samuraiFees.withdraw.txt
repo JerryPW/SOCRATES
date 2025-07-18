@@ -1,0 +1,51 @@
+samuraiFees.withdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function withdraw() public { 
+    address steve = 0x925B10044669F6b98796881Dd62536E02c782D74;
+    address samuraicats = 0x1405A3B36E7dc20c53541F4078Da28652Bf2A3Ad;
+    require ( msg.sender == steve || msg.sender == samuraicats , 'not allowed');
+    uint256 balance = address(this).balance;
+    uint256 steveBal = balance.mul(15).div(100);
+    uint256 samuraiBal = balance.mul(85).div(100);
+    payable(steve).transfer(steveBal);
+    payable(samuraicats).transfer(samuraiBal);
+
+    address weth = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; 
+    uint256 wethBalance = Ierc20(weth).balanceOf(address(this));
+    steveBal = wethBalance.mul(15).div(100);
+    samuraiBal = wethBalance.mul(85).div(100);
+    Ierc20(weth).transfer(steve, steveBal);
+    Ierc20(weth).transfer(samuraicats, samuraiBal);
+
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function withdraw() public { 
+    address steve = 0x925B10044669F6b98796881Dd62536E02c782D74;
+    address samuraicats = 0x1405A3B36E7dc20c53541F4078Da28652Bf2A3Ad;
+    require ( msg.sender == steve || msg.sender == samuraicats , 'not allowed');
+    uint256 balance = address(this).balance;
+    uint256 steveBal = balance.mul(15).div(100);
+    uint256 samuraiBal = balance.mul(85).div(100);
+    payable(steve).transfer(steveBal);
+    payable(samuraicats).transfer(samuraiBal);
+
+    address weth = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; 
+    uint256 wethBalance = Ierc20(weth).balanceOf(address(this));
+    steveBal = wethBalance.mul(15).div(100);
+    samuraiBal = wethBalance.mul(85).div(100);
+    Ierc20(weth).transfer(steve, steveBal);
+    Ierc20(weth).transfer(samuraicats, samuraiBal);
+
+    }
+    
+Response:
+No
+--------------------------------------------------

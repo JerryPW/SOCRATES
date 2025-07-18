@@ -1,0 +1,44 @@
+
+Start analyze function: BoomerangLiquidity.payout()
+Function Security Analysis for BoomerangLiquidity.payout()
+    There are no modifiers should be examined in function payout.
+    Check direct function security
+        - function BoomerangLiquidity.payout() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any of the specified structures that check whether msg.sender is equal to a specific owner or address role like xxxOwner,
+          xxxAddress, Leader, or CEO.
+        - function BoomerangLiquidity.payout() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code snippet does not contain a require statement that directly checks if a boolean variable is either True or False, nor does it throw an
+          exception based on a condition involving a boolean variable. The require statement in the code is checking if the balance is greater than 1, which doesn't match
+          any of the specified patterns of checking a boolean variable.
+External Call Analysis
+    Direct external call: ['participants[payoutOrder].etherAddress.send(payoutToSend)', 'flmContract.call.value(investment).gas(1000000)()',
+    'participants[payoutOrder].etherAddress.call.value(payoutToSend).gas(1000000)()']
+    Analyze Transfer
+        - participants[payoutOrder].etherAddress.send(payoutToSend) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains '.send(' keyword, thus it satisfies the characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - The gas limit in flmContract.call.value(investment).gas(1000000)() is 1000000, which is too high. Therefore, it will not prevent REE problem.
+        - The gas limit in participants[payoutOrder].etherAddress.call.value(payoutToSend).gas(1000000)() is 1000000, which is too high. Therefore, it will not prevent
+        REE problem.
+    Remaining external call: ['flmContract.call.value(investment).gas(1000000)()', 'participants[payoutOrder].etherAddress.call.value(payoutToSend).gas(1000000)()']
+    Analyze External Address
+        There are ['flmContract'] should be checked in variable flmContract
+        Checked variables: flmContract
+            Yes The function name 'BoomerangLiquidity' matches the contract name 'BoomerangLiquidity', indicating that this is a constructor. Constructors are executed
+            once when the contract is deployed. Therefore, the external call satisfies the first characteristic.
+        There are ['participants'] should be checked in variable participants
+        Checked variables: participants
+            No The provided smart contract code consists of two functions: 'deposit' and 'payout'. The contract's name is BoomerangLiquidity, but neither of these
+            functions is named BoomerangLiquidity or constructor, so they do not qualify as a constructor. Additionally, neither function contains a hardcoded reference
+            to the state variable 'participants'. The state variable 'participants' is used within the 'deposit' function, but not in a hardcoded way, as it is
+            dynamically updated with the sender address and value. Therefore, the code does not satisfy either characteristic.
+            Function Security Analysis for BoomerangLiquidity.deposit()
+                There are no modifiers should be examined in function deposit.
+                Check direct function security
+                    - function BoomerangLiquidity.deposit() has no security assurance protected by checking the authority of msg.sender
+                      Reason: The code lacks any access control mechanisms related to the caller's address, such as checks involving msg.sender with roles like Owner,
+                      Leader, etc.
+                    - function BoomerangLiquidity.deposit() has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code does not mention any of the defined structures, like 'require', 'if', or setting the same variable first to true and then false, or
+                      vice versa.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,30 @@
+
+Start analyze function: GOOGTokenSale.fallback()
+Function Security Analysis for GOOGTokenSale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function GOOGTokenSale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any condition checking or asserting msg.sender against ownership or address variables like xxxOwner/xxxAddress/Leader/CEO.
+        - function GOOGTokenSale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures that check for a boolean variable, set it to a different boolean value, and
+          optionally reset it. 1. There is no use of 'xxx == True', followed by setting 'xxx = False'. 2. There is no use of 'xxx == False', followed by setting 'xxx =
+          True'. 3. There is no use of '!xxx', followed by setting 'xxx = True'. 4. There is no use of 'if(!xxx) throw', followed by setting 'xxx = true'.  The code
+          primarily deals with checking conditions related to token balance and transferring tokens but lacks the patterns specified in the criteria.
+External Call Analysis
+    Direct external call: ['tokenContract.balanceOf(this)', 'tokenContract.transfer(msg.sender,_numberOfTokens)']
+    Analyze Transfer
+        - tokenContract.transfer(msg.sender,_numberOfTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenContract.balanceOf(this) ISN'T subjected to gas limits.
+        - tokenContract.transfer(msg.sender,_numberOfTokens) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenContract.balanceOf(this)', 'tokenContract.transfer(msg.sender,_numberOfTokens)']
+    Analyze External Address
+        There are ['tokenContract'] should be checked in variable tokenContract
+        Checked variables: tokenContract
+            Yes The function name matches the contract name (GOOGTokenSale), which indicates that it is a constructor in Solidity versions prior to 0.7.0. Therefore,
+            characteristic 1 is satisfied.
+        There are ['tokenContract'] should be checked in variable tokenContract
+        Checked variables: tokenContract
+            Yes The function name 'GOOGTokenSale' matches the contract name 'GOOGTokenSale', indicating that this is a constructor. Constructors are special functions
+            that have the same name as the contract and are used for initializing state variables when the contract is deployed.
+Conclusion: This function will not cause REE Problem.

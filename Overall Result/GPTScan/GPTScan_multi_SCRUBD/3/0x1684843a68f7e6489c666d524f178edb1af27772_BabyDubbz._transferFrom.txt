@@ -1,0 +1,301 @@
+BabyDubbz._transferFrom: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function _transferFrom(address sender, address recipient, uint256 amount) internal returns (bool) {
+    if (inSwap) {
+      return _basicTransfer(sender, recipient, amount);
+    }
+
+   // Avoid lauchpad buyers from ADD LP before launch
+    if (!launched() && recipient == pair && sender == pair) {
+      require(canAddLiquidityBeforeLaunch[sender]);
+    }
+
+    if (!authorizations[sender] && !authorizations[recipient]) {
+      require(launched(), "Trading not open yet");
+    }
+
+   // max wallet code
+    if (
+      !authorizations[sender] &&
+      recipient != address(this) &&
+      recipient != address(DEAD) &&
+      recipient != pair &&
+      recipient != investmentFeeReceiver &&
+      recipient != autoLiquidityReceiver
+    ) {
+      uint256 heldTokens = balanceOf(recipient);
+      require(
+        (heldTokens + amount) <= _maxWallet,
+        "Total Holding is currently limited, you can not buy that much."
+      );
+    }
+
+    checkTxLimit(sender, amount);
+
+    // Set Fees
+    if (sender == pair) {
+      buyFees();
+    }
+    if (recipient == pair) {
+      sellFees();
+    }
+
+    //Exchange tokens
+    if (shouldSwapBack()) {
+      swapBack();
+    }
+
+    if (shouldAutoBuyback()) {
+      triggerAutoBuyback();
+    }
+
+    _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
+
+    uint256 amountReceived = shouldTakeFee(sender) ? takeFee(recipient, amount) : amount;
+
+    _balances[recipient] = _balances[recipient].add(amountReceived);
+
+    // Dividend tracker
+    if (!isDividendExempt[sender]) {
+      try distributor.setShare(sender,  balanceOf(sender)) {} catch {}
+    }
+    if (!isDividendExempt[recipient]) {
+      try distributor.setShare(recipient, balanceOf(recipient)) {} catch {}
+    }
+
+    try distributor.process(distributorGas) {} catch {}
+
+    emit Transfer(sender, recipient, amountReceived);
+    return true;
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function _transferFrom(address sender, address recipient, uint256 amount) internal returns (bool) {
+    if (inSwap) {
+      return _basicTransfer(sender, recipient, amount);
+    }
+
+   // Avoid lauchpad buyers from ADD LP before launch
+    if (!launched() && recipient == pair && sender == pair) {
+      require(canAddLiquidityBeforeLaunch[sender]);
+    }
+
+    if (!authorizations[sender] && !authorizations[recipient]) {
+      require(launched(), "Trading not open yet");
+    }
+
+   // max wallet code
+    if (
+      !authorizations[sender] &&
+      recipient != address(this) &&
+      recipient != address(DEAD) &&
+      recipient != pair &&
+      recipient != investmentFeeReceiver &&
+      recipient != autoLiquidityReceiver
+    ) {
+      uint256 heldTokens = balanceOf(recipient);
+      require(
+        (heldTokens + amount) <= _maxWallet,
+        "Total Holding is currently limited, you can not buy that much."
+      );
+    }
+
+    checkTxLimit(sender, amount);
+
+    // Set Fees
+    if (sender == pair) {
+      buyFees();
+    }
+    if (recipient == pair) {
+      sellFees();
+    }
+
+    //Exchange tokens
+    if (shouldSwapBack()) {
+      swapBack();
+    }
+
+    if (shouldAutoBuyback()) {
+      triggerAutoBuyback();
+    }
+
+    _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
+
+    uint256 amountReceived = shouldTakeFee(sender) ? takeFee(recipient, amount) : amount;
+
+    _balances[recipient] = _balances[recipient].add(amountReceived);
+
+    // Dividend tracker
+    if (!isDividendExempt[sender]) {
+      try distributor.setShare(sender,  balanceOf(sender)) {} catch {}
+    }
+    if (!isDividendExempt[recipient]) {
+      try distributor.setShare(recipient, balanceOf(recipient)) {} catch {}
+    }
+
+    try distributor.process(distributorGas) {} catch {}
+
+    emit Transfer(sender, recipient, amountReceived);
+    return true;
+  }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function _transferFrom(address sender, address recipient, uint256 amount) internal returns (bool) {
+    if (inSwap) {
+      return _basicTransfer(sender, recipient, amount);
+    }
+
+   // Avoid lauchpad buyers from ADD LP before launch
+    if (!launched() && recipient == pair && sender == pair) {
+      require(canAddLiquidityBeforeLaunch[sender]);
+    }
+
+    if (!authorizations[sender] && !authorizations[recipient]) {
+      require(launched(), "Trading not open yet");
+    }
+
+   // max wallet code
+    if (
+      !authorizations[sender] &&
+      recipient != address(this) &&
+      recipient != address(DEAD) &&
+      recipient != pair &&
+      recipient != investmentFeeReceiver &&
+      recipient != autoLiquidityReceiver
+    ) {
+      uint256 heldTokens = balanceOf(recipient);
+      require(
+        (heldTokens + amount) <= _maxWallet,
+        "Total Holding is currently limited, you can not buy that much."
+      );
+    }
+
+    checkTxLimit(sender, amount);
+
+    // Set Fees
+    if (sender == pair) {
+      buyFees();
+    }
+    if (recipient == pair) {
+      sellFees();
+    }
+
+    //Exchange tokens
+    if (shouldSwapBack()) {
+      swapBack();
+    }
+
+    if (shouldAutoBuyback()) {
+      triggerAutoBuyback();
+    }
+
+    _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
+
+    uint256 amountReceived = shouldTakeFee(sender) ? takeFee(recipient, amount) : amount;
+
+    _balances[recipient] = _balances[recipient].add(amountReceived);
+
+    // Dividend tracker
+    if (!isDividendExempt[sender]) {
+      try distributor.setShare(sender,  balanceOf(sender)) {} catch {}
+    }
+    if (!isDividendExempt[recipient]) {
+      try distributor.setShare(recipient, balanceOf(recipient)) {} catch {}
+    }
+
+    try distributor.process(distributorGas) {} catch {}
+
+    emit Transfer(sender, recipient, amountReceived);
+    return true;
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function _transferFrom(address sender, address recipient, uint256 amount) internal returns (bool) {
+    if (inSwap) {
+      return _basicTransfer(sender, recipient, amount);
+    }
+
+   // Avoid lauchpad buyers from ADD LP before launch
+    if (!launched() && recipient == pair && sender == pair) {
+      require(canAddLiquidityBeforeLaunch[sender]);
+    }
+
+    if (!authorizations[sender] && !authorizations[recipient]) {
+      require(launched(), "Trading not open yet");
+    }
+
+   // max wallet code
+    if (
+      !authorizations[sender] &&
+      recipient != address(this) &&
+      recipient != address(DEAD) &&
+      recipient != pair &&
+      recipient != investmentFeeReceiver &&
+      recipient != autoLiquidityReceiver
+    ) {
+      uint256 heldTokens = balanceOf(recipient);
+      require(
+        (heldTokens + amount) <= _maxWallet,
+        "Total Holding is currently limited, you can not buy that much."
+      );
+    }
+
+    checkTxLimit(sender, amount);
+
+    // Set Fees
+    if (sender == pair) {
+      buyFees();
+    }
+    if (recipient == pair) {
+      sellFees();
+    }
+
+    //Exchange tokens
+    if (shouldSwapBack()) {
+      swapBack();
+    }
+
+    if (shouldAutoBuyback()) {
+      triggerAutoBuyback();
+    }
+
+    _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
+
+    uint256 amountReceived = shouldTakeFee(sender) ? takeFee(recipient, amount) : amount;
+
+    _balances[recipient] = _balances[recipient].add(amountReceived);
+
+    // Dividend tracker
+    if (!isDividendExempt[sender]) {
+      try distributor.setShare(sender,  balanceOf(sender)) {} catch {}
+    }
+    if (!isDividendExempt[recipient]) {
+      try distributor.setShare(recipient, balanceOf(recipient)) {} catch {}
+    }
+
+    try distributor.process(distributorGas) {} catch {}
+
+    emit Transfer(sender, recipient, amountReceived);
+    return true;
+  }
+    
+Response:
+No
+--------------------------------------------------

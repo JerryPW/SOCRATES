@@ -1,0 +1,31 @@
+
+Start analyze function: SellERC20BasicTokens.fallback()
+Function Security Analysis for SellERC20BasicTokens.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function SellERC20BasicTokens.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not include any statement checking `msg.sender` against an owner or an address with the required authority. There are mainly
+          checks related to amounts and balances, no specific owner or address check.
+        - function SellERC20BasicTokens.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified structures where a variable (represented here as 'xxx') is asserted with specific boolean values
+          around a conditional statement that checks its value.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(weiAmount-weiExpense.mul(10**decimalDiff))', 'token.transfer(msg.sender,tokenBought)', 'token.balanceOf(address(this))']
+    Analyze Transfer
+        - msg.sender.transfer(weiAmount-weiExpense.mul(10**decimalDiff)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains '.transfer('.. Parameter in 'transfer'/'send': 1.
+        - token.transfer(msg.sender,tokenBought) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(msg.sender,tokenBought) ISN'T subjected to gas limits.
+        - token.balanceOf(address(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(msg.sender,tokenBought)', 'token.balanceOf(address(this))']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes 1. The function in the provided code is explicitly named 'constructor'. This matches one of the characteristics to be checked for: whether the code is a
+            constructor.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function provided in the code is explicitly named 'constructor', satisfying the first characteristic of either being named as the contract's name or
+            as 'constructor'. Therefore, it meets the constructor check criteria.
+Conclusion: This function will not cause REE Problem.

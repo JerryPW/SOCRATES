@@ -1,0 +1,141 @@
+ABIO_BaseICO.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+         function () payable stopOnPause{
+             require(now < deadline);
+             require(msg.value >= minInvestment);
+             uint amount = msg.value;
+             ethBalances[msg.sender] += amount;
+             weiRaised += amount;
+             if(!fundingGoalReached && weiRaised >= fundingGoal){goalReached();}
+
+             uint ABIOAmount = amount / weiPerABIO ;
+             abioToken.transfer(msg.sender, ABIOAmount);
+             abioSold += ABIOAmount;
+             emit FundsReceived(msg.sender, amount);
+         }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+         function () payable stopOnPause{
+             require(now < deadline);
+             require(msg.value >= minInvestment);
+             uint amount = msg.value;
+             ethBalances[msg.sender] += amount;
+             weiRaised += amount;
+             if(!fundingGoalReached && weiRaised >= fundingGoal){goalReached();}
+
+             uint ABIOAmount = amount / weiPerABIO ;
+             abioToken.transfer(msg.sender, ABIOAmount);
+             abioSold += ABIOAmount;
+             emit FundsReceived(msg.sender, amount);
+         }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+         function () payable stopOnPause{
+             require(now < deadline);
+             require(msg.value >= minInvestment);
+             uint amount = msg.value;
+             ethBalances[msg.sender] += amount;
+             weiRaised += amount;
+             if(!fundingGoalReached && weiRaised >= fundingGoal){goalReached();}
+
+             uint ABIOAmount = amount / weiPerABIO ;
+             abioToken.transfer(msg.sender, ABIOAmount);
+             abioSold += ABIOAmount;
+             emit FundsReceived(msg.sender, amount);
+         }
+Response:
+{"StatementsA": {"ethBalances[msg.sender] += amount;":"Updates the ethBalances state variable with the sender's address."}, "StatementsB": {"abioToken.transfer(msg.sender, ABIOAmount);":"Executes an external call to transfer ABIO tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: ethBalances[msg.sender] += amount;
+2.External Call: abioToken.transfer(msg.sender, ABIOAmount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+         function () payable stopOnPause{
+             require(now < deadline);
+             require(msg.value >= minInvestment);
+             uint amount = msg.value;
+             ethBalances[msg.sender] += amount;
+             weiRaised += amount;
+             if(!fundingGoalReached && weiRaised >= fundingGoal){goalReached();}
+
+             uint ABIOAmount = amount / weiPerABIO ;
+             abioToken.transfer(msg.sender, ABIOAmount);
+             abioSold += ABIOAmount;
+             emit FundsReceived(msg.sender, amount);
+         }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+         function () payable stopOnPause{
+             require(now < deadline);
+             require(msg.value >= minInvestment);
+             uint amount = msg.value;
+             ethBalances[msg.sender] += amount;
+             weiRaised += amount;
+             if(!fundingGoalReached && weiRaised >= fundingGoal){goalReached();}
+
+             uint ABIOAmount = amount / weiPerABIO ;
+             abioToken.transfer(msg.sender, ABIOAmount);
+             abioSold += ABIOAmount;
+             emit FundsReceived(msg.sender, amount);
+         }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+         function () payable stopOnPause{
+             require(now < deadline);
+             require(msg.value >= minInvestment);
+             uint amount = msg.value;
+             ethBalances[msg.sender] += amount;
+             weiRaised += amount;
+             if(!fundingGoalReached && weiRaised >= fundingGoal){goalReached();}
+
+             uint ABIOAmount = amount / weiPerABIO ;
+             abioToken.transfer(msg.sender, ABIOAmount);
+             abioSold += ABIOAmount;
+             emit FundsReceived(msg.sender, amount);
+         }
+Response:
+{"StatementsA": {"ethBalances[msg.sender] += amount;":"Updates the ethBalances state variable with the sender's address."}, "StatementsB": {"abioToken.transfer(msg.sender, ABIOAmount);":"Executes an external call to transfer ABIO tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: ethBalances[msg.sender] += amount;
+2.External Call: abioToken.transfer(msg.sender, ABIOAmount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

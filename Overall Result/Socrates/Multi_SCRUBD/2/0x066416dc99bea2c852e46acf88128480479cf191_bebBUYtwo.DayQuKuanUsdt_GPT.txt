@@ -1,0 +1,43 @@
+
+Start analyze function: bebBUYtwo.DayQuKuanUsdt()
+Function Security Analysis for bebBUYtwo.DayQuKuanUsdt()
+    There are no modifiers should be examined in function DayQuKuanUsdt.
+    Check direct function security
+        - function bebBUYtwo.DayQuKuanUsdt() has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the conditions involving 'msg.sender' checking against xxxOwner/xxxAddress/Leader/CEO are present in the function.
+        - function bebBUYtwo.DayQuKuanUsdt() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures with the use of 'require' as specified in the conditions.
+External Call Analysis
+    Direct external call: ['bebTokenTransfer.transfer(msg.sender,_bebs)', 'bebTokenTransfer.transfer(msg.sender,_values)',
+    'bebTokenTransferUSDT.transfer(msg.sender,_eths)', 'bebTokenTransfer.transfer(msg.sender,_bebss)']
+    Analyze Transfer
+        - bebTokenTransfer.transfer(msg.sender,_bebs) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - bebTokenTransfer.transfer(msg.sender,_values) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - bebTokenTransferUSDT.transfer(msg.sender,_eths) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - bebTokenTransfer.transfer(msg.sender,_bebss) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - bebTokenTransfer.transfer(msg.sender,_bebs) ISN'T subjected to gas limits.
+        - bebTokenTransfer.transfer(msg.sender,_values) ISN'T subjected to gas limits.
+        - bebTokenTransferUSDT.transfer(msg.sender,_eths) ISN'T subjected to gas limits.
+        - bebTokenTransfer.transfer(msg.sender,_bebss) ISN'T subjected to gas limits.
+    Remaining external call: ['bebTokenTransfer.transfer(msg.sender,_bebs)', 'bebTokenTransfer.transfer(msg.sender,_values)',
+    'bebTokenTransferUSDT.transfer(msg.sender,_eths)', 'bebTokenTransfer.transfer(msg.sender,_bebss)']
+    Analyze External Address
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes 1. The function name 'bebBUYtwo' matches the contract name 'bebBUYtwo', indicating that it could be a constructor. Since the function is likely serving as
+            a constructor, it satisfies the first characteristic.  2. Additionally, the function has hardcoded the state variable 'bebTokenTransfer' with
+            'tokenTransfer(_tokenAddress)', where '_tokenAddress' is a parameter passed and isn't hardcoded itself. Hence, it doesn't satisfy the second condition.
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes The function name 'bebBUYtwo' matches the contract name 'bebBUYtwo', indicating that it is likely a constructor function. A constructor is one of the
+            characteristics to be checked per instruction 1.
+        There are ['bebTokenTransferUSDT'] should be checked in variable bebTokenTransferUSDT
+        Checked variables: bebTokenTransferUSDT
+            Yes The function name 'bebBUYtwo' matches the contract name indicating that it is likely a constructor. This satisfies the first characteristic of being a
+            constructor function.
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes The function 'bebBUYtwo' matches the contract name 'bebBUYtwo', indicating it is a constructor. Constructors in Solidity can assign initial values to
+            state variables.
+Conclusion: This function will not cause REE Problem.

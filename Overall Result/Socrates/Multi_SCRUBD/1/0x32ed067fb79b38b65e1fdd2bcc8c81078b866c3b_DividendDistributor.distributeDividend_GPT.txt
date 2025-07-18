@@ -1,0 +1,33 @@
+
+Start analyze function: DividendDistributor.distributeDividend(address)
+Function Security Analysis for DividendDistributor.distributeDividend(address)
+    There are no modifiers should be examined in function distributeDividend.
+    Check direct function security
+        - function DividendDistributor.distributeDividend(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function does not contain any of the specified structures. It lacks any condition checking or asserting the value of msg.sender against a
+          specific owner, address, leader, or CEO.
+        - function DividendDistributor.distributeDividend(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures with 'require' or 'if' related to a boolean variable 'xxx' being negated or checked and then
+          assigned a boolean value. It uses a conditional check with 'if' to return early, but this does not qualify under any of the given structural conditions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['claimDividend', 'setShare', 'process']
+        Function Security Analysis for DividendDistributor.claimDividend()
+            There are no modifiers should be examined in function claimDividend.
+            Check direct function security
+                - function DividendDistributor.claimDividend() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function doesn't contain any ownership check or message sender validation against owner, leader, or similar variables.
+                - function DividendDistributor.claimDividend() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not match any of the specified structures. It lacks the 'require' or 'if' statements necessary to satisfy any of the
+                  characteristic structures. Therefore, it does not comply with conditions needed for a 'Yes'.
+External Call Analysis
+    Direct external call: ['BITCOIN.transfer(shareholder,amount)']
+    Analyze Transfer
+        - BITCOIN.transfer(shareholder,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - BITCOIN.transfer(shareholder,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['BITCOIN.transfer(shareholder,amount)']
+    Analyze External Address
+        There are ['BITCOIN'] should be checked in variable BITCOIN
+        Checked variables: BITCOIN
+            State variable BITCOIN has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

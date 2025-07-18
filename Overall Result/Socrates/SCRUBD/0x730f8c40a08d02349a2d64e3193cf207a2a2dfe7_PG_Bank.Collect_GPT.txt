@@ -1,0 +1,21 @@
+
+Start analyze function: PG_Bank.Collect(uint256)
+Function Security Analysis for PG_Bank.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function PG_Bank.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any condition or statement that checks if msg.sender is compared to xxxOwner/xxxAddress/Leader/CEO using 'require', 'if', or
+          'assert' as specified in the characteristics.
+        - function PG_Bank.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require(xxx == True)' or 'require(xxx == False)' statements, nor does it have any '!xxx' usage with a subsequent variable
+          assignment. There is no direct throw statement with a condition like 'if(!xxx) throw' either. The logic is handled with a set of if statements without altering
+          a boolean flag in such a pattern.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

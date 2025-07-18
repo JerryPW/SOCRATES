@@ -1,0 +1,46 @@
+
+Start analyze function: ICO.buyTokens(uint256,uint256)
+Function Security Analysis for ICO.buyTokens(uint256,uint256)
+    There are no modifiers should be examined in function buyTokens.
+    Check direct function security
+        - function ICO.buyTokens(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any code related to checking msg.sender against specific addresses like owner or leader addresses. It primarily handles
+          payment and transaction validation.
+        - function ICO.buyTokens(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code again, the structure 'if(!xxx) throw;' is found:  1. 'if (priceToBuyInFinney <= 0) {throw;}' and  2. 'if (_priceToBuyInFinney <=
+          0) {throw;}' However, these structures do not change any variable to true afterwards.  Therefore, none of the specified structures 1, 2, 3 or 4 are fully
+          matched, as the essential sequence of checking a condition/signalling an error and then setting the variable is not completed in this code.
+External Call Analysis
+    Direct external call: ['erc20TokensContract.transfer(msg.sender,_quantity)', 'erc20TokensContract.balanceOf(this)']
+    Analyze Transfer
+        - erc20TokensContract.transfer(msg.sender,_quantity) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - erc20TokensContract.transfer(msg.sender,_quantity) ISN'T subjected to gas limits.
+        - erc20TokensContract.balanceOf(this) ISN'T subjected to gas limits.
+    Remaining external call: ['erc20TokensContract.transfer(msg.sender,_quantity)', 'erc20TokensContract.balanceOf(this)']
+    Analyze External Address
+        There are ['erc20TokensContract'] should be checked in variable erc20TokensContract
+        Checked variables: erc20TokensContract
+            No The function 'setErc20TokensContract' neither matches the contract name 'ICO' nor is it explicitly named 'constructor'. Therefore, this is not a
+            constructor function.   Moreover, the function does not contain the hardcoded value of the state variable 'erc20TokensContract'. Instead, it assigns the state
+            variable with the value of '_erc20TokensContractAddress' passed as a parameter. Therefore, the function does not hardcode the state variable.  Since the
+            function does not satisfy either of the specified characteristics, the output is 'No'.
+            Function Security Analysis for ICO.setErc20TokensContract(address)
+                There are no modifiers should be examined in function setErc20TokensContract.
+                Check direct function security
+                    - function ICO.setErc20TokensContract(address) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                    REE problem.
+                      Reason: The function contains a check if (msg.sender != owner) throw; which matches the third structure criterion since the variable 'owner' is not
+                      guided by a local variable within the function.
+        There are ['erc20TokensContract'] should be checked in variable erc20TokensContract
+        Checked variables: erc20TokensContract
+            No The function `setErc20TokensContract` does not match the contract name 'ICO' nor is it explicitly named 'constructor'. Therefore, it is not a constructor.
+            Additionally, it does not hardcode the state variable 'erc20TokensContract' as it assigns a value to it at runtime based on an input parameter. Thus, it does
+            not satisfy any of the provided characteristics.
+            Function Security Analysis for ICO.setErc20TokensContract(address)
+                There are no modifiers should be examined in function setErc20TokensContract.
+                Check direct function security
+                    - function ICO.setErc20TokensContract(address) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                    REE problem.
+                      Reason: The code contains the structure 'if (msg.sender != owner) throw;' which matches one of the specified criteria.
+Conclusion: This function will not cause REE Problem.

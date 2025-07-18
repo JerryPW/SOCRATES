@@ -1,0 +1,80 @@
+
+Start analyze function: Crowdsale.buyTokens(address)
+Function Security Analysis for Crowdsale.buyTokens(address)
+    There are no modifiers should be examined in function buyTokens.
+    Check direct function security
+        - function Crowdsale.buyTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any checks or conditions related specifically to msg.sender being an owner, address, leader, or CEO.
+        - function Crowdsale.buyTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any 'require' or 'if' statements involving a variable check followed by an assignment to the same variable, as described in the
+          given structures.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(_diff)']
+    Analyze Transfer
+        - msg.sender.transfer(_diff) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: This call contains the '.transfer('
+        keyword, indicating a transfer of ETH or other native blockchain currency.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Crowdsale._processPurchase(address,uint256)
+Function Security Analysis for Crowdsale._processPurchase(address,uint256)
+    There are no modifiers should be examined in function _processPurchase.
+    Check direct function security
+        - function Crowdsale._processPurchase(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function `_processPurchase` does not contain any conditions or statements that involve checking `msg.sender` against an owner or leader
+          address. It simply calls another function to deliver tokens, so none of the specified structures are present.
+        - function Crowdsale._processPurchase(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided function does not have any require statements or if conditions that match the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyTokens', 'manualSale', 'fallback']
+        Function Security Analysis for Crowdsale.buyTokens(address)
+            There are no modifiers should be examined in function buyTokens.
+            Check direct function security
+                - function Crowdsale.buyTokens(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified structures that check the sender's address.
+                - function Crowdsale.buyTokens(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not contain the specific structure of 'require' or 'if...throw' statements that alter the same boolean variable in the
+                  specified manner. It mainly handles numerical calculations and state updates without these control statements.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Crowdsale._deliverTokens(address,uint256)
+Function Security Analysis for Crowdsale._deliverTokens(address,uint256)
+    There are no modifiers should be examined in function _deliverTokens.
+    Check direct function security
+        - function Crowdsale._deliverTokens(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any msg.sender checks for owner or special address conditions, so none of the four defined structures are present.
+        - function Crowdsale._deliverTokens(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided does not contain any 'require', 'if', or assignment statements for boolean variables, hence it does not satisfy any of the given
+          patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyTokens', 'manualSale', 'fallback', '_processPurchase']
+        Function Security Analysis for Crowdsale.buyTokens(address)
+            There are no modifiers should be examined in function buyTokens.
+            Check direct function security
+                - function Crowdsale.buyTokens(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any of the specified structures that check the msg.sender against an owner, address, leader, or CEO as per the
+                  criteria.
+                - function Crowdsale.buyTokens(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not contain any of the specified structures, such as 'require(xxx == True); xxx = False;', 'require(xxx == False); xxx =
+                  True;', 'require(!xxx); xxx = True;', or 'if(!xxx) throw; xxx = true;'. These involve specific conditional checks followed by assignments, which do not
+                  exist in the function.
+External Call Analysis
+    Direct external call: ['token.safeOwnerTransfer(_beneficiary,_tokenAmount)']
+    Analyze Transfer
+    Analyze Gas
+        - token.safeOwnerTransfer(_beneficiary,_tokenAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['token.safeOwnerTransfer(_beneficiary,_tokenAmount)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes 1. The provided function is named 'constructor', which explicitly indicates it's a constructor in the context of Solidity smart contracts. 2. The function
+            sets the state variable 'token' using an argument '_token', meaning it does not use a hardcoded value for 'token'.
+Conclusion: This function will not cause REE Problem.

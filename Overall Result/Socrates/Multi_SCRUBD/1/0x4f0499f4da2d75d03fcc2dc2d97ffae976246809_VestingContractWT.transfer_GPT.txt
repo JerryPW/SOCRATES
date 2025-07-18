@@ -1,0 +1,30 @@
+
+Start analyze function: VestingContractWT.transfer(address,uint256)
+Function Security Analysis for VestingContractWT.transfer(address,uint256)
+    There are no modifiers should be examined in function transfer.
+    Check direct function security
+        - function VestingContractWT.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any 'require', 'if', or 'assert' statements that involve checking 'msg.sender' against an entity such as 'xxxOwner',
+          'xxxAddress', 'Leader', or 'CEO'.
+        - function VestingContractWT.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code snippet checks certain conditions using a require statement, but does not modify any flagged variable immediately following it, as
+          specified by the defined structures.
+External Call Analysis
+    Direct external call: ['we_token.balanceOf(this)', 'we_token.transfer(to,value)']
+    Analyze Transfer
+        - we_token.transfer(to,value) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - we_token.balanceOf(this) ISN'T subjected to gas limits.
+        - we_token.transfer(to,value) ISN'T subjected to gas limits.
+    Remaining external call: ['we_token.balanceOf(this)', 'we_token.transfer(to,value)']
+    Analyze External Address
+        There are ['we_token'] should be checked in variable we_token
+        Checked variables: we_token
+            Yes The provided function name 'VestingContractWT' matches the contract name 'VestingContractWT', which indicates that this function is a constructor.
+            Constructors are identified by having the same name as the contract in older versions of Solidity (prior to 0.4.22) or by being explicitly named
+            'constructor'.
+        There are ['we_token'] should be checked in variable we_token
+        Checked variables: we_token
+            Yes The function name matches the contract name 'VestingContractWT', indicating it is a constructor for the contract. Constructors have special properties,
+            different from regular functions, such as executing only once at contract deployment.
+Conclusion: This function will not cause REE Problem.

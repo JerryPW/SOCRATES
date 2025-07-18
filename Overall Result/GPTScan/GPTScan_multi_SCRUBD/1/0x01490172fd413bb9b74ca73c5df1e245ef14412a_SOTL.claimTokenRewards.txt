@@ -1,0 +1,53 @@
+SOTL.claimTokenRewards: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function claimTokenRewards(address token) external {
+    require(
+      balanceOf(_msgSender()) > 0,
+      'You must have a balance to claim rewards'
+    );
+    require(
+      IERC20(token).balanceOf(address(this)) > 0,
+      'We must have a token balance to claim rewards'
+    );
+    require(
+      canClaimRewards(_msgSender()),
+      'Must wait claim period before claiming rewards'
+    );
+    _rewardsLastClaim[_msgSender()] = block.timestamp;
+
+    uint256 rewardsSent = calculateTokenRewards(_msgSender(), token);
+    IERC20(token).transfer(_msgSender(), rewardsSent);
+    emit SendTokenRewards(_msgSender(), token, rewardsSent);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function claimTokenRewards(address token) external {
+    require(
+      balanceOf(_msgSender()) > 0,
+      'You must have a balance to claim rewards'
+    );
+    require(
+      IERC20(token).balanceOf(address(this)) > 0,
+      'We must have a token balance to claim rewards'
+    );
+    require(
+      canClaimRewards(_msgSender()),
+      'Must wait claim period before claiming rewards'
+    );
+    _rewardsLastClaim[_msgSender()] = block.timestamp;
+
+    uint256 rewardsSent = calculateTokenRewards(_msgSender(), token);
+    IERC20(token).transfer(_msgSender(), rewardsSent);
+    emit SendTokenRewards(_msgSender(), token, rewardsSent);
+  }
+    
+Response:
+No
+--------------------------------------------------

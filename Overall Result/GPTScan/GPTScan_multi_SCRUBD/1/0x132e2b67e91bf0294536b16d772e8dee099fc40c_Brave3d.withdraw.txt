@@ -1,0 +1,47 @@
+Brave3d.withdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdraw()
+    external
+    hasEarnings
+    {
+
+        uint256 amount = _valueMap[msg.sender];
+        _valueMap[msg.sender] = 0;
+
+        emit BraveWithdraw(msg.sender, amount);
+
+        msg.sender.transfer(amount);
+
+        overStage(1);
+        overStage(5);
+        overStage(10);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdraw()
+    external
+    hasEarnings
+    {
+
+        uint256 amount = _valueMap[msg.sender];
+        _valueMap[msg.sender] = 0;
+
+        emit BraveWithdraw(msg.sender, amount);
+
+        msg.sender.transfer(amount);
+
+        overStage(1);
+        overStage(5);
+        overStage(10);
+    }
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,68 @@
+
+Start analyze function: Brave3d.setName(string)
+Function Security Analysis for Brave3d.setName(string)
+    The modifier of function setName are ['isExistsOfNameAddressMap', 'isExistsOfAddressNameMap']
+    The result of checking modifiers:
+        - modifier isExistsOfNameAddressMap has no relation with controlled by owner.
+          Reason: The modifier `isExistsOfNameAddressMap` checks if an address is zero in the `_nameAddressMap`. It doesn't enforce specific address checks like ownership
+          nor does it involve a lock or reentrancy pattern.
+        - modifier isExistsOfAddressNameMap has no relation with controlled by owner.
+          Reason: The modifier does not enforce that only the owner or specific addresses can execute the function, as it primarily checks if the message sender's address
+          does not exist in the `_addressNameMap` mapping. Additionally, there is no indication of a lock operation to ensure the function enters only once. It only
+          ensures that the address has not been used yet in a mapping. This does not meet any of the specified characteristics for outputting 'Yes'.
+    Check direct function security
+        - function Brave3d.setName(string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any require, assert, or conditional check statements involving msg.sender specifically being compared to an owner or
+          leader address.
+        - function Brave3d.setName(string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require(xxx == True/False)' nor 'if(!xxx) throw' structures with the corresponding statements of 'xxx = False/True'.
+          Instead, it contains mappings and function calls without any conditionals or require statements.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Brave3d.overStage(uint8)
+Function Security Analysis for Brave3d.overStage(uint8)
+    There are no modifiers should be examined in function overStage.
+    Check direct function security
+        - function Brave3d.overStage(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any statements involving 'msg.sender'. Therefore, it does not satisfy any of the specified structures required to output
+          'Yes'.
+        - function Brave3d.overStage(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code again, the assert(!finishStage.isFinish); line only partially matches the structure 3 requirement. However, the corresponding
+          stage does not ensure `finishStage.isFinish` is subsequently set to `True` within the code block where this check occurs. Therefore, it cannot be concluded to
+          fully match one of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyFromValue', 'setName', 'withdraw', 'buyByName', 'buyByAddress', 'forceOverStage']
+        Function Security Analysis for Brave3d.buyFromValue(uint8)
+            There are no modifiers should be examined in function buyFromValue.
+            Check direct function security
+                - function Brave3d.buyFromValue(uint8) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any condition that directly checks if msg.sender is equal to or not equal to xxxOwner/xxxAddress/Leader/CEO as
+                  specified in the provided conditions.
+                - function Brave3d.buyFromValue(uint8) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures. There are no adjacent `require` statements followed by a state change of a boolean
+                  variable that satisfies any of the four cases described.
+External Call Analysis
+    Direct external call: ['p3dContract.myDividends(true)', 'p3dContract.withdraw()', 'p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D))']
+    Analyze Transfer
+    Analyze Gas
+        - p3dContract.myDividends(true) ISN'T subjected to gas limits.
+        - p3dContract.withdraw() ISN'T subjected to gas limits.
+        - p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D)) ISN'T subjected to gas limits.
+    Remaining external call: ['p3dContract.myDividends(true)', 'p3dContract.withdraw()', 'p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D))']
+    Analyze External Address
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,9 @@
+
+Start analyze function: Tokens.refundTokens(address,uint256)
+Function Security Analysis for Tokens.refundTokens(address,uint256)
+    The modifier of function refundTokens are ['notTimeLocked', 'stopInEmergency']
+    The result of checking modifiers:
+        - modifier notTimeLocked is controlled by owner, the function would not cause REE problem.
+          Reason: The code enforces specific addresses (addressSCICO and addressSCEscrow) to execute the function when the condition 'now < timelockEndTime' is true,
+          meeting the characteristic 1's requirement.
+Conclusion: This function will not cause REE Problem.

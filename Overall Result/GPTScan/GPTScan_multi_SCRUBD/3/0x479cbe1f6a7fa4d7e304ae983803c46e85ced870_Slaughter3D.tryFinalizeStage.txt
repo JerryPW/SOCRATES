@@ -1,0 +1,273 @@
+Slaughter3D.tryFinalizeStage: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function tryFinalizeStage()
+        public
+    {
+        assert(numberOfStages >= numberOfFinalizedStages);
+        
+        //there are no stages to finalize
+        if(numberOfStages == numberOfFinalizedStages) {return;}
+        
+        Stage storage stageToFinalize = stages[numberOfFinalizedStages];
+        
+        assert(!stageToFinalize.finalized);
+        
+        //stage is not ready to be finalized
+        if(stageToFinalize.numberOfPlayers < MAX_PLAYERS_PER_STAGE) {return;}
+        
+        assert(stageToFinalize.blocknumber != 0);
+        
+        //check if blockhash can be determined
+        if(block.number - 256 <= stageToFinalize.blocknumber) {
+            //blocknumber of stage can not be equal to current block number -> blockhash() won't work
+            if(block.number == stageToFinalize.blocknumber) {return;}
+                
+            //determine sacrifice
+            uint8 sacrificeSlot = uint8(blockhash(stageToFinalize.blocknumber)) % MAX_PLAYERS_PER_STAGE;
+            uint256 jackpot = uint256(blockhash(stageToFinalize.blocknumber)) % 1000;
+            address sacrifice = stageToFinalize.slotXplayer[sacrificeSlot];
+            Loser[numberOfFinalizedStages] = sacrifice;
+            emit SacrificeChosen(sacrifice);
+            
+            //allocate winnings to survivors
+            allocateSurvivorWinnings(sacrifice);
+            
+            //check jackpot win
+            if(jackpot == 777){
+                sacrifice.transfer(Jackpot);
+                emit JackpotWon ( sacrifice, Jackpot);
+                Jackpot = 0;
+            }
+            
+            
+            //add sacrifice to refund waiting line
+            RefundWaitingLine[NextAtLineEnd] = sacrifice;
+            NextAtLineEnd++;
+            
+            //set eth to MN for buying P3D 
+            ETHtoP3Dbymasternode[stageToFinalize.setMN[1]] = ETHtoP3Dbymasternode[stageToFinalize.setMN[1]].add(0.005 ether);
+            ETHtoP3Dbymasternode[stageToFinalize.setMN[1]] = ETHtoP3Dbymasternode[stageToFinalize.setMN[2]].add(0.005 ether);
+            
+            //add 0.005 ether to Refundpot
+            Refundpot = Refundpot.add(0.005 ether);
+            //purchase p3d (using ref) deprecated
+            //p3dContract.buy.value(p3dPerStage)(address(0x1EB2acB92624DA2e601EEb77e2508b32E49012ef));
+        } else {
+            invalidateStage(numberOfFinalizedStages);
+            
+            emit StageInvalidated(numberOfFinalizedStages);
+        }
+        //finalize stage
+        stageToFinalize.finalized = true;
+        numberOfFinalizedStages++;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function tryFinalizeStage()
+        public
+    {
+        assert(numberOfStages >= numberOfFinalizedStages);
+        
+        //there are no stages to finalize
+        if(numberOfStages == numberOfFinalizedStages) {return;}
+        
+        Stage storage stageToFinalize = stages[numberOfFinalizedStages];
+        
+        assert(!stageToFinalize.finalized);
+        
+        //stage is not ready to be finalized
+        if(stageToFinalize.numberOfPlayers < MAX_PLAYERS_PER_STAGE) {return;}
+        
+        assert(stageToFinalize.blocknumber != 0);
+        
+        //check if blockhash can be determined
+        if(block.number - 256 <= stageToFinalize.blocknumber) {
+            //blocknumber of stage can not be equal to current block number -> blockhash() won't work
+            if(block.number == stageToFinalize.blocknumber) {return;}
+                
+            //determine sacrifice
+            uint8 sacrificeSlot = uint8(blockhash(stageToFinalize.blocknumber)) % MAX_PLAYERS_PER_STAGE;
+            uint256 jackpot = uint256(blockhash(stageToFinalize.blocknumber)) % 1000;
+            address sacrifice = stageToFinalize.slotXplayer[sacrificeSlot];
+            Loser[numberOfFinalizedStages] = sacrifice;
+            emit SacrificeChosen(sacrifice);
+            
+            //allocate winnings to survivors
+            allocateSurvivorWinnings(sacrifice);
+            
+            //check jackpot win
+            if(jackpot == 777){
+                sacrifice.transfer(Jackpot);
+                emit JackpotWon ( sacrifice, Jackpot);
+                Jackpot = 0;
+            }
+            
+            
+            //add sacrifice to refund waiting line
+            RefundWaitingLine[NextAtLineEnd] = sacrifice;
+            NextAtLineEnd++;
+            
+            //set eth to MN for buying P3D 
+            ETHtoP3Dbymasternode[stageToFinalize.setMN[1]] = ETHtoP3Dbymasternode[stageToFinalize.setMN[1]].add(0.005 ether);
+            ETHtoP3Dbymasternode[stageToFinalize.setMN[1]] = ETHtoP3Dbymasternode[stageToFinalize.setMN[2]].add(0.005 ether);
+            
+            //add 0.005 ether to Refundpot
+            Refundpot = Refundpot.add(0.005 ether);
+            //purchase p3d (using ref) deprecated
+            //p3dContract.buy.value(p3dPerStage)(address(0x1EB2acB92624DA2e601EEb77e2508b32E49012ef));
+        } else {
+            invalidateStage(numberOfFinalizedStages);
+            
+            emit StageInvalidated(numberOfFinalizedStages);
+        }
+        //finalize stage
+        stageToFinalize.finalized = true;
+        numberOfFinalizedStages++;
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function tryFinalizeStage()
+        public
+    {
+        assert(numberOfStages >= numberOfFinalizedStages);
+        
+        //there are no stages to finalize
+        if(numberOfStages == numberOfFinalizedStages) {return;}
+        
+        Stage storage stageToFinalize = stages[numberOfFinalizedStages];
+        
+        assert(!stageToFinalize.finalized);
+        
+        //stage is not ready to be finalized
+        if(stageToFinalize.numberOfPlayers < MAX_PLAYERS_PER_STAGE) {return;}
+        
+        assert(stageToFinalize.blocknumber != 0);
+        
+        //check if blockhash can be determined
+        if(block.number - 256 <= stageToFinalize.blocknumber) {
+            //blocknumber of stage can not be equal to current block number -> blockhash() won't work
+            if(block.number == stageToFinalize.blocknumber) {return;}
+                
+            //determine sacrifice
+            uint8 sacrificeSlot = uint8(blockhash(stageToFinalize.blocknumber)) % MAX_PLAYERS_PER_STAGE;
+            uint256 jackpot = uint256(blockhash(stageToFinalize.blocknumber)) % 1000;
+            address sacrifice = stageToFinalize.slotXplayer[sacrificeSlot];
+            Loser[numberOfFinalizedStages] = sacrifice;
+            emit SacrificeChosen(sacrifice);
+            
+            //allocate winnings to survivors
+            allocateSurvivorWinnings(sacrifice);
+            
+            //check jackpot win
+            if(jackpot == 777){
+                sacrifice.transfer(Jackpot);
+                emit JackpotWon ( sacrifice, Jackpot);
+                Jackpot = 0;
+            }
+            
+            
+            //add sacrifice to refund waiting line
+            RefundWaitingLine[NextAtLineEnd] = sacrifice;
+            NextAtLineEnd++;
+            
+            //set eth to MN for buying P3D 
+            ETHtoP3Dbymasternode[stageToFinalize.setMN[1]] = ETHtoP3Dbymasternode[stageToFinalize.setMN[1]].add(0.005 ether);
+            ETHtoP3Dbymasternode[stageToFinalize.setMN[1]] = ETHtoP3Dbymasternode[stageToFinalize.setMN[2]].add(0.005 ether);
+            
+            //add 0.005 ether to Refundpot
+            Refundpot = Refundpot.add(0.005 ether);
+            //purchase p3d (using ref) deprecated
+            //p3dContract.buy.value(p3dPerStage)(address(0x1EB2acB92624DA2e601EEb77e2508b32E49012ef));
+        } else {
+            invalidateStage(numberOfFinalizedStages);
+            
+            emit StageInvalidated(numberOfFinalizedStages);
+        }
+        //finalize stage
+        stageToFinalize.finalized = true;
+        numberOfFinalizedStages++;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function tryFinalizeStage()
+        public
+    {
+        assert(numberOfStages >= numberOfFinalizedStages);
+        
+        //there are no stages to finalize
+        if(numberOfStages == numberOfFinalizedStages) {return;}
+        
+        Stage storage stageToFinalize = stages[numberOfFinalizedStages];
+        
+        assert(!stageToFinalize.finalized);
+        
+        //stage is not ready to be finalized
+        if(stageToFinalize.numberOfPlayers < MAX_PLAYERS_PER_STAGE) {return;}
+        
+        assert(stageToFinalize.blocknumber != 0);
+        
+        //check if blockhash can be determined
+        if(block.number - 256 <= stageToFinalize.blocknumber) {
+            //blocknumber of stage can not be equal to current block number -> blockhash() won't work
+            if(block.number == stageToFinalize.blocknumber) {return;}
+                
+            //determine sacrifice
+            uint8 sacrificeSlot = uint8(blockhash(stageToFinalize.blocknumber)) % MAX_PLAYERS_PER_STAGE;
+            uint256 jackpot = uint256(blockhash(stageToFinalize.blocknumber)) % 1000;
+            address sacrifice = stageToFinalize.slotXplayer[sacrificeSlot];
+            Loser[numberOfFinalizedStages] = sacrifice;
+            emit SacrificeChosen(sacrifice);
+            
+            //allocate winnings to survivors
+            allocateSurvivorWinnings(sacrifice);
+            
+            //check jackpot win
+            if(jackpot == 777){
+                sacrifice.transfer(Jackpot);
+                emit JackpotWon ( sacrifice, Jackpot);
+                Jackpot = 0;
+            }
+            
+            
+            //add sacrifice to refund waiting line
+            RefundWaitingLine[NextAtLineEnd] = sacrifice;
+            NextAtLineEnd++;
+            
+            //set eth to MN for buying P3D 
+            ETHtoP3Dbymasternode[stageToFinalize.setMN[1]] = ETHtoP3Dbymasternode[stageToFinalize.setMN[1]].add(0.005 ether);
+            ETHtoP3Dbymasternode[stageToFinalize.setMN[1]] = ETHtoP3Dbymasternode[stageToFinalize.setMN[2]].add(0.005 ether);
+            
+            //add 0.005 ether to Refundpot
+            Refundpot = Refundpot.add(0.005 ether);
+            //purchase p3d (using ref) deprecated
+            //p3dContract.buy.value(p3dPerStage)(address(0x1EB2acB92624DA2e601EEb77e2508b32E49012ef));
+        } else {
+            invalidateStage(numberOfFinalizedStages);
+            
+            emit StageInvalidated(numberOfFinalizedStages);
+        }
+        //finalize stage
+        stageToFinalize.finalized = true;
+        numberOfFinalizedStages++;
+    }
+    
+Response:
+No
+--------------------------------------------------

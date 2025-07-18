@@ -1,0 +1,59 @@
+
+Start analyze function: Voting.addRaiseTapProposal(string,uint256)
+Function Security Analysis for Voting.addRaiseTapProposal(string,uint256)
+    There are no modifiers should be examined in function addRaiseTapProposal.
+    Check direct function security
+        - function Voting.addRaiseTapProposal(string,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any statement verifying msg.sender against a specific owner, leader, CEO, or address with exclusive rights using
+          `require`, `if`, or `assert`. Therefore, it does not match any of the listed structures.
+        - function Voting.addRaiseTapProposal(string,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: In the provided code, although the structure corresponding to characteristic 3 is present where 'require(!queued[uint(Subject.RaiseTap)])' checks the
+          state and later 'queued[uint(Subject.RaiseTap)] = true;' negates it, this negation does not happen immediately after the 'require' statement. The statement
+          'addProposal' is executed in between, indicating that the match does not immediately perform state negation before executing the main logic of the function.
+          Therefore, it does not fully meet the criteria set forth in the task.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Voting.addProposal(Voting.Subject,string)
+Function Security Analysis for Voting.addProposal(Voting.Subject,string)
+    There are no modifiers should be examined in function addProposal.
+    Check direct function security
+        - function Voting.addProposal(Voting.Subject,string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not utilize any checking of msg.sender against any Owner/Address/Leader/CEO variables or conditions.
+        - function Voting.addProposal(Voting.Subject,string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures of either setting a checked variable to False after requiring it to be True or vice versa, or
+          throwing an exception based on a negated variable before setting it true or false. It only contains require statements checking conditions unrelated to setting
+          variables true or false.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['addRaiseTapProposal', 'addDestructionProposal']
+        Function Security Analysis for Voting.addRaiseTapProposal(string,uint256)
+            There are no modifiers should be examined in function addRaiseTapProposal.
+            Check direct function security
+                - function Voting.addRaiseTapProposal(string,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any conditions or assertions that specifically check whether 'msg.sender' is equal to or not equal to any form of
+                  'xxxOwner', 'xxxAddress', 'Leader', or 'CEO'.
+                - function Voting.addRaiseTapProposal(string,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: In the provided code, the first matched portion is 'require(!queued[uint(Subject.RaiseTap)]);', and the subsequent line that negates the state
+                  is 'queued[uint(Subject.RaiseTap)] = true;'. However, between these two actions, significant logic is executed ('uint256 newID =
+                  addProposal(Subject.RaiseTap, _reason);'), which is the main functionality of the function. The negation operation should occur immediately after the
+                  state check, but here, it's performed after the main logic, which does not meet the revised negation requirement.
+External Call Analysis
+    Direct external call: ['DaicoPool(poolAddr).isStateProjectInProgress()', 'poolAddr.transfer(msg.value)']
+    Analyze Transfer
+        - poolAddr.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'poolAddr.transfer(msg.value)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - DaicoPool(poolAddr).isStateProjectInProgress() ISN'T subjected to gas limits.
+    Remaining external call: ['DaicoPool(poolAddr).isStateProjectInProgress()']
+    Analyze External Address
+        There are ['poolAddr'] should be checked in variable poolAddr
+        Checked variables: poolAddr
+            Yes 1. The function in the provided code is named 'constructor', which matches one of the characteristics we are to check (whether the code is a constructor).
+            Therefore, it satisfies the first rule. 2. The state variable 'poolAddr' is not hardcoded; it is set using a parameter '_poolAddr'. Therefore, the second
+            characteristic does not apply here.
+Conclusion: This function will not cause REE Problem.

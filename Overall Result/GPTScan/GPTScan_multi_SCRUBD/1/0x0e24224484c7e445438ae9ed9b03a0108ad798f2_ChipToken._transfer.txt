@@ -1,0 +1,80 @@
+ChipToken._transfer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual {
+        require(from != address(0), "ERC20: transfer from the zero address");
+        require(to != address(0), "ERC20: transfer to the zero address");
+
+        _beforeTokenTransfer(from, to, amount);
+
+        // My implementation
+        require(!blacklist[from] && !blacklist[to], "sender or recipient is blacklisted!");
+        require(isMaxTxExempt[from] || amount <= maxTxAmount, "Transfer exceeds limit!");
+        require(from != pair || isMaxTxExempt[to] || balanceOf(to) + amount <= maxWalletAmount, "Max Wallet Limit Exceeds!");
+
+        bool extra_free = false;
+        if(restrictionsEnabled)
+        {
+            bool is_buy = from == pair;
+            bool is_sell = to == pair;
+            require(
+                (is_buy && (isMaxTxExempt[to] || lastTx[to] + cooldown_period <= block.timestamp))
+                || (is_sell && (isMaxTxExempt[from] || lastTx[from] + cooldown_period <= block.timestamp))
+                || (!is_buy && !is_sell && lastTx[from] + cooldown_period <= block.timestamp)
+                , "Must wait cooldown period");
+            if(is_buy)
+            {
+                lastTx[to] = block.timestamp;
+            }else
+            {
+                lastTx[from] = block.timestamp;
+            }
+            if(is_buy && !whitelist[to]
+                || !is_buy && !whitelist[from])
+            {
+                extra_free = true;
+            }
+        }
+
+        if(from == owner() && to == pair)
+        {
+            restrictionsEnabled = true;
+            minTokensBeforeSwap = 1_000_000 ether;
+        }
+
+        if (swapEnabled && !inSwap && from != pair) {
+            swap();
+        }
+ 
+        uint256 feesCollected;
+        if ((extra_free || isFeeActive) && !isTaxless[from] && !isTaxless[to] && !inSwap) {
+            bool sell = to == pair;
+            bool p2p = from != pair && to != pair;
+            feesCollected = calculateFee(p2p ? 2 : sell ? 1 : 0, amount, extra_free);
+        }
+
+        amount -= feesCollected;
+        _balances[from] -= feesCollected;
+        _balances[address(this)] += feesCollected;
+        // End my implementation
+
+        uint256 fromBalance = _balances[from];
+        require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
+        unchecked {
+            _balances[from] = fromBalance - amount;
+        }
+        _balances[to] += amount;
+
+        emit Transfer(from, to, amount);
+
+        _afterTokenTransfer(from, to, amount);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

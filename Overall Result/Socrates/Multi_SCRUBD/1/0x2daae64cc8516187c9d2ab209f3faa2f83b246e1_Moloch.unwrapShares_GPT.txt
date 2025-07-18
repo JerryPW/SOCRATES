@@ -1,0 +1,10 @@
+
+Start analyze function: Moloch.unwrapShares(uint256)
+Function Security Analysis for Moloch.unwrapShares(uint256)
+    The modifier of function unwrapShares are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The provided code defines a modifier named nonReentrant, which explicitly checks a status flag (_status != _ENTERED) and sets _status to _ENTERED. Then,
+          after executing the function code with _;, it resets _status to _NOT_ENTERED. This full cycle (lock and unlock) demonstrates the use of a lock mechanism to
+          prevent reentrancy.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,125 @@
+NEKOLAND.swapAndLiquify: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
+        uint256 liquidityTokenShare = contractTokenBalance.mul(_liquidityFee).div(_liquidityFee.add(_marketingFee).add(_devFee));
+        uint256 marketingTokenShare = contractTokenBalance.mul(_marketingFee).div(_liquidityFee.add(_marketingFee).add(_devFee));
+        uint256 teamTokenShare = contractTokenBalance.sub((liquidityTokenShare).add(marketingTokenShare));
+        
+        // split the liquidity balance into halves
+        uint256 half = liquidityTokenShare.div(2);
+        uint256 otherHalf = liquidityTokenShare.sub(half);
+
+        // capture the contract's current ETH balance.
+        // this is so that we can capture exactly the amount of ETH that the
+        // swap creates, and not make the liquidity event include any ETH that
+        // has been manually sent to the contract
+        uint256 initialBalance = address(this).balance;
+
+        // swap tokens for ETH
+        swapTokensForEth(half); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
+
+        // how much ETH did we just swap into?
+        uint256 newBalance = address(this).balance.sub(initialBalance);
+
+        // add liquidity to uniswap
+        addLiquidity(otherHalf, newBalance);
+        
+        swapTokensForWallets(marketingTokenShare, marketingWallet);
+        swapTokensForWallets(teamTokenShare, devWallet);
+        
+        
+        
+        emit SwapAndLiquify(half, newBalance, otherHalf);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
+        uint256 liquidityTokenShare = contractTokenBalance.mul(_liquidityFee).div(_liquidityFee.add(_marketingFee).add(_devFee));
+        uint256 marketingTokenShare = contractTokenBalance.mul(_marketingFee).div(_liquidityFee.add(_marketingFee).add(_devFee));
+        uint256 teamTokenShare = contractTokenBalance.sub((liquidityTokenShare).add(marketingTokenShare));
+        
+        // split the liquidity balance into halves
+        uint256 half = liquidityTokenShare.div(2);
+        uint256 otherHalf = liquidityTokenShare.sub(half);
+
+        // capture the contract's current ETH balance.
+        // this is so that we can capture exactly the amount of ETH that the
+        // swap creates, and not make the liquidity event include any ETH that
+        // has been manually sent to the contract
+        uint256 initialBalance = address(this).balance;
+
+        // swap tokens for ETH
+        swapTokensForEth(half); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
+
+        // how much ETH did we just swap into?
+        uint256 newBalance = address(this).balance.sub(initialBalance);
+
+        // add liquidity to uniswap
+        addLiquidity(otherHalf, newBalance);
+        
+        swapTokensForWallets(marketingTokenShare, marketingWallet);
+        swapTokensForWallets(teamTokenShare, devWallet);
+        
+        
+        
+        emit SwapAndLiquify(half, newBalance, otherHalf);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
+        uint256 liquidityTokenShare = contractTokenBalance.mul(_liquidityFee).div(_liquidityFee.add(_marketingFee).add(_devFee));
+        uint256 marketingTokenShare = contractTokenBalance.mul(_marketingFee).div(_liquidityFee.add(_marketingFee).add(_devFee));
+        uint256 teamTokenShare = contractTokenBalance.sub((liquidityTokenShare).add(marketingTokenShare));
+        
+        // split the liquidity balance into halves
+        uint256 half = liquidityTokenShare.div(2);
+        uint256 otherHalf = liquidityTokenShare.sub(half);
+
+        // capture the contract's current ETH balance.
+        // this is so that we can capture exactly the amount of ETH that the
+        // swap creates, and not make the liquidity event include any ETH that
+        // has been manually sent to the contract
+        uint256 initialBalance = address(this).balance;
+
+        // swap tokens for ETH
+        swapTokensForEth(half); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
+
+        // how much ETH did we just swap into?
+        uint256 newBalance = address(this).balance.sub(initialBalance);
+
+        // add liquidity to uniswap
+        addLiquidity(otherHalf, newBalance);
+        
+        swapTokensForWallets(marketingTokenShare, marketingWallet);
+        swapTokensForWallets(teamTokenShare, devWallet);
+        
+        
+        
+        emit SwapAndLiquify(half, newBalance, otherHalf);
+    }
+Response:
+{"StatementsA": {"emit SwapAndLiquify(half, newBalance, otherHalf);":"Emits an event, which is a form of state update."}, "StatementsB": {"swapTokensForEth(half);":"Executes an external call to swap tokens for ETH."}, "VariableA": {"marketingWallet": "Holds the sender's address for the external call in swapTokensForWallets."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: emit SwapAndLiquify(half, newBalance, otherHalf);
+2.External Call: swapTokensForEth(half);
+3.Variable A: marketingWallet
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

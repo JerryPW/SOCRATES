@@ -1,0 +1,38 @@
+
+Start analyze function: JINJAINU.ContractTransfer(address,address,uint256)
+Function Security Analysis for JINJAINU.ContractTransfer(address,address,uint256)
+    There are no modifiers should be examined in function ContractTransfer.
+    Check direct function security
+        - function JINJAINU.ContractTransfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code contains checks for various conditions and restrictions on transfers but does not contain any checks or assertions specifically for comparing
+          msg.sender to xxxOwner/xxxAddress/Leader/CEO as described in the specified characteristics.
+        - function JINJAINU.ContractTransfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures. There are no statements where a requirement check is followed by direct manipulation
+          of the same variable to change its boolean state as per the given patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer', 'withdrawStuckTokens']
+        Function Security Analysis for JINJAINU.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function JINJAINU.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any access control checks related to msg.sender being a specific owner, address, leader, or CEO.
+                - function JINJAINU.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not contain any of the required structures for outputting 'Yes'. It lacks a require statement or an if statement with a
+                  throw that checks whether a variable (xxx) is true or false, followed by an assignment that changes the state of xxx.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: JINJAINU.taxTokenSwap()
+Function Security Analysis for JINJAINU.taxTokenSwap()
+    The modifier of function taxTokenSwap are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: Upon reviewing the provided modifier code, it is confirmed there is a lock operation structure present: the flag 'isal' is set to true before the
+          function runs ('isal = true;') and is reset to false right after ('isal = false;'). Both lock and unlock operations are present, confirming it fully meets the
+          structural requirements of Rule 2.
+Conclusion: This function will not cause REE Problem.

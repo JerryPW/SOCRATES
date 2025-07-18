@@ -1,0 +1,129 @@
+BlackErc20.mintProof: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function mintProof(uint256 mintCount,address receiveAds,bytes32[] memory proof) public  payable {
+        require(!isContract(msg.sender),"not supper contract mint");
+        require(mintCount > 0, "Invalid mint count");
+        require(mintCount <= _maxMintPerAddress, "Exceeded maximum mint count per address");
+        require(msg.value >= mintCount*_mintPrice, "illegal price");
+        require(_mintCounts[msg.sender]+mintCount <= _maxMintPerAddress, "over limit");
+        receiveAds = msg.sender;
+
+        if(isZero(wlRoot)){
+            require(block.timestamp >= mintStartTime, "Minting has not started yet");
+            require(block.timestamp <= mintEndTime, "Minting has ended");
+        }else {
+            if (block.timestamp<wlMintedEndTime){
+                require(wlMintedCounts+mintCount<=wlMintCounts,"over limit");
+                bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+                require(MerkleProof.verify(proof, wlRoot, leaf),"Not In Wl");
+                wlMintedCounts += mintCount;
+            }
+        }
+
+        if (block.timestamp<wlMintedEndTime){
+            require(_mintedCounts-wlMintedCounts+mintCount <= (_maxMintCount - wlMintedCounts), "illegal mintAmount");
+        }
+
+        IWETH(wethAddress).deposit{value: msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}();
+        IWETH(wethAddress).approve(lpContract, msg.value*(1000-deployReserveEthPro-donateEthPro)/1000);
+        IWETH(wethAddress).transferFrom(address(this), lpContract, msg.value*(1000-deployReserveEthPro-donateEthPro)/1000); 
+
+        uint256 mintAmount = (totalSupply() * _maxPro * mintCount) / (_maxMintCount * 2000000);
+
+        for (uint256 i = 0; i < contractAuths.length; i++) {
+            if (contractAuths[i].contractType == ContractType.ERC721) {
+                if(validateNftNumber==1){
+                    IERC721Enumerable eRC721Enumerable = IERC721Enumerable(contractAuths[i].contractAddress);
+                    uint256 tokenId = eRC721Enumerable.tokenOfOwnerByIndex(msg.sender, 0);
+                    require(!tokenExists[tokenId],"had used!");
+                    tokenExists[tokenId] = true;
+                }
+                uint256 tokenCount = getERC721TokenCount(contractAuths[i].contractAddress);
+                require(tokenCount >= contractAuths[i].tokenCount, "Insufficient ERC721 tokens");
+            } else if (contractAuths[i].contractType == ContractType.ERC20) {
+                uint256 tokenCount = getERC20TokenCount(contractAuths[i].contractAddress);
+                require(tokenCount >= contractAuths[i].tokenCount, "Insufficient ERC20 tokens");
+            } else if (contractAuths[i].contractType == ContractType.ERC1155) {
+                uint256 tokenCount = getERC1155TokenCount(contractAuths[i].contractAddress, 0);
+                require(tokenCount >= contractAuths[i].tokenCount, "Insufficient ERC1155 tokens");
+            }
+        }
+
+        // Transfer minted tokens from contract to the sender and blackAddress
+        _transfer(address(this), receiveAds, mintAmount);
+        _transfer(address(this), lpContract, mintAmount);
+        IUniswapV2Pair(lpContract).sync();
+
+        _mintCounts[msg.sender] += mintCount;
+        _mintedCounts += mintCount;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function mintProof(uint256 mintCount,address receiveAds,bytes32[] memory proof) public  payable {
+        require(!isContract(msg.sender),"not supper contract mint");
+        require(mintCount > 0, "Invalid mint count");
+        require(mintCount <= _maxMintPerAddress, "Exceeded maximum mint count per address");
+        require(msg.value >= mintCount*_mintPrice, "illegal price");
+        require(_mintCounts[msg.sender]+mintCount <= _maxMintPerAddress, "over limit");
+        receiveAds = msg.sender;
+
+        if(isZero(wlRoot)){
+            require(block.timestamp >= mintStartTime, "Minting has not started yet");
+            require(block.timestamp <= mintEndTime, "Minting has ended");
+        }else {
+            if (block.timestamp<wlMintedEndTime){
+                require(wlMintedCounts+mintCount<=wlMintCounts,"over limit");
+                bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+                require(MerkleProof.verify(proof, wlRoot, leaf),"Not In Wl");
+                wlMintedCounts += mintCount;
+            }
+        }
+
+        if (block.timestamp<wlMintedEndTime){
+            require(_mintedCounts-wlMintedCounts+mintCount <= (_maxMintCount - wlMintedCounts), "illegal mintAmount");
+        }
+
+        IWETH(wethAddress).deposit{value: msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}();
+        IWETH(wethAddress).approve(lpContract, msg.value*(1000-deployReserveEthPro-donateEthPro)/1000);
+        IWETH(wethAddress).transferFrom(address(this), lpContract, msg.value*(1000-deployReserveEthPro-donateEthPro)/1000); 
+
+        uint256 mintAmount = (totalSupply() * _maxPro * mintCount) / (_maxMintCount * 2000000);
+
+        for (uint256 i = 0; i < contractAuths.length; i++) {
+            if (contractAuths[i].contractType == ContractType.ERC721) {
+                if(validateNftNumber==1){
+                    IERC721Enumerable eRC721Enumerable = IERC721Enumerable(contractAuths[i].contractAddress);
+                    uint256 tokenId = eRC721Enumerable.tokenOfOwnerByIndex(msg.sender, 0);
+                    require(!tokenExists[tokenId],"had used!");
+                    tokenExists[tokenId] = true;
+                }
+                uint256 tokenCount = getERC721TokenCount(contractAuths[i].contractAddress);
+                require(tokenCount >= contractAuths[i].tokenCount, "Insufficient ERC721 tokens");
+            } else if (contractAuths[i].contractType == ContractType.ERC20) {
+                uint256 tokenCount = getERC20TokenCount(contractAuths[i].contractAddress);
+                require(tokenCount >= contractAuths[i].tokenCount, "Insufficient ERC20 tokens");
+            } else if (contractAuths[i].contractType == ContractType.ERC1155) {
+                uint256 tokenCount = getERC1155TokenCount(contractAuths[i].contractAddress, 0);
+                require(tokenCount >= contractAuths[i].tokenCount, "Insufficient ERC1155 tokens");
+            }
+        }
+
+        // Transfer minted tokens from contract to the sender and blackAddress
+        _transfer(address(this), receiveAds, mintAmount);
+        _transfer(address(this), lpContract, mintAmount);
+        IUniswapV2Pair(lpContract).sync();
+
+        _mintCounts[msg.sender] += mintCount;
+        _mintedCounts += mintCount;
+    }
+    
+Response:
+No
+--------------------------------------------------

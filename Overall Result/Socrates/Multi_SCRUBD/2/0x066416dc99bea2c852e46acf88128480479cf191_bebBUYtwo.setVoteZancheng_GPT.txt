@@ -1,0 +1,63 @@
+
+Start analyze function: bebBUYtwo.setVoteZancheng()
+Function Security Analysis for bebBUYtwo.setVoteZancheng()
+    There are no modifiers should be examined in function setVoteZancheng.
+    Check direct function security
+        - function bebBUYtwo.setVoteZancheng() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks on msg.sender against an owner, leader, or similar authority roles. It uses msg.sender for other checks, but
+          they do not fall into the predefined categories of checking msg.sender equivalency to authority roles or throwing/asserting conditions.
+        - function bebBUYtwo.setVoteZancheng() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The negation operation on '_user.vote' (changing from false to true) is not immediately performed after the 'require(!_user.vote)' check. There is some
+          intervening logic before '_user.vote=true;' is executed, indicating the main logic of the function executes before this state change. Therefore, it does not
+          satisfy the given restructure requirements related to immediate negation before main logic execution.
+External Call Analysis
+    Direct external call: ['bebTokenTransferBET.transferFrom(msg.sender,address(this),_value)', 'shenqingzhichu.transfer(shenqingAmount)',
+    'bebTokenTransfer.transfer(shenqingzhichu,shenqingAmount)', 'bebTokenTransferUSDT.transfer(shenqingzhichu,shenqingAmount)']
+    Analyze Transfer
+        - shenqingzhichu.transfer(shenqingAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call is
+        'shenqingzhichu.transfer(shenqingAmount)'. This contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - bebTokenTransfer.transfer(shenqingzhichu,shenqingAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - bebTokenTransferUSDT.transfer(shenqingzhichu,shenqingAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - bebTokenTransferBET.transferFrom(msg.sender,address(this),_value) ISN'T subjected to gas limits.
+        - bebTokenTransfer.transfer(shenqingzhichu,shenqingAmount) ISN'T subjected to gas limits.
+        - bebTokenTransferUSDT.transfer(shenqingzhichu,shenqingAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['bebTokenTransferBET.transferFrom(msg.sender,address(this),_value)', 'bebTokenTransfer.transfer(shenqingzhichu,shenqingAmount)',
+    'bebTokenTransferUSDT.transfer(shenqingzhichu,shenqingAmount)']
+    Analyze External Address
+        There are ['bebTokenTransferBET'] should be checked in variable bebTokenTransferBET
+        Checked variables: bebTokenTransferBET
+            Yes The function 'bebBUYtwo' is not a constructor because its name does not match the contract name 'bebBUYtwo', nor is it named 'constructor'. However, the
+            external call does hardcode the state variable 'bebTokenTransferBET' as it assigns it a value using a function call with explicitly provided parameters within
+            the function body.
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes The external call function code provided is for a function named 'bebBUYtwo', which matches the contract name 'bebBUYtwo', indicating it is likely a
+            constructor.
+        There are ['bebTokenTransferUSDT'] should be checked in variable bebTokenTransferUSDT
+        Checked variables: bebTokenTransferUSDT
+            Yes The function name 'bebBUYtwo' matches the contract name 'bebBUYtwo', which indicates that it is a constructor function for the contract. However, the
+            state variable 'bebTokenTransferUSDT' is not hardcoded within the function as it is assigned a value from an external call 'tokenTransferUSDT(_usdtadderss)',
+            rather than a hardcoded value.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: bebBUYtwo.getTokenBalanceBET(address)
+Function Security Analysis for bebBUYtwo.getTokenBalanceBET(address)
+    There are no modifiers should be examined in function getTokenBalanceBET.
+    Check direct function security
+        - function bebBUYtwo.getTokenBalanceBET(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check any conditions on msg.sender and does not match any of the required structures.
+        - function bebBUYtwo.getTokenBalanceBET(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not exhibit any of the specified structures relating to checking or assigning boolean variables as mentioned in the task.
+External Call Analysis
+    Direct external call: ['bebTokenTransferBET.balanceOf(_addr)']
+    Analyze Transfer
+    Analyze Gas
+        - bebTokenTransferBET.balanceOf(_addr) ISN'T subjected to gas limits.
+    Remaining external call: ['bebTokenTransferBET.balanceOf(_addr)']
+    Analyze External Address
+        There are ['bebTokenTransferBET'] should be checked in variable bebTokenTransferBET
+        Checked variables: bebTokenTransferBET
+            Yes The function 'bebBUYtwo' does not match the contract name 'bebBUYtwo' and is not explicitly named 'constructor', fulfilling the first condition.
+            Furthermore, inside the function, the state variable 'bebTokenTransferBET' is hardcoded with the value from '_BETadderss', satisfying the second condition.
+Conclusion: This function will not cause REE Problem.

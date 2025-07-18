@@ -1,0 +1,23 @@
+
+Start analyze function: Sargasso.addContractTokens(uint256)
+Function Security Analysis for Sargasso.addContractTokens(uint256)
+    There are no modifiers should be examined in function addContractTokens.
+    Check direct function security
+        - function Sargasso.addContractTokens(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any explicit conditions checking msg.sender against specific Owner/Address/Leader/CEO variables or roles.
+        - function Sargasso.addContractTokens(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures such as 'require(xxx == True)', 'require(xxx == False)', 'require(!xxx)', or 'if(!xxx) throw'.
+          It simply defines a function for transferring tokens and updating a contract balance without incorporating a require statement or conditional throw statement
+          anywhere.
+External Call Analysis
+    Direct external call: ['buccTransfer.transferFrom(msg.sender,address(this),amount)']
+    Analyze Transfer
+    Analyze Gas
+        - buccTransfer.transferFrom(msg.sender,address(this),amount) ISN'T subjected to gas limits.
+    Remaining external call: ['buccTransfer.transferFrom(msg.sender,address(this),amount)']
+    Analyze External Address
+        There are ['v2Address'] should be checked in variable buccTransfer
+        Checked variables: v2Address
+            Yes The provided code includes a constructor function which matches the first characteristic. It is explicitly named 'constructor'. The function also utilizes
+            the input parameter '_v2Address' to set the state variable 'v2Address', but it is not hardcoded based on the literal presence in the provided code.
+Conclusion: This function will not cause REE Problem.

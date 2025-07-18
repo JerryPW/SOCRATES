@@ -1,0 +1,29 @@
+
+Start analyze function: CompliantCrowdsaleHardcap._approveMint(uint256)
+Function Security Analysis for CompliantCrowdsaleHardcap._approveMint(uint256)
+    The modifier of function _approveMint are ['checkIsInvestorApproved']
+    The result of checking modifiers:
+        - modifier checkIsInvestorApproved has no relation with controlled by owner.
+          Reason: The modifier checks whether an account is approved by calling a function from another contract, but it does not enforce control based on specific
+          ownership or lock mechanism. It does not match any of the provided rules.
+    Check direct function security
+        - function CompliantCrowdsaleHardcap._approveMint(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not use msg.sender in any require, if, or assert statements with the specified structures.
+        - function CompliantCrowdsaleHardcap._approveMint(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures with 'require' or 'if'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['approveMint', 'bulkApproveMints']
+        Function Security Analysis for CompliantCrowdsaleHardcap.approveMint(uint256)
+            The modifier of function approveMint are ['onlyValidator']
+            The result of checking modifiers:
+                - modifier onlyValidator is controlled by owner, the function would not cause REE problem.
+                  Reason: The code uses 'require(msg.sender == validator);' which is a check to ensure that the function is only executable by the 'validator' address.
+                  This directly satisfies characteristic 1, as it enforces execution control by an owner-like address.
+        Function Security Analysis for CompliantCrowdsaleHardcap.bulkApproveMints(uint256[])
+            The modifier of function bulkApproveMints are ['onlyValidator']
+            The result of checking modifiers:
+                - modifier onlyValidator is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier code `require(msg.sender == validator);` enforces that only the `validator` address can execute the function. This matches the
+                  first characteristic where only the owner or specific addresses are allowed to execute, specifically it uses `require(msg.sender ==
+                  xxxOwner/xxxAddress/Leader/CEO)` format.
+Conclusion: This function will not cause REE Problem.

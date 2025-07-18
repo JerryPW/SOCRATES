@@ -1,0 +1,39 @@
+MessierAnonymity.sendRewardtoPool: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function sendRewardtoPool() private {
+    for(uint256 i; i < 4; i ++) {
+      curPoolIndex ++;
+      curPoolIndex = curPoolIndex == 4 ? 0 : curPoolIndex;
+      if( rewardAmounts[curPoolIndex] > 0 ) {
+        M87Token.transfer( poolList[curPoolIndex], rewardAmounts[curPoolIndex] );
+        rewardAmounts[curPoolIndex] = 0;
+        return;
+      }
+    }
+  }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function sendRewardtoPool() private {
+    for(uint256 i; i < 4; i ++) {
+      curPoolIndex ++;
+      curPoolIndex = curPoolIndex == 4 ? 0 : curPoolIndex;
+      if( rewardAmounts[curPoolIndex] > 0 ) {
+        M87Token.transfer( poolList[curPoolIndex], rewardAmounts[curPoolIndex] );
+        rewardAmounts[curPoolIndex] = 0;
+        return;
+      }
+    }
+  }
+Response:
+{
+  "1": "No"
+}
+--------------------------------------------------

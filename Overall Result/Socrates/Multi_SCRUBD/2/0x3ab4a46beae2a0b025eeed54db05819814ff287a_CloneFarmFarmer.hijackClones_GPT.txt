@@ -1,0 +1,19 @@
+
+Start analyze function: CloneFarmFarmer.hijackClones()
+Function Security Analysis for CloneFarmFarmer.hijackClones()
+    There are no modifiers should be examined in function hijackClones.
+    Check direct function security
+        - function CloneFarmFarmer.hijackClones() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any access control checks based on the identity of msg.sender related to owners, addresses, leaders, or CEOs.
+        - function CloneFarmFarmer.hijackClones() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the statement 'require(initialized);', which is equivalent to 'require(xxx == True);'. However, there is no subsequent assignment to
+          'initialized'. Therefore, it does not exactly match any structure with both required statements.
+External Call Analysis
+    Direct external call: ['currentNorsefire.send(msg.value)']
+    Analyze Transfer
+        - currentNorsefire.send(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword, satisfying the specified characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,26 @@
+
+Start analyze function: ABIO_BaseICO.fallback()
+Function Security Analysis for ABIO_BaseICO.fallback()
+    The modifier of function fallback are ['stopOnPause']
+    The result of checking modifiers:
+        - modifier stopOnPause has no relation with controlled by owner.
+          Reason: The modifier only checks if the 'paused' variable is false and does not impose owner or specific address restrictions, nor does it implement a lock
+          operation or reflect in its name.
+    Check direct function security
+        - function ABIO_BaseICO.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any checks involving msg.sender against an owner, address, leader or CEO.
+        - function ABIO_BaseICO.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures involving a variable being checked using require with a specific boolean condition and then being
+          negated afterwards within the function.
+External Call Analysis
+    Direct external call: ['abioToken.transfer(msg.sender,ABIOAmount)']
+    Analyze Transfer
+        - abioToken.transfer(msg.sender,ABIOAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - abioToken.transfer(msg.sender,ABIOAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['abioToken.transfer(msg.sender,ABIOAmount)']
+    Analyze External Address
+        There are ['abioToken'] should be checked in variable abioToken
+        Checked variables: abioToken
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

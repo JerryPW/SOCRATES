@@ -1,0 +1,34 @@
+
+Start analyze function: EthTokenToSmthSwaps.withdraw(bytes32,address)
+Function Security Analysis for EthTokenToSmthSwaps.withdraw(bytes32,address)
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function EthTokenToSmthSwaps.withdraw(bytes32,address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not include any of the specified structures such as require, if, or assert statements involving msg.sender with a specified
+          address or role.
+        - function EthTokenToSmthSwaps.withdraw(bytes32,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures with a 'require' statement that toggles the boolean value of the same variable before and
+          after. It is focused on checking conditions and updating the swap status, but without the toggle behavior on a binary variable.
+External Call Analysis
+    Direct external call: ['ERC20(swap.token).transfer(swap.targetWallet,swap.balance)']
+    Analyze Transfer
+        - ERC20(swap.token).transfer(swap.targetWallet,swap.balance) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - ERC20(swap.token).transfer(swap.targetWallet,swap.balance) ISN'T subjected to gas limits.
+    Remaining external call: ['ERC20(swap.token).transfer(swap.targetWallet,swap.balance)']
+    Analyze External Address
+        There are ['swaps'] should be checked in variable swap
+        Checked variables: swaps
+            No None of the provided functions are constructors, as they neither match the contract name 'EthTokenToSmthSwaps' nor are explicitly named 'constructor'.
+            Additionally, the state variable 'swaps' is not hardcoded in any meaningful way in the functions. It is used as a normal state variable, being read or set
+            dynamically, not hardcoded to constant values.
+            Function Security Analysis for EthTokenToSmthSwaps.createSwap(bytes20,address,uint256,address)
+                There are no modifiers should be examined in function createSwap.
+                Check direct function security
+                    - function EthTokenToSmthSwaps.createSwap(bytes20,address,uint256,address) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The function does not contain any of the specified structures that check the identity of msg.sender against a specific owner, leader, or
+                      address. Instead, it performs operations with checks on _value, swap balance, and token transfer.
+                    - function EthTokenToSmthSwaps.createSwap(bytes20,address,uint256,address) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The function doesn't have a structure matching any of the specified patterns. No 'require' statements compare a variable to 'true' or
+                      'false', nor are there any variable assignments following such a required condition or thrown exception compared to false.
+Conclusion: This function will cause REE Problem.

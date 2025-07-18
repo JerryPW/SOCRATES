@@ -1,0 +1,47 @@
+
+Start analyze function: dexBlueSettlementModule.matchOrderWithReserveWithData(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade,bytes32[])
+Function Security Analysis for dexBlueSettlementModule.matchOrderWithReserveWithData(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade,bytes32[])
+    There are no modifiers should be examined in function matchOrderWithReserveWithData.
+    Check direct function security
+        - function dexBlueSettlementModule.matchOrderWithReserveWithData(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade,bytes32[]) has no security assurance
+        protected by checking the authority of msg.sender
+          Reason: The solidity function does not contain any statements or conditions that involve "msg.sender" with a specific role like Owner/Address/Leader/CEO in a
+          way stated in the criteria.
+        - function dexBlueSettlementModule.matchOrderWithReserveWithData(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade,bytes32[]) has no apparent security
+        assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures: require statements based on boolean conditions or the described if-throw structure.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['settleReserveTradeWithData']
+        Function Security Analysis for dexBlueSettlementModule.settleReserveTradeWithData(dexBlueStructs.OrderInputPacked,dexBlueStructs.TradeInputPacked,bytes32[])
+            There are no modifiers should be examined in function settleReserveTradeWithData.
+            Check direct function security
+                - function dexBlueSettlementModule.settleReserveTradeWithData(dexBlueStructs.OrderInputPacked,dexBlueStructs.TradeInputPacked,bytes32[]) has no security
+                assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any of the specified structural characteristics that involve explicit checks about 'msg.sender' against an owner,
+                  address, leader or CEO.
+                - function dexBlueSettlementModule.settleReserveTradeWithData(dexBlueStructs.OrderInputPacked,dexBlueStructs.TradeInputPacked,bytes32[]) has no apparent
+                security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not have any 'require' or 'if(!xxx) throw' statement that sets a boolean variable and then assigns it to the opposite
+                  boolean value.
+External Call Analysis
+    Direct external call:
+    ['address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTradeWithData.selector,abi.encode(order.sellToken,trade.orderAmount-
+    trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve,data)))']
+    Analyze Transfer
+    Analyze Gas
+        - address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTradeWithData.selector,abi.encode(order.sellToken,trade.orderAmount-
+        trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve,data))) ISN'T subjected to gas limits. Here is the reason: The variable
+        'trade.gasLimit' is assigned an empty list. In Python, lists do not have a numerical limit like integers or floats. Therefore, comparing a list with an integer
+        value like 3000 is not possible in a straightforward manner. Since 'trade.gasLimit' is not assigned any number at any point, and strictly speaking, an empty list
+        cannot be directly compared to the integer 3000, it does not make meaningful sense to determine whether it is less than or equal to 3000. However, in terms of
+        values within a list, if introduced, one would have to check the specific value(s) each element holds to determine if they meet the criteria. Given no specific
+        values are provided, or the list remains empty, no number assigned means it can't exceed or be less than 3000, rendering this inquiry effectively non-applicable
+        without further context.
+    Remaining external call:
+    ['address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTradeWithData.selector,abi.encode(order.sellToken,trade.orderAmount-
+    trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve,data)))']
+    Analyze External Address
+        External call
+        address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTradeWithData.selector,abi.encode(order.sellToken,trade.orderAmount-
+        trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve,data))) calls contract address, which consider no REE problem.
+Conclusion: This function will not cause REE Problem.

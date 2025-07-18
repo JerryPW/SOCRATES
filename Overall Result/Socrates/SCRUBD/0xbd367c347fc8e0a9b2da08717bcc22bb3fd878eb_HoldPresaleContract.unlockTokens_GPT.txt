@@ -1,0 +1,27 @@
+
+Start analyze function: HoldPresaleContract.unlockTokens()
+Function Security Analysis for HoldPresaleContract.unlockTokens()
+    There are no modifiers should be examined in function unlockTokens.
+    Check direct function security
+        - function HoldPresaleContract.unlockTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code performs checks on the state and time conditions for a contributor to unlock tokens but does not restrict this action to a specific owner or
+          address based on the sender's address (msg.sender). Instead, the function is open to any msg.sender and makes logical checks based on the holderList. There is
+          no structure like msg.sender == xxxOwner/xxxAddress or similar conditions explicitly restricting access based on msg.sender in the specified ways.
+        - function HoldPresaleContract.unlockTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not contain any of the specified structures. While it includes conditional logic checking values and setting them if they meet
+          certain conditions, the specific pattern of `require(xxx == True); xxx = False;` or `require(xxx == False); xxx = True;` or their equivalent forms as detailed
+          in the criteria is not present.
+External Call Analysis
+    Direct external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze Transfer
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze External Address
+        There are ['OppToken'] should be checked in variable OppToken
+        Checked variables: OppToken
+            Yes The function HoldPresaleContract matches the name of the contract HoldPresaleContract, thus it is identified as a constructor. Constructors are functions
+            that have the same name as the contract they are part of, especially in older versions of Solidity before version 0.4.22, where usage of 'constructor' keyword
+            was introduced.
+Conclusion: This function will not cause REE Problem.

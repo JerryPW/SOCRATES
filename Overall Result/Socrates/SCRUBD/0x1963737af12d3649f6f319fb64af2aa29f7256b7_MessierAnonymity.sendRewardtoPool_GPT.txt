@@ -1,0 +1,27 @@
+
+Start analyze function: MessierAnonymity.sendRewardtoPool()
+Function Security Analysis for MessierAnonymity.sendRewardtoPool()
+    There are no modifiers should be examined in function sendRewardtoPool.
+    Check direct function security
+        - function MessierAnonymity.sendRewardtoPool() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not include any conditions that check if msg.sender is equal to or not equal to any owner or address. It simply iterates over a
+          loop for the poolIndex and executes token transfers without such conditional statements.
+        - function MessierAnonymity.sendRewardtoPool() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures that involve 'require' or 'if' statements with specific boolean assignments.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdraw', 'deposit']
+        Function Security Analysis for MessierAnonymity.withdraw(bytes,bytes32,bytes32,address,address,uint256,uint256)
+            The modifier of function withdraw are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier 'nonReentrant' matches rule 3, as its function name is commonly used to prevent reentrancy attacks. Additionally, the code
+                  structure enforces this by using a lock operation with '_guardCounter' to ensure the function is only entered once by using an increment and a
+                  comparison to prevent reentrancy.
+        Function Security Analysis for MessierAnonymity.deposit(bytes32)
+            The modifier of function deposit are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The code uses a lock operation to prevent reentrancy: 1. The statement '_guardCounter += 1;' acts as a lock by incrementing the counter. 2. The
+                  statement 'require(localCounter == _guardCounter, "ReentrancyGuard: reentrant call");' acts as an unlock by ensuring the function has not been re-
+                  entered before resetting the lock.  Thus, it satisfies both lock and unlock requirements of characteristic 2.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,31 @@
+
+Start analyze function: SendTokensContract.withdrawTokens()
+Function Security Analysis for SendTokensContract.withdrawTokens()
+    There are no modifiers should be examined in function withdrawTokens.
+    Check direct function security
+        - function SendTokensContract.withdrawTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks involving msg.sender being equal or not equal to xxxOwner/xxxAddress/Leader/CEO.
+        - function SendTokensContract.withdrawTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not contain any of the specified code structures with the matching pattern of 'require' or conditional checks with variable
+          assignment as required by the criteria.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,bals[msg.sender])']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,bals[msg.sender]) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,bals[msg.sender]) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,bals[msg.sender])']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            No The provided code is for a function named 'setTokenReward'. The contract name is 'SendTokensContract' and the function name does not match it nor is it
+            explicitly named as 'constructor', so it is not a constructor.   The function 'setTokenReward' does modify the state variable 'tokenReward', but it does not
+            hardcode its value. Instead, it assigns the value based on a parameter '_tokenContractAddress'. Therefore, it does not satisfy the second characteristic
+            either.
+            Function Security Analysis for SendTokensContract.setTokenReward(address)
+                The modifier of function setTokenReward are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Rule 1 is satisfied because the modifier enforces that only the owner can execute the function with the line 'require(msg.sender ==
+                      owner);'. This matches the requirement to check specific addresses for function execution.
+Conclusion: This function will not cause REE Problem.

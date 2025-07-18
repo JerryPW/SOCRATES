@@ -1,0 +1,38 @@
+[
+    {
+        "function_name": "withdraw",
+        "vulnerability": "Unchecked send result",
+        "criticism": "The reasoning is correct. The function does not check the return value of send, which could lead to loss of funds or unexpected behavior if the send fails. However, the severity and profitability of this vulnerability are moderate, as it requires a specific condition (blocking the transfer) to exploit it, and the attacker cannot directly profit from it.",
+        "correctness": 7,
+        "severity": 5,
+        "profitability": 5,
+        "reason": "The withdraw function uses the send method to transfer Ether to wallet1 and wallet2, but it does not check the return value of send. If the send fails, the transaction does not revert, which may result in loss of funds or unexpected behavior. A malicious actor could exploit this by blocking the transfer to one of the wallets, potentially causing denial of service.",
+        "code": "function withdraw() public{ require( (msg.sender == wallet1)||(msg.sender == wallet2) ); uint half = address(this).balance/2; wallet1.send(half); wallet2.send(half); }",
+        "file_name": "0xde7c2911cac44d5949cbe80b0c7d38f7a476cbad.sol",
+        "final_score": 6.0
+    },
+    {
+        "function_name": "setWallet1",
+        "vulnerability": "Unauthorized wallet change",
+        "criticism": "The reasoning is partially correct. The function does allow wallet1 to change its address, but it requires the new address to match newWallet1, which is not mentioned in the code snippet provided. Therefore, it's not clear how an attacker could exploit this. The severity and profitability of this vulnerability are low, as it requires gaining control of wallet1, which is not trivial.",
+        "correctness": 5,
+        "severity": 3,
+        "profitability": 3,
+        "reason": "The setWallet1 function allows wallet1 to change its address without any restriction other than matching newWallet1. If an attacker gains control of wallet1, they can change it to any address they want, as long as it matches newWallet1, potentially redirecting Ether to the attacker's address.",
+        "code": "function setWallet1(address _wallet1) public { require(msg.sender == wallet1); require(newWallet1 == _wallet1); wallet1 = _wallet1; }",
+        "file_name": "0xde7c2911cac44d5949cbe80b0c7d38f7a476cbad.sol",
+        "final_score": 4.0
+    },
+    {
+        "function_name": "setWallet2",
+        "vulnerability": "Unauthorized wallet change",
+        "criticism": "Similar to setWallet1, the reasoning is partially correct. The function does allow wallet2 to change its address, but it requires the new address to match newWallet2, which is not mentioned in the code snippet provided. Therefore, it's not clear how an attacker could exploit this. The severity and profitability of this vulnerability are low, as it requires gaining control of wallet2, which is not trivial.",
+        "correctness": 5,
+        "severity": 3,
+        "profitability": 3,
+        "reason": "Similar to setWallet1, the setWallet2 function allows wallet2 to change its address without any restriction other than matching newWallet2. If an attacker gains control of wallet2, they can change it to any address they desire, as long as it matches newWallet2, potentially redirecting Ether to the attacker's address.",
+        "code": "function setWallet2(address _wallet2) public { require(msg.sender == wallet2); require(newWallet2 == _wallet2); wallet2 = _wallet2; }",
+        "file_name": "0xde7c2911cac44d5949cbe80b0c7d38f7a476cbad.sol",
+        "final_score": 4.0
+    }
+]

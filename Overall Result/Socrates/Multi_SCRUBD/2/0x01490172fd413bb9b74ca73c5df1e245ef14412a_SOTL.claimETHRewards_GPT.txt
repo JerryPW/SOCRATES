@@ -1,0 +1,19 @@
+
+Start analyze function: SOTL.claimETHRewards()
+Function Security Analysis for SOTL.claimETHRewards()
+    There are no modifiers should be examined in function claimETHRewards.
+    Check direct function security
+        - function SOTL.claimETHRewards() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any require, if, or assert statement involving msg.sender with xxxOwner/xxxAddress/Leader/CEO.
+        - function SOTL.claimETHRewards() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't contain any of the specified patterns in terms of require statements followed by variable assignments for the same variable as outlined
+          in the characteristics provided.
+External Call Analysis
+    Direct external call: ['_msgSender().call{value:rewardsSent}()']
+    Analyze Transfer
+    Analyze Gas
+        - _msgSender().call{value:rewardsSent}() ISN'T subjected to gas limits.
+    Remaining external call: ['_msgSender().call{value:rewardsSent}()']
+    Analyze External Address
+        External call _msgSender().call{value:rewardsSent}() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

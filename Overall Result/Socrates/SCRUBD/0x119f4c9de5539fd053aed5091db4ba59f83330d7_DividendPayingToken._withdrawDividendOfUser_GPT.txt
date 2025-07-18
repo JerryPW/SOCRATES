@@ -1,0 +1,34 @@
+
+Start analyze function: DividendPayingToken._withdrawDividendOfUser(address)
+Function Security Analysis for DividendPayingToken._withdrawDividendOfUser(address)
+    There are no modifiers should be examined in function _withdrawDividendOfUser.
+    Check direct function security
+        - function DividendPayingToken._withdrawDividendOfUser(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any use of msg.sender comparison with any ownership or authorized addresses, nor does it handle any permissions related to
+          msg.sender. The logic focuses solely on handling dividend withdrawal.
+        - function DividendPayingToken._withdrawDividendOfUser(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function checks for success with an 'if(!success)' block and manipulates the state of 'withdrawnDividends' based on the condition. However, it does
+          not set 'success' to true, so it does not fully match any given structure.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawDividend']
+        Function Security Analysis for DividendPayingToken.withdrawDividend()
+            There are no modifiers should be examined in function withdrawDividend.
+            Check direct function security
+                - function DividendPayingToken.withdrawDividend() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code snippet does not contain any condition that checks the sender against a specific owner or address like xxxOwner, xxxAddress, Leader, or
+                  CEO.
+                - function DividendPayingToken.withdrawDividend() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided function does not contain any of the required structures such as assignments of a boolean variable after a require statement, or an
+                  if statement throwing an exception. It simply calls another function.
+External Call Analysis
+    Direct external call: ['user.call{gas:gasForTransfer,value:_withdrawableDividend}()']
+    Analyze Transfer
+    Analyze Gas
+        - user.call{gas:gasForTransfer,value:_withdrawableDividend}() is subjected to gas limits gasForTransfer <= 3000. Therefore, it has no potential REE problem. Here
+        is the reason: The code provided shows a constructor function in a smart contract, which is part of an Ethereum solidity codebase. In the constructor, the
+        variable `gasForTransfer` is directly assigned the value `3000`. There are no other operations or conditional logic altering this assignment within the snippet
+        shown. Based on this snippet only, `gasForTransfer` is always initialized to and remains at 3000 when the contract is deployed, hence it is indeed less than or
+        equal to 3000 as per the question.
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

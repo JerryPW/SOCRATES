@@ -1,0 +1,45 @@
+
+Start analyze function: Dice.__callback(bytes32,string)
+Function Security Analysis for Dice.__callback(bytes32,string)
+    There are no modifiers should be examined in function __callback.
+    Check direct function security
+        - function Dice.__callback(bytes32,string) has no security assurance protected by checking the authority of msg.sender
+          Reason: Though the code contains `require(msg.sender == oraclize_cb);`, `oraclize_cb` is assigned by calling `oraclize_cbAddress()` and is not a local,
+          contract-level variable of type Owner/Address/Leader/CEO. Therefore, it does not satisfy the condition where the check should involve a variable directly named
+          as such owners or addresses.
+        - function Dice.__callback(bytes32,string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code uses a `require` statement to check `msg.sender == oraclize_cb` and updates a boolean flag `playerWins` inside the function, but this does not
+          fall into any of the specified patterns. There are no negation checks or flag toggling that matches the required patterns.
+External Call Analysis
+    Direct external call: ['address(player).transfer(winAmount)']
+    Analyze Transfer
+        - address(player).transfer(winAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: usingOraclize.oraclize_cbAddress()
+Function Security Analysis for usingOraclize.oraclize_cbAddress()
+    The modifier of function oraclize_cbAddress are ['oraclizeAPI']
+    The result of checking modifiers:
+        - modifier oraclizeAPI has no relation with controlled by owner.
+          Reason: The modifier does not enforce ownership checks, nor does it implement any lock operations. It also doesn't suggest any ownership or locking based on its
+          name.
+    Check direct function security
+        - function usingOraclize.oraclize_cbAddress() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any conditions or assertions with msg.sender related to specific owner, leader, or CEO addresses.
+        - function usingOraclize.oraclize_cbAddress() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code doesn't contain any of the specified structures: there are no 'require' or 'if' statements with conditions on a variable, nor
+          assignments changing the variable's state as outlined in the criteria.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['__callback']
+        Function Security Analysis for Dice.__callback(bytes32,string)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function Dice.__callback(bytes32,string) has security assurance protected by checking the authority of msg.sender, the function would not cause REE
+                problem.
+                  Reason: The code contains 'require(msg.sender == oraclize_cb);'. Even though 'oraclize_cb' is guided by a local variable oraclize_cb, it is checking the
+                  address against msg.sender, which matches structure 1.
+Conclusion: This function will not cause REE Problem.

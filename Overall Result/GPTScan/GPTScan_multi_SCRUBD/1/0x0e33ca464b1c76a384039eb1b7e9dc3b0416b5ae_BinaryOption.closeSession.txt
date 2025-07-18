@@ -1,0 +1,146 @@
+BinaryOption.closeSession: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function closeSession (uint _priceClose)
+        public
+        onlyEscrow
+    {
+        require(_priceClose != 0 && now > (session.timeOpen + timeOneSession * 1 minutes));
+        require(!session.investOpen && session.isOpen);
+        session.priceClose = _priceClose;
+        bool result = (_priceClose>session.priceOpen)?true:false;
+        uint etherToBuy;
+        NamiCrowdSale namiContract = NamiCrowdSale(namiCrowdSaleAddr);
+        uint price = namiContract.getPrice();
+        require(price != 0);
+        for (uint i = 0; i < session.investorCount; i++) {
+            if (session.win[i]==result) {
+                etherToBuy = (session.amountInvest[i] - session.amountInvest[i] * rateFee / 100) * rateWin / 100;
+                uint etherReturn = session.amountInvest[i] - session.amountInvest[i] * rateFee / 100;
+                (session.investor[i]).transfer(etherReturn);
+            } else {
+                etherToBuy = (session.amountInvest[i] - session.amountInvest[i] * rateFee / 100) * rateLoss / 100;
+            }
+            namiContract.buy.value(etherToBuy)(session.investor[i]);
+            // reset investor
+            session.investor[i] = 0x0;
+            session.win[i] = false;
+            session.amountInvest[i] = 0;
+        }
+        session.isOpen = false;
+        SessionClose(now, sessionId, _priceClose, price, rateWin, rateLoss, rateFee);
+        sessionId += 1;
+        
+        // require(!session.isReset && !session.isOpen);
+        // reset state session
+        session.priceOpen = 0;
+        session.priceClose = 0;
+        session.isReset = true;
+        session.investOpen = false;
+        session.investorCount = 0;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function closeSession (uint _priceClose)
+        public
+        onlyEscrow
+    {
+        require(_priceClose != 0 && now > (session.timeOpen + timeOneSession * 1 minutes));
+        require(!session.investOpen && session.isOpen);
+        session.priceClose = _priceClose;
+        bool result = (_priceClose>session.priceOpen)?true:false;
+        uint etherToBuy;
+        NamiCrowdSale namiContract = NamiCrowdSale(namiCrowdSaleAddr);
+        uint price = namiContract.getPrice();
+        require(price != 0);
+        for (uint i = 0; i < session.investorCount; i++) {
+            if (session.win[i]==result) {
+                etherToBuy = (session.amountInvest[i] - session.amountInvest[i] * rateFee / 100) * rateWin / 100;
+                uint etherReturn = session.amountInvest[i] - session.amountInvest[i] * rateFee / 100;
+                (session.investor[i]).transfer(etherReturn);
+            } else {
+                etherToBuy = (session.amountInvest[i] - session.amountInvest[i] * rateFee / 100) * rateLoss / 100;
+            }
+            namiContract.buy.value(etherToBuy)(session.investor[i]);
+            // reset investor
+            session.investor[i] = 0x0;
+            session.win[i] = false;
+            session.amountInvest[i] = 0;
+        }
+        session.isOpen = false;
+        SessionClose(now, sessionId, _priceClose, price, rateWin, rateLoss, rateFee);
+        sessionId += 1;
+        
+        // require(!session.isReset && !session.isOpen);
+        // reset state session
+        session.priceOpen = 0;
+        session.priceClose = 0;
+        session.isReset = true;
+        session.investOpen = false;
+        session.investorCount = 0;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function closeSession (uint _priceClose)
+        public
+        onlyEscrow
+    {
+        require(_priceClose != 0 && now > (session.timeOpen + timeOneSession * 1 minutes));
+        require(!session.investOpen && session.isOpen);
+        session.priceClose = _priceClose;
+        bool result = (_priceClose>session.priceOpen)?true:false;
+        uint etherToBuy;
+        NamiCrowdSale namiContract = NamiCrowdSale(namiCrowdSaleAddr);
+        uint price = namiContract.getPrice();
+        require(price != 0);
+        for (uint i = 0; i < session.investorCount; i++) {
+            if (session.win[i]==result) {
+                etherToBuy = (session.amountInvest[i] - session.amountInvest[i] * rateFee / 100) * rateWin / 100;
+                uint etherReturn = session.amountInvest[i] - session.amountInvest[i] * rateFee / 100;
+                (session.investor[i]).transfer(etherReturn);
+            } else {
+                etherToBuy = (session.amountInvest[i] - session.amountInvest[i] * rateFee / 100) * rateLoss / 100;
+            }
+            namiContract.buy.value(etherToBuy)(session.investor[i]);
+            // reset investor
+            session.investor[i] = 0x0;
+            session.win[i] = false;
+            session.amountInvest[i] = 0;
+        }
+        session.isOpen = false;
+        SessionClose(now, sessionId, _priceClose, price, rateWin, rateLoss, rateFee);
+        sessionId += 1;
+        
+        // require(!session.isReset && !session.isOpen);
+        // reset state session
+        session.priceOpen = 0;
+        session.priceClose = 0;
+        session.isReset = true;
+        session.investOpen = false;
+        session.investorCount = 0;
+    }
+Response:
+{"StatementsA": {"session.priceClose = _priceClose;":"Updates the session's closing price state variable."}, "StatementsB": {"namiContract.buy.value(etherToBuy)(session.investor[i]);":"Executes an external call to the NamiCrowdSale contract's buy function."}, "VariableA": {"session.investor[i]": "Holds the sender's address for the external call to the buy function."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: session.priceClose = _priceClose;
+2.External Call: namiContract.buy.value(etherToBuy)(session.investor[i]);
+3.Variable A: session.investor[i]
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

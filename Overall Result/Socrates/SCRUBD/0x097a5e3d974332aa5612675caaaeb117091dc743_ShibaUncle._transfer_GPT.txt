@@ -1,0 +1,49 @@
+
+Start analyze function: ShibaUncle._transfer(address,address,uint256)
+Function Security Analysis for ShibaUncle._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function ShibaUncle._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The if condition checks if the addresses are not 'owner', but the check is against a variable (owner) and not explicitly against 'msg.sender', which
+          does not match the required structure.
+        - function ShibaUncle._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the provided structures since there are no require statements directly asserting `require(xxx == True)` or `require(xxx
+          == False)` and then toggling `xxx` or similar logic structures with `if(!xxx) throw`.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for ShibaUncle.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function ShibaUncle.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not have any checks involving msg.sender with respect to specific roles like Owner or Leader.
+                - function ShibaUncle.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any 'require' or 'if(!xxx) throw' statements, and it does not follow any of the specified structures: 1, 2, 3, or 4 as
+                  no boolean assignments or conditions that match the pattern are present.
+External Call Analysis
+    Direct external call: ['coolUncle.setShare(sender,_balances[sender])', 'coolUncle.setShare(recipient,_balances[recipient])']
+    Analyze Transfer
+    Analyze Gas
+        - coolUncle.setShare(sender,_balances[sender]) ISN'T subjected to gas limits.
+        - coolUncle.setShare(recipient,_balances[recipient]) ISN'T subjected to gas limits.
+    Remaining external call: ['coolUncle.setShare(sender,_balances[sender])', 'coolUncle.setShare(recipient,_balances[recipient])']
+    Analyze External Address
+        There are ['coolUncle'] should be checked in variable coolUncle
+        Checked variables: coolUncle
+            Yes The provided code includes a constructor function which is explicitly named 'constructor'. This satisfies the first characteristic in the criteria since
+            constructors are specifically mentioned. Although there is a mention of the state variable 'coolUncle', it is not hardcoded as it is assigned a new instance
+            of 'CoolUncle'.
+        There are ['coolUncle'] should be checked in variable coolUncle
+        Checked variables: coolUncle
+            Yes The provided code is a constructor because it is named 'constructor' which matches the special function name in Solidity that defines a constructor. The
+            constructor is hardcoding a state variable called 'coolUncle' as it is initialized with 'new CoolUncle();', showing that a new instance of 'CoolUncle' is
+            being directly set without varying parameters.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ShibaUncle.swapBack()
+Function Security Analysis for ShibaUncle.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'lockTheSwap' sets 'inSwapAndLiquify' to true before executing the function and sets it back to false after the function is executed,
+          clearly demonstrating both lock and unlock operations within the same modifier. This enforces a lock mechanism, satisfying rule 2.
+Conclusion: This function will not cause REE Problem.

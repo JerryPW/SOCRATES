@@ -1,0 +1,36 @@
+
+Start analyze function: PoCGame.donateToWhale(uint256)
+Function Security Analysis for PoCGame.donateToWhale(uint256)
+    There are no modifiers should be examined in function donateToWhale.
+    Check direct function security
+        - function PoCGame.donateToWhale(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check or restrict the sender using msg.sender in any of the specified manners.
+        - function PoCGame.donateToWhale(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures involving a 'require' or 'if' statement with changing a boolean variable to true or false.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['donate']
+        Function Security Analysis for PoCGame.donate()
+            The modifier of function donate are ['isOpenToPublic']
+            The result of checking modifiers:
+                - modifier isOpenToPublic has no relation with controlled by owner.
+                  Reason: The modifier checks if the function is open to the public using the 'openToPublic' flag but does not restrict execution to only the owner or
+                  specific addresses, nor does it implement a lock operation. Therefore, it doesn't satisfy any of the specified characteristics.
+            Check direct function security
+                - function PoCGame.donate() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any require, if, or assert statement that contains checks for msg.sender being equal or not equal to a specific
+                  owner, address, leader, or CEO.
+                - function PoCGame.donate() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided function `donate` does not contain any of the specified structures that involve requiring or throwing based on a condition related
+                  to a boolean variable. It does not manipulate any variable in the manner described by the scenarios given for structures 1 to 4.
+External Call Analysis
+    Direct external call: ['whale.call.value(amount)(bytes4(keccak256()(donate())))']
+    Analyze Transfer
+    Analyze Gas
+        - whale.call.value(amount)(bytes4(keccak256()(donate()))) ISN'T subjected to gas limits.
+    Remaining external call: ['whale.call.value(amount)(bytes4(keccak256()(donate())))']
+    Analyze External Address
+        There are ['whale'] should be checked in variable whale
+        Checked variables: whale
+            Yes The function provided is a constructor because its name matches the convention for defining a constructor in Solidity (either matching the contract name
+            'PoCGame' or being explicitly named 'constructor').
+Conclusion: This function will not cause REE Problem.

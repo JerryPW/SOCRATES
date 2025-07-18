@@ -1,0 +1,29 @@
+
+Start analyze function: BeercoinICO.fallback()
+Function Security Analysis for BeercoinICO.fallback()
+    The modifier of function fallback are ['isOpen']
+    The result of checking modifiers:
+        - modifier isOpen has no relation with controlled by owner.
+          Reason: None of the given characteristics are found in the modifier. It only checks for time constraints and a 'paused' status.
+    Check direct function security
+        - function BeercoinICO.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any statements that use the structures provided in the checklist.
+        - function BeercoinICO.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function provided does not contain any of the specified structures with 'require' or 'if' followed by condition and variable assignment that match
+          the criteria.
+External Call Analysis
+    Direct external call: ['beercoin.decimals()', 'beercoin.transfer(msg.sender,beercoinAmount)']
+    Analyze Transfer
+        - beercoin.decimals() ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - beercoin.decimals() ISN'T subjected to gas limits.
+        - beercoin.transfer(msg.sender,beercoinAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['beercoin.decimals()', 'beercoin.transfer(msg.sender,beercoinAmount)']
+    Analyze External Address
+        There are ['beercoin'] should be checked in variable beercoin
+        Checked variables: beercoin
+            State variable beercoin has initialized in public area after declaration.
+        There are ['beercoin'] should be checked in variable beercoin
+        Checked variables: beercoin
+            State variable beercoin has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

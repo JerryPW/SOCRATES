@@ -1,0 +1,25 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any condition that compares msg.sender to xxxOwner/xxxAddress/Leader/CEO using require, if-else, or assert statements.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does contain the statement `require(!crowdsaleClosed);` which is the first part of the potential 3rd pattern. However, it does not have the
+          corresponding `crowdsaleClosed = True;` statement afterwards. Both statements are required to match the structure and this crucial second statement is missing.
+          Hence, the previously identified pattern does not completely match.
+External Call Analysis
+    Direct external call: ['beneficiary.send(amount)', 'tokenReward.transfer(msg.sender,amount*10000)']
+    Analyze Transfer
+        - beneficiary.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(msg.sender,amount*10000) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount*10000) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount*10000)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes 1. The function 'Crowdsale' matches with the contract name 'Crowdsale', indicating that it is a constructor function.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,28 @@
+
+Start analyze function: NamiExchange.closeAskOrder()
+Function Security Analysis for NamiExchange.closeAskOrder()
+    There are no modifiers should be examined in function closeAskOrder.
+    Check direct function security
+        - function NamiExchange.closeAskOrder() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any of the specified patterns that check for the msg.sender being a specific owner or leader role. Instead, it uses msg.sender
+          to index into the ask mapping and performs a volume and price check, as well as checks and updates the token balance.
+        - function NamiExchange.closeAskOrder() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code snippet does not match any of the specified patterns. It checks if certain conditions are met before executing the transfer, but it
+          does not involve toggling a boolean variable as described in the specified structures.
+External Call Analysis
+    Direct external call: ['namiToken.balanceOf(msg.sender)', 'namiToken.transfer(msg.sender,ask[msg.sender].volume)']
+    Analyze Transfer
+        - namiToken.balanceOf(msg.sender) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - namiToken.balanceOf(msg.sender) ISN'T subjected to gas limits.
+        - namiToken.transfer(msg.sender,ask[msg.sender].volume) ISN'T subjected to gas limits.
+    Remaining external call: ['namiToken.balanceOf(msg.sender)', 'namiToken.transfer(msg.sender,ask[msg.sender].volume)']
+    Analyze External Address
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes The function 'NamiExchange' matches the contract name 'NamiExchange', indicating that it is a constructor function. According to the first characteristic,
+            constructors match the name of the contract or are explicitly named 'constructor'.
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes The function name matches the contract name 'NamiExchange', indicating that this is a constructor function for the contract.
+Conclusion: This function will not cause REE Problem.

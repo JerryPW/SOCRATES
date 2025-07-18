@@ -1,0 +1,171 @@
+CoinFlip.refundFlip: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function refundFlip(bytes32 _flipId) external {
+        require(msg.sender == flips[_flipId].owner || msg.sender == owner, "Refund caller is not owner of this flip.");
+        require(!flips[_flipId].completed, "Trying to refund completed flip.");
+        flips[_flipId].completed = true;
+        
+        if(flips[_flipId].currency == BetCurrency.ETH) {
+            // Return ether if ether was used to bet for flip
+            flips[_flipId].owner.transfer(flips[_flipId].betETH);
+        }
+        else {
+            // Return tokens if tokens were used to bet for flip
+            assert(token.transfer(flips[_flipId].owner, flips[_flipId].betTokens));
+        }
+        
+        tokensRequiredForAllWins = tokensRequiredForAllWins.sub(flips[_flipId].betTokens.mul(flips[_flipId].numberOfCoinSides));
+        flips[_flipId].status = FlipStatus.Refunded;
+        emit FlipEnded(_flipId, flips[_flipId].owner, flips[_flipId].winTokens);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function refundFlip(bytes32 _flipId) external {
+        require(msg.sender == flips[_flipId].owner || msg.sender == owner, "Refund caller is not owner of this flip.");
+        require(!flips[_flipId].completed, "Trying to refund completed flip.");
+        flips[_flipId].completed = true;
+        
+        if(flips[_flipId].currency == BetCurrency.ETH) {
+            // Return ether if ether was used to bet for flip
+            flips[_flipId].owner.transfer(flips[_flipId].betETH);
+        }
+        else {
+            // Return tokens if tokens were used to bet for flip
+            assert(token.transfer(flips[_flipId].owner, flips[_flipId].betTokens));
+        }
+        
+        tokensRequiredForAllWins = tokensRequiredForAllWins.sub(flips[_flipId].betTokens.mul(flips[_flipId].numberOfCoinSides));
+        flips[_flipId].status = FlipStatus.Refunded;
+        emit FlipEnded(_flipId, flips[_flipId].owner, flips[_flipId].winTokens);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function refundFlip(bytes32 _flipId) external {
+        require(msg.sender == flips[_flipId].owner || msg.sender == owner, "Refund caller is not owner of this flip.");
+        require(!flips[_flipId].completed, "Trying to refund completed flip.");
+        flips[_flipId].completed = true;
+        
+        if(flips[_flipId].currency == BetCurrency.ETH) {
+            // Return ether if ether was used to bet for flip
+            flips[_flipId].owner.transfer(flips[_flipId].betETH);
+        }
+        else {
+            // Return tokens if tokens were used to bet for flip
+            assert(token.transfer(flips[_flipId].owner, flips[_flipId].betTokens));
+        }
+        
+        tokensRequiredForAllWins = tokensRequiredForAllWins.sub(flips[_flipId].betTokens.mul(flips[_flipId].numberOfCoinSides));
+        flips[_flipId].status = FlipStatus.Refunded;
+        emit FlipEnded(_flipId, flips[_flipId].owner, flips[_flipId].winTokens);
+    }
+Response:
+{"StatementsA": {"flips[_flipId].completed = true;":"Updates the 'completed' state of the flip to true.", "tokensRequiredForAllWins = tokensRequiredForAllWins.sub(flips[_flipId].betTokens.mul(flips[_flipId].numberOfCoinSides));":"Updates the 'tokensRequiredForAllWins' state variable by subtracting the calculated value.", "flips[_flipId].status = FlipStatus.Refunded;":"Updates the 'status' of the flip to 'Refunded'."}, "StatementsB": {"flips[_flipId].owner.transfer(flips[_flipId].betETH);":"Executes an external call to transfer ether to the flip owner.", "assert(token.transfer(flips[_flipId].owner, flips[_flipId].betTokens));":"Executes an external call to transfer tokens to the flip owner."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: flips[_flipId].completed = true;
+2.External Call: flips[_flipId].owner.transfer(flips[_flipId].betETH);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function refundFlip(bytes32 _flipId) external {
+        require(msg.sender == flips[_flipId].owner || msg.sender == owner, "Refund caller is not owner of this flip.");
+        require(!flips[_flipId].completed, "Trying to refund completed flip.");
+        flips[_flipId].completed = true;
+        
+        if(flips[_flipId].currency == BetCurrency.ETH) {
+            // Return ether if ether was used to bet for flip
+            flips[_flipId].owner.transfer(flips[_flipId].betETH);
+        }
+        else {
+            // Return tokens if tokens were used to bet for flip
+            assert(token.transfer(flips[_flipId].owner, flips[_flipId].betTokens));
+        }
+        
+        tokensRequiredForAllWins = tokensRequiredForAllWins.sub(flips[_flipId].betTokens.mul(flips[_flipId].numberOfCoinSides));
+        flips[_flipId].status = FlipStatus.Refunded;
+        emit FlipEnded(_flipId, flips[_flipId].owner, flips[_flipId].winTokens);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function refundFlip(bytes32 _flipId) external {
+        require(msg.sender == flips[_flipId].owner || msg.sender == owner, "Refund caller is not owner of this flip.");
+        require(!flips[_flipId].completed, "Trying to refund completed flip.");
+        flips[_flipId].completed = true;
+        
+        if(flips[_flipId].currency == BetCurrency.ETH) {
+            // Return ether if ether was used to bet for flip
+            flips[_flipId].owner.transfer(flips[_flipId].betETH);
+        }
+        else {
+            // Return tokens if tokens were used to bet for flip
+            assert(token.transfer(flips[_flipId].owner, flips[_flipId].betTokens));
+        }
+        
+        tokensRequiredForAllWins = tokensRequiredForAllWins.sub(flips[_flipId].betTokens.mul(flips[_flipId].numberOfCoinSides));
+        flips[_flipId].status = FlipStatus.Refunded;
+        emit FlipEnded(_flipId, flips[_flipId].owner, flips[_flipId].winTokens);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function refundFlip(bytes32 _flipId) external {
+        require(msg.sender == flips[_flipId].owner || msg.sender == owner, "Refund caller is not owner of this flip.");
+        require(!flips[_flipId].completed, "Trying to refund completed flip.");
+        flips[_flipId].completed = true;
+        
+        if(flips[_flipId].currency == BetCurrency.ETH) {
+            // Return ether if ether was used to bet for flip
+            flips[_flipId].owner.transfer(flips[_flipId].betETH);
+        }
+        else {
+            // Return tokens if tokens were used to bet for flip
+            assert(token.transfer(flips[_flipId].owner, flips[_flipId].betTokens));
+        }
+        
+        tokensRequiredForAllWins = tokensRequiredForAllWins.sub(flips[_flipId].betTokens.mul(flips[_flipId].numberOfCoinSides));
+        flips[_flipId].status = FlipStatus.Refunded;
+        emit FlipEnded(_flipId, flips[_flipId].owner, flips[_flipId].winTokens);
+    }
+Response:
+{"StatementsA": {"flips[_flipId].completed = true;":"Updates the 'completed' state of the flip to true", "flips[_flipId].status = FlipStatus.Refunded;":"Updates the 'status' of the flip to 'Refunded'", "tokensRequiredForAllWins = tokensRequiredForAllWins.sub(flips[_flipId].betTokens.mul(flips[_flipId].numberOfCoinSides));":"Updates the 'tokensRequiredForAllWins' state variable"}, "StatementsB": {"flips[_flipId].owner.transfer(flips[_flipId].betETH);":"Executes an external call to transfer ether", "assert(token.transfer(flips[_flipId].owner, flips[_flipId].betTokens));":"Executes an external call to transfer tokens"}, "VariableA": {"msg.sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: flips[_flipId].completed = true;
+2.External Call: flips[_flipId].owner.transfer(flips[_flipId].betETH);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

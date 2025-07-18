@@ -1,0 +1,39 @@
+
+Start analyze function: RuneLock._releaseTokens(address)
+Function Security Analysis for RuneLock._releaseTokens(address)
+    There are no modifiers should be examined in function _releaseTokens.
+    Check direct function security
+        - function RuneLock._releaseTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks or assertions related to msg.sender being an owner or address with special permissions.
+        - function RuneLock._releaseTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the given structures. It doesn't contain 'require' or 'if' statements related to a boolean variable with the specified
+          structure.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['release']
+        Function Security Analysis for RuneLock.release(address)
+            There are no modifiers should be examined in function release.
+            Check direct function security
+                - function RuneLock.release(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any logic that checks if 'msg.sender' is equal to or not equal to a specific owner or address, such as
+                  xxxOwner/xxxAddress/Leader/CEO.
+                - function RuneLock.release(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code doesn't match any of the specified structures. It has multiple require statements, but none of them directly lead to a variable
+                  assignment as described in the provided patterns. There isn't a sequence of setting a variable to false/true after a require statement that checks the
+                  same variable.
+External Call Analysis
+    Direct external call: ['IERC20(_tokenAddress).transfer(msg.sender,_amount)']
+    Analyze Transfer
+        - IERC20(_tokenAddress).transfer(msg.sender,_amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - IERC20(_tokenAddress).transfer(msg.sender,_amount) ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(_tokenAddress).transfer(msg.sender,_amount)']
+    Analyze External Address
+        The variable '_tokenAddress' in external call 'IERC20(_tokenAddress).transfer(msg.sender,_amount)' has no state variable assigned in
+        RuneLock._releaseTokens(address). Considering that it is an internal/private function, we analyze the function inputs.
+        Analyze External Address
+            The variable '_tokenAddress' in external call '_tokenAddress' has no state variable assigned in RuneLock.release(address). Therefore we check whether it has
+            been hardcoded in the function.
+                No The provided variable _tokenAddress is used as a function parameter. Its value is determined at the time of the function call by the caller and not set
+                or hardcoded within the function itself. The function utilizes the _tokenAddress in several actions like fetching data from mappings and emitting events,
+                showing that it expects a dynamic input. Since there is no fixed value assigned to _tokenAddress within the function code, it is not hardcoded.
+Conclusion: This function will cause REE Problem.

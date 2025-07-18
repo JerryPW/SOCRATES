@@ -1,0 +1,25 @@
+
+Start analyze function: SellERC20BasicTokens.sendToken(address,uint256)
+Function Security Analysis for SellERC20BasicTokens.sendToken(address,uint256)
+    There are no modifiers should be examined in function sendToken.
+    Check direct function security
+        - function SellERC20BasicTokens.sendToken(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The statement `require(msg.sender == wallet);` contains `msg.sender == wallet` which is indeed a local variable or parameter. According to the note, it
+          doesn't qualify under the specified patterns that require a hardcoded or clearly defined xxxOwner/xxxAddress/Leader/CEO. Hence, it doesn't meet the criteria for
+          'Yes'.
+        - function SellERC20BasicTokens.sendToken(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided does not have any of the required structures. It contains 'require' statements but they do not toggle the same boolean variable
+          between 'True' and 'False'. The 'require' statement checks that 'msg.sender' is equal to 'wallet', which is not related to setting a variable to 'True' or
+          'False'. No further statement in the function changes 'msg.sender' or 'wallet'.
+External Call Analysis
+    Direct external call: ['token.transfer(_receiver,_amount)']
+    Analyze Transfer
+        - token.transfer(_receiver,_amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(_receiver,_amount) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(_receiver,_amount)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The provided code is a constructor because the function is explicitly named 'constructor', satisfying the first characteristic.
+Conclusion: This function will not cause REE Problem.

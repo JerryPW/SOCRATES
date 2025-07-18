@@ -1,0 +1,27 @@
+
+Start analyze function: Crowdsale.safeWithdrawal()
+Function Security Analysis for Crowdsale.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier 'afterDeadline' checks if the current time is greater than or equal to the deadline, allowing the function to proceed only if this
+          condition is met. It does not enforce that only the owner or specific addresses can execute the function, nor does it use a lock operation to ensure the
+          function enters only once.
+    Check direct function security
+        - function Crowdsale.safeWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures that involve directly checking msg.sender against an owner, address, leader, or CEO. It
+          checks msg.sender in a different context related to balances and transfer conditions.
+        - function Crowdsale.safeWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains 'require(crowdsaleClosed)' but it doesn't have the pattern of setting 'crowdsaleClosed = False or True'. Also, there are no other
+          variables that match the required patterns.
+External Call Analysis
+    Direct external call: ['msg.sender.send(amount)', 'beneficiary.send(amountRaised)']
+    Analyze Transfer
+        - msg.sender.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send(' keyword,
+        which satisfies the second characteristic.. Parameter in 'transfer'/'send': 1.
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword, which satisfies the second characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

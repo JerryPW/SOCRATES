@@ -1,0 +1,161 @@
+NamiPool.withdrawTop: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdrawTop(uint _roundIndex)
+        public
+    {
+        require(round[_roundIndex].isCompleteActive == true && round[_roundIndex].isCloseEthPool == true && round[_roundIndex].isOpen == false);
+        require(round[_roundIndex].topWithdrawable);
+        if(namiPool[_roundIndex][msg.sender].isActive == true) {
+            require(namiPool[_roundIndex][msg.sender].isWithdrawn == false);
+            uint ethReturn = (round[_roundIndex].ethBalance.mul(namiPool[_roundIndex][msg.sender].stake)).div(round[_roundIndex].finalNAC);
+            msg.sender.transfer(ethReturn);
+            // set user withdraw
+            namiPool[_roundIndex][msg.sender].isWithdrawn = true;
+            //
+            Withdraw(msg.sender, _roundIndex, ethReturn, namiPool[_roundIndex][msg.sender].stake, now);
+            _withdrawNAC(msg.sender, _roundIndex);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdrawTop(uint _roundIndex)
+        public
+    {
+        require(round[_roundIndex].isCompleteActive == true && round[_roundIndex].isCloseEthPool == true && round[_roundIndex].isOpen == false);
+        require(round[_roundIndex].topWithdrawable);
+        if(namiPool[_roundIndex][msg.sender].isActive == true) {
+            require(namiPool[_roundIndex][msg.sender].isWithdrawn == false);
+            uint ethReturn = (round[_roundIndex].ethBalance.mul(namiPool[_roundIndex][msg.sender].stake)).div(round[_roundIndex].finalNAC);
+            msg.sender.transfer(ethReturn);
+            // set user withdraw
+            namiPool[_roundIndex][msg.sender].isWithdrawn = true;
+            //
+            Withdraw(msg.sender, _roundIndex, ethReturn, namiPool[_roundIndex][msg.sender].stake, now);
+            _withdrawNAC(msg.sender, _roundIndex);
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function withdrawTop(uint _roundIndex)
+        public
+    {
+        require(round[_roundIndex].isCompleteActive == true && round[_roundIndex].isCloseEthPool == true && round[_roundIndex].isOpen == false);
+        require(round[_roundIndex].topWithdrawable);
+        if(namiPool[_roundIndex][msg.sender].isActive == true) {
+            require(namiPool[_roundIndex][msg.sender].isWithdrawn == false);
+            uint ethReturn = (round[_roundIndex].ethBalance.mul(namiPool[_roundIndex][msg.sender].stake)).div(round[_roundIndex].finalNAC);
+            msg.sender.transfer(ethReturn);
+            // set user withdraw
+            namiPool[_roundIndex][msg.sender].isWithdrawn = true;
+            //
+            Withdraw(msg.sender, _roundIndex, ethReturn, namiPool[_roundIndex][msg.sender].stake, now);
+            _withdrawNAC(msg.sender, _roundIndex);
+        }
+    }
+Response:
+{"StatementsA": {"namiPool[_roundIndex][msg.sender].isWithdrawn = true;":"Updates the isWithdrawn state variable for the sender in the namiPool mapping."}, "StatementsB": {"msg.sender.transfer(ethReturn);":"Executes an external call to transfer Ether to the sender."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: namiPool[_roundIndex][msg.sender].isWithdrawn = true;
+2.External Call: msg.sender.transfer(ethReturn);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdrawTop(uint _roundIndex)
+        public
+    {
+        require(round[_roundIndex].isCompleteActive == true && round[_roundIndex].isCloseEthPool == true && round[_roundIndex].isOpen == false);
+        require(round[_roundIndex].topWithdrawable);
+        if(namiPool[_roundIndex][msg.sender].isActive == true) {
+            require(namiPool[_roundIndex][msg.sender].isWithdrawn == false);
+            uint ethReturn = (round[_roundIndex].ethBalance.mul(namiPool[_roundIndex][msg.sender].stake)).div(round[_roundIndex].finalNAC);
+            msg.sender.transfer(ethReturn);
+            // set user withdraw
+            namiPool[_roundIndex][msg.sender].isWithdrawn = true;
+            //
+            Withdraw(msg.sender, _roundIndex, ethReturn, namiPool[_roundIndex][msg.sender].stake, now);
+            _withdrawNAC(msg.sender, _roundIndex);
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdrawTop(uint _roundIndex)
+        public
+    {
+        require(round[_roundIndex].isCompleteActive == true && round[_roundIndex].isCloseEthPool == true && round[_roundIndex].isOpen == false);
+        require(round[_roundIndex].topWithdrawable);
+        if(namiPool[_roundIndex][msg.sender].isActive == true) {
+            require(namiPool[_roundIndex][msg.sender].isWithdrawn == false);
+            uint ethReturn = (round[_roundIndex].ethBalance.mul(namiPool[_roundIndex][msg.sender].stake)).div(round[_roundIndex].finalNAC);
+            msg.sender.transfer(ethReturn);
+            // set user withdraw
+            namiPool[_roundIndex][msg.sender].isWithdrawn = true;
+            //
+            Withdraw(msg.sender, _roundIndex, ethReturn, namiPool[_roundIndex][msg.sender].stake, now);
+            _withdrawNAC(msg.sender, _roundIndex);
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function withdrawTop(uint _roundIndex)
+        public
+    {
+        require(round[_roundIndex].isCompleteActive == true && round[_roundIndex].isCloseEthPool == true && round[_roundIndex].isOpen == false);
+        require(round[_roundIndex].topWithdrawable);
+        if(namiPool[_roundIndex][msg.sender].isActive == true) {
+            require(namiPool[_roundIndex][msg.sender].isWithdrawn == false);
+            uint ethReturn = (round[_roundIndex].ethBalance.mul(namiPool[_roundIndex][msg.sender].stake)).div(round[_roundIndex].finalNAC);
+            msg.sender.transfer(ethReturn);
+            // set user withdraw
+            namiPool[_roundIndex][msg.sender].isWithdrawn = true;
+            //
+            Withdraw(msg.sender, _roundIndex, ethReturn, namiPool[_roundIndex][msg.sender].stake, now);
+            _withdrawNAC(msg.sender, _roundIndex);
+        }
+    }
+Response:
+{"StatementsA": {"namiPool[_roundIndex][msg.sender].isWithdrawn = true;":"This statement updates the state variable indicating that the user has withdrawn."}, "StatementsB": {"msg.sender.transfer(ethReturn);":"This statement executes an external call to transfer Ether to the sender."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: namiPool[_roundIndex][msg.sender].isWithdrawn = true;
+2.External Call: msg.sender.transfer(ethReturn);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

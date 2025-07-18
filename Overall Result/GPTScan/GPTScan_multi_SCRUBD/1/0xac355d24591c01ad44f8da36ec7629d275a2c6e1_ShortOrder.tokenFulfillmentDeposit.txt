@@ -1,0 +1,110 @@
+ShortOrder.tokenFulfillmentDeposit: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function tokenFulfillmentDeposit(address[2] tokenUser,uint amount,uint[8] minMaxDMWCPNonce,uint8 v,bytes32[2] rs) external {
+    bytes32 orderHash = keccak256 (
+        tokenUser[0],
+        tokenUser[1],
+        minMaxDMWCPNonce[0],
+        minMaxDMWCPNonce[1],
+        minMaxDMWCPNonce[2], 
+        minMaxDMWCPNonce[3],
+        minMaxDMWCPNonce[4],
+        minMaxDMWCPNonce[5],
+        minMaxDMWCPNonce[6], 
+        minMaxDMWCPNonce[7]
+      );
+    require(
+      ecrecover(keccak256("\x19Ethereum Signed Message:\n32",orderHash),v,rs[0],rs[1]) == msg.sender &&
+      block.number > minMaxDMWCPNonce[2] &&
+      block.number <= minMaxDMWCPNonce[3] && 
+      orderRecord[tokenUser[1]][orderHash].balance >= minMaxDMWCPNonce[0] &&
+      orderRecord[msg.sender][orderHash].balance == safeMul(amount,minMaxDMWCPNonce[6]) &&
+      !orderRecord[msg.sender][orderHash].tokenDeposit
+    );
+    Token(tokenUser[0]).transferFrom(msg.sender,this,amount);
+    orderRecord[msg.sender][orderHash].shortBalance[tokenUser[0]] = safeAdd(orderRecord[msg.sender][orderHash].shortBalance[tokenUser[0]],amount);
+    orderRecord[msg.sender][orderHash].tokenDeposit = true;
+    TokenFulfillment(tokenUser,minMaxDMWCPNonce,amount);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function tokenFulfillmentDeposit(address[2] tokenUser,uint amount,uint[8] minMaxDMWCPNonce,uint8 v,bytes32[2] rs) external {
+    bytes32 orderHash = keccak256 (
+        tokenUser[0],
+        tokenUser[1],
+        minMaxDMWCPNonce[0],
+        minMaxDMWCPNonce[1],
+        minMaxDMWCPNonce[2], 
+        minMaxDMWCPNonce[3],
+        minMaxDMWCPNonce[4],
+        minMaxDMWCPNonce[5],
+        minMaxDMWCPNonce[6], 
+        minMaxDMWCPNonce[7]
+      );
+    require(
+      ecrecover(keccak256("\x19Ethereum Signed Message:\n32",orderHash),v,rs[0],rs[1]) == msg.sender &&
+      block.number > minMaxDMWCPNonce[2] &&
+      block.number <= minMaxDMWCPNonce[3] && 
+      orderRecord[tokenUser[1]][orderHash].balance >= minMaxDMWCPNonce[0] &&
+      orderRecord[msg.sender][orderHash].balance == safeMul(amount,minMaxDMWCPNonce[6]) &&
+      !orderRecord[msg.sender][orderHash].tokenDeposit
+    );
+    Token(tokenUser[0]).transferFrom(msg.sender,this,amount);
+    orderRecord[msg.sender][orderHash].shortBalance[tokenUser[0]] = safeAdd(orderRecord[msg.sender][orderHash].shortBalance[tokenUser[0]],amount);
+    orderRecord[msg.sender][orderHash].tokenDeposit = true;
+    TokenFulfillment(tokenUser,minMaxDMWCPNonce,amount);
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function tokenFulfillmentDeposit(address[2] tokenUser,uint amount,uint[8] minMaxDMWCPNonce,uint8 v,bytes32[2] rs) external {
+    bytes32 orderHash = keccak256 (
+        tokenUser[0],
+        tokenUser[1],
+        minMaxDMWCPNonce[0],
+        minMaxDMWCPNonce[1],
+        minMaxDMWCPNonce[2], 
+        minMaxDMWCPNonce[3],
+        minMaxDMWCPNonce[4],
+        minMaxDMWCPNonce[5],
+        minMaxDMWCPNonce[6], 
+        minMaxDMWCPNonce[7]
+      );
+    require(
+      ecrecover(keccak256("\x19Ethereum Signed Message:\n32",orderHash),v,rs[0],rs[1]) == msg.sender &&
+      block.number > minMaxDMWCPNonce[2] &&
+      block.number <= minMaxDMWCPNonce[3] && 
+      orderRecord[tokenUser[1]][orderHash].balance >= minMaxDMWCPNonce[0] &&
+      orderRecord[msg.sender][orderHash].balance == safeMul(amount,minMaxDMWCPNonce[6]) &&
+      !orderRecord[msg.sender][orderHash].tokenDeposit
+    );
+    Token(tokenUser[0]).transferFrom(msg.sender,this,amount);
+    orderRecord[msg.sender][orderHash].shortBalance[tokenUser[0]] = safeAdd(orderRecord[msg.sender][orderHash].shortBalance[tokenUser[0]],amount);
+    orderRecord[msg.sender][orderHash].tokenDeposit = true;
+    TokenFulfillment(tokenUser,minMaxDMWCPNonce,amount);
+  }
+Response:
+{"StatementsA": {"orderRecord[msg.sender][orderHash].tokenDeposit = true;":"Updates the tokenDeposit state variable in the orderRecord mapping."}, "StatementsB": {"Token(tokenUser[0]).transferFrom(msg.sender,this,amount);":"Executes an external call to transfer tokens from the sender to the contract."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: orderRecord[msg.sender][orderHash].tokenDeposit = true;
+2.External Call: Token(tokenUser[0]).transferFrom(msg.sender,this,amount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

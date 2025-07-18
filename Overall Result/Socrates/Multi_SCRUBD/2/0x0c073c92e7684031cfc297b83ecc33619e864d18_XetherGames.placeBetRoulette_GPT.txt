@@ -1,0 +1,49 @@
+
+Start analyze function: XetherGames.placeBetRoulette(uint256[],uint256[],uint256,uint256,uint256,bytes32,bytes32)
+Function Security Analysis for XetherGames.placeBetRoulette(uint256[],uint256[],uint256,uint256,uint256,bytes32,bytes32)
+    There are no modifiers should be examined in function placeBetRoulette.
+    Check direct function security
+        - function XetherGames.placeBetRoulette(uint256[],uint256[],uint256,uint256,uint256,bytes32,bytes32) has no security assurance protected by checking the authority
+        of msg.sender
+          Reason: The code does not have any statement that directly checks if `msg.sender` is equal to or not equal to a specific role like xxxOwner, xxxAddress, Leader,
+          or CEO which is a characteristic we are looking for.
+        - function XetherGames.placeBetRoulette(uint256[],uint256[],uint256,uint256,uint256,bytes32,bytes32) has no apparent security assurance by utilizing a lock
+        machinism.
+          Reason: The function does not contain any of the specified code structures. There are no patterns of 'require(xxx == True)', 'require(xxx == False)',
+          'require(!xxx)', or 'if(!xxx) throw' within the code.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: XetherGames.sendDividends()
+Function Security Analysis for XetherGames.sendDividends()
+    There are no modifiers should be examined in function sendDividends.
+    Check direct function security
+        - function XetherGames.sendDividends() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks, assertions, or conditions related to msg.sender being equal or not equal to an owner-related identifier like
+          Leader, CEO, xxxOwner, or xxxAddress.
+        - function XetherGames.sendDividends() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any `require` statements nor any boolean variables that are checked and reset as described in the provided structures.
+External Call Analysis
+    Direct external call: ['xEtherTokensContract.ecosystemDividends.value(tmpDividends)()']
+    Analyze Transfer
+    Analyze Gas
+        - xEtherTokensContract.ecosystemDividends.value(tmpDividends)() ISN'T subjected to gas limits.
+    Remaining external call: ['xEtherTokensContract.ecosystemDividends.value(tmpDividends)()']
+    Analyze External Address
+        There are ['xEtherTokensContract'] should be checked in variable xEtherTokensContract
+        Checked variables: xEtherTokensContract
+            No 1. The function name 'setXEtherContract' does not match the contract name 'XetherGames', nor is it called 'constructor', so it is not a constructor
+            function. 2. The function sets the state variable 'xEtherTokensContract' using a parameter 'xEtherContract', but it does not hardcode a specific value
+            directly into the state variable.  Since neither condition is met, the answer is 'No'.
+            Function Security Analysis for XetherGames.setXEtherContract(address)
+                The modifier of function setXEtherContract are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier contains 'require (msg.sender == owner)' which enforces that only the owner can execute the function. This satisfies
+                      characteristic 1. There are no structural omissions related to characteristic 2, as there is no lock/unlock operation present.
+Conclusion: This function will not cause REE Problem.

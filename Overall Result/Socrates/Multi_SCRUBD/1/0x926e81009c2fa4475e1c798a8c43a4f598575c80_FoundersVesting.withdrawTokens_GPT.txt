@@ -1,0 +1,24 @@
+
+Start analyze function: FoundersVesting.withdrawTokens()
+Function Security Analysis for FoundersVesting.withdrawTokens()
+    There are no modifiers should be examined in function withdrawTokens.
+    Check direct function security
+        - function FoundersVesting.withdrawTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified patterns that involve checking the identity of the function caller against an owner, address, leader,
+          or CEO. There are no 'require', 'if', or 'assert' statements based on 'msg.sender' that involve such a check in the provided code.
+        - function FoundersVesting.withdrawTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures, such as 'require(xxx == True)', setting 'xxx = False', or 'require(xxx == False)',
+          setting 'xxx = True'.
+External Call Analysis
+    Direct external call: ['mntToken.balanceOf(this)', 'mntToken.transfer(teamAccountAddress,amountToSend)']
+    Analyze Transfer
+        - mntToken.balanceOf(this) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - mntToken.balanceOf(this) ISN'T subjected to gas limits.
+    Remaining external call: ['mntToken.balanceOf(this)']
+    Analyze External Address
+        There are ['mntToken'] should be checked in variable mntToken
+        Checked variables: mntToken
+            Yes The function FoundersVesting has the same name as the contract name 'FoundersVesting', indicating it is a constructor in older Solidity versions. Thus, it
+            satisfies the first characteristic of checking whether the code is a constructor.
+Conclusion: This function will not cause REE Problem.

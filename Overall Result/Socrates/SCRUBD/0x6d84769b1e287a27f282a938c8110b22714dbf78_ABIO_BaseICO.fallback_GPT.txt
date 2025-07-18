@@ -1,0 +1,27 @@
+
+Start analyze function: ABIO_BaseICO.fallback()
+Function Security Analysis for ABIO_BaseICO.fallback()
+    The modifier of function fallback are ['stopOnPause']
+    The result of checking modifiers:
+        - modifier stopOnPause has no relation with controlled by owner.
+          Reason: The provided modifier checks if the contract is paused by validating that 'paused' is false, without enforcing a specific owner or address, nor using
+          any locking mechanisms. None of the listed characteristics (1, 2, or 3) apply to this modifier.
+    Check direct function security
+        - function ABIO_BaseICO.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check msg.sender against any specific owner or leader type address in the required or if statements relating to authorization of
+          the sender.
+        - function ABIO_BaseICO.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures like 'require(xxx == True); xxx = False;', 'require(xxx == False); xxx = True;',
+          'require(!xxx); xxx = True;', or 'if(!xxx) throw; xxx = true;'. It contains 'require' statements, but they don't fit the specified structural patterns.
+External Call Analysis
+    Direct external call: ['abioToken.transfer(msg.sender,ABIOAmount)']
+    Analyze Transfer
+        - abioToken.transfer(msg.sender,ABIOAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - abioToken.transfer(msg.sender,ABIOAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['abioToken.transfer(msg.sender,ABIOAmount)']
+    Analyze External Address
+        There are ['abioToken'] should be checked in variable abioToken
+        Checked variables: abioToken
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

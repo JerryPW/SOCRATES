@@ -1,0 +1,29 @@
+
+Start analyze function: TrustlessOTC.cancelTrade(uint256)
+Function Security Analysis for TrustlessOTC.cancelTrade(uint256)
+    There are no modifiers should be examined in function cancelTrade.
+    Check direct function security
+        - function TrustlessOTC.cancelTrade(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code uses 'require(msg.sender == o.creator);', where 'o.creator' is a local variable, and according to the note, comparisons using local variables
+          do not match the required structure.
+        - function TrustlessOTC.cancelTrade(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any require statements followed by assignments of the type specified in the given characteristics. There is a require
+          statement 'require(msg.sender == o.creator)' but it is not followed by anything resembling the pattern provided.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(o.amountFrom)', 'TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom)',
+    'Token(o.tokenFrom).transfer(o.creator,o.amountFrom)']
+    Analyze Transfer
+        - msg.sender.transfer(o.amountFrom) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword: 'msg.sender.transfer(o.amountFrom)'.. Parameter in 'transfer'/'send': 1.
+        - TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - Token(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits.
+        - Token(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits.
+    Remaining external call: ['TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom)', 'Token(o.tokenFrom).transfer(o.creator,o.amountFrom)']
+    Analyze External Address
+        The variable 'o' in external call 'TokenNoReturn(o.tokenFrom).transfer(o.creator,o.amountFrom)' has no state variable assigned in
+        TrustlessOTC.cancelTrade(uint256). Therefore we check whether it has been hardcoded in the function.
+            No The variable 'o' is not hardcoded. It is assigned the value retrieved from the 'offers' array using 'tradeID' as an index, which is a parameter of the
+            function 'cancelTrade'. This means the value of 'o' is dynamic and depends on the input provided each time the function is called.
+Conclusion: This function will cause REE Problem.

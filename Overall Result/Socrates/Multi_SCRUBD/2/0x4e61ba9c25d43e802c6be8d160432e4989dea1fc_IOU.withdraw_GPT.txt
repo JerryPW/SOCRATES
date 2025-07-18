@@ -1,0 +1,23 @@
+
+Start analyze function: IOU.withdraw()
+Function Security Analysis for IOU.withdraw()
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function IOU.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the conditions for checking msg.sender match the required structures.
+        - function IOU.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code, there are several instances of 'if' statements that check a condition and throw if it is not met, specifically checking for
+          zero values to throw errors. However, these do not match the exact structure 4 ('if(!xxx) throw; xxx = true;') as there is no subsequent assignment 'xxx =
+          true;' immediately following these conditions to satisfy the required sequence in the specified pattern. There are conditional structures that throw exceptions,
+          but they do not exactly meet the requirements listed such that both parts of the pattern (including assignment of a boolean to 'true') are present together.
+External Call Analysis
+    Direct external call: ['token.balanceOf(address(this))']
+    Analyze Transfer
+    Analyze Gas
+        - token.balanceOf(address(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['token.balanceOf(address(this))']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            State variable token has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

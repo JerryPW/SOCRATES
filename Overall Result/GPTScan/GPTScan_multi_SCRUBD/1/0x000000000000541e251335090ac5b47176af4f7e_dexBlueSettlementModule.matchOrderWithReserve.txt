@@ -1,0 +1,189 @@
+dexBlueSettlementModule.matchOrderWithReserve: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function matchOrderWithReserve(
+        Order memory order,
+        address      reserve,
+        ReserveTrade memory trade
+    ) internal returns(bool){
+        // Load the orders previously matched amount into memory
+        uint orderMatched = matched[order.hash];
+
+        if( // Check if the arbiter matched the conditions of the order signee
+            // Does the order signee has the required balances deposited
+            balances[order.sellToken][order.signee] >= trade.orderAmount - trade.orderRebate
+            
+            // Is the order still valid
+            && order.expiry > block.timestamp 
+            
+            // Is the order matched at a rate better or equal to the one specified by the signee
+            && trade.orderAmount - trade.orderRebate <= order.sellAmount * trade.reserveAmount / order.buyAmount + 1  // + 1 to deal with rouding errors
+            
+            // Check if the order was cancelled
+            && order.sellAmount > orderMatched
+
+            // Check if the matched amount + previously matched trades doesn't exceed the amount specified by the order signee
+            && trade.orderAmount - trade.orderRebate + orderMatched <= order.sellAmount
+                
+            // Check if the charged fee is not too high
+            && trade.orderFee   <= trade.reserveAmount / 20
+            && trade.reserveFee <= trade.orderAmount   / 20
+            
+            // Check if the rebates can be compensated by the fees
+            && trade.orderRebate   <= trade.reserveFee
+            && trade.reserveRebate <= trade.orderFee
+        ){
+            balances[order.sellToken][order.signee] -= trade.orderAmount - trade.orderRebate;  // Substract users's sold amount minus the makers rebate
+            
+            (bool txSuccess, bytes memory returnData) = address(this).call.gas(
+                    trade.gasLimit                                              // The gas limit for the call
+                )(
+                    abi.encodePacked(                                           // This encodes the function to call and the parameters we are passing to the settlement function
+                        dexBlue(address(0)).executeReserveTrade.selector,       // This function executes the call to the reserve
+                        abi.encode(                            
+                            order.sellToken,                                    // The token the order signee wants to exchange with the reserve
+                            trade.orderAmount   - trade.reserveFee,             // The reserve receives the sold amount minus the fee
+                            order.buyToken,                                     // The token the order signee wants to receive from the reserve
+                            trade.reserveAmount - trade.reserveRebate,          // The reserve has to return the amount the order want to receive minus
+                            reserve                                             // The reserve the trade is settled with
+                        )
+                    )
+                );
+            
+            if(
+               txSuccess                                    // The call to the reserve did not fail
+               && abi.decode(returnData, (bool))            // The call returned true (we are sure its a contract we called)
+               // executeReserveTrade checks whether the reserve deposited the funds
+            ){
+                // Substract the deposited amount from reserves balance
+                balances[order.buyToken][reserve]      -= trade.reserveAmount - trade.reserveRebate;    // Substract reserves's sold amount
+                
+                // The amount to the order signees balance
+                balances[order.buyToken][order.signee] += trade.reserveAmount - trade.orderFee;         // Give the users his bought amount minus the fee
+                
+                // Save sold amounts to prevent double matching
+                matched[order.hash] += trade.orderAmount - trade.orderRebate;                           // Prevent maker order from being reused
+                
+                // Give fee to feeCollector
+                balances[order.buyToken][feeCollector]  += trade.orderFee   - trade.reserveRebate;      // Give the feeColletor the fee minus the maker rebate
+                balances[order.sellToken][feeCollector] += trade.reserveFee - trade.orderRebate;        // Give the feeColletor the fee minus the maker rebate
+                
+                // Set potential previous blocking of these funds to 0
+                blocked_for_single_sig_withdrawal[order.sellToken][order.signee] = 0;                   // If the user blocked funds which he/she used in this order we have to unblock them
+
+                if(trade.orderIsMaker){
+                    emit LogTrade(order.sellToken, trade.orderAmount, order.buyToken, trade.reserveAmount);
+                }else{
+                    emit LogTrade(order.buyToken, trade.reserveAmount, order.sellToken, trade.orderAmount);
+                }
+                emit LogDirectWithdrawal(reserve, order.sellToken, trade.orderAmount - trade.reserveFee);
+                
+                return true;
+            }else{
+                balances[order.sellToken][order.signee] += trade.orderAmount - trade.orderRebate;  // Refund substracted amount
+                
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function matchOrderWithReserve(
+        Order memory order,
+        address      reserve,
+        ReserveTrade memory trade
+    ) internal returns(bool){
+        // Load the orders previously matched amount into memory
+        uint orderMatched = matched[order.hash];
+
+        if( // Check if the arbiter matched the conditions of the order signee
+            // Does the order signee has the required balances deposited
+            balances[order.sellToken][order.signee] >= trade.orderAmount - trade.orderRebate
+            
+            // Is the order still valid
+            && order.expiry > block.timestamp 
+            
+            // Is the order matched at a rate better or equal to the one specified by the signee
+            && trade.orderAmount - trade.orderRebate <= order.sellAmount * trade.reserveAmount / order.buyAmount + 1  // + 1 to deal with rouding errors
+            
+            // Check if the order was cancelled
+            && order.sellAmount > orderMatched
+
+            // Check if the matched amount + previously matched trades doesn't exceed the amount specified by the order signee
+            && trade.orderAmount - trade.orderRebate + orderMatched <= order.sellAmount
+                
+            // Check if the charged fee is not too high
+            && trade.orderFee   <= trade.reserveAmount / 20
+            && trade.reserveFee <= trade.orderAmount   / 20
+            
+            // Check if the rebates can be compensated by the fees
+            && trade.orderRebate   <= trade.reserveFee
+            && trade.reserveRebate <= trade.orderFee
+        ){
+            balances[order.sellToken][order.signee] -= trade.orderAmount - trade.orderRebate;  // Substract users's sold amount minus the makers rebate
+            
+            (bool txSuccess, bytes memory returnData) = address(this).call.gas(
+                    trade.gasLimit                                              // The gas limit for the call
+                )(
+                    abi.encodePacked(                                           // This encodes the function to call and the parameters we are passing to the settlement function
+                        dexBlue(address(0)).executeReserveTrade.selector,       // This function executes the call to the reserve
+                        abi.encode(                            
+                            order.sellToken,                                    // The token the order signee wants to exchange with the reserve
+                            trade.orderAmount   - trade.reserveFee,             // The reserve receives the sold amount minus the fee
+                            order.buyToken,                                     // The token the order signee wants to receive from the reserve
+                            trade.reserveAmount - trade.reserveRebate,          // The reserve has to return the amount the order want to receive minus
+                            reserve                                             // The reserve the trade is settled with
+                        )
+                    )
+                );
+            
+            if(
+               txSuccess                                    // The call to the reserve did not fail
+               && abi.decode(returnData, (bool))            // The call returned true (we are sure its a contract we called)
+               // executeReserveTrade checks whether the reserve deposited the funds
+            ){
+                // Substract the deposited amount from reserves balance
+                balances[order.buyToken][reserve]      -= trade.reserveAmount - trade.reserveRebate;    // Substract reserves's sold amount
+                
+                // The amount to the order signees balance
+                balances[order.buyToken][order.signee] += trade.reserveAmount - trade.orderFee;         // Give the users his bought amount minus the fee
+                
+                // Save sold amounts to prevent double matching
+                matched[order.hash] += trade.orderAmount - trade.orderRebate;                           // Prevent maker order from being reused
+                
+                // Give fee to feeCollector
+                balances[order.buyToken][feeCollector]  += trade.orderFee   - trade.reserveRebate;      // Give the feeColletor the fee minus the maker rebate
+                balances[order.sellToken][feeCollector] += trade.reserveFee - trade.orderRebate;        // Give the feeColletor the fee minus the maker rebate
+                
+                // Set potential previous blocking of these funds to 0
+                blocked_for_single_sig_withdrawal[order.sellToken][order.signee] = 0;                   // If the user blocked funds which he/she used in this order we have to unblock them
+
+                if(trade.orderIsMaker){
+                    emit LogTrade(order.sellToken, trade.orderAmount, order.buyToken, trade.reserveAmount);
+                }else{
+                    emit LogTrade(order.buyToken, trade.reserveAmount, order.sellToken, trade.orderAmount);
+                }
+                emit LogDirectWithdrawal(reserve, order.sellToken, trade.orderAmount - trade.reserveFee);
+                
+                return true;
+            }else{
+                balances[order.sellToken][order.signee] += trade.orderAmount - trade.orderRebate;  // Refund substracted amount
+                
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

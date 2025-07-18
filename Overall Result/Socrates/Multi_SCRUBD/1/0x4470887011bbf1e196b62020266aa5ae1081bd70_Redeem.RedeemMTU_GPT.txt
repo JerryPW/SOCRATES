@@ -1,0 +1,31 @@
+
+Start analyze function: Redeem.RedeemMTU(bool)
+Function Security Analysis for Redeem.RedeemMTU(bool)
+    The modifier of function RedeemMTU are ['paused']
+    The result of checking modifiers:
+        - modifier paused has no relation with controlled by owner.
+          Reason: The modifier 'paused' checks for a condition related to a flag 'Paused' but does not restrict access based on specific addresses/owner nor does it
+          involve a lock mechanism as described in the rules.
+    Check direct function security
+        - function Redeem.RedeemMTU(bool) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given code does not include any of the characteristic patterns related to the existence of access control checks on msg.sender as specified in the
+          instructions.
+        - function Redeem.RedeemMTU(bool) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures that involve logical reassignments of a boolean variable conditioned by require or if
+          statements.
+External Call Analysis
+    Direct external call: ['tokenFunction.transfer(msg.sender,AppliedUnits)', 'msg.sender.transfer(withdrawVal)']
+    Analyze Transfer
+        - tokenFunction.transfer(msg.sender,AppliedUnits) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.transfer(withdrawVal) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenFunction.transfer(msg.sender,AppliedUnits) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenFunction.transfer(msg.sender,AppliedUnits)']
+    Analyze External Address
+        The variable 'tokenFunction' in external call 'tokenFunction.transfer(msg.sender,AppliedUnits)' has no state variable assigned in Redeem.RedeemMTU(bool).
+        Therefore we check whether it has been hardcoded in the function.
+            No The variable 'tokenFunction' is not hardcoded. It is dynamically assigned using the 'getAddress' function and 'token' constructor, which retrieves an
+            address based on a specific string-key and then uses it to create a token instance. This indicates that 'tokenFunction' can represent different token
+            contracts depending on conditions outside of this code snippet.
+Conclusion: This function will cause REE Problem.

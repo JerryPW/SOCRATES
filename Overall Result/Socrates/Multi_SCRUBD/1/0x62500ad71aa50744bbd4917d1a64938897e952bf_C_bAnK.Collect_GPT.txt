@@ -1,0 +1,21 @@
+
+Start analyze function: C_bAnK.Collect(uint256)
+Function Security Analysis for C_bAnK.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function C_bAnK.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks or assertions directly involving specific roles such as xxxOwner or xxxAddress using conditions like require(),
+          assert(), or throw based on comparisons with msg.sender.
+        - function C_bAnK.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not contain any 'require' statements or 'if' statements that throw an exception or revert. It only contains an 'if' conditional
+          checking multiple conditions, but it does not modify the condition variable within the 'if' statement (no statements like 'require(xxx == True)' followed by
+          'xxx = False', or 'if(!xxx) throw' followed by 'xxx = true').
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

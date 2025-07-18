@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "withdrawBody",
+        "code": "function withdrawBody(address addr, uint limit) public onlyOwner returns (uint) { Investment[] investments = investors[addr].investments; uint valueToWithdraw = 0; for (uint i = 0; i < investments.length; i++) { if (!investments[i].partiallyWithdrawn && investments[i].date <= now - 30 days && valueToWithdraw + investments[i].value/2 <= limit) { investments[i].partiallyWithdrawn = true; valueToWithdraw += investments[i].value/2; investors[addr].overallInvestment -= investments[i].value/2; } if (!investments[i].fullyWithdrawn && investments[i].date <= now - 60 days && valueToWithdraw + investments[i].value/2 <= limit) { investments[i].fullyWithdrawn = true; valueToWithdraw += investments[i].value/2; investors[addr].overallInvestment -= investments[i].value/2; } return valueToWithdraw; } return valueToWithdraw; }",
+        "vulnerability": "Incomplete Loop Execution",
+        "reason": "The function includes a 'return valueToWithdraw;' statement within the loop. This causes the function to exit during the first iteration, leading to only the first investment being checked and potentially withdrawn from. This behavior prevents the function from checking all investments, causing a logical error and potentially allowing an attacker to manipulate or block withdrawals.",
+        "file_name": "0x04d660832910ff492e940daff9ec7b3497e886ac.sol"
+    },
+    {
+        "function_name": "doInvest",
+        "code": "function doInvest(address referrerAddr) public payable notFromContract balanceChanged { uint investment = msg.value; uint receivedEther = msg.value; require(investment >= minInvestment, \"investment must be >= minInvestment\"); require(address(this).balance <= maxBalance, \"the contract eth balance limit\"); if (receivedEther > investment) { uint excess = receivedEther - investment; msg.sender.transfer(excess); receivedEther = investment; emit LogSendExcessOfEther(msg.sender, now, msg.value, investment, excess); } advertisingAddress.send(m_advertisingPercent.mul(receivedEther)); adminsAddress.send(m_adminsPercent.mul(receivedEther)); bool senderIsInvestor = m_investors.isInvestor(msg.sender); if (referrerAddr.notZero() && !senderIsInvestor && !m_referrals[msg.sender] && referrerAddr != msg.sender && m_investors.isInvestor(referrerAddr)) { m_referrals[msg.sender] = true; uint referrerBonus = m_referrer_percent.mmul(investment); uint referalBonus = m_referal_percent.mmul(investment); assert(m_investors.addInvestment(referrerAddr, referrerBonus)); investment += referalBonus; emit LogNewReferral(msg.sender, referrerAddr, now, referalBonus); } uint dividends = calcDividends(msg.sender); if (senderIsInvestor && dividends.notZero()) { investment += dividends; emit LogAutomaticReinvest(msg.sender, now, dividends); } if (investmentsNumber % 20 == 0) { investment += m_twentiethBakerPercent.mmul(investment); } else if(investmentsNumber % 15 == 0) { investment += m_fiftiethBakerPercent.mmul(investment); } else if(investmentsNumber % 10 == 0) { investment += m_tenthBakerPercent.mmul(investment); } if (senderIsInvestor) { assert(m_investors.addInvestment(msg.sender, investment)); assert(m_investors.setPaymentTime(msg.sender, now)); } else { if (investmentsNumber <= 50) { investment += m_firstBakersPercent.mmul(investment); } assert(m_investors.newInvestor(msg.sender, investment, now)); emit LogNewInvestor(msg.sender, now); } investmentsNumber++; emit LogNewInvestment(msg.sender, now, investment, receivedEther); }",
+        "vulnerability": "Unsafe Ether Transfers",
+        "reason": "The function uses 'send' for transferring Ether to 'advertisingAddress' and 'adminsAddress', which only forwards 2300 gas. If the recipient is a contract with complex logic in its fallback function, the send could fail, potentially blocking execution. It is safer to use 'transfer' or 'call' with proper error handling.",
+        "file_name": "0x04d660832910ff492e940daff9ec7b3497e886ac.sol"
+    },
+    {
+        "function_name": "nextWave",
+        "code": "function nextWave() private { m_investors = new InvestorsStorage(); investmentsNumber = 0; waveStartup = now; emit LogNextWave(now); }",
+        "vulnerability": "State Reset",
+        "reason": "The function resets the entire investors storage, effectively wiping all records of investments. While this might be intentional for starting a new wave, it can be exploited by triggering a reset at an inopportune time, causing potential loss of data and investor funds.",
+        "file_name": "0x04d660832910ff492e940daff9ec7b3497e886ac.sol"
+    }
+]

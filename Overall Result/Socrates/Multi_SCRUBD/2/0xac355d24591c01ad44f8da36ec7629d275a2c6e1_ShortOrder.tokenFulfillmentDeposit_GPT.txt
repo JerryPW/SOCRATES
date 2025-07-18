@@ -1,0 +1,26 @@
+
+Start analyze function: ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function tokenFulfillmentDeposit.
+    Check direct function security
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The provided function does not include any condition that checks if `msg.sender` is equal to or not equal to any owner, address, leader, or CEO. It
+          focuses on verifying a signature, block conditions, and order records instead.
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The structure 'require(!xxx); xxx = true;' is found in the code. However, the negation of xxx, which is 'orderRecord[msg.sender][orderHash].tokenDeposit
+          = true;', occurs after the main logic of checking conditions and transferring tokens, not immediately after the requirement. Thus, the state change is not
+          conducted immediately post-requirement.
+External Call Analysis
+    Direct external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze Transfer
+    Analyze Gas
+        - Token(tokenUser[0]).transferFrom(msg.sender,this,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze External Address
+        The variable 'tokenUser' in external call 'Token(tokenUser[0]).transferFrom(msg.sender,this,amount)' has no state variable assigned in
+        ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]). Therefore we check whether it has been hardcoded in the function.
+            No The variable 'tokenUser' is used within the function as part of operations on inputs, checking conditions, and modifying records based on external inputs;
+            it is not assigned a fixed or hardcoded value anywhere within the function body. The value of 'tokenUser' is fully dependent on what is passed into the
+            function as an argument during its execution.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,18 @@
+Bounty.getTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function getTokens(address beneficiary) public payable {
+    require(beneficiary != address(0));
+    require(validPurchase(beneficiary));
+    
+    token.transfer(beneficiary, BountyAmount);
+
+    emit TokenBounty(beneficiary, BountyAmount);
+
+    participated[beneficiary] = true;
+  }
+Response:
+{"1": "No"}
+--------------------------------------------------

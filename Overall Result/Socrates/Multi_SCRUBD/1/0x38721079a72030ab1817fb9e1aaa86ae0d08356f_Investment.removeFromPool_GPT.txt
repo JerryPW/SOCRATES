@@ -1,0 +1,27 @@
+
+Start analyze function: Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[])
+Function Security Analysis for Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[])
+    There are no modifiers should be examined in function removeFromPool.
+    Check direct function security
+        - function Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified patterns that perform a control check with msg.sender against xxxOwner/xxxAddress/Leader/CEO.
+        - function Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures. It checks several conditions using 'require' but there is no complementary statement that
+          assigns the boolean variable to true or false based on these require statements as specified in the patterns.
+External Call Analysis
+    Direct external call: ['WETHContract.withdraw(amountToPayToUser)', 'msg.sender.call{value:amountToPayToUser}()',
+    'IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount)']
+    Analyze Transfer
+        - IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - WETHContract.withdraw(amountToPayToUser) ISN'T subjected to gas limits.
+        - msg.sender.call{value:amountToPayToUser}() ISN'T subjected to gas limits.
+        - IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['WETHContract.withdraw(amountToPayToUser)', 'msg.sender.call{value:amountToPayToUser}()',
+    'IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount)']
+    Analyze External Address
+        There are ['WETHAddress'] should be checked in variable WETHContract
+        Checked variables: WETHAddress
+            State variable WETHAddress has initialized in public area after declaration.
+        External call msg.sender.call{value:amountToPayToUser}() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

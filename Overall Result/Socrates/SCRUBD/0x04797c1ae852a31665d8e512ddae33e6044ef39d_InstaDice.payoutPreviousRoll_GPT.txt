@@ -1,0 +1,49 @@
+
+Start analyze function: InstaDice.payoutPreviousRoll()
+Function Security Analysis for InstaDice.payoutPreviousRoll()
+    There are no modifiers should be examined in function payoutPreviousRoll.
+    Check direct function security
+        - function InstaDice.payoutPreviousRoll() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any patterns that match the specified structures related to checking msg.sender against specific roles like xxxOwner,
+          xxxAddress, Leader, or CEO.
+        - function InstaDice.payoutPreviousRoll() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not initialize any variable with require or if statement in the patterns mentioned, nor does it set a boolean variable to true or false as
+          depicted in the demanded pattern. It checks specific conditions with require statements but does not satisfy the sequence and condition requirement exactly as
+          outlined.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: InstaDice._finalizePreviousRoll(InstaDice.User,InstaDice.Stats)
+Function Security Analysis for InstaDice._finalizePreviousRoll(InstaDice.User,InstaDice.Stats)
+    There are no modifiers should be examined in function _finalizePreviousRoll.
+    Check direct function security
+        - function InstaDice._finalizePreviousRoll(InstaDice.User,InstaDice.Stats) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function lacks msg.sender characteristic patterns linked to verification against xxxOwner/xxxAddress/Leader/CEO.
+        - function InstaDice._finalizePreviousRoll(InstaDice.User,InstaDice.Stats) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not have a structure that matches any of the specified patterns in the prompt. The conditions in the code are used for assertion and
+          require statements with different logic, but the pattern emphasized in the prompt requires specific sequence of setting boolean values after conditional
+          requirements or assertions, which this code lacks.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['roll', 'payoutPreviousRoll']
+        Function Security Analysis for InstaDice.roll(uint8)
+            There are no modifiers should be examined in function roll.
+            Check direct function security
+                - function InstaDice.roll(uint8) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include information about msg.sender being compared against xxxOwner or similar.
+                - function InstaDice.roll(uint8) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not contain any required patterns of 'require' or 'if' with the specified conditions and variable manipulations as mentioned
+                  in the criteria.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_user.r_payout)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_user.r_payout)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_user.r_payout)()']
+    Analyze External Address
+        External call msg.sender.call.value(_user.r_payout)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,40 @@
+
+Start analyze function: SharkPool.do_redemption()
+Function Security Analysis for SharkPool.do_redemption()
+    There are no modifiers should be examined in function do_redemption.
+    Check direct function security
+        - function SharkPool.do_redemption() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks or conditions specifically involving msg.sender being equal to an owner, leader, or other special address roles. It
+          focuses on transferring balances and does not restrict execution based on the caller's address.
+        - function SharkPool.do_redemption() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any structure that matches the described patterns. It involves checking a condition and executing code based on it, but it
+          does not include the specific require or if(!...) throw patterns with variable assignments as specified.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback', 'redeem']
+        Function Security Analysis for SharkPool.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function SharkPool.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any checks related to `msg.sender` that match the specified patterns involving ownership or authority checks such as
+                  require, if or assert directly comparing `msg.sender` to specific roles like Owner, Address, Leader, or CEO.
+                - function SharkPool.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specific structural patterns listed. There is a 'require' statement at the beginning, but it doesn't check
+                  for a boolean variable to be true or false, instead, it checks if 'msg.value' is greater than or equal to a calculated value.
+External Call Analysis
+    Direct external call: ['base_contract.transfer(msg.sender,remainder)', 'base_contract.transfer(owner,owner_cut)']
+    Analyze Transfer
+        - base_contract.transfer(msg.sender,remainder) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - base_contract.transfer(owner,owner_cut) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - base_contract.transfer(msg.sender,remainder) ISN'T subjected to gas limits.
+        - base_contract.transfer(owner,owner_cut) ISN'T subjected to gas limits.
+    Remaining external call: ['base_contract.transfer(msg.sender,remainder)', 'base_contract.transfer(owner,owner_cut)']
+    Analyze External Address
+        There are ['base_contract'] should be checked in variable base_contract
+        Checked variables: base_contract
+            Yes The function is named 'SharkPool', which matches the contract name, indicating that it is a constructor.
+        There are ['base_contract'] should be checked in variable base_contract
+        Checked variables: base_contract
+            Yes The function name 'SharkPool' matches the contract name 'SharkPool', indicating that this code is a constructor in Solidity versions prior to 0.4.22
+            (after which the keyword 'constructor' is used instead).
+Conclusion: This function will not cause REE Problem.

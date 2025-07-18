@@ -1,0 +1,18 @@
+EscrowGoods.getFees: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function getFees() onlyArbiter {
+        if(feeFunds > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("feeFunds > this.balance");
+            return;
+        }
+        safeSend(arbiter, feeFunds);
+
+        feeFunds = 0;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

@@ -1,0 +1,175 @@
+DCY_preICO.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable 
+    {
+        require(!crowdsaleClosed);
+        require(tokensLeft >= amount / price);
+
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+
+        tokenReward.transfer(msg.sender, amount / price);
+        FundTransfer(msg.sender, amount, true);
+
+        tokensLeft = tokenReward.getBalanceOf(address(this));
+        if (tokensLeft == 0) 
+        {
+            crowdsaleClosed = true;
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable 
+    {
+        require(!crowdsaleClosed);
+        require(tokensLeft >= amount / price);
+
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+
+        tokenReward.transfer(msg.sender, amount / price);
+        FundTransfer(msg.sender, amount, true);
+
+        tokensLeft = tokenReward.getBalanceOf(address(this));
+        if (tokensLeft == 0) 
+        {
+            crowdsaleClosed = true;
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () payable 
+    {
+        require(!crowdsaleClosed);
+        require(tokensLeft >= amount / price);
+
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+
+        tokenReward.transfer(msg.sender, amount / price);
+        FundTransfer(msg.sender, amount, true);
+
+        tokensLeft = tokenReward.getBalanceOf(address(this));
+        if (tokensLeft == 0) 
+        {
+            crowdsaleClosed = true;
+        }
+    }
+Response:
+{"StatementsA": {"balanceOf[msg.sender] += amount":"Updates the balance of the sender in the state variable."}, "StatementsB": {"tokenReward.transfer(msg.sender, amount / price)":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: balanceOf[msg.sender] += amount
+2.External Call: tokenReward.transfer(msg.sender, amount / price)
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable 
+    {
+        require(!crowdsaleClosed);
+        require(tokensLeft >= amount / price);
+
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+
+        tokenReward.transfer(msg.sender, amount / price);
+        FundTransfer(msg.sender, amount, true);
+
+        tokensLeft = tokenReward.getBalanceOf(address(this));
+        if (tokensLeft == 0) 
+        {
+            crowdsaleClosed = true;
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable 
+    {
+        require(!crowdsaleClosed);
+        require(tokensLeft >= amount / price);
+
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+
+        tokenReward.transfer(msg.sender, amount / price);
+        FundTransfer(msg.sender, amount, true);
+
+        tokensLeft = tokenReward.getBalanceOf(address(this));
+        if (tokensLeft == 0) 
+        {
+            crowdsaleClosed = true;
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () payable 
+    {
+        require(!crowdsaleClosed);
+        require(tokensLeft >= amount / price);
+
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+
+        tokenReward.transfer(msg.sender, amount / price);
+        FundTransfer(msg.sender, amount, true);
+
+        tokensLeft = tokenReward.getBalanceOf(address(this));
+        if (tokensLeft == 0) 
+        {
+            crowdsaleClosed = true;
+        }
+    }
+Response:
+{"StatementsA": {"amountRaised += amount;":"This statement updates the state variable 'amountRaised'."}, "StatementsB": {"tokenReward.transfer(msg.sender, amount / price);":"This statement executes an external call to the 'transfer' function of the 'tokenReward' contract."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: amountRaised += amount;
+2.External Call: tokenReward.transfer(msg.sender, amount / price);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

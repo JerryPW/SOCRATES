@@ -1,0 +1,61 @@
+
+Start analyze function: dexBlue.spendGasTokens(uint256)
+Function Security Analysis for dexBlue.spendGasTokens(uint256)
+    There are no modifiers should be examined in function spendGasTokens.
+    Check direct function security
+        - function dexBlue.spendGasTokens(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function `spendGasTokens` does not contain any of the specified structures where `msg.sender` is compared to an owner or leader address.
+        - function dexBlue.spendGasTokens(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified structures. There is no 'require' statement or an 'if' statement that throws an exception. Also, no
+          boolean variable is being toggled between True and False or vice versa.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['settleReserveReserveTradeWithData', 'settleTrade', 'userSigWithdrawal', 'settleRingTrade', 'settleReserveReserveTrade',
+    'batchSettleTrades', 'settleReserveTradeWithData', 'settleReserveTrade', 'settleRingTradeWithData']
+        Function Security Analysis for dexBlue.settleReserveReserveTradeWithData(dexBlueStructs.TradeInputPacked,bytes32[],bytes32[])
+            There are no modifiers should be examined in function settleReserveReserveTradeWithData.
+            Check direct function security
+                - function dexBlue.settleReserveReserveTradeWithData(dexBlueStructs.TradeInputPacked,bytes32[],bytes32[]) has no security assurance protected by checking
+                the authority of msg.sender
+                  Reason: The code does not contain any condition that directly checks if 'msg.sender' is equal to or not equal to xxxOwner/xxxAddress/Leader/CEO using
+                  require, if-else, or assert statements.
+                - function dexBlue.settleReserveReserveTradeWithData(dexBlueStructs.TradeInputPacked,bytes32[],bytes32[]) has no apparent security assurance by utilizing
+                a lock machinism.
+                  Reason: The code provided contains a `require()` statement, but it does not follow any of the specified structures. The require statement is checking a
+                  conjunction of conditions rather than a single variable. Moreover, there is no subsequent assignment of a boolean variable following the require
+                  statement.
+External Call Analysis
+    Direct external call: ['restoreChildContractAddress(i).call()']
+    Analyze Transfer
+    Analyze Gas
+        - restoreChildContractAddress(i).call() ISN'T subjected to gas limits.
+    Remaining external call: ['restoreChildContractAddress(i).call()']
+    Analyze External Address
+        There are ['gas_token_nonce_tail'] should be checked in variable i
+        Checked variables: gas_token_nonce_tail
+            No 1. The function is named 'spendGasTokens', which does not match the contract name 'dexBlue', nor is it explicitly named 'constructor'.  2. The function
+            accesses the state variable 'gas_token_nonce_tail', but its value is not hardcoded; rather, it is used as part of an assignment within the existing contract
+            logic.
+            Function Security Analysis for dexBlue.spendGasTokens(uint256)
+                There are no modifiers should be examined in function spendGasTokens.
+                Check direct function security
+                    - function dexBlue.spendGasTokens(uint256) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The function does not include any checks or conditions related to msg.sender.
+                    - function dexBlue.spendGasTokens(uint256) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The function does not contain any of the specified structures in the provided options. There are no 'require' or 'if' statements that
+                      directly relate to setting a boolean variable to True or False, nor are there any examples of setting a variable to one state and then changing it
+                      later.
+                Since the function can only be called by functions, we start to analyze indirect function security.
+                The reachable functions are ['settleReserveReserveTradeWithData', 'settleTrade', 'userSigWithdrawal', 'settleRingTrade', 'settleReserveReserveTrade',
+                'batchSettleTrades', 'settleReserveTradeWithData', 'settleReserveTrade', 'settleRingTradeWithData']
+                    Function Security Analysis for dexBlue.settleReserveReserveTradeWithData(dexBlueStructs.TradeInputPacked,bytes32[],bytes32[])
+                        There are no modifiers should be examined in function settleReserveReserveTradeWithData.
+                        Check direct function security
+                            - function dexBlue.settleReserveReserveTradeWithData(dexBlueStructs.TradeInputPacked,bytes32[],bytes32[]) has no security assurance protected
+                            by checking the authority of msg.sender
+                              Reason: The code does not contain any check or assert statement that directly includes 'msg.sender == xxxOwner/xxxAddress/Leader/CEO' or
+                              'msg.sender != xxxOwner/xxxAddress/Leader/CEO'. It uses 'require' with 'msg.sender' but only checks if it matches the 'arbiters' mapping.
+                            - function dexBlue.settleReserveReserveTradeWithData(dexBlueStructs.TradeInputPacked,bytes32[],bytes32[]) has no apparent security assurance
+                            by utilizing a lock machinism.
+                              Reason: The code doesn't contain any of the specified structures like require(xxx == True); xxx = False; or require(xxx == False); xxx =
+                              True; or require(!xxx); xxx = True; or if(!xxx) throw; xxx = true;. Therefore, it doesn't match any of the listed patterns.
+Conclusion: This function will cause REE Problem.

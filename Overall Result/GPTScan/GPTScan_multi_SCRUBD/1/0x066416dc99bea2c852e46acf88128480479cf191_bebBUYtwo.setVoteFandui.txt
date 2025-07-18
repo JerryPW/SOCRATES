@@ -1,0 +1,57 @@
+bebBUYtwo.setVoteFandui: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function setVoteFandui()public{
+        require(KAIGUAN);
+        BEBuser storage _user=BEBusers[msg.sender];
+        uint256 _value=getTokenBalanceBET(msg.sender);
+        require(_value>=1 ether,"You have no right to vote");
+        require(!_user.vote,"You have voted");
+        bebTokenTransferBET.transferFrom(msg.sender,address(this),_value);//转入BET
+        BEBfandui+=_value;//赞成增加
+        _user.amounts=_value;//赋值
+        _user.vote=true;//赋值已经投票
+        if(BEBfandui>=51 ether){
+            //反对大于51%表决不通过
+            BEBfandui=0;//票数归零
+            BEBzanchen=0;//票数归零
+            huobileixing=0;//撤销本次申请
+            shenqingzhichu=0;//撤销地址
+            shenqingAmount=0;//撤销申请金额
+            KAIGUAN=false;
+            boody="拒绝";
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function setVoteFandui()public{
+        require(KAIGUAN);
+        BEBuser storage _user=BEBusers[msg.sender];
+        uint256 _value=getTokenBalanceBET(msg.sender);
+        require(_value>=1 ether,"You have no right to vote");
+        require(!_user.vote,"You have voted");
+        bebTokenTransferBET.transferFrom(msg.sender,address(this),_value);//转入BET
+        BEBfandui+=_value;//赞成增加
+        _user.amounts=_value;//赋值
+        _user.vote=true;//赋值已经投票
+        if(BEBfandui>=51 ether){
+            //反对大于51%表决不通过
+            BEBfandui=0;//票数归零
+            BEBzanchen=0;//票数归零
+            huobileixing=0;//撤销本次申请
+            shenqingzhichu=0;//撤销地址
+            shenqingAmount=0;//撤销申请金额
+            KAIGUAN=false;
+            boody="拒绝";
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

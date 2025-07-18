@@ -1,0 +1,243 @@
+Escrow.createTokenTransaction: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function createTokenTransaction (
+
+        address _tag,
+        uint _baseAmt,
+        uint _txnAmt,
+        uint _sellerFee,
+        uint _buyerFee,
+        address _buyer,
+        uint _token) external onlyAllowed {
+
+        require(_token != 0);
+        require(eternal.getAddress(_token) != 0x0);
+        Transaction storage transaction = transactions[_tag];
+        require(transaction.buyer == 0x0);
+        transactions[_tag] =
+        Transaction(
+            transactionStatus.Pending,
+            _baseAmt,
+            _txnAmt,
+            _sellerFee,
+            _buyerFee,
+            0,
+            _buyer,
+            _token);
+
+        uint buyerTotal = _txnAmt + _buyerFee;
+        token = ERC20(eternal.getAddress(_token));
+        token.transferFrom(_buyer, address(this), buyerTotal);
+        transaction.buyerBalance += buyerTotal;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function createTokenTransaction (
+
+        address _tag,
+        uint _baseAmt,
+        uint _txnAmt,
+        uint _sellerFee,
+        uint _buyerFee,
+        address _buyer,
+        uint _token) external onlyAllowed {
+
+        require(_token != 0);
+        require(eternal.getAddress(_token) != 0x0);
+        Transaction storage transaction = transactions[_tag];
+        require(transaction.buyer == 0x0);
+        transactions[_tag] =
+        Transaction(
+            transactionStatus.Pending,
+            _baseAmt,
+            _txnAmt,
+            _sellerFee,
+            _buyerFee,
+            0,
+            _buyer,
+            _token);
+
+        uint buyerTotal = _txnAmt + _buyerFee;
+        token = ERC20(eternal.getAddress(_token));
+        token.transferFrom(_buyer, address(this), buyerTotal);
+        transaction.buyerBalance += buyerTotal;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function createTokenTransaction (
+
+        address _tag,
+        uint _baseAmt,
+        uint _txnAmt,
+        uint _sellerFee,
+        uint _buyerFee,
+        address _buyer,
+        uint _token) external onlyAllowed {
+
+        require(_token != 0);
+        require(eternal.getAddress(_token) != 0x0);
+        Transaction storage transaction = transactions[_tag];
+        require(transaction.buyer == 0x0);
+        transactions[_tag] =
+        Transaction(
+            transactionStatus.Pending,
+            _baseAmt,
+            _txnAmt,
+            _sellerFee,
+            _buyerFee,
+            0,
+            _buyer,
+            _token);
+
+        uint buyerTotal = _txnAmt + _buyerFee;
+        token = ERC20(eternal.getAddress(_token));
+        token.transferFrom(_buyer, address(this), buyerTotal);
+        transaction.buyerBalance += buyerTotal;
+    }
+Response:
+{"StatementsA": {"transaction.buyerBalance += buyerTotal;":"Updates the buyerBalance state variable in the transaction struct."}, "StatementsB": {"token.transferFrom(_buyer, address(this), buyerTotal);":"Executes an external call to transfer tokens from the buyer to the contract."}, "VariableA": {"_buyer": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: transaction.buyerBalance += buyerTotal;
+2.External Call: token.transferFrom(_buyer, address(this), buyerTotal);
+3.Variable A: _buyer
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function createTokenTransaction (
+
+        address _tag,
+        uint _baseAmt,
+        uint _txnAmt,
+        uint _sellerFee,
+        uint _buyerFee,
+        address _buyer,
+        uint _token) external onlyAllowed {
+
+        require(_token != 0);
+        require(eternal.getAddress(_token) != 0x0);
+        Transaction storage transaction = transactions[_tag];
+        require(transaction.buyer == 0x0);
+        transactions[_tag] =
+        Transaction(
+            transactionStatus.Pending,
+            _baseAmt,
+            _txnAmt,
+            _sellerFee,
+            _buyerFee,
+            0,
+            _buyer,
+            _token);
+
+        uint buyerTotal = _txnAmt + _buyerFee;
+        token = ERC20(eternal.getAddress(_token));
+        token.transferFrom(_buyer, address(this), buyerTotal);
+        transaction.buyerBalance += buyerTotal;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function createTokenTransaction (
+
+        address _tag,
+        uint _baseAmt,
+        uint _txnAmt,
+        uint _sellerFee,
+        uint _buyerFee,
+        address _buyer,
+        uint _token) external onlyAllowed {
+
+        require(_token != 0);
+        require(eternal.getAddress(_token) != 0x0);
+        Transaction storage transaction = transactions[_tag];
+        require(transaction.buyer == 0x0);
+        transactions[_tag] =
+        Transaction(
+            transactionStatus.Pending,
+            _baseAmt,
+            _txnAmt,
+            _sellerFee,
+            _buyerFee,
+            0,
+            _buyer,
+            _token);
+
+        uint buyerTotal = _txnAmt + _buyerFee;
+        token = ERC20(eternal.getAddress(_token));
+        token.transferFrom(_buyer, address(this), buyerTotal);
+        transaction.buyerBalance += buyerTotal;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function createTokenTransaction (
+
+        address _tag,
+        uint _baseAmt,
+        uint _txnAmt,
+        uint _sellerFee,
+        uint _buyerFee,
+        address _buyer,
+        uint _token) external onlyAllowed {
+
+        require(_token != 0);
+        require(eternal.getAddress(_token) != 0x0);
+        Transaction storage transaction = transactions[_tag];
+        require(transaction.buyer == 0x0);
+        transactions[_tag] =
+        Transaction(
+            transactionStatus.Pending,
+            _baseAmt,
+            _txnAmt,
+            _sellerFee,
+            _buyerFee,
+            0,
+            _buyer,
+            _token);
+
+        uint buyerTotal = _txnAmt + _buyerFee;
+        token = ERC20(eternal.getAddress(_token));
+        token.transferFrom(_buyer, address(this), buyerTotal);
+        transaction.buyerBalance += buyerTotal;
+    }
+Response:
+{"StatementsA": {"transactions[_tag] = Transaction(...)":"This statement updates the state variable 'transactions'."}, "StatementsB": {"token.transferFrom(_buyer, address(this), buyerTotal);":"This statement executes an external call to transfer tokens."}, "VariableA": {"_buyer": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: transactions[_tag] = Transaction(...)
+2.External Call: token.transferFrom(_buyer, address(this), buyerTotal);
+3.Variable A: _buyer
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

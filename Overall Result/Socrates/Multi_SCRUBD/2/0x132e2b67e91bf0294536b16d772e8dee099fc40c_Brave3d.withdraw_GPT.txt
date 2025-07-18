@@ -1,0 +1,64 @@
+
+Start analyze function: Brave3d.withdraw()
+Function Security Analysis for Brave3d.withdraw()
+    The modifier of function withdraw are ['hasEarnings']
+    The result of checking modifiers:
+        - modifier hasEarnings has no relation with controlled by owner.
+          Reason: The modifier does not enforce ownership or specific address checks, and it doesn't use a lock operation. It solely checks the value map balance for the
+          sender.
+    Check direct function security
+        - function Brave3d.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks or assertions comparing msg.sender with an owner or specific address (like xxxOwner, CEO).
+        - function Brave3d.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not follow any of the required structures. It doesn't have any 'require' statements or conditions involving setting a variable to a
+          boolean value after checking it initially.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(amount)']
+    Analyze Transfer
+        - msg.sender.transfer(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(amount)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Brave3d.overStage(uint8)
+Function Security Analysis for Brave3d.overStage(uint8)
+    There are no modifiers should be examined in function overStage.
+    Check direct function security
+        - function Brave3d.overStage(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks for the identity of `msg.sender` against any owner, address, leader, or CEO. It does include assertions and logic
+          related to the state of the stage and players, but not related to the caller's identity.
+        - function Brave3d.overStage(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code, it contains 'assert(!finishStage.isFinish);' but directly setting 'finishStage.isFinish = true;' does not follow immediately
+          after. The second statement for the pattern isn't present before any logic that might depend on it. Therefore, the second statement of setting the same variable
+          to true is missing right after the first, violating any required pattern.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyFromValue', 'setName', 'buyByAddress', 'buyByName', 'withdraw', 'forceOverStage']
+        Function Security Analysis for Brave3d.buyFromValue(uint8)
+            There are no modifiers should be examined in function buyFromValue.
+            Check direct function security
+                - function Brave3d.buyFromValue(uint8) has no security assurance protected by checking the authority of msg.sender
+                  Reason: No statements matching the specified patterns were found in the function code.
+                - function Brave3d.buyFromValue(uint8) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code contains require statements, but none of the patterns that include resetting a variable to True or False after the require check are
+                  present.
+External Call Analysis
+    Direct external call: ['p3dContract.myDividends(true)', 'p3dContract.withdraw()', 'p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D))']
+    Analyze Transfer
+    Analyze Gas
+        - p3dContract.myDividends(true) ISN'T subjected to gas limits.
+        - p3dContract.withdraw() ISN'T subjected to gas limits.
+        - p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D)) ISN'T subjected to gas limits.
+    Remaining external call: ['p3dContract.myDividends(true)', 'p3dContract.withdraw()', 'p3dContract.buy.value(P3D_VALUE*rate)(address(OFFICIAL_P3D))']
+    Analyze External Address
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

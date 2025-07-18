@@ -1,0 +1,31 @@
+
+Start analyze function: GasToken2.destroyChildren(uint256)
+Function Security Analysis for GasToken2.destroyChildren(uint256)
+    There are no modifiers should be examined in function destroyChildren.
+    Check direct function security
+        - function GasToken2.destroyChildren(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any requirement, conditional branches, or assertions checking if msg.sender matches an xxxOwner/xxxAddress/Leader/CEO
+          structure.
+        - function GasToken2.destroyChildren(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any require statement or if statement in the specified structure that involves setting a boolean variable to True or
+          False.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['freeUpTo', 'free', 'freeFromUpTo', 'freeFrom']
+        Function Security Analysis for GasToken2.freeUpTo(uint256)
+            There are no modifiers should be examined in function freeUpTo.
+            Check direct function security
+                - function GasToken2.freeUpTo(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any require, assert statements or throw conditions that check for msg.sender to be a certain address or owner. It
+                  simply checks balances of msg.sender.
+                - function GasToken2.freeUpTo(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not include any 'require' or 'if(!xxx) throw' statements related to flipping a boolean variable. Thus, it doesn't match any of the
+                  given structures.
+External Call Analysis
+    Direct external call: ['mk_contract_address(this,i).call()']
+    Analyze Transfer
+    Analyze Gas
+        - mk_contract_address(this,i).call() ISN'T subjected to gas limits.
+    Remaining external call: ['mk_contract_address(this,i).call()']
+    Analyze External Address
+        External call mk_contract_address(this,i).call() calls contract address, which consider no REE problem.
+Conclusion: This function will not cause REE Problem.

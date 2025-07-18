@@ -1,0 +1,10 @@
+
+Start analyze function: RickAndMorty.openTrading()
+Function Security Analysis for RickAndMorty.openTrading()
+    The modifier of function openTrading are ['onlyOwner']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The code has 'require(_owner == _msgSender(), "Ownable: caller is not the owner")', which enforces that only the owner can execute the function,
+          satisfying characteristic 1. There is no structural omission related to this characteristic. Characteristic 2 does not apply as there is no lock operation in
+          the code.
+Conclusion: This function will not cause REE Problem.

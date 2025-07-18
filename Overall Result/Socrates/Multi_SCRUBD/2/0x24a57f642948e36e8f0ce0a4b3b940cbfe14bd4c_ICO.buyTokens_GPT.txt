@@ -1,0 +1,46 @@
+
+Start analyze function: ICO.buyTokens(uint256,uint256)
+Function Security Analysis for ICO.buyTokens(uint256,uint256)
+    There are no modifiers should be examined in function buyTokens.
+    Check direct function security
+        - function ICO.buyTokens(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function does not contain any of the specified patterns that involve checking the identity of the msg.sender against an owner, address,
+          leader, or CEO.
+        - function ICO.buyTokens(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code contains a structure '{if(!xxx) throw; xxx = true;}' but this condition does not exist here. There is no statement that sets a variable
+          to 'true' after an 'if' condition that throws. Hence, none of the required structural patterns exist in this code.
+External Call Analysis
+    Direct external call: ['erc20TokensContract.balanceOf(this)', 'erc20TokensContract.transfer(msg.sender,_quantity)']
+    Analyze Transfer
+        - erc20TokensContract.transfer(msg.sender,_quantity) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - erc20TokensContract.balanceOf(this) ISN'T subjected to gas limits.
+        - erc20TokensContract.transfer(msg.sender,_quantity) ISN'T subjected to gas limits.
+    Remaining external call: ['erc20TokensContract.balanceOf(this)', 'erc20TokensContract.transfer(msg.sender,_quantity)']
+    Analyze External Address
+        There are ['erc20TokensContract'] should be checked in variable erc20TokensContract
+        Checked variables: erc20TokensContract
+            No 1. The function name does not match the contract name 'ICO', nor is it explicitly named 'constructor'. Therefore, this is not a constructor. 2. The
+            function 'setErc20TokensContract' modifies the state variable 'erc20TokensContract', but it sets it using the argument '_erc20TokensContractAddress' rather
+            than a hardcoded value. Therefore, it does not meet the second criterion.
+            Function Security Analysis for ICO.setErc20TokensContract(address)
+                There are no modifiers should be examined in function setErc20TokensContract.
+                Check direct function security
+                    - function ICO.setErc20TokensContract(address) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                    REE problem.
+                      Reason: The function uses 'if (msg.sender != owner) {throw;}', which matches the third structure specified, where there is a check for 'msg.sender
+                      !=' a specific owner and it throws an error if true.
+        There are ['erc20TokensContract'] should be checked in variable erc20TokensContract
+        Checked variables: erc20TokensContract
+            No 1. The function is named setErc20TokensContract, which does not match the contract name, ICO, nor is it named 'constructor'. Therefore, it is not a
+            constructor. 2. The function does not have any hardcoded values for the provided state variable 'erc20TokensContract'. Instead, it sets the value of
+            'erc20TokensContract' based on the parameter '_erc20TokensContractAddress', which is a variable input. Thus, there is no hardcoding. As a result, neither of
+            the two characteristics are satisfied.
+            Function Security Analysis for ICO.setErc20TokensContract(address)
+                There are no modifiers should be examined in function setErc20TokensContract.
+                Check direct function security
+                    - function ICO.setErc20TokensContract(address) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                    REE problem.
+                      Reason: The code contains 'if (msg.sender != owner) throw;' which matches the third pattern in the checklist as 'owner' is a general owner variable,
+                      not guided by a specific local variable like xxx.owner.
+Conclusion: This function will not cause REE Problem.

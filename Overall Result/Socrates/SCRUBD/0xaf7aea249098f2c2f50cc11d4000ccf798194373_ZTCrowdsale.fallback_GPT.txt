@@ -1,0 +1,30 @@
+
+Start analyze function: ZTCrowdsale.fallback()
+Function Security Analysis for ZTCrowdsale.fallback()
+    The modifier of function fallback are ['atStage']
+    The result of checking modifiers:
+        - modifier atStage has no relation with controlled by owner.
+          Reason: The modifier 'atStage' checks if 'stage' is equal to '_stage', and there is no checking of specific addresses or lock operations mentioned. Also, the
+          modifier name does not suggest any ownership or non-reentrancy enforcement.
+    Check direct function security
+        - function ZTCrowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any condition or statement that checks if msg.sender is equal or not equal to an owner or leader role such as xxxOwner,
+          xxxAddress, Leader, or CEO.
+        - function ZTCrowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures with the `require` statement followed by a variable assignment.
+External Call Analysis
+    Direct external call: ['ztToken.issue(sender,valueInZT)', 'beneficiary.send(received-ethFees)', 'creator.send(ethFees)']
+    Analyze Transfer
+        - beneficiary.send(received-ethFees) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(received-ethFees)' contains the keyword '.send('.. Parameter in 'transfer'/'send': 1.
+        - creator.send(ethFees) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call 'creator.send(ethFees)'
+        contains the keyword '.send('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - ztToken.issue(sender,valueInZT) ISN'T subjected to gas limits.
+    Remaining external call: ['ztToken.issue(sender,valueInZT)']
+    Analyze External Address
+        There are ['ztToken'] should be checked in variable ztToken
+        Checked variables: ztToken
+            Yes The function name 'ZTCrowdsale' matches the contract name, indicating that it is a constructor. Constructors are special functions used to initialize
+            state variables of a contract when it is deployed. Thus, the function satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

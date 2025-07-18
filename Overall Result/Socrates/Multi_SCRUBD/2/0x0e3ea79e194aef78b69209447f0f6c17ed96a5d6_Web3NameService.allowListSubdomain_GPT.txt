@@ -1,0 +1,22 @@
+
+Start analyze function: Web3NameService.allowListSubdomain(string,string,bytes32[])
+Function Security Analysis for Web3NameService.allowListSubdomain(string,string,bytes32[])
+    There are no modifiers should be examined in function allowListSubdomain.
+    Check direct function security
+        - function Web3NameService.allowListSubdomain(string,string,bytes32[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain a condition that checks if msg.sender is equal to or not equal to a specific owner, address, leader, or CEO. The only
+          checks involving msg.sender are related to Merkle proof verification and address-specific conditions like checking if the subdomain has already been claimed by
+          the sender.
+        - function Web3NameService.allowListSubdomain(string,string,bytes32[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the structure 'require(subDomains_allowlistAddresses[pepe_name][msg.sender]!=true, "Claimed!");', which corresponds to structure 1.
+          However, the negation operation of setting 'subDomains_allowlistAddresses[pepe_name][msg.sender]' to true happens after the main logic of the function, not
+          immediately after the requirement check and before the main logic. Thus, the negation operation does not satisfy the required position.
+External Call Analysis
+    Direct external call: ['address(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100)']
+    Analyze Transfer
+        - address(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason:
+        The external call contains the '.transfer(' keyword, satisfying the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,23 @@
+
+Start analyze function: SOTL.claimTokenRewards(address)
+Function Security Analysis for SOTL.claimTokenRewards(address)
+    There are no modifiers should be examined in function claimTokenRewards.
+    Check direct function security
+        - function SOTL.claimTokenRewards(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check msg.sender against any special address like xxxOwner, xxxAddress, Leader, or CEO.
+        - function SOTL.claimTokenRewards(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: None of the specified structures are present. The code contains 'require()' statements, but they don't follow the structure outlined (no reassignment
+          for the same variable post-require).
+External Call Analysis
+    Direct external call: ['IERC20(token).transfer(_msgSender(),rewardsSent)']
+    Analyze Transfer
+        - IERC20(token).transfer(_msgSender(),rewardsSent) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - IERC20(token).transfer(_msgSender(),rewardsSent) ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(token).transfer(_msgSender(),rewardsSent)']
+    Analyze External Address
+        The variable 'token' in external call 'IERC20(token).transfer(_msgSender(),rewardsSent)' has no state variable assigned in SOTL.claimTokenRewards(address).
+        Therefore we check whether it has been hardcoded in the function.
+            No The variable 'token' is not hardcoded as it is a parameter passed to the function claimTokenRewards. Each time the function is called, a different address
+            for 'token' can be provided by the user, meaning that it's a dynamic input rather than a hardcoded value.
+Conclusion: This function will cause REE Problem.

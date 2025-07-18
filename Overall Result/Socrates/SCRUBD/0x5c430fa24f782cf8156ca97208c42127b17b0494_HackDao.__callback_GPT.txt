@@ -1,0 +1,19 @@
+
+Start analyze function: HackDao.__callback(bytes32,string)
+Function Security Analysis for HackDao.__callback(bytes32,string)
+    There are no modifiers should be examined in function __callback.
+    Check direct function security
+        - function HackDao.__callback(bytes32,string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The 'if (msg.sender != oraclize_cbAddress()) throw;' statement cannot be considered a structure fitting the rules since 'oraclize_cbAddress()' is not a
+          local variable nor an xxxOwner/xxxAddress/Leader/CEO. It is a function call.
+        - function HackDao.__callback(bytes32,string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures involving a variable and require/if-throw statements.
+External Call Analysis
+    Direct external call: ['bets[myid].send(betsvalue[myid]*koef/100)']
+    Analyze Transfer
+        - bets[myid].send(betsvalue[myid]*koef/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        the keyword '.send('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

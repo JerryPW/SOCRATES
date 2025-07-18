@@ -1,0 +1,36 @@
+
+Start analyze function: ExclusiveDividendTracker._withdrawDividendOfUser(address)
+Function Security Analysis for ExclusiveDividendTracker._withdrawDividendOfUser(address)
+    There are no modifiers should be examined in function _withdrawDividendOfUser.
+    Check direct function security
+        - function ExclusiveDividendTracker._withdrawDividendOfUser(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any ownership related conditions such as require(msg.sender == xxxOwner) or similar structures for access control related
+          to msg.sender.
+        - function ExclusiveDividendTracker._withdrawDividendOfUser(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any 'require' statements, nor does it have an 'if' statement using 'throw'. It entirely lacks the necessary structures for
+          checking and modifying a boolean variable 'xxx' as specified in the listed structures. Therefore, it does not meet any of the specified patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['processAccountByDeployer', 'process', 'setTokenBalance', 'processAccount', 'withdrawDividend']
+        Function Security Analysis for ExclusiveDividendTracker.processAccountByDeployer(address,bool)
+            The modifier of function processAccountByDeployer are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The judgment is based on rule 1. The code uses 'require(_owner == _msgSender())' to enforce that only the owner can execute the function. The
+                  code is correctly identified as matching this structure, and no structural omissions are present.
+        Function Security Analysis for ExclusiveDividendTracker.process(uint256)
+            There are no modifiers should be examined in function process.
+            Check direct function security
+                - function ExclusiveDividendTracker.process(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided function code does not contain any of the specified patterns related to msg.sender and role addresses such as
+                  xxxOwner/xxxAddress/Leader/CEO. It includes logic for processing transactions based on gas but no accessibility checks involving specific addresses.
+                - function ExclusiveDividendTracker.process(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not have any 'require' or 'if' statements checking a boolean variable and then setting its value. It lacks the specific code
+                  patterns described in the task.
+External Call Analysis
+    Direct external call: ['user.call{gas:3000,value:_withdrawableDividend}()']
+    Analyze Transfer
+    Analyze Gas
+        - user.call{gas:3000,value:_withdrawableDividend}() is subjected to gas limits 3000. Therefore, it has no potential REE problem.
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

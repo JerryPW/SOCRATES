@@ -1,0 +1,64 @@
+
+Start analyze function: FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256)
+Function Security Analysis for FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256)
+    There are no modifiers should be examined in function withdrawLiquidity.
+    Check direct function security
+        - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function withdrawLiquidity does not contain any condition checking if msg.sender is an owner or specific address as per the given structure.
+        - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains require statements, but none of them fit the specific structures outlined, involving setting the same variable after the require
+          statement.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: FarmMain._burnFarmTokenAmount(uint256,uint256)
+Function Security Analysis for FarmMain._burnFarmTokenAmount(uint256,uint256)
+    There are no modifiers should be examined in function _burnFarmTokenAmount.
+    Check direct function security
+        - function FarmMain._burnFarmTokenAmount(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks or assertions involving msg.sender being compared to xxxOwner, xxxAddress, Leader, or CEO. Thus, none of the
+          specified structures are present.
+        - function FarmMain._burnFarmTokenAmount(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures mentioned in the task description. It neither uses 'require' to check conditions nor
+          does it manipulate boolean variables in the way described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawLiquidity', 'unlock']
+        Function Security Analysis for FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256)
+            There are no modifiers should be examined in function withdrawLiquidity.
+            Check direct function security
+                - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code checks msg.sender against a property of a local struct variable (farmingPosition.uniqueOwner), which does not match the specified
+                  patterns for requiring specific roles or addresses without referencing local struct properties.
+                - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code doesn't contain any of the specified structures, as it does not have a 'require' or 'if' statement followed by a specific variable
+                  assignment and the respective conditions outlined in the patterns.
+External Call Analysis
+    Direct external call: ['tokenCollection.safeTransferFrom(msg.sender,address(this),objectId,amount,)', 'tokenCollection.burn(objectId,amount)']
+    Analyze Transfer
+    Analyze Gas
+        - tokenCollection.safeTransferFrom(msg.sender,address(this),objectId,amount,) ISN'T subjected to gas limits.
+        - tokenCollection.burn(objectId,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenCollection.safeTransferFrom(msg.sender,address(this),objectId,amount,)', 'tokenCollection.burn(objectId,amount)']
+    Analyze External Address
+        There are ['_farmTokenCollection'] should be checked in variable tokenCollection
+        Checked variables: _farmTokenCollection
+            No 1. The smart contract function provided is named 'init', and the contract's name is 'FarmMain'. The function name does not match the contract name, nor is
+            it explicitly named 'constructor'. Thus, it is not a constructor.  2. The state variable '_farmTokenCollection' is used within the function, but it is not
+            hardcoded with a specific value. It is being assigned a value through the result of a function call to 'IEthItemOrchestrator(orchestrator).createNative'.
+            There are no hardcoded assignments to '_farmTokenCollection'.  Since the function does not satisfy either characteristic, the response is 'No'.
+            Function Security Analysis for FarmMain.init(address,bytes,address,address,bytes)
+                There are no modifiers should be examined in function init.
+                Check direct function security
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The function does not have any checks or logic involving 'msg.sender' in the required structures. There is no 'require', 'if', or 'assert'
+                      condition involving 'msg.sender' compared to any 'xxxOwner', 'xxxAddress', 'Leader', or 'CEO' roles.
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: None of the specified structures are present in the code. The code includes `require` statements but neither involves setting the required
+                      variable to False/True after the `require`, nor follows the pattern with `if(!xxx) throw;`. The requires in code are about ensuring the _factory is
+                      zero or extension is not zero, unrelated to changing the state of the checked variable immediately after.
+Conclusion: This function will cause REE Problem.

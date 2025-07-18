@@ -1,0 +1,44 @@
+
+Start analyze function: RuneLock.lockTokens(address,uint256,uint256)
+Function Security Analysis for RuneLock.lockTokens(address,uint256,uint256)
+    There are no modifiers should be examined in function lockTokens.
+    Check direct function security
+        - function RuneLock.lockTokens(address,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: There are no checks or assertions that require msg.sender specifically to be a certain owner, address, or CEO before continuing execution in the
+          provided code.
+        - function RuneLock.lockTokens(address,uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided function does not match any of the specified code structures. There are no require statements or if statements in the exact format
+          specified in the characteristics.
+External Call Analysis
+    Direct external call: ['address(fee1Address).call{value:lockCost*98/100}()', 'address(fee2Address).call{value:lockCost*2/100}()',
+    'token.transferFrom(msg.sender,address(this),_amountToLock)']
+    Analyze Transfer
+    Analyze Gas
+        - address(fee1Address).call{value:lockCost*98/100}() ISN'T subjected to gas limits.
+        - address(fee2Address).call{value:lockCost*2/100}() ISN'T subjected to gas limits.
+        - token.transferFrom(msg.sender,address(this),_amountToLock) ISN'T subjected to gas limits.
+    Remaining external call: ['address(fee1Address).call{value:lockCost*98/100}()', 'address(fee2Address).call{value:lockCost*2/100}()',
+    'token.transferFrom(msg.sender,address(this),_amountToLock)']
+    Analyze External Address
+        There are ['fee1Address'] should be checked in variable fee1Address
+        Checked variables: fee1Address
+            No The provided function is named `updateFeeAddress`, which is not the same as the contract name `RuneLock` and is not explicitly declared as a 'constructor'.
+            This means it does not satisfy the first characteristic.   The function `updateFeeAddress` updates the state variable `fee1Address` with a new address
+            provided during the function call. This is not considered hardcoding because hardcoding refers to setting a variable to a fixed value directly within the
+            function code, not assignable by input or otherwise changeable. Therefore, it does not satisfy the second characteristic either.
+            Function Security Analysis for RuneLock.updateFeeAddress(address)
+                The modifier of function updateFeeAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon re-evaluating the code, the require statement `require(msg.sender == owner);` explicitly enforces that only the owner can execute the
+                      function. This specifically matches characteristic 1, ensuring that the execution is restricted to the owner's address. There are no structural
+                      omissions, as this directly relates to the rule that checks ownership authority mentioned in characteristic 1. There is no indication of lock
+                      operations in this particular code snippet, so characteristic 2 is not applicable.
+        There are ['fee2Address'] should be checked in variable fee2Address
+        Checked variables: fee2Address
+            State variable fee2Address has initialized in public area after declaration.
+        The variable 'token' in external call 'token.transferFrom(msg.sender,address(this),_amountToLock)' has no state variable assigned in
+        RuneLock.lockTokens(address,uint256,uint256). Therefore we check whether it has been hardcoded in the function.
+            No The function uses `_tokenAddress` as an input parameter and does not substitute it with a hardcoded value within the function's definition. The address
+            value is defined by the caller when the function is invoked, making it flexible and not hardcoded.
+Conclusion: This function will cause REE Problem.

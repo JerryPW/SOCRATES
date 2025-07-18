@@ -1,0 +1,219 @@
+PreOrder.confirmOrder: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function confirmOrder()
+    payable
+    public
+    returns(bool success)
+    {
+       if( msg.sender == guestaddress && status == 0)   
+       {
+            if(Token(tokenAddress).transfer(owneraddress,price))//transfer token to contract address
+         {
+             
+            status = 1;
+            return true;
+             
+         }
+         else
+         {
+             //transfer token failure
+             return false;
+         }
+           
+       }
+      //1 transfer token from contract address to guest address
+      //2 if step 1 successfully finished, update info of preOrder contract
+      //3 if step 1 successfully finished, remove order info from PreOrders lists
+      return true;
+   }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function confirmOrder()
+    payable
+    public
+    returns(bool success)
+    {
+       if( msg.sender == guestaddress && status == 0)   
+       {
+            if(Token(tokenAddress).transfer(owneraddress,price))//transfer token to contract address
+         {
+             
+            status = 1;
+            return true;
+             
+         }
+         else
+         {
+             //transfer token failure
+             return false;
+         }
+           
+       }
+      //1 transfer token from contract address to guest address
+      //2 if step 1 successfully finished, update info of preOrder contract
+      //3 if step 1 successfully finished, remove order info from PreOrders lists
+      return true;
+   }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function confirmOrder()
+    payable
+    public
+    returns(bool success)
+    {
+       if( msg.sender == guestaddress && status == 0)   
+       {
+            if(Token(tokenAddress).transfer(owneraddress,price))//transfer token to contract address
+         {
+             
+            status = 1;
+            return true;
+             
+         }
+         else
+         {
+             //transfer token failure
+             return false;
+         }
+           
+       }
+      //1 transfer token from contract address to guest address
+      //2 if step 1 successfully finished, update info of preOrder contract
+      //3 if step 1 successfully finished, remove order info from PreOrders lists
+      return true;
+   }
+Response:
+{"StatementsA": {"status = 1;":"Updates the state variable 'status' to 1."}, "StatementsB": {"Token(tokenAddress).transfer(owneraddress,price)":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: status = 1;
+2.External Call: Token(tokenAddress).transfer(owneraddress,price)
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function confirmOrder()
+    payable
+    public
+    returns(bool success)
+    {
+       if( msg.sender == guestaddress && status == 0)   
+       {
+            if(Token(tokenAddress).transfer(owneraddress,price))//transfer token to contract address
+         {
+             
+            status = 1;
+            return true;
+             
+         }
+         else
+         {
+             //transfer token failure
+             return false;
+         }
+           
+       }
+      //1 transfer token from contract address to guest address
+      //2 if step 1 successfully finished, update info of preOrder contract
+      //3 if step 1 successfully finished, remove order info from PreOrders lists
+      return true;
+   }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function confirmOrder()
+    payable
+    public
+    returns(bool success)
+    {
+       if( msg.sender == guestaddress && status == 0)   
+       {
+            if(Token(tokenAddress).transfer(owneraddress,price))//transfer token to contract address
+         {
+             
+            status = 1;
+            return true;
+             
+         }
+         else
+         {
+             //transfer token failure
+             return false;
+         }
+           
+       }
+      //1 transfer token from contract address to guest address
+      //2 if step 1 successfully finished, update info of preOrder contract
+      //3 if step 1 successfully finished, remove order info from PreOrders lists
+      return true;
+   }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function confirmOrder()
+    payable
+    public
+    returns(bool success)
+    {
+       if( msg.sender == guestaddress && status == 0)   
+       {
+            if(Token(tokenAddress).transfer(owneraddress,price))//transfer token to contract address
+         {
+             
+            status = 1;
+            return true;
+             
+         }
+         else
+         {
+             //transfer token failure
+             return false;
+         }
+           
+       }
+      //1 transfer token from contract address to guest address
+      //2 if step 1 successfully finished, update info of preOrder contract
+      //3 if step 1 successfully finished, remove order info from PreOrders lists
+      return true;
+   }
+Response:
+{"StatementsA": {"status = 1;":"Updates the state variable 'status' to 1."}, "StatementsB": {"Token(tokenAddress).transfer(owneraddress,price)":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: status = 1;
+2.External Call: Token(tokenAddress).transfer(owneraddress,price)
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

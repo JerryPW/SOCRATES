@@ -1,0 +1,27 @@
+
+Start analyze function: WashCrowdsale.fallback()
+Function Security Analysis for WashCrowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function WashCrowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not include any checks related to `msg.sender` being compared to any xxxOwner, xxxAddress, Leader, or CEO, either through
+          require, if-else condition, or assert statements as specified in the characteristics.
+        - function WashCrowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code, the initial analysis was incorrect. The code contains only 'require(!crowdsaleClosed);'. However, there is no subsequent
+          assignment of 'crowdsaleClosed = True;' or any modification to 'crowdsaleClosed'. Since the second required statement for a valid structure is not present, none
+          of the specified structures are fully matched within the code.
+External Call Analysis
+    Direct external call: ['beneficiary.send(ethamount)', 'tokenReward.transfer(msg.sender,amount)']
+    Analyze Transfer
+        - beneficiary.send(ethamount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword, satisfying the second characteristic.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(msg.sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function name is 'WashCrowdsale', which matches the contract name, indicating that it is a constructor in older versions of Solidity (before version
+            0.4.22).
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,20 @@
+
+Start analyze function: DividendTracker._compoundDividendOfUser(address)
+Function Security Analysis for DividendTracker._compoundDividendOfUser(address)
+    There are no modifiers should be examined in function _compoundDividendOfUser.
+    Check direct function security
+        - function DividendTracker._compoundDividendOfUser(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks related to msg.sender against any defined owner or leader address; rather, it focuses on dividend withdrawal
+          and exchange operations with Uniswap.
+        - function DividendTracker._compoundDividendOfUser(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require' statements or 'if(!xxx) throw' constructs that match the characteristics mentioned. It only includes an 'if'
+          statement that checks the '_withdrawableDividend' value and a 'try-catch' statement for error handling.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['compoundAccount']
+        Function Security Analysis for DividendTracker.compoundAccount(address)
+            The modifier of function compoundAccount are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The code in the modifier uses a require statement to check if the sender is the owner, matching characteristic 1, as it restricts the execution
+                  to the owner address, `require(owner() == _msgSender())`. This satisfies the given condition without any structural omission.
+Conclusion: This function will not cause REE Problem.

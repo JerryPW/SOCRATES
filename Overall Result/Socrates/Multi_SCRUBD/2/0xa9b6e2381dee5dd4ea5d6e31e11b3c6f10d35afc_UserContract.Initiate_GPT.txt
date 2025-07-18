@@ -1,0 +1,35 @@
+
+Start analyze function: UserContract.Initiate(address,uint256,uint256,uint256,bool)
+Function Security Analysis for UserContract.Initiate(address,uint256,uint256,uint256,bool)
+    There are no modifiers should be examined in function Initiate.
+    Check direct function security
+        - function UserContract.Initiate(address,uint256,uint256,uint256,bool) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures that involve checking msg.sender against an owner or specific address like xxxOwner,
+          Leader, etc.
+        - function UserContract.Initiate(address,uint256,uint256,uint256,bool) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any explicit statements that match the required precondition structure. Specifically, the 'require' statement involves checking
+          if 'msg.value' is equal to '_amounta + _premium' which does not fit into any of the defined patterns. Additionally, there is no modification of the variable
+          used in the require statement that matches the defined structures.
+External Call Analysis
+    Direct external call: ['swap.CreateSwap.value(_premium)(_amounta,_amountb,_isLong,msg.sender)', 'factory.getBase()']
+    Analyze Transfer
+    Analyze Gas
+        - swap.CreateSwap.value(_premium)(_amounta,_amountb,_isLong,msg.sender) ISN'T subjected to gas limits.
+        - factory.getBase() ISN'T subjected to gas limits.
+    Remaining external call: ['swap.CreateSwap.value(_premium)(_amounta,_amountb,_isLong,msg.sender)', 'factory.getBase()']
+    Analyze External Address
+        There are ['swap'] should be checked in variable swap
+        Checked variables: swap
+            No The provided functions 'Initiate' and 'Enter' do not match the contract name 'UserContract', nor are they named 'constructor', so they are not
+            constructors. Additionally, the function does not hardcode the state variable 'swap'; instead, it assigns it based on a dynamic external input '_swapadd'.
+            Therefore, neither of the characteristics apply here.
+            Function Security Analysis for UserContract.Initiate(address,uint256,uint256,uint256,bool)
+                There are no modifiers should be examined in function Initiate.
+                Check direct function security
+                    - function UserContract.Initiate(address,uint256,uint256,uint256,bool) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The function does not contain any of the specified structures that check if msg.sender is a certain owner or similar role.
+                    - function UserContract.Initiate(address,uint256,uint256,uint256,bool) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code provided doesn't match any of the specified structures. There is a 'require' statement, but it checks if 'msg.value' equals
+                      '_amounta + _premium', which is not a boolean variable being checked for True or False. Moreover, there are no subsequent statements changing a
+                      boolean variable as described in any of the given structures.
+Conclusion: This function will cause REE Problem.

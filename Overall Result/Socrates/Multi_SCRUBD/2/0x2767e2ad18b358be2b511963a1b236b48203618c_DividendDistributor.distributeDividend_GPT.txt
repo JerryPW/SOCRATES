@@ -1,0 +1,33 @@
+
+Start analyze function: DividendDistributor.distributeDividend(address)
+Function Security Analysis for DividendDistributor.distributeDividend(address)
+    There are no modifiers should be examined in function distributeDividend.
+    Check direct function security
+        - function DividendDistributor.distributeDividend(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any 'msg.sender' checks or require/assert statements related to ownership or specific address permissions. It focuses on
+          distributing dividends to shareholders without checking who calls the function.
+        - function DividendDistributor.distributeDividend(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures. It checks the condition 'if(shares[shareholder].amount == 0)' and returns immediately without
+          changing any variable's state or requiring any condition in the specific formats outlined (require(xxx == True/False), require(!xxx), or if(!xxx) throw).
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['claimDividend', 'process', 'setShare']
+        Function Security Analysis for DividendDistributor.claimDividend()
+            There are no modifiers should be examined in function claimDividend.
+            Check direct function security
+                - function DividendDistributor.claimDividend() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not have any of the specified conditions related to msg.sender.
+                - function DividendDistributor.claimDividend() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures involving a variable being required to be true or false and subsequently being set to
+                  a different boolean value.
+External Call Analysis
+    Direct external call: ['POOF.transfer(shareholder,amount)']
+    Analyze Transfer
+        - POOF.transfer(shareholder,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - POOF.transfer(shareholder,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['POOF.transfer(shareholder,amount)']
+    Analyze External Address
+        There are ['POOF'] should be checked in variable POOF
+        Checked variables: POOF
+            State variable POOF has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

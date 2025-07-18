@@ -1,0 +1,47 @@
+
+Start analyze function: bebBUYtwo.DayQuKuanUsdt()
+Function Security Analysis for bebBUYtwo.DayQuKuanUsdt()
+    There are no modifiers should be examined in function DayQuKuanUsdt.
+    Check direct function security
+        - function bebBUYtwo.DayQuKuanUsdt() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks or assertions directly involving msg.sender being equal to or not equal to a specific owner, address, leader,
+          or CEO. It only works with the user's storage data and general conditions, without access control based on msg.sender.
+        - function bebBUYtwo.DayQuKuanUsdt() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not exhibit any of the defined structures as it lacks a require statement followed by a variable assignment that toggles the same
+          variable.
+External Call Analysis
+    Direct external call: ['bebTokenTransfer.transfer(msg.sender,_bebs)', 'bebTokenTransferUSDT.transfer(msg.sender,_eths)',
+    'bebTokenTransfer.transfer(msg.sender,_bebss)', 'bebTokenTransfer.transfer(msg.sender,_values)']
+    Analyze Transfer
+        - bebTokenTransfer.transfer(msg.sender,_bebs) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - bebTokenTransferUSDT.transfer(msg.sender,_eths) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - bebTokenTransfer.transfer(msg.sender,_bebss) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - bebTokenTransfer.transfer(msg.sender,_values) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - bebTokenTransfer.transfer(msg.sender,_bebs) ISN'T subjected to gas limits.
+        - bebTokenTransferUSDT.transfer(msg.sender,_eths) ISN'T subjected to gas limits.
+        - bebTokenTransfer.transfer(msg.sender,_bebss) ISN'T subjected to gas limits.
+        - bebTokenTransfer.transfer(msg.sender,_values) ISN'T subjected to gas limits.
+    Remaining external call: ['bebTokenTransfer.transfer(msg.sender,_bebs)', 'bebTokenTransferUSDT.transfer(msg.sender,_eths)',
+    'bebTokenTransfer.transfer(msg.sender,_bebss)', 'bebTokenTransfer.transfer(msg.sender,_values)']
+    Analyze External Address
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes The provided code snippet contains a function named 'bebBUYtwo'. This function does not match the contract name 'bebBUYtwo' or is not explicitly named
+            'constructor', indicating it is not a constructor. However, the function does hardcode several state variables, like 'bebethex', 'decimals', 'BEBday',
+            'bebjiage', 'bebtime', and 'usdtex'. This means it satisfies the second characteristic of having hardcoded state variables.
+        There are ['bebTokenTransferUSDT'] should be checked in variable bebTokenTransferUSDT
+        Checked variables: bebTokenTransferUSDT
+            Yes 1. The function name "bebBUYtwo" matches the contract name "bebBUYtwo". This indicates that the function is likely a constructor according to the
+            characteristic rule that checks if the function name matches the contract name.  2. Additionally, the function hardcodes the state variable
+            "bebTokenTransferUSDT" with the value returned by "tokenTransferUSDT(_usdtadderss)" function, satisfying the second characteristic of hardcoding the provided
+            state variable.
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes The function name 'bebBUYtwo' matches the contract name 'bebBUYtwo', indicating that this function acts as a constructor. Constructors are special
+            functions that are executed during the deployment of a contract and typically initialize state variables. Since the function name matches the contract name,
+            it satisfies the first characteristic.
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes The function name 'bebBUYtwo' matches the contract name 'bebBUYtwo', which is one of the characteristics for a constructor.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,20 @@
+
+Start analyze function: Web3NameService.allowListSubdomain(string,string,bytes32[])
+Function Security Analysis for Web3NameService.allowListSubdomain(string,string,bytes32[])
+    There are no modifiers should be examined in function allowListSubdomain.
+    Check direct function security
+        - function Web3NameService.allowListSubdomain(string,string,bytes32[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks that explicitly compare 'msg.sender' to 'xxxOwner', 'xxxAddress', 'Leader', or 'CEO'. Instead, it uses a Merkle
+          tree proof for validation and various other checks, but none that match the specified characteristics.
+        - function Web3NameService.allowListSubdomain(string,string,bytes32[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures. There is no 'require' statement followed by an assignment to 'True' or 'False' for the same
+          variable as specified in the given structures.
+External Call Analysis
+    Direct external call: ['address(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100)']
+    Analyze Transfer
+        - address(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason:
+        The external call contains the '.transfer(' keyword, which matches the characteristic outlined in rule 1.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

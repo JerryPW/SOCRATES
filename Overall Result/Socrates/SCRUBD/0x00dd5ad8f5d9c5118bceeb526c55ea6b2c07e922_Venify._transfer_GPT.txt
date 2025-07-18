@@ -1,0 +1,124 @@
+
+Start analyze function: Venify._transfer(address,address,uint256)
+Function Security Analysis for Venify._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function Venify._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any statements checking or asserting that msg.sender is any kind of owner, address, leader, or CEO.
+        - function Venify._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not include a require statement for boolean variable conditions or throw statements with a boolean check that subsequently change
+          the value of the same variable like the structures specified. Instead, it uses these boolean checks in a typical conditional logic flow without altering the
+          same variable within those conditions in the manner described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for Venify.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function Venify.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any statements that check or assert the identity of msg.sender against specific owner or leader addresses.
+                - function Venify.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: None of the required structures are present in the code. There are no 'require' statements or specific structures involving checking or flipping
+                  boolean variables as outlined in the conditions.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Venify.swapTokensForETH(uint256)
+Function Security Analysis for Venify.swapTokensForETH(uint256)
+    There are no modifiers should be examined in function swapTokensForETH.
+    Check direct function security
+        - function Venify.swapTokensForETH(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any statement that checks the identity of msg.sender against any kind of owner or address criteria. Hence, none of the
+          specified code structures (1 to 4) are present in this function.
+        - function Venify.swapTokensForETH(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. There are no 'require' or 'if' statements with the prescribed patterns, nor are there
+          sequences of setting a variable to 'True' and 'False' or changing the variable's state after a 'require' or 'if' check.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_transfer', 'transferFrom', 'transfer']
+        Function Security Analysis for Venify._transfer(address,address,uint256)
+            There are no modifiers should be examined in function _transfer.
+            Check direct function security
+                - function Venify._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any condition checking 'msg.sender' against an owner, address, or a specific role.
+                - function Venify._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code sets `inSwapAndLiquify` to true and later reverts it to false, but it does not contain a require statement that checks the
+                  condition `(require(inSwapAndLiquify == False)` or `require(!inSwapAndLiquify)`). Therefore, it doesn't match any of the specified structures.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['transferFrom', 'transfer']
+                Function Security Analysis for Venify.transferFrom(address,address,uint256)
+                    There are no modifiers should be examined in function transferFrom.
+                    Check direct function security
+                        - function Venify.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not have any checks or conditions involving the structure with 'msg.sender' for ownership verification.
+                        - function Venify.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The given function 'transferFrom' does not contain any 'require' statements nor does it follow a pattern where a condition is checked on
+                          a boolean variable and then the variable is explicitly set to true or false. Therefore, none of the specified structures are present in the
+                          function.
+External Call Analysis
+    Direct external call: ['uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp)']
+    Analyze Transfer
+    Analyze Gas
+        - uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp) ISN'T subjected to gas limits.
+    Remaining external call: ['uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,address(this),block.timestamp)']
+    Analyze External Address
+        There are ['uniswapV2Router'] should be checked in variable uniswapV2Router
+        Checked variables: uniswapV2Router
+            Yes The provided code is a constructor. It is explicitly named 'constructor', which is used to initialize the contract when it is deployed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Venify.sendETH(address,uint256)
+Function Security Analysis for Venify.sendETH(address,uint256)
+    There are no modifiers should be examined in function sendETH.
+    Check direct function security
+        - function Venify.sendETH(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check any condition related to msg.sender involving ownership, specific addresses like an owner or administrative roles like
+          Leader or CEO. It only checks the contract balance and the success of the transaction.
+        - function Venify.sendETH(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any variable checking against 'True' or 'False', nor does it assign 'xxx = True' or 'xxx = False' after such checks. The
+          'require' statements in the function do not match the structures mentioned in any of the conditions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_transfer', 'transferFrom', 'transfer']
+        Function Security Analysis for Venify._transfer(address,address,uint256)
+            There are no modifiers should be examined in function _transfer.
+            Check direct function security
+                - function Venify._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any authorization checks involving checking the caller's address against an owner or leader address, such as
+                  msg.sender == xxxOwner or msg.sender != xxxOwner.
+                - function Venify._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: Upon re-evaluating the code, the conditions for any of the structures (1, 2, 3, or 4) require two specific statements to be present. In this
+                  code, we use the condition '!inSwapAndLiquify' in the 'if' statement, but there is no 'require(!xxx);' or 'if(!xxx) throw;' construct. We also find
+                  'inSwapAndLiquify = true;' and subsequently 'inSwapAndLiquify = false;', but the preceding conditionals 'require(xxx == False);' or 'require(!xxx);' or
+                  'if(!xxx) throw;' for those structures are absent. Therefore, none of the specified structures meet both the required conditional and assignment
+                  statements.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['transferFrom', 'transfer']
+                Function Security Analysis for Venify.transferFrom(address,address,uint256)
+                    There are no modifiers should be examined in function transferFrom.
+                    Check direct function security
+                        - function Venify.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not contain any authorization or identity check against msg.sender for roles like xxxOwner, xxxAddress, Leader, or
+                          CEO.
+                        - function Venify.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The given code does not contain any of the specified structures involving require statements checking variable conditions, setting these
+                          variables to True or False, or throwing exceptions based on these variable checks.
+External Call Analysis
+    Direct external call: ['recipient.call{value:amount}()']
+    Analyze Transfer
+    Analyze Gas
+        - recipient.call{value:amount}() ISN'T subjected to gas limits.
+    Remaining external call: ['recipient.call{value:amount}()']
+    Analyze External Address
+        The variable 'recipient' in external call 'recipient.call{value:amount}()' has no state variable assigned in Venify.sendETH(address,uint256). Considering that it
+        is an internal/private function, we analyze the function inputs.
+        Analyze External Address
+            There are ['buyBackWallet'] should be checked in variable buyBackWallet
+            Checked variables: buyBackWallet
+                State variable buyBackWallet has initialized in public area after declaration.
+            There are ['marketingWallet'] should be checked in variable marketingWallet
+            Checked variables: marketingWallet
+                State variable marketingWallet has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

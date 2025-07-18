@@ -1,0 +1,57 @@
+
+Start analyze function: InstaDice.roll(uint8)
+Function Security Analysis for InstaDice.roll(uint8)
+    There are no modifiers should be examined in function roll.
+    Check direct function security
+        - function InstaDice.roll(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the structures checking msg.sender against a specific owner, address, or role such as Owner, Address, Leader, or CEO.
+        - function InstaDice.roll(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures involving 'require' or 'if'. The closest related functionality is an 'if' statement that
+          returns early if a condition is not met, but it does not include a state-altering statement after the condition check as described by the patterns.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: InstaDice._errorAndRefund(string,uint256,uint8)
+Function Security Analysis for InstaDice._errorAndRefund(string,uint256,uint8)
+    There are no modifiers should be examined in function _errorAndRefund.
+    Check direct function security
+        - function InstaDice._errorAndRefund(string,uint256,uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks related to msg.sender being equal to an owner or specific address in any of the outlined ways.
+        - function InstaDice._errorAndRefund(string,uint256,uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match any of the specified structures. It contains a `require` statement, but it checks the return value of a function call
+          `msg.sender.call.value(msg.value)()` instead of a variable directly. Thus, none of the conditions for matching patterns 1 through 4 are satisfied.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_validateBetOrRefund', 'roll']
+        Function Security Analysis for InstaDice._validateBetOrRefund(uint8)
+            There are no modifiers should be examined in function _validateBetOrRefund.
+            Check direct function security
+                - function InstaDice._validateBetOrRefund(uint8) has no security assurance protected by checking the authority of msg.sender
+                  Reason: No condition in the code checks for 'msg.sender' against specific owners or addresses.
+                - function InstaDice._validateBetOrRefund(uint8) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not satisfy any of the specified structures because it does not contain any 'require' statement for equality checks or '!xxx'
+                  checks, nor does it throw an exception with an '!xxx' condition.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['roll']
+                Function Security Analysis for InstaDice.roll(uint8)
+                    There are no modifiers should be examined in function roll.
+                    Check direct function security
+                        - function InstaDice.roll(uint8) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not contain any of the specified structures related to 'msg.sender'. There are no conditions that specifically compare
+                          'msg.sender' to an owner address or similar roles like Leader or CEO. The existing checks involve block numbers and betting validation.
+                        - function InstaDice.roll(uint8) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not contain any structure matching the given patterns. It contains neither 'require(xxx == True)' nor 'require(xxx ==
+                          False)' nor 'require(!xxx)' nor 'if(!xxx) throw'.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(msg.value)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(msg.value)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(msg.value)()']
+    Analyze External Address
+        External call msg.sender.call.value(msg.value)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

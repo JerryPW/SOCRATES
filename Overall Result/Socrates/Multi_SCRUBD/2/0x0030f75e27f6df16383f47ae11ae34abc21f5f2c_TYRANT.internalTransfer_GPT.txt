@@ -1,0 +1,52 @@
+
+Start analyze function: TYRANT.internalTransfer(address,address,uint256)
+Function Security Analysis for TYRANT.internalTransfer(address,address,uint256)
+    There are no modifiers should be examined in function internalTransfer.
+    Check direct function security
+        - function TYRANT.internalTransfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have require/assert conditions checking msg.sender against a specific owner/leader address or a similar role.
+        - function TYRANT.internalTransfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon closer inspection, the provided code only contains `require(!isBot[from], ...)` but does not contain `isBot[from] = True;`. The structure strictly
+          requires both statements to be present to make a correct judgment under type 3 structure. Therefore, the code does not fully match any of the specified
+          structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawStuckTokens', 'manualBurnTokensFromLP', 'transfer', 'AirDrop', 'transferFrom']
+        Function Security Analysis for TYRANT.withdrawStuckTokens(uint256)
+            The modifier of function withdrawStuckTokens are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier explicitly enforces that only the owner can execute the function by using the require statement `require(owner() == _msgSender(),
+                  "ERC20Ownable: caller is not the owner");` which matches the first characteristic of checking whether only specific addresses like the owner can execute
+                  the function.
+        Function Security Analysis for TYRANT.manualBurnTokensFromLP(uint256)
+            The modifier of function manualBurnTokensFromLP are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: Upon reviewing the code again, the modifier 'onlyOwner' contains the statement 'require(owner() == _msgSender(), "ERC20Ownable: caller is not
+                  the owner");'. This confirms that the function checks if the caller is the owner, which satisfies the first rule of checking if only the owner or
+                  specific addresses can execute the function. There are no structural omissions as this is the primary requirement in the modifier.
+        Function Security Analysis for TYRANT.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function TYRANT.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any statement that matches the structures outlined for requiring or checking the identity of msg.sender against a
+                  specific owner or leader address.
+                - function TYRANT.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided function does not contain any of the specified control structures. It simply performs an internal transfer operation and returns a
+                  boolean value, without using any conditional statements or manipulations of boolean variables.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: TYRANT.taxTokenSwap()
+Function Security Analysis for TYRANT.taxTokenSwap()
+    The modifier of function taxTokenSwap are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier lockTheSwap includes setting inSwapAndLiquify to true at the start and resetting it to false afterward. Both operations, lock, and unlock,
+          are present in the structure, which matches rule 2 for using a lock mechanism.
+Conclusion: This function will not cause REE Problem.

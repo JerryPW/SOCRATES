@@ -1,0 +1,59 @@
+ShortOrder.nonActivationShortWithdrawal: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function nonActivationShortWithdrawal(address[2] tokenUser,uint[8] minMaxDMWCPNonce,uint8 v,bytes32[2] rs) external {
+    bytes32 orderHash = keccak256 (
+        tokenUser[0],
+        tokenUser[1],
+        minMaxDMWCPNonce[0],
+        minMaxDMWCPNonce[1],
+        minMaxDMWCPNonce[2], 
+        minMaxDMWCPNonce[3],
+        minMaxDMWCPNonce[4],
+        minMaxDMWCPNonce[5],
+        minMaxDMWCPNonce[6], 
+        minMaxDMWCPNonce[7]
+      );
+    require(
+      ecrecover(keccak256("\x19Ethereum Signed Message:\n32",orderHash),v,rs[0],rs[1]) == msg.sender &&
+      block.number > minMaxDMWCPNonce[2] &&
+      orderRecord[tokenUser[1]][orderHash].balance < minMaxDMWCPNonce[0]
+    );
+    msg.sender.transfer(orderRecord[msg.sender][orderHash].coupon);
+    orderRecord[msg.sender][orderHash].coupon = uint(0);
+    NonActivationWithdrawal(tokenUser,minMaxDMWCPNonce,v,rs,orderRecord[msg.sender][orderHash].coupon);
+  }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function nonActivationShortWithdrawal(address[2] tokenUser,uint[8] minMaxDMWCPNonce,uint8 v,bytes32[2] rs) external {
+    bytes32 orderHash = keccak256 (
+        tokenUser[0],
+        tokenUser[1],
+        minMaxDMWCPNonce[0],
+        minMaxDMWCPNonce[1],
+        minMaxDMWCPNonce[2], 
+        minMaxDMWCPNonce[3],
+        minMaxDMWCPNonce[4],
+        minMaxDMWCPNonce[5],
+        minMaxDMWCPNonce[6], 
+        minMaxDMWCPNonce[7]
+      );
+    require(
+      ecrecover(keccak256("\x19Ethereum Signed Message:\n32",orderHash),v,rs[0],rs[1]) == msg.sender &&
+      block.number > minMaxDMWCPNonce[2] &&
+      orderRecord[tokenUser[1]][orderHash].balance < minMaxDMWCPNonce[0]
+    );
+    msg.sender.transfer(orderRecord[msg.sender][orderHash].coupon);
+    orderRecord[msg.sender][orderHash].coupon = uint(0);
+    NonActivationWithdrawal(tokenUser,minMaxDMWCPNonce,v,rs,orderRecord[msg.sender][orderHash].coupon);
+  }
+Response:
+{"1": "No"}
+--------------------------------------------------

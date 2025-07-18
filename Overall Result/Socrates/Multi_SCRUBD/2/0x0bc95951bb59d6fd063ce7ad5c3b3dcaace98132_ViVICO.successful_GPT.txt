@@ -1,0 +1,32 @@
+
+Start analyze function: ViVICO.successful()
+Function Security Analysis for ViVICO.successful()
+    There are no modifiers should be examined in function successful.
+    Check direct function security
+        - function ViVICO.successful() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'successful' does not check if 'msg.sender' is equal to any roles like xxxOwner, xxxAddress, Leader, or CEO using require, if, or assert
+          statements.
+        - function ViVICO.successful() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function contains a `require` statement checking `state == State.Successful`, but it does not change the state of `state` afterward or set it to
+          `false` as per the structure requirement. Furthermore, there is no assignment to the `state` variable within the function that follows the structure outlined
+          (e.g., setting `state` to `false` after requiring it to be `true`). Therefore, none of the required structures are met.
+External Call Analysis
+    Direct external call: ['tokenReward.balanceOf(this)', 'creator.transfer(address(this).balance)', 'tokenReward.transfer(creator,remanent)']
+    Analyze Transfer
+        - creator.transfer(address(this).balance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'creator.transfer(address(this).balance)' contains the '.transfer(' keyword, satisfying the first characteristic.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.balanceOf(this) ISN'T subjected to gas limits.
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.balanceOf(this)', 'tokenReward.transfer(creator,remanent)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code includes a constructor function, which either matches the contract name 'ViVICO' or is explicitly named 'constructor'. Therefore, the
+            function satisfies the first characteristic.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code is a constructor function. It is explicitly named 'constructor' and matches the contract's name, ViVICO. The function sets the state
+            variable 'tokenReward'.
+Conclusion: This function will not cause REE Problem.

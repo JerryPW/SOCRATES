@@ -1,0 +1,28 @@
+
+Start analyze function: MappingTokenFactory.createTokenMapped(address)
+Function Security Analysis for MappingTokenFactory.createTokenMapped(address)
+    There are no modifiers should be examined in function createTokenMapped.
+    Check direct function security
+        - function MappingTokenFactory.createTokenMapped(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any require/assert checks or if conditions that involve msg.sender being compared to an owner, address, Leader, or CEO.
+        - function MappingTokenFactory.createTokenMapped(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the required structural characteristics such as 'require(xxx == True); xxx = False;' or 'require(xxx == False); xxx =
+          True;' and similar structures mentioned in the criteria.
+External Call Analysis
+    Direct external call: ['InitializableProductProxy(address(tokenMapped)).__InitializableProductProxy_init(address(this),_TokenMapped_,abi.encodeWithSignature(__TokenMa
+    pped_init(address,address),address(this),token))']
+    Analyze Transfer
+    Analyze Gas
+        - InitializableProductProxy(address(tokenMapped)).__InitializableProductProxy_init(address(this),_TokenMapped_,abi.encodeWithSignature(__TokenMapped_init(address,
+        address),address(this),token)) ISN'T subjected to gas limits.
+    Remaining external call: ['InitializableProductProxy(address(tokenMapped)).__InitializableProductProxy_init(address(this),_TokenMapped_,abi.encodeWithSignature(__Toke
+    nMapped_init(address,address),address(this),token))']
+    Analyze External Address
+        The variable 'tokenMapped' in external call 'InitializableProductProxy(address(tokenMapped)).__InitializableProductProxy_init(address(this),_TokenMapped_,abi.enco
+        deWithSignature(__TokenMapped_init(address,address),address(this),token))' has no state variable assigned in MappingTokenFactory.createTokenMapped(address).
+        Therefore we check whether it has been hardcoded in the function.
+            No The variable 'tokenMapped' is determined at runtime within the function using dynamic parameters, specifically the 'token' address that is passed as an
+            argument to the function. It is created using the create2 assembly instruction, which is dependent on the 'token' input, the chain ID, and a salted hash.
+            There is no evidence of 'tokenMapped' being explicitly hardcoded in the function's logic. Instead, it results from dynamic computation based on the provided
+            input.
+Conclusion: This function will cause REE Problem.

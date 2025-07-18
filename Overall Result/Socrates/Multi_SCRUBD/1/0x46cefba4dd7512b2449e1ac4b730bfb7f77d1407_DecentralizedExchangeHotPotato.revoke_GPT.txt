@@ -1,0 +1,37 @@
+
+Start analyze function: DecentralizedExchangeHotPotato.revoke(uint256)
+Function Security Analysis for DecentralizedExchangeHotPotato.revoke(uint256)
+    There are no modifiers should be examined in function revoke.
+    Check direct function security
+        - function DecentralizedExchangeHotPotato.revoke(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The requirement 'require(msg.sender == orderBook[_id].owner);' does not count since 'orderBook[_id].owner' is guided by the local variable 'orderBook',
+          which does not match the specified structures since we are looking for static identifiers like 'xxxOwner'.
+        - function DecentralizedExchangeHotPotato.revoke(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any conditional require statements that explicitly check if a variable is True or False, followed by assignments that toggle the
+          value of the same variable.
+External Call Analysis
+    Direct external call: ['issuer.transfer(msg.sender,orderBook[_id].tokenId)']
+    Analyze Transfer
+        - issuer.transfer(msg.sender,orderBook[_id].tokenId) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - issuer.transfer(msg.sender,orderBook[_id].tokenId) ISN'T subjected to gas limits.
+    Remaining external call: ['issuer.transfer(msg.sender,orderBook[_id].tokenId)']
+    Analyze External Address
+        There are ['orderBook'] should be checked in variable issuer
+        Checked variables: orderBook
+            No The provided functions in the code do not appear to satisfy either of the specified characteristics. None of the function names match the contract name
+            'DecentralizedExchangeHotPotato', nor are any of the functions explicitly named 'constructor', which means none of them are constructors. Additionally, there
+            are no indications that any state variables are hardcoded within the functions. The 'orderBook' state variable is used dynamically; it is not hardcoded in the
+            sense of being assigned a constant or fixed value within the functions. Therefore, neither characteristic is satisfied.
+            Function Security Analysis for DecentralizedExchangeHotPotato.put(address,uint256,uint256,uint256,uint256)
+                There are no modifiers should be examined in function put.
+                Check direct function security
+                    - function DecentralizedExchangeHotPotato.put(address,uint256,uint256,uint256,uint256) has no security assurance protected by checking the authority
+                    of msg.sender
+                      Reason: The require statement checks if 'msg.sender' is the owner of the token through the 'issuer' local variable, which does not match any of the
+                      prescribed structures irrespective of the local variable context as specified.
+                    - function DecentralizedExchangeHotPotato.put(address,uint256,uint256,uint256,uint256) has no apparent security assurance by utilizing a lock
+                    machinism.
+                      Reason: The code does not meet any of the patterns specified. It has a require statement with a condition, but it does not change the variable's
+                      value afterward, nor does it have the required structures following the patterns given.
+Conclusion: This function will cause REE Problem.

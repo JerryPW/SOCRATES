@@ -1,0 +1,27 @@
+
+Start analyze function: Crowdsale.checkGoalReached()
+Function Security Analysis for Crowdsale.checkGoalReached()
+    The modifier of function checkGoalReached are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier only checks the current time against a deadline, without enforcing ownership or address restrictions, using a lock, or having a name like
+          Onlyxxx or nonReentrant.
+    Check direct function security
+        - function Crowdsale.checkGoalReached() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks for msg.sender to ensure it matches xxxOwner, xxxAddress, Leader, or CEO. It only performs operations based on
+          the value of amountRaised relative to fundingGoal and does not restrict access to specific addresses.
+        - function Crowdsale.checkGoalReached() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided does not contain any of the specified structural patterns such as 'require(xxx == True)' followed by 'xxx = False', 'require(xxx ==
+          False)' followed by 'xxx = True', 'require(!xxx)' followed by 'xxx = True', or 'if(!xxx) throw' followed by 'xxx = true'.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)/price)']
+    Analyze Transfer
+        - tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)/price) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)/price)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function name 'Crowdsale' matches the contract name, indicating that this function is a constructor.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,41 @@
+
+Start analyze function: DesTokenSale.fallback()
+Function Security Analysis for DesTokenSale.fallback()
+    The modifier of function fallback are ['stopInEmergency']
+    The result of checking modifiers:
+        - modifier stopInEmergency has no relation with controlled by owner.
+          Reason: The given modifier 'stopInEmergency' does not include any code structures that match the specified characteristics. It doesn't enforce execution
+          restrictions based on msg.sender, nor does it implement a lock operation or derive its action from a function name like 'Onlyxxx' or 'nonReentrant'.
+    Check direct function security
+        - function DesTokenSale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any check related to msg.sender being equal to or not equal to an owner, address, leader, or CEO.
+        - function DesTokenSale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. It uses several require statements for error checking, but none of them are in the format
+          required by the given structures (checking boolean expressions and then modifying the boolean variable).
+External Call Analysis
+    Direct external call: ['token.balanceOf(msg.sender).add(tokens)', 'token.transfer(msg.sender,tokens)', 'token.balanceOf(msg.sender)',
+    'beneficiary.transfer(msg.value)']
+    Analyze Transfer
+        - token.transfer(msg.sender,tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.transfer(msg.value)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - token.balanceOf(msg.sender).add(tokens) ISN'T subjected to gas limits.
+        - token.transfer(msg.sender,tokens) ISN'T subjected to gas limits.
+        - token.balanceOf(msg.sender) ISN'T subjected to gas limits.
+    Remaining external call: ['token.balanceOf(msg.sender).add(tokens)', 'token.transfer(msg.sender,tokens)', 'token.balanceOf(msg.sender)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The provided code is a function definition where the function name matches the contract name 'DesTokenSale'. Typically, when the function name matches the
+            contract name, it indicates that this function is a constructor, at least in versions of Solidity before 0.5.0, where constructors are explicitly named.
+            Therefore, the function satisfies the first characteristic of being a constructor.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function is named 'DesTokenSale', which matches the contract name provided, indicating that the function is indeed a constructor. Constructors are
+            special functions executed only once upon contract creation to initialize state variables or set up contract settings.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The provided code contains a function named 'DesTokenSale' which matches the contract name 'DesTokenSale'. This indicates that the function is a
+            constructor.
+Conclusion: This function will not cause REE Problem.

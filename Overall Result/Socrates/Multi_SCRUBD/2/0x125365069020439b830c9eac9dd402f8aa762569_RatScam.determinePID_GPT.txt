@@ -1,0 +1,51 @@
+
+Start analyze function: RatScam.determinePID(RSdatasets.EventReturns)
+Function Security Analysis for RatScam.determinePID(RSdatasets.EventReturns)
+    There are no modifiers should be examined in function determinePID.
+    Check direct function security
+        - function RatScam.determinePID(RSdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any require, if, or assert statements that check if msg.sender is equal to xxxOwner/xxxAddress/Leader/CEO. There is no
+          condition that restricts msg.sender to specific roles or addresses that match the provided characteristics.
+        - function RatScam.determinePID(RSdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not satisfy any of the specified structures. It contains an 'if' condition to check if _pID is 0 and subsequently sets up player
+          data, but none of the required structures involving require or throw statements are present.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyXid', 'buyXname', 'fallback', 'buyXaddr']
+        Function Security Analysis for RatScam.buyXid(uint256)
+            The modifier of function buyXid are ['isActivated', 'isHuman', 'isWithinLimits']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier 'isActivated' does not enforce ownership or specific address execution permissions, nor does it use a lock mechanism to ensure
+                  single entry access. It only checks if a condition 'activated_' is true. It doesn't match any characteristic for outputting 'Yes'.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: The modifier uses the solidity global variable msg.sender to enforce a condition related to execution, ensuring only human users (not contracts)
+                  can perform certain actions. However, it neither checks if the sender is an owner/specific address nor uses a lock mechanism as stipulated in the rules.
+                - modifier isWithinLimits has no relation with controlled by owner.
+                  Reason: The modifier 'isWithinLimits' does not involve any checks related to specific addresses or the owner fulfilling rule 1. It also doesn't
+                  implement any locking mechanism or flag operations required for rule 2. The modifier name 'isWithinLimits' suggests a check on value boundaries rather
+                  than owner restrictions or reentrancy protection, not satisfying rule 3.
+            Check direct function security
+                - function RatScam.buyXid(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any require, if, or assert statements to check if msg.sender matches a specified owner-like identifier.
+                - function RatScam.buyXid(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures involving require statements or conditional throw statements followed by reassignments
+                  of the same variable.
+External Call Analysis
+    Direct external call: ['RatBook.getPlayerLAff(_pID)', 'RatBook.getPlayerID(msg.sender)', 'RatBook.getPlayerName(_pID)']
+    Analyze Transfer
+    Analyze Gas
+        - RatBook.getPlayerLAff(_pID) ISN'T subjected to gas limits.
+        - RatBook.getPlayerID(msg.sender) ISN'T subjected to gas limits.
+        - RatBook.getPlayerName(_pID) ISN'T subjected to gas limits.
+    Remaining external call: ['RatBook.getPlayerLAff(_pID)', 'RatBook.getPlayerID(msg.sender)', 'RatBook.getPlayerName(_pID)']
+    Analyze External Address
+        There are ['RatBook'] should be checked in variable RatBook
+        Checked variables: RatBook
+            State variable RatBook has initialized in public area after declaration.
+        There are ['RatBook'] should be checked in variable RatBook
+        Checked variables: RatBook
+            State variable RatBook has initialized in public area after declaration.
+        There are ['RatBook'] should be checked in variable RatBook
+        Checked variables: RatBook
+            State variable RatBook has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

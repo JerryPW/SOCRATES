@@ -1,0 +1,104 @@
+SOLIDBLOCK.swapTokensForETH: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapTokensForETH(uint256 tokenAmount) private lockTheSwap {
+        // generate the uniswap pair path of token -> weth
+        address[] memory path = new address[](2);
+                path[0] = address(this);
+                path[1] = router.WETH();
+
+        _approve(address(this), address(router), tokenAmount);
+        // make the swap
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(
+            tokenAmount,
+            0, // accept any amount of ETH
+            path,
+            address(this),
+            block.timestamp
+        );
+
+        (bool success, ) = treasuryAddress.call{value: (ETHAmount.treasury * address(this).balance)/tokenAmount}("");
+        require(success, 'ETH_TRANSFER_FAILED');
+        ETHAmount.treasury = 0;
+
+        (success, ) = developmentAddress.call{value: (ETHAmount.development * address(this).balance)/tokenAmount}("");
+        require(success, 'ETH_TRANSFER_FAILED');
+        ETHAmount.development = 0;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapTokensForETH(uint256 tokenAmount) private lockTheSwap {
+        // generate the uniswap pair path of token -> weth
+        address[] memory path = new address[](2);
+                path[0] = address(this);
+                path[1] = router.WETH();
+
+        _approve(address(this), address(router), tokenAmount);
+        // make the swap
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(
+            tokenAmount,
+            0, // accept any amount of ETH
+            path,
+            address(this),
+            block.timestamp
+        );
+
+        (bool success, ) = treasuryAddress.call{value: (ETHAmount.treasury * address(this).balance)/tokenAmount}("");
+        require(success, 'ETH_TRANSFER_FAILED');
+        ETHAmount.treasury = 0;
+
+        (success, ) = developmentAddress.call{value: (ETHAmount.development * address(this).balance)/tokenAmount}("");
+        require(success, 'ETH_TRANSFER_FAILED');
+        ETHAmount.development = 0;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function swapTokensForETH(uint256 tokenAmount) private lockTheSwap {
+        // generate the uniswap pair path of token -> weth
+        address[] memory path = new address[](2);
+                path[0] = address(this);
+                path[1] = router.WETH();
+
+        _approve(address(this), address(router), tokenAmount);
+        // make the swap
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(
+            tokenAmount,
+            0, // accept any amount of ETH
+            path,
+            address(this),
+            block.timestamp
+        );
+
+        (bool success, ) = treasuryAddress.call{value: (ETHAmount.treasury * address(this).balance)/tokenAmount}("");
+        require(success, 'ETH_TRANSFER_FAILED');
+        ETHAmount.treasury = 0;
+
+        (success, ) = developmentAddress.call{value: (ETHAmount.development * address(this).balance)/tokenAmount}("");
+        require(success, 'ETH_TRANSFER_FAILED');
+        ETHAmount.development = 0;
+    }
+Response:
+{"StatementsA": {"ETHAmount.treasury = 0;":"Resets the treasury ETH amount to zero after transfer."}, "StatementsB": {"router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount, 0, path, address(this), block.timestamp);":"Executes a token swap on the Uniswap router."}, "VariableA": {"treasuryAddress":"Holds the address to which ETH is sent in the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: ETHAmount.treasury = 0;
+2.External Call: router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount, 0, path, address(this), block.timestamp);
+3.Variable A: treasuryAddress
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

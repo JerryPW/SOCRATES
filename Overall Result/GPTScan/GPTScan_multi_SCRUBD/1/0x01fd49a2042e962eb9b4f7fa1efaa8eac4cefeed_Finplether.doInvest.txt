@@ -1,0 +1,159 @@
+Finplether.doInvest: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function doInvest(address referrerAddr) public payable notFromContract balanceChanged {
+    uint investment = msg.value;
+    uint receivedEther = msg.value;
+    require(investment >= minInvesment, "investment must be >= minInvesment");
+    require(address(this).balance <= maxBalance, "the contract eth balance limit");
+
+    if (m_rgp.isActive()) { 
+      // use Rapid Growth Protection if needed
+      uint rpgMaxInvest = m_rgp.maxInvestmentAtNow();
+      rpgMaxInvest.requireNotZero();
+      investment = Math.min(investment, rpgMaxInvest);
+      assert(m_rgp.saveInvestment(investment));
+      emit LogRGPInvestment(msg.sender, now, investment, m_rgp.currDay());
+      
+    } else if (m_privEnter.isActive()) {
+      // use Private Entrance if needed
+      uint peMaxInvest = m_privEnter.maxInvestmentFor(msg.sender);
+      peMaxInvest.requireNotZero();
+      investment = Math.min(investment, peMaxInvest);
+    }
+
+    // send excess of ether if needed
+    if (receivedEther > investment) {
+      uint excess = receivedEther - investment;
+      msg.sender.transfer(excess);
+      receivedEther = investment;
+      emit LogSendExcessOfEther(msg.sender, now, msg.value, investment, excess);
+    }
+
+    // commission
+    advertisingAddress.send(m_advertisingPercent.mul(receivedEther));
+    adminsAddress.send(m_adminsPercent.mul(receivedEther));
+
+    bool senderIsInvestor = m_investors.isInvestor(msg.sender);
+
+    // ref system works only once and only on first invest
+    if (referrerAddr.notZero() && !senderIsInvestor && !m_referrals[msg.sender] &&
+      referrerAddr != msg.sender && m_investors.isInvestor(referrerAddr)) {
+      
+      m_referrals[msg.sender] = true;
+      // add referral bonus to investor`s and referral`s investments
+      uint referrerBonus = m_referrer_percent.mmul(investment);
+      if (investment > 10 ether) {
+        referrerBonus = m_referrer_percentMax.mmul(investment);
+      }
+      
+      uint referalBonus = m_referal_percent.mmul(investment);
+      assert(m_investors.addInvestment(referrerAddr, referrerBonus)); // add referrer bonus
+      investment += referalBonus;                                    // add referral bonus
+      emit LogNewReferral(msg.sender, referrerAddr, now, referalBonus);
+    }
+
+    // automatic reinvest - prevent burning dividends
+    uint dividends = calcDividends(msg.sender);
+    if (senderIsInvestor && dividends.notZero()) {
+      investment += dividends;
+      emit LogAutomaticReinvest(msg.sender, now, dividends);
+    }
+
+    if (senderIsInvestor) {
+      // update existing investor
+      assert(m_investors.addInvestment(msg.sender, investment));
+      assert(m_investors.setPaymentTime(msg.sender, now));
+    } else {
+      // create new investor
+      assert(m_investors.newInvestor(msg.sender, investment, now));
+      emit LogNewInvestor(msg.sender, now);
+    }
+
+    investmentsNumber++;
+    emit LogNewInvesment(msg.sender, now, investment, receivedEther);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function doInvest(address referrerAddr) public payable notFromContract balanceChanged {
+    uint investment = msg.value;
+    uint receivedEther = msg.value;
+    require(investment >= minInvesment, "investment must be >= minInvesment");
+    require(address(this).balance <= maxBalance, "the contract eth balance limit");
+
+    if (m_rgp.isActive()) { 
+      // use Rapid Growth Protection if needed
+      uint rpgMaxInvest = m_rgp.maxInvestmentAtNow();
+      rpgMaxInvest.requireNotZero();
+      investment = Math.min(investment, rpgMaxInvest);
+      assert(m_rgp.saveInvestment(investment));
+      emit LogRGPInvestment(msg.sender, now, investment, m_rgp.currDay());
+      
+    } else if (m_privEnter.isActive()) {
+      // use Private Entrance if needed
+      uint peMaxInvest = m_privEnter.maxInvestmentFor(msg.sender);
+      peMaxInvest.requireNotZero();
+      investment = Math.min(investment, peMaxInvest);
+    }
+
+    // send excess of ether if needed
+    if (receivedEther > investment) {
+      uint excess = receivedEther - investment;
+      msg.sender.transfer(excess);
+      receivedEther = investment;
+      emit LogSendExcessOfEther(msg.sender, now, msg.value, investment, excess);
+    }
+
+    // commission
+    advertisingAddress.send(m_advertisingPercent.mul(receivedEther));
+    adminsAddress.send(m_adminsPercent.mul(receivedEther));
+
+    bool senderIsInvestor = m_investors.isInvestor(msg.sender);
+
+    // ref system works only once and only on first invest
+    if (referrerAddr.notZero() && !senderIsInvestor && !m_referrals[msg.sender] &&
+      referrerAddr != msg.sender && m_investors.isInvestor(referrerAddr)) {
+      
+      m_referrals[msg.sender] = true;
+      // add referral bonus to investor`s and referral`s investments
+      uint referrerBonus = m_referrer_percent.mmul(investment);
+      if (investment > 10 ether) {
+        referrerBonus = m_referrer_percentMax.mmul(investment);
+      }
+      
+      uint referalBonus = m_referal_percent.mmul(investment);
+      assert(m_investors.addInvestment(referrerAddr, referrerBonus)); // add referrer bonus
+      investment += referalBonus;                                    // add referral bonus
+      emit LogNewReferral(msg.sender, referrerAddr, now, referalBonus);
+    }
+
+    // automatic reinvest - prevent burning dividends
+    uint dividends = calcDividends(msg.sender);
+    if (senderIsInvestor && dividends.notZero()) {
+      investment += dividends;
+      emit LogAutomaticReinvest(msg.sender, now, dividends);
+    }
+
+    if (senderIsInvestor) {
+      // update existing investor
+      assert(m_investors.addInvestment(msg.sender, investment));
+      assert(m_investors.setPaymentTime(msg.sender, now));
+    } else {
+      // create new investor
+      assert(m_investors.newInvestor(msg.sender, investment, now));
+      emit LogNewInvestor(msg.sender, now);
+    }
+
+    investmentsNumber++;
+    emit LogNewInvesment(msg.sender, now, investment, receivedEther);
+  }
+    
+Response:
+No
+--------------------------------------------------

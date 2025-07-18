@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "selfDestruct",
+        "code": "function selfDestruct() external onlyOwner { require(selfDestructInitiated, \"Self destruct has not yet been initiated\"); require(initiationTime + SELFDESTRUCT_DELAY < now, \"Self destruct delay has not yet elapsed\"); address beneficiary = selfDestructBeneficiary; emit SelfDestructed(beneficiary); selfdestruct(beneficiary); }",
+        "vulnerability": "Owner can destroy contract",
+        "reason": "The `selfDestruct` function allows the owner to destroy the contract after a delay, potentially disrupting the functionality and accessibility of the contract for users. This can be exploited if the owner turns malicious or if the private key is compromised.",
+        "file_name": "0x172e09691dfbbc035e37c73b62095caa16ee2388.sol"
+    },
+    {
+        "function_name": "exchangeEtherForSynths",
+        "code": "function exchangeEtherForSynths() public payable pricesNotStale notPaused returns (uint) { uint ethToSend; uint requestedToPurchase = msg.value.multiplyDecimal(usdToEthPrice); uint remainingToFulfill = requestedToPurchase; for (uint i = depositStartIndex; remainingToFulfill > 0 && i < depositEndIndex; i++) { synthDeposit memory deposit = deposits[i]; if (deposit.user == address(0)) { depositStartIndex = depositStartIndex.add(1); } else { if (deposit.amount > remainingToFulfill) { uint newAmount = deposit.amount.sub(remainingToFulfill); deposits[i] = synthDeposit({ user: deposit.user, amount: newAmount}); totalSellableDeposits = totalSellableDeposits.sub(remainingToFulfill); ethToSend = remainingToFulfill.divideDecimal(usdToEthPrice); if(!deposit.user.send(ethToSend)) { fundsWallet.transfer(ethToSend); emit NonPayableContract(deposit.user, ethToSend); } else { emit ClearedDeposit(msg.sender, deposit.user, ethToSend, remainingToFulfill, i); } synth.transfer(msg.sender, remainingToFulfill); remainingToFulfill = 0; } else if (deposit.amount <= remainingToFulfill) { delete deposits[i]; depositStartIndex = depositStartIndex.add(1); totalSellableDeposits = totalSellableDeposits.sub(deposit.amount); ethToSend = deposit.amount.divideDecimal(usdToEthPrice); if(!deposit.user.send(ethToSend)) { fundsWallet.transfer(ethToSend); emit NonPayableContract(deposit.user, ethToSend); } else { emit ClearedDeposit(msg.sender, deposit.user, ethToSend, deposit.amount, i); } synth.transfer(msg.sender, deposit.amount); remainingToFulfill = remainingToFulfill.sub(deposit.amount); } } } if (remainingToFulfill > 0) { msg.sender.transfer(remainingToFulfill.divideDecimal(usdToEthPrice)); } uint fulfilled = requestedToPurchase.sub(remainingToFulfill); if (fulfilled > 0) { emit Exchange(\"ETH\", msg.value, \"sUSD\", fulfilled); } return fulfilled; }",
+        "vulnerability": "Reentrancy vulnerability in Ether transfer",
+        "reason": "The function uses `send` to transfer Ether, which only forwards 2300 gas, but if a fallback function is optimized to handle this gas amount, a reentrancy attack could occur. If an attacker is the `deposit.user`, they can re-enter the contract before the state is updated, potentially draining funds.",
+        "file_name": "0x172e09691dfbbc035e37c73b62095caa16ee2388.sol"
+    },
+    {
+        "function_name": "appendVestingEntry",
+        "code": "function appendVestingEntry(address account, uint time, uint quantity) public onlyOwner onlyDuringSetup { require(now < time, \"Time must be in the future\"); require(quantity != 0, \"Quantity cannot be zero\"); totalVestedBalance = totalVestedBalance.add(quantity); require(totalVestedBalance <= synthetix.balanceOf(this), \"Must be enough balance in the contract to provide for the vesting entry\"); uint scheduleLength = vestingSchedules[account].length; require(scheduleLength <= MAX_VESTING_ENTRIES, \"Vesting schedule is too long\"); if (scheduleLength == 0) { totalVestedAccountBalance[account] = quantity; } else { require(getVestingTime(account, numVestingEntries(account) - 1) < time, \"Cannot add new vested entries earlier than the last one\"); totalVestedAccountBalance[account] = totalVestedAccountBalance[account].add(quantity); } vestingSchedules[account].push([time, quantity]); }",
+        "vulnerability": "Lack of input validation for vesting entry time",
+        "reason": "The function lacks validation to ensure the `time` parameter is not too far in the future, allowing an attacker to potentially lock up the entire contract balance in a vesting schedule indefinitely, preventing others from receiving payments.",
+        "file_name": "0x172e09691dfbbc035e37c73b62095caa16ee2388.sol"
+    }
+]

@@ -1,0 +1,41 @@
+
+Start analyze function: CoinMerge._disperseEth()
+Function Security Analysis for CoinMerge._disperseEth()
+    There are no modifiers should be examined in function _disperseEth.
+    Check direct function security
+        - function CoinMerge._disperseEth() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any explicit 'require', 'if', 'assert', or 'throw' statements involving the conditions of the function caller with msg.sender
+          related to authorization checks against any kind of owner or leader roles.
+        - function CoinMerge._disperseEth() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any require statements or if conditions checking boolean variables with specific conditions such as `require(xxx ==
+          True);`, `require(xxx == False);`, `require(!xxx);`, or `if(!xxx) throw`, followed by a variable assignment of the opposite boolean value. Hence, this code does
+          not match any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom', '_tax', '_transfer']
+        Function Security Analysis for CoinMerge.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function CoinMerge.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided function does not have any 'require', 'if', or 'assert' statements checking against msg.sender to verify it matches
+                  xxxOwner/xxxAddress/Leader/CEO.
+                - function CoinMerge.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not include any 'require' clauses or if-conditions that align with the specified patterns involving a boolean parameter that
+                  toggles between true and false. It lacks a boolean variable manipulation as required by the structures provided.
+External Call Analysis
+    Direct external call: ['External.deposit(_devBalance)', 'm_ProjectWallet.transfer(_projectBalance)', 'address(address(External)).transfer(_devBalance)',
+    'address(address(EthReflect)).transfer(_redistBalance)']
+    Analyze Transfer
+        - m_ProjectWallet.transfer(_projectBalance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - address(address(External)).transfer(_devBalance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - address(address(EthReflect)).transfer(_redistBalance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external
+        call contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - External.deposit(_devBalance) ISN'T subjected to gas limits.
+    Remaining external call: ['External.deposit(_devBalance)']
+    Analyze External Address
+        There are ['External'] should be checked in variable External
+        Checked variables: External
+            Yes The provided external code is a constructor because the function is explicitly named 'constructor'.
+Conclusion: This function will not cause REE Problem.

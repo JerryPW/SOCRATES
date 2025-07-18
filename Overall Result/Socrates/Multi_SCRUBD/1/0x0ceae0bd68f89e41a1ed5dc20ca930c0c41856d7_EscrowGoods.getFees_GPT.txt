@@ -1,0 +1,10 @@
+
+Start analyze function: EscrowGoods.getFees()
+Function Security Analysis for EscrowGoods.getFees()
+    The modifier of function getFees are ['onlyArbiter']
+    The result of checking modifiers:
+        - modifier onlyArbiter is controlled by owner, the function would not cause REE problem.
+          Reason: After reviewing the code, Rule 1 is satisfied by the statement "if (msg.sender != arbiter) throw;" which enforces that only the arbiter address can
+          execute the function. There are no structural omissions related to Rule 1, and Rule 2 is not applicable as there is neither a lock nor an unlock operation
+          present.
+Conclusion: This function will not cause REE Problem.

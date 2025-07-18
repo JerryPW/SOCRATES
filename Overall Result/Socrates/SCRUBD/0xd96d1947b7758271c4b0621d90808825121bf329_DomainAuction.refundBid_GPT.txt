@@ -1,0 +1,29 @@
+
+Start analyze function: DomainAuction.refundBid(DomainAuction.Bid)
+Function Security Analysis for DomainAuction.refundBid(DomainAuction.Bid)
+    There are no modifiers should be examined in function refundBid.
+    Check direct function security
+        - function DomainAuction.refundBid(DomainAuction.Bid) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures regarding checking if msg.sender is equal to an owner or specific address.
+        - function DomainAuction.refundBid(DomainAuction.Bid) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require' or 'if' statements, and hence, it does not match any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['placeBid']
+        Function Security Analysis for DomainAuction.placeBid(string)
+            There are no modifiers should be examined in function placeBid.
+            Check direct function security
+                - function DomainAuction.placeBid(string) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any conditional statements or assertions regarding `msg.sender` being equivalent or not equivalent to an owner or
+                  leader role (xxxOwner/xxxAddress/Leader/CEO) as specified in the criteria.
+                - function DomainAuction.placeBid(string) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures, as it lacks any require statement with a boolean condition being subsequently
+                  flipped, or an if statement with a boolean condition being subsequently flipped.
+External Call Analysis
+    Direct external call: ['bid.bidder.send(bid.amount)']
+    Analyze Transfer
+        - bid.bidder.send(bid.amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, which matches one of the specified characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

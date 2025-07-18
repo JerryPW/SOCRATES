@@ -1,0 +1,24 @@
+
+Start analyze function: Bussiness.removePrice(uint256)
+Function Security Analysis for Bussiness.removePrice(uint256)
+    There are no modifiers should be examined in function removePrice.
+    Check direct function security
+        - function Bussiness.removePrice(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The check 'require(erc721Address.ownerOf(tokenId) == msg.sender);' uses a dynamic call to determine ownership and does not directly check against a
+          fixed xxxOwner/xxxAddress/Leader/CEO. Therefore, it does not meet the criteria listed for characteristics 1, 2, 3, or 4.
+        - function Bussiness.removePrice(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not have any of the specified structures. The 'require' condition in the function checks ownership, not a boolean value. Also, there
+          is no sequence of changing boolean states like False to True or vice versa.
+External Call Analysis
+    Direct external call: ['erc721Address.ownerOf(tokenId)', 'msg.sender.transfer(prices[tokenId].fee)']
+    Analyze Transfer
+        - msg.sender.transfer(prices[tokenId].fee) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(prices[tokenId].fee)' contains '.transfer(' keyword, which matches the criteria.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - erc721Address.ownerOf(tokenId) ISN'T subjected to gas limits.
+    Remaining external call: ['erc721Address.ownerOf(tokenId)']
+    Analyze External Address
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,31 @@
+
+Start analyze function: Bussiness.setPriceFeeHBWALLET(uint256,uint256)
+Function Security Analysis for Bussiness.setPriceFeeHBWALLET(uint256,uint256)
+    There are no modifiers should be examined in function setPriceFeeHBWALLET.
+    Check direct function security
+        - function Bussiness.setPriceFeeHBWALLET(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures that check permissions based on the identity of the msg.sender being equal to a specific
+          owner or address role.
+        - function Bussiness.setPriceFeeHBWALLET(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any code structure that matches the given characteristics.
+External Call Analysis
+    Direct external call: ['hbwalletToken.transferFrom(msg.sender,address(this),fee)', 'erc721Address.ownerOf(_tokenId)',
+    'hbwalletToken.transferFrom(msg.sender,address(this),limitHBWALLETFee)']
+    Analyze Transfer
+    Analyze Gas
+        - hbwalletToken.transferFrom(msg.sender,address(this),fee) ISN'T subjected to gas limits.
+        - erc721Address.ownerOf(_tokenId) ISN'T subjected to gas limits.
+        - hbwalletToken.transferFrom(msg.sender,address(this),limitHBWALLETFee) ISN'T subjected to gas limits.
+    Remaining external call: ['hbwalletToken.transferFrom(msg.sender,address(this),fee)', 'erc721Address.ownerOf(_tokenId)',
+    'hbwalletToken.transferFrom(msg.sender,address(this),limitHBWALLETFee)']
+    Analyze External Address
+        There are ['hbwalletToken'] should be checked in variable hbwalletToken
+        Checked variables: hbwalletToken
+            State variable hbwalletToken has initialized in public area after declaration.
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+        There are ['hbwalletToken'] should be checked in variable hbwalletToken
+        Checked variables: hbwalletToken
+            State variable hbwalletToken has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

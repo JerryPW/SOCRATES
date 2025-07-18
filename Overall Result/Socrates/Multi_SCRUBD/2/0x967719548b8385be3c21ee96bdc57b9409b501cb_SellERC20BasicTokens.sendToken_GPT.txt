@@ -1,0 +1,22 @@
+
+Start analyze function: SellERC20BasicTokens.sendToken(address,uint256)
+Function Security Analysis for SellERC20BasicTokens.sendToken(address,uint256)
+    There are no modifiers should be examined in function sendToken.
+    Check direct function security
+        - function SellERC20BasicTokens.sendToken(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The term 'wallet' is not a local variable or specific variable pattern indicating ownership/address such as xxxOwner/xxxAddress/Leader/CEO.
+        - function SellERC20BasicTokens.sendToken(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures with 'require' and assignment to the same variable.
+External Call Analysis
+    Direct external call: ['token.transfer(_receiver,_amount)']
+    Analyze Transfer
+        - token.transfer(_receiver,_amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(_receiver,_amount) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(_receiver,_amount)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function provided is explicitly named 'constructor', which matches the typical way of declaring a constructor in Solidity contracts. This satisfies
+            the first characteristic of checking whether the provided code is a constructor.
+Conclusion: This function will not cause REE Problem.

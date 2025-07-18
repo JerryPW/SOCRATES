@@ -1,0 +1,37 @@
+
+Start analyze function: ChipToken._transfer(address,address,uint256)
+Function Security Analysis for ChipToken._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function ChipToken._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check `msg.sender` for ownership or specific roles using the specified patterns.
+        - function ChipToken._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains a line using ! with a variable (require(!blacklist[from] && !blacklist[to], "sender or recipient is blacklisted!";) but the
+          accompanying line does not change the state of the same variable. There are no other conditions from the specified structures found in the function.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for ChipToken.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function ChipToken.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any checks or structures where msg.sender is compared to an owner, address, Leader, or CEO, such as require(msg.sender
+                  == xxxOwner) or if (msg.sender != xxxOwner)... etc.
+                - function ChipToken.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any require statements or if statements throwing exceptions with the specified structures involving a single variable
+                  being both checked and then altered. Consequently, none of the patterns are present.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ChipToken.swap()
+Function Security Analysis for ChipToken.swap()
+    The modifier of function swap are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier code 'lockTheSwap' enforces a lock operation by setting 'inSwap' to true before the function executes and resets it to false afterward.
+          This matches both the lock and unlock operation criteria in rule 2, thus confirming the initial judgment is correct.
+Conclusion: This function will not cause REE Problem.

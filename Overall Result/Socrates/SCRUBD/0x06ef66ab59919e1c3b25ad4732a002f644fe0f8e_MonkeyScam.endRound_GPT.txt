@@ -1,0 +1,57 @@
+
+Start analyze function: MonkeyScam.endRound(LDdatasets.EventReturns)
+Function Security Analysis for MonkeyScam.endRound(LDdatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function MonkeyScam.endRound(LDdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any conditional checks for msg.sender against a specific owner, address, Leader, or CEO role as required in the given
+          structures.
+        - function MonkeyScam.endRound(LDdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any 'require' statements or 'if' conditions followed by 'throw'. It primarily involves computations and updates related to
+          game round outcomes without specific conditional checks that match the described structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['reLoadCore', 'reLoadXname', 'buyXname', 'fallback', 'buyCore', 'reLoadXaddr', 'buyXaddr', 'withdraw', 'reLoadXid', 'buyXid']
+        Function Security Analysis for MonkeyScam.reLoadCore(uint256,uint256,uint256,LDdatasets.EventReturns)
+            There are no modifiers should be examined in function reLoadCore.
+            Check direct function security
+                - function MonkeyScam.reLoadCore(uint256,uint256,uint256,LDdatasets.EventReturns) has no security assurance protected by checking the authority of
+                msg.sender
+                  Reason: The function doesn't contain any checks or assertions related to msg.sender being an owner, address, leader, or CEO. Therefore, it does not
+                  match any of the specified structures mentioned in the characteristics.
+                - function MonkeyScam.reLoadCore(uint256,uint256,uint256,LDdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the required patterns, such as a require statement for a boolean variable with a subsequent boolean assignment
+                  to the same variable, as described in the conditions.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['reLoadXid', 'reLoadXname', 'reLoadXaddr']
+                Function Security Analysis for MonkeyScam.reLoadXid(uint256,uint256)
+                    The modifier of function reLoadXid are ['isActivated', 'isHuman', 'isWithinLimits']
+                    The result of checking modifiers:
+                        - modifier isActivated has no relation with controlled by owner.
+                          Reason: The code checks an activation flag, but it does not enforce an owner or specific address execution nor uses a lock operation. The
+                          modifier does not follow characteristics 1, 2, or suggest it by its name.
+                        - modifier isHuman has no relation with controlled by owner.
+                          Reason: The code in the modifier does not satisfy any of the specific characteristics outlined in the rules. It does not enforce owner or
+                          specific address execution (Rule 1), and it does not use locking mechanisms (Rule 2), nor does it have a name that implies these checks (Rule
+                          3).
+                        - modifier isWithinLimits has no relation with controlled by owner.
+                          Reason: The modifier checks a condition on the amount of Ether sent, but it does not enforce any owner or specific address execution requirement
+                          (Rule 1), nor does it perform any lock operation (Rule 2). Additionally, the modifier's name is not indicative of ownership or reentrancy
+                          protection (Rule 3). Therefore, none of the specific characteristics are satisfied.
+                    Check direct function security
+                        - function MonkeyScam.reLoadXid(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function doesn't contain any checks or conditions based on the 'msg.sender' variable against a specific owner or authorized address.
+                        - function MonkeyScam.reLoadXid(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The given code does not contain any of the required structures where a boolean variable (xxx) is required or checked with a require
+                          statement or an 'if' statement, assigned true or false, and optionally flipped back. This function is only managing variables related to player
+                          IDs and affiliate codes.
+External Call Analysis
+    Direct external call: ['address(MonkeyKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze Transfer
+    Analyze Gas
+        - address(MonkeyKingCorp).call.value(_com)(bytes4(keccak256()(deposit()))) ISN'T subjected to gas limits.
+    Remaining external call: ['address(MonkeyKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze External Address
+        There are ['MonkeyKingCorp'] should be checked in variable MonkeyKingCorp
+        Checked variables: MonkeyKingCorp
+            State variable MonkeyKingCorp has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,43 @@
+xSNXCore.mintWithSnx: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function mintWithSnx(uint256 snxAmount) external whenNotPaused {
+        require(snxAmount > 0, "Must send SNX");
+        uint256 snxBalanceBefore = tradeAccounting.getSnxBalance();
+        IERC20(snxAddress).transferFrom(msg.sender, address(this), snxAmount);
+
+        uint256 mintAmount = tradeAccounting.calculateTokensToMintWithSnx(
+            snxBalanceBefore,
+            snxAmount,
+            totalSupply()
+        );
+
+        emit Mint(msg.sender, block.timestamp, snxAmount, mintAmount, false);
+        return super._mint(msg.sender, mintAmount);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function mintWithSnx(uint256 snxAmount) external whenNotPaused {
+        require(snxAmount > 0, "Must send SNX");
+        uint256 snxBalanceBefore = tradeAccounting.getSnxBalance();
+        IERC20(snxAddress).transferFrom(msg.sender, address(this), snxAmount);
+
+        uint256 mintAmount = tradeAccounting.calculateTokensToMintWithSnx(
+            snxBalanceBefore,
+            snxAmount,
+            totalSupply()
+        );
+
+        emit Mint(msg.sender, block.timestamp, snxAmount, mintAmount, false);
+        return super._mint(msg.sender, mintAmount);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

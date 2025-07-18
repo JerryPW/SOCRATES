@@ -1,0 +1,25 @@
+
+Start analyze function: PiZZa.pullResolves(uint256)
+Function Security Analysis for PiZZa.pullResolves(uint256)
+    There are no modifiers should be examined in function pullResolves.
+    Check direct function security
+        - function PiZZa.pullResolves(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any checks against a specific owner, leader, CEO, or any specific address except 'msg.sender'. It only includes checks relevant
+          to the function logic.
+        - function PiZZa.pullResolves(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain the structures described in the conditions. It uses the 'require' statement with conditions that don't match the specific
+          patterns required to trigger a 'Yes', such as 'require(xxx == True)' or 'require(xxx == False)'. Additionally, it does not have assignments to boolean variables
+          as described in the patterns.
+External Call Analysis
+    Direct external call: ['resolveToken.transfer(sender,amount)']
+    Analyze Transfer
+        - resolveToken.transfer(sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - resolveToken.transfer(sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['resolveToken.transfer(sender,amount)']
+    Analyze External Address
+        There are ['resolveToken'] should be checked in variable resolveToken
+        Checked variables: resolveToken
+            Yes The provided code is a constructor, as indicated by the use of the keyword 'constructor' in the code segment, which is typical of constructor definitions
+            in smart contracts.
+Conclusion: This function will not cause REE Problem.

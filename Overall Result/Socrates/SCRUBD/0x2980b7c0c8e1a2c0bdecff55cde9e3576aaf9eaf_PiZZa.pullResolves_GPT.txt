@@ -1,0 +1,25 @@
+
+Start analyze function: PiZZa.pullResolves(uint256)
+Function Security Analysis for PiZZa.pullResolves(uint256)
+    There are no modifiers should be examined in function pullResolves.
+    Check direct function security
+        - function PiZZa.pullResolves(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain conditions that restrict access based on msg.sender being a specific owner or address, such as 'xxxOwner', 'xxxAddress',
+          'Leader', or 'CEO'.
+        - function PiZZa.pullResolves(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: This code doesn't have any of the specified structures in the listed conditions. It has require statements, but they don't manage a boolean variable as
+          per the structures provided in the conditions. The requires here are related to value checks rather than managing a boolean state.
+External Call Analysis
+    Direct external call: ['resolveToken.transfer(sender,amount)']
+    Analyze Transfer
+        - resolveToken.transfer(sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - resolveToken.transfer(sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['resolveToken.transfer(sender,amount)']
+    Analyze External Address
+        There are ['resolveToken'] should be checked in variable resolveToken
+        Checked variables: resolveToken
+            Yes The provided code is a constructor function for the contract named PiZZa. The function is explicitly named 'constructor', indicating it is the special
+            function used for initializing contracts. In blockchain contracts, constructors are called once when the contract is deployed. This matches the first
+            characteristic regarding constructors, so we can output 'Yes'.
+Conclusion: This function will not cause REE Problem.

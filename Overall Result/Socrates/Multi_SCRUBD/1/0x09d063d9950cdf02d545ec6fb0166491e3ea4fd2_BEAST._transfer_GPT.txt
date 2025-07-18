@@ -1,0 +1,51 @@
+
+Start analyze function: BEAST._transfer(address,address,uint256)
+Function Security Analysis for BEAST._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function BEAST._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code includes the condition 'if (msg.sender != pair && !inSwapAndLiquify && swapAndLiquifyEnabled && _balances[address(this)] >= swapThreshold)'
+          which does not match the patterns specified.
+        - function BEAST._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reevaluating, the code includes a statement 'require(!bots[sender] && !bots[recipient]);' which corresponds to checking a condition. However, the
+          second part of setting 'bots' to true does not appear immediately after the require statement or elsewhere in the function. Therefore, it does not fully satisfy
+          any of the specified structures, as both statements in the structure must be present to consider it a match.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for BEAST.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function BEAST.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function 'transfer' does not check the identity of the caller against an owner or a specific address using 'require', 'if', or 'assert'. It
+                  simply performs a transfer with the given 'msg.sender'.
+                - function BEAST.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided function does not contain any of the specified structures involving the 'require' statement or variable assignments in the specific
+                  order required by the conditions.
+External Call Analysis
+    Direct external call: ['bensRevival.setShare(sender,_balances[sender])', 'bensRevival.setShare(recipient,_balances[recipient])']
+    Analyze Transfer
+    Analyze Gas
+        - bensRevival.setShare(sender,_balances[sender]) ISN'T subjected to gas limits.
+        - bensRevival.setShare(recipient,_balances[recipient]) ISN'T subjected to gas limits.
+    Remaining external call: ['bensRevival.setShare(sender,_balances[sender])', 'bensRevival.setShare(recipient,_balances[recipient])']
+    Analyze External Address
+        There are ['bensRevival'] should be checked in variable bensRevival
+        Checked variables: bensRevival
+            Yes 1. The function is a constructor as it is explicitly named 'constructor'. Constructors are special functions that are executed at contract deployment and
+            have the same name as the contract in older versions of Solidity or explicitly called 'constructor' in newer versions. This function sets up initial values,
+            validations, and configurations required once the contract is deployed.  2. The constructor does not hardcode the state variable 'bensRevival'. Instead, it
+            assigns a new instance of the BensRevival contract to it.
+        There are ['bensRevival'] should be checked in variable bensRevival
+        Checked variables: bensRevival
+            Yes The function is named 'constructor', which explicitly indicates that this function is a constructor of the contract. Hence, it satisfies the first
+            characteristic for an external call function.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: BEAST.swapBack()
+Function Security Analysis for BEAST.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The code snippet in the modifier correctly implements both the lock and unlock operations by setting `inSwapAndLiquify` to `true` at the beginning and
+          resetting it to `false` at the end. This ensures the function enters only once.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,101 @@
+
+Start analyze function: FarmMain._toggleSetup(uint256)
+Function Security Analysis for FarmMain._toggleSetup(uint256)
+    There are no modifiers should be examined in function _toggleSetup.
+    Check direct function security
+        - function FarmMain._toggleSetup(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any condition that directly checks or asserts the identity of msg.sender against xxxOwner, xxxAddress, Leader, or CEO. It
+          primarily focuses on manipulating setup states based on block number conditions without any sender-authority checks.
+        - function FarmMain._toggleSetup(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have a require statement checking the value of a boolean variable and subsequently changing that variable, nor does it throw an error
+          if a boolean variable is false, while later setting it to true. Instead, it manages the activation status of a setup based on block number conditions, but only
+          dynamically setting the state based on other operations.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_removeLiquidity', 'unlock', '_setOrAddFarmingSetupInfo', 'withdrawReward', 'activateSetup', 'withdrawLiquidity', 'setFarmingSetups',
+    'init']
+        Function Security Analysis for FarmMain._removeLiquidity(uint256,uint256,bool,uint256,bool)
+            There are no modifiers should be examined in function _removeLiquidity.
+            Check direct function security
+                - function FarmMain._removeLiquidity(uint256,uint256,bool,uint256,bool) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code does not contain any conditional check on msg.sender to compare it against a specific address like xxxOwner, xxxAddress,
+                  Leader, or CEO. Thus it does not satisfy any of the specified structures.
+                - function FarmMain._removeLiquidity(uint256,uint256,bool,uint256,bool) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not satisfy any of the given structures. There are no `require` statements or exception throw statements that meet the
+                  conditions necessary for a 'Yes' output.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['withdrawLiquidity', 'unlock']
+                Function Security Analysis for FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256)
+                    There are no modifiers should be examined in function withdrawLiquidity.
+                    Check direct function security
+                        - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code has a condition where msg.sender is checked for equality to farmingPosition.uniqueOwner, which may imply ownership validation.
+                        - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not explicitly contain any require statements that lead directly to setting the checked condition variable thereafter. It
+                          utilizes require statements for parameters validation, but none follow the specific structures outlined in the provided criteria.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: FarmMain._giveBack(uint256)
+Function Security Analysis for FarmMain._giveBack(uint256)
+    There are no modifiers should be examined in function _giveBack.
+    Check direct function security
+        - function FarmMain._giveBack(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks or assertions that involve the msg.sender matching a specific owner, address, or role keyword as described in the
+          listed structures.
+        - function FarmMain._giveBack(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures. It does not utilize require statements to check a condition on a boolean variable and
+          then alter its value, nor does it use an if statement to throw based on a boolean condition.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_removeLiquidity', 'unlock', '_toggleSetup', '_setOrAddFarmingSetupInfo', 'withdrawReward', 'activateSetup', '_ensureTransfer',
+    'withdrawLiquidity', 'setFarmingSetups', 'init']
+        Function Security Analysis for FarmMain._removeLiquidity(uint256,uint256,bool,uint256,bool)
+            There are no modifiers should be examined in function _removeLiquidity.
+            Check direct function security
+                - function FarmMain._removeLiquidity(uint256,uint256,bool,uint256,bool) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any of the specified structures related to checking 'msg.sender'. There are no require/assert statements involving
+                  msg.sender being equal to or not equal to a specific owner, leader, CEO, or address.
+                - function FarmMain._removeLiquidity(uint256,uint256,bool,uint256,bool) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain any statements involving `require` or `if` with the specified patterns that involve setting a boolean
+                  variable to true or false and also ensuring some condition to be true or false beforehand. Hence, it does not match any of the specified structures in
+                  the rules.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['withdrawLiquidity', 'unlock']
+                Function Security Analysis for FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256)
+                    There are no modifiers should be examined in function withdrawLiquidity.
+                    Check direct function security
+                        - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: Upon re-evaluation, the occurrence of 'farmingPosition.uniqueOwner == msg.sender' refers to a local variable (farmingPosition) with a
+                          property uniqueOwner. This does not match the specified structures as you have indicated that ownership checks related to local variables do not
+                          count. None of the other structures explicitly check for msg.sender against contract-level ownership variables or constants like
+                          Owner/Address/Leader/CEO in a manner specified by the four given patterns.
+                        - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not contain any of the specified patterns: 'require(xxx == True); xxx = False;', 'require(xxx == False); xxx = True;',
+                          'require(!xxx); xxx = True;', or 'if(!xxx) throw; xxx = true;'.
+External Call Analysis
+    Direct external call: ['IFarmExtension(_extension).backToYou{value:amount}(amount)', 'IFarmExtension(_extension).backToYou(amount)']
+    Analyze Transfer
+    Analyze Gas
+        - IFarmExtension(_extension).backToYou{value:amount}(amount) ISN'T subjected to gas limits.
+        - IFarmExtension(_extension).backToYou(amount) ISN'T subjected to gas limits.
+    Remaining external call: ['IFarmExtension(_extension).backToYou{value:amount}(amount)', 'IFarmExtension(_extension).backToYou(amount)']
+    Analyze External Address
+        There are ['_extension'] should be checked in variable _extension
+        Checked variables: _extension
+            No 1. The function name 'init' does not match the contract name 'FarmMain', nor is it explicitly named 'constructor'. So, it is not a constructor. 2. The
+            state variable _extension is assigned with the value of the function parameter 'extension'. This assignment involves a passed argument, not a hardcoded value.
+            Therefore, the function does not satisfy any of the specified characteristics.
+            Function Security Analysis for FarmMain.init(address,bytes,address,address,bytes)
+                There are no modifiers should be examined in function init.
+                Check direct function security
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The function `init` doesn't contain any access control mechanism using `msg.sender` as described in the listed structures.
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code does not have any of the specified structural patterns involving require clauses or if statements with a variable assignment
+                      sequence as outlined in the four structures. It uses require statements for initial condition checks, but these are not followed by variable
+                      assignments as specified in the rules.
+Conclusion: This function will cause REE Problem.

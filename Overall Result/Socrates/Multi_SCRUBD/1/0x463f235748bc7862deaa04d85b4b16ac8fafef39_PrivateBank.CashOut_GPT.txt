@@ -1,0 +1,19 @@
+
+Start analyze function: PrivateBank.CashOut(uint256)
+Function Security Analysis for PrivateBank.CashOut(uint256)
+    There are no modifiers should be examined in function CashOut.
+    Check direct function security
+        - function PrivateBank.CashOut(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check for msg.sender to be an Owner, Address, Leader, CEO or similar roles using the specified structures.
+        - function PrivateBank.CashOut(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified structures such as 'require(xxx == True)', 'require(xxx == False)', 'require(!xxx)', or 'if(!xxx)
+          throw;' with corresponding assignments to the same variable. It primarily uses a conditional statement but does not follow the required patterns.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

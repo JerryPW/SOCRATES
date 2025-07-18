@@ -1,0 +1,24 @@
+
+Start analyze function: PiZZa.withdraw(uint256)
+Function Security Analysis for PiZZa.withdraw(uint256)
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function PiZZa.withdraw(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any of the specific patterns described in the criteria.
+        - function PiZZa.withdraw(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required condition and assignment patterns as specified in the structures. There are no sequences of 'require(xxx
+          == True); xxx = False;' or any specified variant present.
+External Call Analysis
+    Direct external call: ['sender.call{value:amount}()', 'resolveToken.transfer(address0,weightDiff)']
+    Analyze Transfer
+        - resolveToken.transfer(address0,weightDiff) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - sender.call{value:amount}() ISN'T subjected to gas limits.
+        - resolveToken.transfer(address0,weightDiff) ISN'T subjected to gas limits.
+    Remaining external call: ['sender.call{value:amount}()', 'resolveToken.transfer(address0,weightDiff)']
+    Analyze External Address
+        The variable 'sender' in external call 'sender.call{value:amount}()' has no state variable assigned in PiZZa.withdraw(uint256). Therefore we check whether it has
+        been hardcoded in the function.
+            No The variable `sender` in the code is assigned the value of `msg.sender`, which means it dynamically gets the address of the account currently executing the
+            contract function. This makes it context-dependent and not hardcoded.
+Conclusion: This function will cause REE Problem.

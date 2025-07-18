@@ -1,0 +1,119 @@
+DappVolumeAd.updateAd: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function updateAd(uint256 id) public payable {
+		// set minimum amount and make sure ad hasnt expired
+		require(msg.value >= adPriceMultiple.mul(adPriceHour));
+		require(block.timestamp > purchaseTimestamp.add(purchaseSeconds));
+		require(id > 0);
+
+		// send 10% to the investor
+		theInvestor.send(msg.value.div(10));
+		// send 50% of the money to the last person
+		lastOwner.send(msg.value.div(2));
+
+		// set ad time limit in seconds
+		if (msg.value >= adPriceMultiple.mul(adPriceWeek)) {
+			purchaseSeconds = 604800; // 1 week
+		} else if (msg.value >= adPriceMultiple.mul(adPriceDay)) {
+			purchaseSeconds = 86400; // 1 day
+		} else if (msg.value >= adPriceMultiple.mul(adPriceHalfDay)) {
+			purchaseSeconds = 43200; // 12 hours
+		} else {
+			purchaseSeconds = 3600; // 1 hour
+		}
+
+		// set dapp id
+		dappId = id;
+		// set new timestamp
+		purchaseTimestamp = block.timestamp;
+		// set last owner
+		lastOwner = msg.sender;
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function updateAd(uint256 id) public payable {
+		// set minimum amount and make sure ad hasnt expired
+		require(msg.value >= adPriceMultiple.mul(adPriceHour));
+		require(block.timestamp > purchaseTimestamp.add(purchaseSeconds));
+		require(id > 0);
+
+		// send 10% to the investor
+		theInvestor.send(msg.value.div(10));
+		// send 50% of the money to the last person
+		lastOwner.send(msg.value.div(2));
+
+		// set ad time limit in seconds
+		if (msg.value >= adPriceMultiple.mul(adPriceWeek)) {
+			purchaseSeconds = 604800; // 1 week
+		} else if (msg.value >= adPriceMultiple.mul(adPriceDay)) {
+			purchaseSeconds = 86400; // 1 day
+		} else if (msg.value >= adPriceMultiple.mul(adPriceHalfDay)) {
+			purchaseSeconds = 43200; // 12 hours
+		} else {
+			purchaseSeconds = 3600; // 1 hour
+		}
+
+		// set dapp id
+		dappId = id;
+		// set new timestamp
+		purchaseTimestamp = block.timestamp;
+		// set last owner
+		lastOwner = msg.sender;
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function updateAd(uint256 id) public payable {
+		// set minimum amount and make sure ad hasnt expired
+		require(msg.value >= adPriceMultiple.mul(adPriceHour));
+		require(block.timestamp > purchaseTimestamp.add(purchaseSeconds));
+		require(id > 0);
+
+		// send 10% to the investor
+		theInvestor.send(msg.value.div(10));
+		// send 50% of the money to the last person
+		lastOwner.send(msg.value.div(2));
+
+		// set ad time limit in seconds
+		if (msg.value >= adPriceMultiple.mul(adPriceWeek)) {
+			purchaseSeconds = 604800; // 1 week
+		} else if (msg.value >= adPriceMultiple.mul(adPriceDay)) {
+			purchaseSeconds = 86400; // 1 day
+		} else if (msg.value >= adPriceMultiple.mul(adPriceHalfDay)) {
+			purchaseSeconds = 43200; // 12 hours
+		} else {
+			purchaseSeconds = 3600; // 1 hour
+		}
+
+		// set dapp id
+		dappId = id;
+		// set new timestamp
+		purchaseTimestamp = block.timestamp;
+		// set last owner
+		lastOwner = msg.sender;
+	}
+Response:
+{"StatementsA": {"purchaseSeconds = 604800;": "Updates the state variable purchaseSeconds", "dappId = id;": "Updates the state variable dappId", "purchaseTimestamp = block.timestamp;": "Updates the state variable purchaseTimestamp", "lastOwner = msg.sender;": "Updates the state variable lastOwner"}, "StatementsB": {"theInvestor.send(msg.value.div(10));": "Executes an external call to send ether", "lastOwner.send(msg.value.div(2));": "Executes an external call to send ether"}, "VariableA": {"msg.sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: purchaseSeconds = 604800;
+2.External Call: theInvestor.send(msg.value.div(10));
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

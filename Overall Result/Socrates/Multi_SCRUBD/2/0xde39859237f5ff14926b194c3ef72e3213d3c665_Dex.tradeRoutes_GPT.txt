@@ -1,0 +1,27 @@
+
+Start analyze function: Dex.tradeRoutes(ERC20,uint256,ERC20,uint256,address[])
+Function Security Analysis for Dex.tradeRoutes(ERC20,uint256,ERC20,uint256,address[])
+    There are no modifiers should be examined in function tradeRoutes.
+    Check direct function security
+        - function Dex.tradeRoutes(ERC20,uint256,ERC20,uint256,address[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified permission checks related to msg.sender, as there are no require/assert statements checking if msg.sender
+          is an owner, CEO or similar role.
+        - function Dex.tradeRoutes(ERC20,uint256,ERC20,uint256,address[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the required patterns specified. There are 'assert' statements, but they are used for checking conditions and
+          are not changing the state of any variables like in the described patterns.
+External Call Analysis
+    Direct external call: ['src.transferFrom(msg.sender,address(this),srcAmount)', 'msg.sender.send(destAmount)', 'dest.transfer(msg.sender,destAmount)']
+    Analyze Transfer
+        - msg.sender.send(destAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.send(destAmount)' contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+        - dest.transfer(msg.sender,destAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - src.transferFrom(msg.sender,address(this),srcAmount) ISN'T subjected to gas limits.
+        - dest.transfer(msg.sender,destAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['src.transferFrom(msg.sender,address(this),srcAmount)', 'dest.transfer(msg.sender,destAmount)']
+    Analyze External Address
+        The variable 'src' in external call 'src.transferFrom(msg.sender,address(this),srcAmount)' has no state variable assigned in
+        Dex.tradeRoutes(ERC20,uint256,ERC20,uint256,address[]). Therefore we check whether it has been hardcoded in the function.
+            No The variable 'src' is not hardcoded in the provided function. It is passed as a parameter to the function `tradeRoutes` and can have different values each
+            time the function is called, depending on what is passed into it externally.
+Conclusion: This function will cause REE Problem.

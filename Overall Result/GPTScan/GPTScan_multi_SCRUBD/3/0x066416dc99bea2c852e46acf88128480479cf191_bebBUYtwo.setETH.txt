@@ -1,0 +1,99 @@
+bebBUYtwo.setETH: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+     function setETH()payable public{
+         require(msg.value>=500000000000000000);
+         uint256 _eths=SafeMath.safeMul(msg.value,120);
+         uint256 _eth=SafeMath.safeDiv(_eths,100);
+         uint256 _beb=SafeMath.safeMul(msg.value,bebethex);
+         BEBuser storage _user=BEBusers[msg.sender];
+         require(_user.amount==0,"Already invested ");
+         bebTokenTransfer.transferFrom(msg.sender,address(this),_beb);
+         _user.zhiyaBEB=_beb;
+         _user.amount=msg.value;
+         _user.dayamount=SafeMath.safeDiv(_eth,BEBday);
+         _user.usertime=now;
+         _user.sumProfit+=msg.value*20/100;
+         ProfitSUMBEB+=_beb*10/100;
+         SUMdeposit+=msg.value;
+         
+     }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+     function setETH()payable public{
+         require(msg.value>=500000000000000000);
+         uint256 _eths=SafeMath.safeMul(msg.value,120);
+         uint256 _eth=SafeMath.safeDiv(_eths,100);
+         uint256 _beb=SafeMath.safeMul(msg.value,bebethex);
+         BEBuser storage _user=BEBusers[msg.sender];
+         require(_user.amount==0,"Already invested ");
+         bebTokenTransfer.transferFrom(msg.sender,address(this),_beb);
+         _user.zhiyaBEB=_beb;
+         _user.amount=msg.value;
+         _user.dayamount=SafeMath.safeDiv(_eth,BEBday);
+         _user.usertime=now;
+         _user.sumProfit+=msg.value*20/100;
+         ProfitSUMBEB+=_beb*10/100;
+         SUMdeposit+=msg.value;
+         
+     }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+     function setETH()payable public{
+         require(msg.value>=500000000000000000);
+         uint256 _eths=SafeMath.safeMul(msg.value,120);
+         uint256 _eth=SafeMath.safeDiv(_eths,100);
+         uint256 _beb=SafeMath.safeMul(msg.value,bebethex);
+         BEBuser storage _user=BEBusers[msg.sender];
+         require(_user.amount==0,"Already invested ");
+         bebTokenTransfer.transferFrom(msg.sender,address(this),_beb);
+         _user.zhiyaBEB=_beb;
+         _user.amount=msg.value;
+         _user.dayamount=SafeMath.safeDiv(_eth,BEBday);
+         _user.usertime=now;
+         _user.sumProfit+=msg.value*20/100;
+         ProfitSUMBEB+=_beb*10/100;
+         SUMdeposit+=msg.value;
+         
+     }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+     function setETH()payable public{
+         require(msg.value>=500000000000000000);
+         uint256 _eths=SafeMath.safeMul(msg.value,120);
+         uint256 _eth=SafeMath.safeDiv(_eths,100);
+         uint256 _beb=SafeMath.safeMul(msg.value,bebethex);
+         BEBuser storage _user=BEBusers[msg.sender];
+         require(_user.amount==0,"Already invested ");
+         bebTokenTransfer.transferFrom(msg.sender,address(this),_beb);
+         _user.zhiyaBEB=_beb;
+         _user.amount=msg.value;
+         _user.dayamount=SafeMath.safeDiv(_eth,BEBday);
+         _user.usertime=now;
+         _user.sumProfit+=msg.value*20/100;
+         ProfitSUMBEB+=_beb*10/100;
+         SUMdeposit+=msg.value;
+         
+     }
+    
+Response:
+No
+--------------------------------------------------

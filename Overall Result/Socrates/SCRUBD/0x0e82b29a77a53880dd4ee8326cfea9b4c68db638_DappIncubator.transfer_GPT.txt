@@ -1,0 +1,28 @@
+
+Start analyze function: DappIncubator.transfer(address,address,uint256)
+Function Security Analysis for DappIncubator.transfer(address,address,uint256)
+    There are no modifiers should be examined in function transfer.
+    Check direct function security
+        - function DappIncubator.transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any of the required structures (using 'require', 'if', or 'assert' with msg.sender checks against specific roles).
+        - function DappIncubator.transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code, the function starts with multiple `require` statements, one of which is `require(contractAddressRecord[contractAddress] ==
+          true);`. This matches the first part of structure 1. However, the immediate necessary complementary statement `xxx = False;` does not exist in the code for the
+          same variable. Therefore, none of the specified structures are fully matched.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: DappIncubator.withdraw(address)
+Function Security Analysis for DappIncubator.withdraw(address)
+    The modifier of function withdraw are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: Upon re-evaluation, the modifier 'nonReentrant' uses a locking mechanism to prevent reentrant function calls. The code verifies that '_status' is not
+          '_ENTERED', sets '_status = _ENTERED' before executing the function, and resets it to '_NOT_ENTERED' after the function completes. Both locking and unlocking
+          are present, fully matching characteristic 2.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,16 @@
+Crowdsale.safeWithdrawal: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function safeWithdrawal() public afterDeadline {
+        if (beneficiary == msg.sender) {
+            if (beneficiary.send(amountRemaining)) {
+               amountRemaining =0;
+               emit FundTransfer(beneficiary, amountRemaining, false);
+           }
+        }
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

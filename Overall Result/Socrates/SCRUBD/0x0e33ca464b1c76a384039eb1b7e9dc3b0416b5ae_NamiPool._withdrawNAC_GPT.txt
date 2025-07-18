@@ -1,0 +1,55 @@
+
+Start analyze function: NamiPool._withdrawNAC(address,uint256)
+Function Security Analysis for NamiPool._withdrawNAC(address,uint256)
+    There are no modifiers should be examined in function _withdrawNAC.
+    Check direct function security
+        - function NamiPool._withdrawNAC(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks involving msg.sender and therefore does not satisfy any of the specified structures that involve msg.sender
+          verification.
+        - function NamiPool._withdrawNAC(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code contains a line `require(namiPool[_roundIndex][_shareAddress].stake > 0);` which does not match any of the structures specified in the
+          prompt. There are no subsequent assignments to the variable checked in the require statement that would match the patterns described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawNonTopForTeam', 'withdrawTopForTeam', 'withdrawTop', 'withdrawNonTop']
+        Function Security Analysis for NamiPool.withdrawNonTopForTeam(address,uint256)
+            The modifier of function withdrawNonTopForTeam are ['onlyEscrow']
+            The result of checking modifiers:
+                - modifier onlyEscrow is controlled by owner, the function would not cause REE problem.
+                  Reason: The code contains a require statement that enforces that only the escrow address can execute the function. The line `require(msg.sender ==
+                  escrow);` matches rule 1, which verifies that the function is only executable by a specific address. There are no lock and unlock operations present, so
+                  rule 2 is not applicable.
+        Function Security Analysis for NamiPool.withdrawTopForTeam(address,uint256)
+            The modifier of function withdrawTopForTeam are ['onlyEscrow']
+            The result of checking modifiers:
+                - modifier onlyEscrow is controlled by owner, the function would not cause REE problem.
+                  Reason: The code contains the statement 'require(msg.sender == escrow);' in the modifier 'onlyEscrow', which checks if the sender of the message is the
+                  'escrow' address. This structure enforces that only a specific address ('escrow') can execute the function, satisfying characteristic 1. There is no
+                  evidence of a lock operation structure, so characteristic 2 does not apply here.
+        Function Security Analysis for NamiPool.withdrawTop(uint256)
+            There are no modifiers should be examined in function withdrawTop.
+            Check direct function security
+                - function NamiPool.withdrawTop(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code has checks using require that relate to the function of the contract but does not verify the authority of the msg.sender against an
+                  'Owner' or similar control entity.
+                - function NamiPool.withdrawTop(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures since it uses 'require' statements, but they do not assign a value to the same
+                  variable that was checked with 'require'.
+External Call Analysis
+    Direct external call: ['namiToken.balanceOf(this)', 'namiToken.transfer(_shareAddress,namiPool[_roundIndex][_shareAddress].stake)']
+    Analyze Transfer
+        - namiToken.transfer(_shareAddress,namiPool[_roundIndex][_shareAddress].stake) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - namiToken.balanceOf(this) ISN'T subjected to gas limits.
+        - namiToken.transfer(_shareAddress,namiPool[_roundIndex][_shareAddress].stake) ISN'T subjected to gas limits.
+    Remaining external call: ['namiToken.balanceOf(this)', 'namiToken.transfer(_shareAddress,namiPool[_roundIndex][_shareAddress].stake)']
+    Analyze External Address
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes The function NamiPool matches the contract name and initializes its state variables, indicating it is a constructor. Hence, it satisfies the first
+            characteristic.
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes 1. The function name 'NamiPool' matches the contract name, indicating that it is a constructor. 2. The function also assigns the value of the parameter
+            '_namiAddress' to the state variable 'NamiAddr' and does not hardcode a specific value for 'NamiAddr'. Thus, it does not satisfy the second characteristic
+            evaluated.
+Conclusion: This function will not cause REE Problem.

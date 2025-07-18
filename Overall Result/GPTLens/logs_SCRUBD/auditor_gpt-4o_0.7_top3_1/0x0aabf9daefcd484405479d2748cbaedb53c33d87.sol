@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "updateUniswapV2Router",
+        "code": "function updateUniswapV2Router(address newAddress) external onlyOwner { require(newAddress != address(uniswapV2Router), \"MRFROG: The router already has that address\"); emit UpdateUniswapV2Router(newAddress, address(uniswapV2Router)); uniswapV2Router = IUniswapV2Router02(newAddress); }",
+        "vulnerability": "Potential Misconfiguration",
+        "reason": "The updateUniswapV2Router function allows the owner to change the Uniswap V2 Router address without any further checks. If the owner mistakenly sets an incorrect address or a malicious address, it could disrupt the token's trading functionality. A better approach would be to implement a mechanism to verify the new router address before updating it.",
+        "file_name": "0x0aabf9daefcd484405479d2748cbaedb53c33d87.sol"
+    },
+    {
+        "function_name": "swapAndLiquify",
+        "code": "function swapAndLiquify(uint256 tokens) private { uint256 marketFeeFull = tokens.mul(marketFee).div(100); uint256 tokensAfterFee = tokens - marketFeeFull; uint256 initHalf = tokens.div(2); uint256 half = tokensAfterFee.div(2); uint256 otherHalf = tokensAfterFee.sub(half); uint256 initialBalance = address(this).balance; swapTokensForEth(initHalf); uint256 newBalance = address(this).balance.sub(initialBalance); uint256 marketFeeBalance = newBalance.mul(marketFee).div(100); uint256 finalBalance = newBalance - marketFeeBalance; uint256 finalHalf = otherHalf; if(marketTokenAddressForFee != address(0)){ swapEthForTokens(marketFeeBalance, marketTokenAddressForFee, marketAddress); }else{ (bool sent,) = marketAddress.call{value: marketFeeBalance}(\"\"); } addLiquidity(finalHalf, finalBalance); emit SwapAndLiquify(half, finalBalance, otherHalf); }",
+        "vulnerability": "Potential Reentrancy Attack",
+        "reason": "The swapAndLiquify function interacts with external contracts through swap operations and an unprotected call to marketAddress. Without proper checks and protections, this opens up the possibility for a reentrancy attack, especially if the external contract is malicious. Using the Checks-Effects-Interactions pattern and ensuring reentrancy guards can help mitigate this risk.",
+        "file_name": "0x0aabf9daefcd484405479d2748cbaedb53c33d87.sol"
+    },
+    {
+        "function_name": "swapTokensForEth",
+        "code": "function swapTokensForEth(uint256 tokenAmount) private { address[] memory path = new address[](2); path[0] = address(this); path[1] = uniswapV2Router.WETH(); _approve(address(this), address(uniswapV2Router), tokenAmount); uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens( tokenAmount, 0, path, address(this), block.timestamp ); }",
+        "vulnerability": "Slippage Vulnerability",
+        "reason": "The swapTokensForEth function uses swapExactTokensForETHSupportingFeeOnTransferTokens with a slippage parameter of 0, which means it doesn't account for any potential slippage. This could result in significant loss of funds if the token price fluctuates during the transaction. It is recommended to set a reasonable minimum amount of ETH to accept to prevent losses due to slippage.",
+        "file_name": "0x0aabf9daefcd484405479d2748cbaedb53c33d87.sol"
+    }
+]

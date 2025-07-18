@@ -1,0 +1,32 @@
+
+Start analyze function: Crowdsale.safeWithdrawal()
+Function Security Analysis for Crowdsale.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterWithdrawalDeadline']
+    The result of checking modifiers:
+        - modifier afterWithdrawalDeadline has no relation with controlled by owner.
+          Reason: The modifier afterWithdrawalDeadline does not contain code enforcing ownership checks or specific address execution, nor does it contain lock
+          operations. The modifier name also does not imply such checks or operations.
+    Check direct function security
+        - function Crowdsale.safeWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function `safeWithdrawal` checks if `msg.sender` is equal to a local variable `beneficiary` rather than a structural variable like
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function Crowdsale.safeWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures, such as require(xxx == True); xxx = False; or require(!xxx); xxx = True; etc.
+External Call Analysis
+    Direct external call: ['beneficiary.send(amountRaised)', 'tokenReward.transfer(buyerId,amount)', 'tokenReward.balanceOf(address(this))']
+    Analyze Transfer
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(amountRaised)' contains the keyword '.send('. Thus, it satisfies the condition.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(buyerId,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(buyerId,amount) ISN'T subjected to gas limits.
+        - tokenReward.balanceOf(address(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(buyerId,amount)', 'tokenReward.balanceOf(address(this))']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code is a constructor, as the function is explicitly named 'constructor'.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code is a constructor with the name 'constructor'. Constructors satisfy the first characteristic as they are explicitly named 'constructor'.
+Conclusion: This function will not cause REE Problem.

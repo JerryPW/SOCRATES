@@ -1,0 +1,27 @@
+
+Start analyze function: DCY_preICO.safeWithdrawal()
+Function Security Analysis for DCY_preICO.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier 'afterDeadline' does not explicitly enforce ownership or authorized addresses, nor does it implement a locking mechanism as described in
+          the characteristics. It simply checks if the current time is after a specified deadline.
+    Check direct function security
+        - function DCY_preICO.safeWithdrawal() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code never uses 'msg.sender' in relation to xxxOwner, xxxAddress, Leader, or CEO directly. The check 'beneficiary == msg.sender' does not pertain to
+          any of these roles explicitly as defined by the required patterns.
+        - function DCY_preICO.safeWithdrawal() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the function code, there is no explicit 'require(!fundingGoalReached); fundingGoalReached = true;' pattern or any of the other specified
+          patterns present in the code. The closest logic statements involve conditional checks and assignments, but none match the required pattern of checking a
+          condition and then forcibly changing it. Thus, the necessary dual statements for pattern matching are not fulfilled.
+External Call Analysis
+    Direct external call: ['msg.sender.send(amount)', 'beneficiary.send(amountRaised)']
+    Analyze Transfer
+        - msg.sender.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send(' keyword,
+        hence it satisfies the characteristic.. Parameter in 'transfer'/'send': 1.
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword, hence it satisfies the characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

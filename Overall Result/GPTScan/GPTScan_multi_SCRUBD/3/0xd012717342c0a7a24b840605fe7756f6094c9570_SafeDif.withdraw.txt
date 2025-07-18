@@ -1,0 +1,279 @@
+SafeDif.withdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function withdraw() isActivated() public payable {
+	    require(msg.value == 0, "withdraw fee is 0 ether, please set the exact amount");
+	    
+	    uint256 uid = pIDxAddr_[msg.sender];
+	    require(uid != 0, "no invest");
+
+        for(uint i = 0; i < player_[uid].planCount; i++) {
+	        if (player_[uid].plans[i].isClose) {
+	            continue;
+	        }
+
+            SDDatasets.Plan plan = plan_[player_[uid].plans[i].planId];
+            
+            uint256 blockNumber = block.number;
+            bool bClose = false;
+            if (plan.dayRange > 0) {
+                
+                uint256 endBlockNumber = player_[uid].plans[i].startBlock.add(plan.dayRange*G_DayBlocks);
+                if (blockNumber > endBlockNumber){
+                    blockNumber = endBlockNumber;
+                    bClose = true;
+                }
+            }
+            
+            uint256 amount = player_[uid].plans[i].invested * plan.interest / 10000 * (blockNumber - player_[uid].plans[i].atBlock) / G_DayBlocks;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            address sender = msg.sender;
+            sender.send(amount);
+
+            // record block number and invested amount (msg.value) of this transaction
+            player_[uid].plans[i].atBlock = block.number;
+            player_[uid].plans[i].isClose = bClose;
+            player_[uid].plans[i].payEth += amount;
+        }
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function withdraw() isActivated() public payable {
+	    require(msg.value == 0, "withdraw fee is 0 ether, please set the exact amount");
+	    
+	    uint256 uid = pIDxAddr_[msg.sender];
+	    require(uid != 0, "no invest");
+
+        for(uint i = 0; i < player_[uid].planCount; i++) {
+	        if (player_[uid].plans[i].isClose) {
+	            continue;
+	        }
+
+            SDDatasets.Plan plan = plan_[player_[uid].plans[i].planId];
+            
+            uint256 blockNumber = block.number;
+            bool bClose = false;
+            if (plan.dayRange > 0) {
+                
+                uint256 endBlockNumber = player_[uid].plans[i].startBlock.add(plan.dayRange*G_DayBlocks);
+                if (blockNumber > endBlockNumber){
+                    blockNumber = endBlockNumber;
+                    bClose = true;
+                }
+            }
+            
+            uint256 amount = player_[uid].plans[i].invested * plan.interest / 10000 * (blockNumber - player_[uid].plans[i].atBlock) / G_DayBlocks;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            address sender = msg.sender;
+            sender.send(amount);
+
+            // record block number and invested amount (msg.value) of this transaction
+            player_[uid].plans[i].atBlock = block.number;
+            player_[uid].plans[i].isClose = bClose;
+            player_[uid].plans[i].payEth += amount;
+        }
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function withdraw() isActivated() public payable {
+	    require(msg.value == 0, "withdraw fee is 0 ether, please set the exact amount");
+	    
+	    uint256 uid = pIDxAddr_[msg.sender];
+	    require(uid != 0, "no invest");
+
+        for(uint i = 0; i < player_[uid].planCount; i++) {
+	        if (player_[uid].plans[i].isClose) {
+	            continue;
+	        }
+
+            SDDatasets.Plan plan = plan_[player_[uid].plans[i].planId];
+            
+            uint256 blockNumber = block.number;
+            bool bClose = false;
+            if (plan.dayRange > 0) {
+                
+                uint256 endBlockNumber = player_[uid].plans[i].startBlock.add(plan.dayRange*G_DayBlocks);
+                if (blockNumber > endBlockNumber){
+                    blockNumber = endBlockNumber;
+                    bClose = true;
+                }
+            }
+            
+            uint256 amount = player_[uid].plans[i].invested * plan.interest / 10000 * (blockNumber - player_[uid].plans[i].atBlock) / G_DayBlocks;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            address sender = msg.sender;
+            sender.send(amount);
+
+            // record block number and invested amount (msg.value) of this transaction
+            player_[uid].plans[i].atBlock = block.number;
+            player_[uid].plans[i].isClose = bClose;
+            player_[uid].plans[i].payEth += amount;
+        }
+	}
+Response:
+{"StatementsA": {"player_[uid].plans[i].atBlock = block.number;": "Updates the atBlock state variable for a player's plan", "player_[uid].plans[i].isClose = bClose;": "Updates the isClose state variable for a player's plan", "player_[uid].plans[i].payEth += amount;": "Updates the payEth state variable for a player's plan"}, "StatementsB": {"sender.send(amount);": "Executes an external call to send ether to the sender"}, "VariableA": {"sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: player_[uid].plans[i].atBlock = block.number;
+2.External Call: sender.send(amount);
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function withdraw() isActivated() public payable {
+	    require(msg.value == 0, "withdraw fee is 0 ether, please set the exact amount");
+	    
+	    uint256 uid = pIDxAddr_[msg.sender];
+	    require(uid != 0, "no invest");
+
+        for(uint i = 0; i < player_[uid].planCount; i++) {
+	        if (player_[uid].plans[i].isClose) {
+	            continue;
+	        }
+
+            SDDatasets.Plan plan = plan_[player_[uid].plans[i].planId];
+            
+            uint256 blockNumber = block.number;
+            bool bClose = false;
+            if (plan.dayRange > 0) {
+                
+                uint256 endBlockNumber = player_[uid].plans[i].startBlock.add(plan.dayRange*G_DayBlocks);
+                if (blockNumber > endBlockNumber){
+                    blockNumber = endBlockNumber;
+                    bClose = true;
+                }
+            }
+            
+            uint256 amount = player_[uid].plans[i].invested * plan.interest / 10000 * (blockNumber - player_[uid].plans[i].atBlock) / G_DayBlocks;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            address sender = msg.sender;
+            sender.send(amount);
+
+            // record block number and invested amount (msg.value) of this transaction
+            player_[uid].plans[i].atBlock = block.number;
+            player_[uid].plans[i].isClose = bClose;
+            player_[uid].plans[i].payEth += amount;
+        }
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function withdraw() isActivated() public payable {
+	    require(msg.value == 0, "withdraw fee is 0 ether, please set the exact amount");
+	    
+	    uint256 uid = pIDxAddr_[msg.sender];
+	    require(uid != 0, "no invest");
+
+        for(uint i = 0; i < player_[uid].planCount; i++) {
+	        if (player_[uid].plans[i].isClose) {
+	            continue;
+	        }
+
+            SDDatasets.Plan plan = plan_[player_[uid].plans[i].planId];
+            
+            uint256 blockNumber = block.number;
+            bool bClose = false;
+            if (plan.dayRange > 0) {
+                
+                uint256 endBlockNumber = player_[uid].plans[i].startBlock.add(plan.dayRange*G_DayBlocks);
+                if (blockNumber > endBlockNumber){
+                    blockNumber = endBlockNumber;
+                    bClose = true;
+                }
+            }
+            
+            uint256 amount = player_[uid].plans[i].invested * plan.interest / 10000 * (blockNumber - player_[uid].plans[i].atBlock) / G_DayBlocks;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            address sender = msg.sender;
+            sender.send(amount);
+
+            // record block number and invested amount (msg.value) of this transaction
+            player_[uid].plans[i].atBlock = block.number;
+            player_[uid].plans[i].isClose = bClose;
+            player_[uid].plans[i].payEth += amount;
+        }
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function withdraw() isActivated() public payable {
+	    require(msg.value == 0, "withdraw fee is 0 ether, please set the exact amount");
+	    
+	    uint256 uid = pIDxAddr_[msg.sender];
+	    require(uid != 0, "no invest");
+
+        for(uint i = 0; i < player_[uid].planCount; i++) {
+	        if (player_[uid].plans[i].isClose) {
+	            continue;
+	        }
+
+            SDDatasets.Plan plan = plan_[player_[uid].plans[i].planId];
+            
+            uint256 blockNumber = block.number;
+            bool bClose = false;
+            if (plan.dayRange > 0) {
+                
+                uint256 endBlockNumber = player_[uid].plans[i].startBlock.add(plan.dayRange*G_DayBlocks);
+                if (blockNumber > endBlockNumber){
+                    blockNumber = endBlockNumber;
+                    bClose = true;
+                }
+            }
+            
+            uint256 amount = player_[uid].plans[i].invested * plan.interest / 10000 * (blockNumber - player_[uid].plans[i].atBlock) / G_DayBlocks;
+
+            // send calculated amount of ether directly to sender (aka YOU)
+            address sender = msg.sender;
+            sender.send(amount);
+
+            // record block number and invested amount (msg.value) of this transaction
+            player_[uid].plans[i].atBlock = block.number;
+            player_[uid].plans[i].isClose = bClose;
+            player_[uid].plans[i].payEth += amount;
+        }
+	}
+Response:
+{"StatementsA": {"player_[uid].plans[i].atBlock = block.number;": "Updates the atBlock state variable for a player's plan", "player_[uid].plans[i].isClose = bClose;": "Updates the isClose state variable for a player's plan", "player_[uid].plans[i].payEth += amount;": "Updates the payEth state variable for a player's plan"}, "StatementsB": {"sender.send(amount);": "Executes an external call to send ether to the sender"}, "VariableA": {"sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: player_[uid].plans[i].atBlock = block.number;
+2.External Call: sender.send(amount);
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

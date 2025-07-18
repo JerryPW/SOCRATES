@@ -1,0 +1,26 @@
+
+Start analyze function: MessierAnonymity.swapAndShare()
+Function Security Analysis for MessierAnonymity.swapAndShare()
+    There are no modifiers should be examined in function swapAndShare.
+    Check direct function security
+        - function MessierAnonymity.swapAndShare() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the required structures related to authorization checks based on the sender's address that determine access control
+          regarding specific roles such as owner, leader, or CEO.
+        - function MessierAnonymity.swapAndShare() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code checks if 'collectedFee' is greater than 0 using a 'require' statement, but it doesn't flip or change the boolean variable. The structure
+          '{require(xxx == True); xxx = False; ... xxx = True;}' or similar is not present in the code.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['deposit', 'forceSwapAndShare']
+        Function Security Analysis for MessierAnonymity.deposit(bytes32)
+            The modifier of function deposit are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier 'nonReentrant' explicitly uses a lock mechanism by incrementing '_guardCounter' to protect against reentrancy, which satisfies rule
+                  2. Specifically, it locks the state by modifying '_guardCounter' at the start and checks it at the end to ensure the function cannot be reentered until
+                  it is completed.
+        Function Security Analysis for MessierAnonymity.forceSwapAndShare()
+            The modifier of function forceSwapAndShare are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier uses 'require(msg.sender == messier_owner, ...)', which checks that the caller is the owner (messier_owner), satisfying Rule 1.
+Conclusion: This function will not cause REE Problem.

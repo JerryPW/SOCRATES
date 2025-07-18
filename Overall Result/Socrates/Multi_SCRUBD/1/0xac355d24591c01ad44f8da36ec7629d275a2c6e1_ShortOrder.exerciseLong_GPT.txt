@@ -1,0 +1,31 @@
+
+Start analyze function: ShortOrder.exerciseLong(address[2],uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.exerciseLong(address[2],uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function exerciseLong.
+    Check direct function security
+        - function ShortOrder.exerciseLong(address[2],uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any checks or requirements related to msg.sender being equal to a specific owner, address, leader, or CEO variable. It focuses
+          mainly on ecrecover for orderHash verification and order condition checks.
+        - function ShortOrder.exerciseLong(address[2],uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluating the code, we observe that the structural pattern required for a 'Yes' judgment is not fully met. The code contains a conditional
+          check 'else if(!orderRecord[msg.sender][orderHash].tokenDeposit)' which matches part of the structure (3). However, the next statement 'msg.sender.transfer(...'
+          does not assign 'orderRecord[msg.sender][orderHash].tokenDeposit = True;' Therefore, the pattern is incomplete. As all specified structural requirements must be
+          met simultaneously and fully (including both conditional check and assignment as described), the correct judgment should be 'No.'
+External Call Analysis
+    Direct external call: ['Token(tokenUser[0]).transfer(msg.sender,amount)', 'msg.sender.transfer(couponAmount)',
+    'msg.sender.transfer(safeAdd(couponAmount,orderRecord[tokenUser[1]][orderHash].longBalance[msg.sender]))']
+    Analyze Transfer
+        - Token(tokenUser[0]).transfer(msg.sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.transfer(couponAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        keyword '.transfer('.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(safeAdd(couponAmount,orderRecord[tokenUser[1]][orderHash].longBalance[msg.sender])) is subjected to gas limits. Therefore, it has no
+        potential REE problem. Here is the reason: The external call contains the keyword '.transfer('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - Token(tokenUser[0]).transfer(msg.sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenUser[0]).transfer(msg.sender,amount)']
+    Analyze External Address
+        The variable 'tokenUser' in external call 'Token(tokenUser[0]).transfer(msg.sender,amount)' has no state variable assigned in
+        ShortOrder.exerciseLong(address[2],uint256[8],uint8,bytes32[2]). Therefore we check whether it has been hardcoded in the function.
+            No The variable 'tokenUser' is not hardcoded as it is passed as an argument to the function 'exerciseLong'. The values for 'tokenUser' can vary each time the
+            function is called, meaning it is not fixed or hardcoded within the function.
+Conclusion: This function will cause REE Problem.

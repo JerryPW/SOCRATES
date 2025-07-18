@@ -1,0 +1,181 @@
+Swap.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable external {
+        require(check[msg.sender] == false);
+        require(msg.value < 1000000000000000001 wei);
+        
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+        uint copy = price;
+        uint second = price;
+        uint third = price;
+        
+        if (amountRaised <= 100 ether) {
+        uint newvalue = copy / 10;
+        swapaddress.transfer(msg.sender, amount / newvalue);
+        } else if (amountRaised <= 2100 ether) {
+        uint secondvalue = second / 2;
+        swapaddress.transfer(msg.sender, amount / secondvalue);
+        } else {
+        swapaddress.transfer(msg.sender, amount / third);
+        }
+        
+        beneficiary.send(msg.value);
+        emit FundTransfer(msg.sender, amount, true);
+        check[msg.sender] = true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable external {
+        require(check[msg.sender] == false);
+        require(msg.value < 1000000000000000001 wei);
+        
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+        uint copy = price;
+        uint second = price;
+        uint third = price;
+        
+        if (amountRaised <= 100 ether) {
+        uint newvalue = copy / 10;
+        swapaddress.transfer(msg.sender, amount / newvalue);
+        } else if (amountRaised <= 2100 ether) {
+        uint secondvalue = second / 2;
+        swapaddress.transfer(msg.sender, amount / secondvalue);
+        } else {
+        swapaddress.transfer(msg.sender, amount / third);
+        }
+        
+        beneficiary.send(msg.value);
+        emit FundTransfer(msg.sender, amount, true);
+        check[msg.sender] = true;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    constructor(
+        address SendTo,
+        uint etherCostOfEachCollectible,
+        address addressOfCollectibleUsedAsReward
+    ) public {
+        beneficiary = SendTo;
+        price = etherCostOfEachCollectible * 1 szabo;
+        swapaddress = collectible(addressOfCollectibleUsedAsReward);
+    }
+Response:
+{"StatementsA": {"State update statement":"beneficiary = SendTo; price = etherCostOfEachCollectible * 1 szabo; swapaddress = collectible(addressOfCollectibleUsedAsReward);"}, "StatementsB": {"External call statement":"swapaddress = collectible(addressOfCollectibleUsedAsReward);"}, "VariableA": {"Variable name": "SendTo"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: State update statement
+2.External Call: External call statement
+3.Variable A: Variable name
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable external {
+        require(check[msg.sender] == false);
+        require(msg.value < 1000000000000000001 wei);
+        
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+        uint copy = price;
+        uint second = price;
+        uint third = price;
+        
+        if (amountRaised <= 100 ether) {
+        uint newvalue = copy / 10;
+        swapaddress.transfer(msg.sender, amount / newvalue);
+        } else if (amountRaised <= 2100 ether) {
+        uint secondvalue = second / 2;
+        swapaddress.transfer(msg.sender, amount / secondvalue);
+        } else {
+        swapaddress.transfer(msg.sender, amount / third);
+        }
+        
+        beneficiary.send(msg.value);
+        emit FundTransfer(msg.sender, amount, true);
+        check[msg.sender] = true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable external {
+        require(check[msg.sender] == false);
+        require(msg.value < 1000000000000000001 wei);
+        
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised += amount;
+        uint copy = price;
+        uint second = price;
+        uint third = price;
+        
+        if (amountRaised <= 100 ether) {
+        uint newvalue = copy / 10;
+        swapaddress.transfer(msg.sender, amount / newvalue);
+        } else if (amountRaised <= 2100 ether) {
+        uint secondvalue = second / 2;
+        swapaddress.transfer(msg.sender, amount / secondvalue);
+        } else {
+        swapaddress.transfer(msg.sender, amount / third);
+        }
+        
+        beneficiary.send(msg.value);
+        emit FundTransfer(msg.sender, amount, true);
+        check[msg.sender] = true;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    constructor(
+        address SendTo,
+        uint etherCostOfEachCollectible,
+        address addressOfCollectibleUsedAsReward
+    ) public {
+        beneficiary = SendTo;
+        price = etherCostOfEachCollectible * 1 szabo;
+        swapaddress = collectible(addressOfCollectibleUsedAsReward);
+    }
+Response:
+{"StatementsA": {"State update statement":"beneficiary = SendTo; price = etherCostOfEachCollectible * 1 szabo; swapaddress = collectible(addressOfCollectibleUsedAsReward);"}, "StatementsB": {"External call statement":"swapaddress = collectible(addressOfCollectibleUsedAsReward);"}, "VariableA": {"Variable name": "SendTo"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: State update statement
+2.External Call: External call statement
+3.Variable A: Variable name
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

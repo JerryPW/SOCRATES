@@ -1,0 +1,41 @@
+
+Start analyze function: ChipToken._transfer(address,address,uint256)
+Function Security Analysis for ChipToken._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function ChipToken._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not include any checks involving the comparison of msg.sender with any specific role like owner or an address, as described in
+          the criteria. It primarily checks other conditions related to transaction limits, blacklists, cooldowns, and fees.
+        - function ChipToken._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the statement `require(!blacklist[from] && !blacklist[to], "sender or recipient is blacklisted!");` which is equivalent to
+          `require(!xxx)` in logic, where `xxx` is the condition checking if `from` or `to` is not blacklisted. Then, the function implementation continues but doesn't
+          strictly follow up `xxx = true` or reset any user status, so the specific pattern of setting `xxx = True` after the require is not necessarily present.
+          Additionally, the function does not satisfy scenario 2 or 4 structures either. Therefore, despite containing the condition for `require(!xxx)`, it lacks the
+          subsequent 'xxx = True' assignment and can be a bit misleading since the condition itself matches one part of scenario 3 but not completely.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for ChipToken.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function ChipToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified characteristics related to checking the identity of the message sender against a specific
+                  owner or leader role.
+                - function ChipToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any 'require' statement or conditional checks like 'if(!xxx) throw'. It only includes a function call followed by a
+                  return statement.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ChipToken.swap()
+Function Security Analysis for ChipToken.swap()
+    The modifier of function swap are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: Upon reviewing the code, both the lock operation (setting 'inSwap' to true) and the unlock operation (resetting 'inSwap' to false) are present,
+          confirming the use of a lock mechanism. This satisfies the second characteristic.
+Conclusion: This function will not cause REE Problem.

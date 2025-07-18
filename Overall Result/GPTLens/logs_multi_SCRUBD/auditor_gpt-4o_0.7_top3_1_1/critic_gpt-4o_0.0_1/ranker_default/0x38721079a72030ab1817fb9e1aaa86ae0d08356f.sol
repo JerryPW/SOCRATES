@@ -1,0 +1,38 @@
+[
+    {
+        "function_name": "removeFromPool",
+        "vulnerability": "Reentrancy vulnerability",
+        "criticism": "The reasoning correctly identifies a potential reentrancy vulnerability due to the use of `msg.sender.call{value: amountToPayToUser}(\"\");`. This pattern is known to be susceptible to reentrancy attacks, where an attacker could re-enter the function and manipulate the contract's state before the function execution is completed. The severity of this vulnerability is high because it can lead to significant financial loss if exploited. The profitability is also high, as an attacker could potentially drain funds from the contract.",
+        "correctness": 9,
+        "severity": 8,
+        "profitability": 8,
+        "reason": "The function `removeFromPool` calls `msg.sender.call{value: amountToPayToUser}(\"\");` to send Ether to the user, which can potentially open up a reentrancy attack vector. An attacker could exploit this by calling back into the contract before the function execution is completed, potentially manipulating the state or draining funds.",
+        "code": "function removeFromPool(uint256 amountToRemove, InvestmentLibrary.exitSwapParams[] memory exitSwapParams) public { require(balanceOf(msg.sender) > 0, \"You need to have pool tokens if you want to burn them!\"); require(amountToRemove > 0, \"You can't remove 0 of your tokens!\"); require(amountToRemove <= balanceOf(msg.sender), \"You can only remove 100% of your share!\"); require(exitSwapParams.length == _tokensHeld.length, \"Not enough params!\"); _burn(msg.sender, amountToRemove); if(balanceOf(msg.sender) == 0){ _totalHolders--; } uint256 userShare = amountToRemove * 10**18 / (totalSupply() + amountToRemove); uint256 wethPayout = IERC20(WETHAddress).balanceOf(address(this)) * userShare / 10**18; InvestmentLibrary.heldToken[] memory tokensHeldSnapshot = _tokensHeld; for (uint i = 0; i < tokensHeldSnapshot.length; i++){ IERC20 tokenContract = IERC20(tokensHeldSnapshot[i].tokenAddress); if(tokensHeldSnapshot[i].tokenAddress != WETHAddress){ if(exitSwapParams[i].fee == 0){ bytes memory emptyBytes; address[] memory path = new address[](2); path[0] = tokensHeldSnapshot[i].tokenAddress; path[1] = WETHAddress; uint256 wethRecieved = _swapTokens( path, emptyBytes, tokenContract.balanceOf(address(this)) * userShare / 10**18, exitSwapParams[i].minimumOut, address(0) ); wethPayout += wethRecieved; } else { address[] memory path; uint256 wethRecieved = _swapTokens( path, abi.encode(tokensHeldSnapshot[i].tokenAddress, exitSwapParams[i].fee, WETHAddress), tokenContract.balanceOf(address(this)) * userShare / 10**18, exitSwapParams[i].minimumOut, address(0) ); wethPayout += wethRecieved; } } } uint256 poolOwnerFeeAmount = wethPayout * _poolFee / 10**18; uint256 factoryFeeAmount = wethPayout * _factoryFee / 10**18; uint256 amountToPayToUser = wethPayout - factoryFeeAmount - poolOwnerFeeAmount; IWETH WETHContract = IWETH(WETHAddress); IERC20(WETHAddress).transfer(owner(), poolOwnerFeeAmount); processFee(WETHAddress, factoryFeeAmount, 0); WETHContract.withdraw(amountToPayToUser); msg.sender.call{value: amountToPayToUser}(\"\"); if(InvestmentLibrary.isTokenHeld(_tokensHeld, WETHAddress) == true && IERC20(WETHAddress).balanceOf(address(this)) == 0){ _removeAddressFromTokensHeld(WETHAddress); } emit InvestmentLibrary.feePaidToOwner(msg.sender, owner(), poolOwnerFeeAmount); emit InvestmentLibrary.poolRemovedFrom(msg.sender, amountToRemove, amountToPayToUser); }",
+        "file_name": "0x38721079a72030ab1817fb9e1aaa86ae0d08356f.sol",
+        "final_score": 8.5
+    },
+    {
+        "function_name": "processFee",
+        "vulnerability": "Lack of input validation",
+        "criticism": "The reasoning is correct in identifying the lack of input validation for the `tokenIn` and `amount` parameters. Without proper validation, the function could behave unexpectedly or be manipulated by an attacker. However, the severity is moderate because the function is internal and likely called by other functions that may perform their own checks. The profitability is low to moderate, as exploiting this would require specific conditions and might not directly lead to a significant financial gain.",
+        "correctness": 8,
+        "severity": 5,
+        "profitability": 3,
+        "reason": "The `processFee` function does not validate the `tokenIn` or `amount` parameters before using them. This lack of validation could lead to incorrect behavior or security issues if invalid or malicious input is provided. An attacker could potentially pass a malicious token address or an extremely large amount to manipulate the contract's state or drain funds.",
+        "code": "function processFee(address tokenIn, uint256 amount, uint24 uniPoolfee) internal { uint256 feeAmount = amount; if(tokenIn != WETHAddress){ if(uniPoolfee == 0){ bytes memory emptyBytes; address[] memory path = new address[](2); path[0] = tokenIn; path[1] = WETHAddress; feeAmount = _swapTokens(path, emptyBytes, amount, 0, address(0)); } else { address[] memory path; feeAmount = _swapTokens(path, abi.encode(tokenIn, uniPoolfee, WETHAddress), amount, 0, address(0)); } } address feeHandlerAddress = IFactory(_factoryAddress)._feeHandlerAddress(); IERC20(WETHAddress).approve(feeHandlerAddress, feeAmount); IFeeHandler(feeHandlerAddress).collectFees(feeAmount); }",
+        "file_name": "0x38721079a72030ab1817fb9e1aaa86ae0d08356f.sol",
+        "final_score": 6.0
+    },
+    {
+        "function_name": "swapTokens",
+        "vulnerability": "Unchecked external calls",
+        "criticism": "The reasoning correctly points out that the `swapTokens` function makes indirect external calls through `processFee` without verifying their success. This can lead to unexpected behavior if the external contract fails or reverts. The severity is moderate because while it can cause issues, it does not directly lead to a loss of funds unless combined with other vulnerabilities. The profitability is low, as exploiting this would require specific conditions and might not directly lead to a significant financial gain.",
+        "correctness": 8,
+        "severity": 4,
+        "profitability": 2,
+        "reason": "The `swapTokens` function indirectly calls the `processFee` function, which in turn relies on external calls to other contracts without verifying the success of these external calls. This can lead to unexpected behavior if the external contract fails or reverts. Additionally, this could be exploited to manipulate the flow of the function, potentially leading to loss of funds.",
+        "code": "function swapTokens(address[] memory v2Path, bytes memory v3Path, uint256 amountIn, uint256 amountOutMinimum, address tokenOutQuoteToken) public onlyOwner { address outToken = InvestmentLibrary.getOutToken(v2Path, v3Path); if(outToken != WETHAddress){ require(tokenOutQuoteToken == address(840) || tokenOutQuoteToken == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, \"Invalid quote token!\"); require(InvestmentLibrary.checkIfTokenIsCompatible(v2Path, v3Path), \"Token is not compatible!\"); } uint256 feeAmount = amountIn * 7500000000000000 / 10**18; if(v2Path.length != 0){ processFee(v2Path[0], feeAmount, 0); } else { (address inToken, uint24 fee) = abi.decode(v3Path, (address, uint24)); processFee(inToken, feeAmount, fee); } _swapTokens(v2Path, v3Path, amountIn - feeAmount, amountOutMinimum, outToken == WETHAddress ? address(0) : tokenOutQuoteToken); }",
+        "file_name": "0x38721079a72030ab1817fb9e1aaa86ae0d08356f.sol",
+        "final_score": 5.5
+    }
+]

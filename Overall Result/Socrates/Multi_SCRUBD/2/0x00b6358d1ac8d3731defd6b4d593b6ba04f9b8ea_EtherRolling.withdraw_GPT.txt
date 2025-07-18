@@ -1,0 +1,29 @@
+
+Start analyze function: EtherRolling.withdraw(uint8)
+Function Security Analysis for EtherRolling.withdraw(uint8)
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function EtherRolling.withdraw(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures that involve checking if msg.sender is equal to or not equal to specified roles or
+          addresses such as xxxOwner, xxxAddress, Leader, CEO, or similar.
+        - function EtherRolling.withdraw(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function `withdraw` does not follow any of the outlined patterns. There are no `require` statements checking a boolean variable with a subsequent
+          assignment to change that variable, nor are there any `if(!variable) throw` constructions followed by a boolean assignment. Though there is a `require`
+          statement, it simply checks if `to_payout > 0`, which doesn't fit the specified patterns.
+External Call Analysis
+    Direct external call: ['_token.send(msg.sender,to_payout,TokenWithdrawed)', 'address(msg.sender).transfer(to_payout)']
+    Analyze Transfer
+        - _token.send(msg.sender,to_payout,TokenWithdrawed) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 3.
+        - address(msg.sender).transfer(to_payout) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword, satisfying the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - _token.send(msg.sender,to_payout,TokenWithdrawed) ISN'T subjected to gas limits.
+    Remaining external call: ['_token.send(msg.sender,to_payout,TokenWithdrawed)']
+    Analyze External Address
+        There are ['_token'] should be checked in variable _token
+        Checked variables: _token
+            Yes 1. The function provided is a constructor because it is explicitly named 'constructor'. Therefore, it satisfies one of the characteristics needed for an
+            external call function.  2. The function also involves setting a state variable `_token` using a constructor argument, which is a common pattern for
+            constructors. However, there is no evidence of hardcoding of the state variable '_token' in the sense of assigning a fixed value within the function itself
+            without input from the caller.  Only the first characteristic of being a constructor is relevant here.
+Conclusion: This function will not cause REE Problem.

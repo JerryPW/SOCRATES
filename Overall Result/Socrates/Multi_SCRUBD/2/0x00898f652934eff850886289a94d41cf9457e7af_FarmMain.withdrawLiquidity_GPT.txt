@@ -1,0 +1,64 @@
+
+Start analyze function: FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256)
+Function Security Analysis for FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256)
+    There are no modifiers should be examined in function withdrawLiquidity.
+    Check direct function security
+        - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code contains a check on the ownership of the farming position which implies authorization by comparing `farmingPosition.uniqueOwner` with
+          `msg.sender`. However, this does not precisely match the required structures that explicitly specify `xxxOwner`, `xxxAddress`, `Leader`, or `CEO` within the
+          require or if statements. Therefore, it does not satisfy the criteria given for outputting 'Yes'.
+        - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not satisfy any of the specified characteristics or structures. It contains 'require' checks, but they are not followed by
+          assignments to the same variable in subsequent lines, as outlined in the required structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: FarmMain._burnFarmTokenAmount(uint256,uint256)
+Function Security Analysis for FarmMain._burnFarmTokenAmount(uint256,uint256)
+    There are no modifiers should be examined in function _burnFarmTokenAmount.
+    Check direct function security
+        - function FarmMain._burnFarmTokenAmount(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any explicit owner or address checks related to msg.sender. It lacks any require, if, or assert conditions that check
+          whether msg.sender is or is not equal to xxxOwner or xxxAddress or a similar entity.
+        - function FarmMain._burnFarmTokenAmount(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures. It performs a token transfer and burns the token, without involving any require statements or
+          variable reassignment that matches the specified patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawLiquidity', 'unlock']
+        Function Security Analysis for FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256)
+            There are no modifiers should be examined in function withdrawLiquidity.
+            Check direct function security
+                - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function uses 'require' statements to validate logic, but none of the conditions directly check if 'msg.sender' equals a specific
+                  Owner/Address/Leader/CEO. Instead, it includes checks for 'farmingPosition.uniqueOwner == msg.sender', which does not fit the specified characteristics
+                  given that 'uniqueOwner' is a property of 'farmingPosition'.
+                - function FarmMain.withdrawLiquidity(uint256,uint256,bool,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given function `withdrawLiquidity` does not demonstrate any of the required structures mentioned. It contains several `require` statements,
+                  but they do not have a structure that involves setting the same variable to `True` or `False` after the `require` check.
+External Call Analysis
+    Direct external call: ['tokenCollection.safeTransferFrom(msg.sender,address(this),objectId,amount,)', 'tokenCollection.burn(objectId,amount)']
+    Analyze Transfer
+    Analyze Gas
+        - tokenCollection.safeTransferFrom(msg.sender,address(this),objectId,amount,) ISN'T subjected to gas limits.
+        - tokenCollection.burn(objectId,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenCollection.safeTransferFrom(msg.sender,address(this),objectId,amount,)', 'tokenCollection.burn(objectId,amount)']
+    Analyze External Address
+        There are ['_farmTokenCollection'] should be checked in variable tokenCollection
+        Checked variables: _farmTokenCollection
+            No The function 'init' does not have the same name as the contract 'FarmMain', nor is it explicitly named 'constructor'. It also does not hardcode the state
+            variable '_farmTokenCollection', as the variable is assigned a value resulting from a function call ('IEthItemOrchestrator(orchestrator).createNative'). Thus,
+            it satisfies neither of the characteristics.
+            Function Security Analysis for FarmMain.init(address,bytes,address,address,bytes)
+                There are no modifiers should be examined in function init.
+                Check direct function security
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The provided function does not check for msg.sender being equal to a specific owner, address, leader, or CEO.
+                    - function FarmMain.init(address,bytes,address,address,bytes) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code does not contain a structure where the same variable is both required to be true/false and then set to false/true as described in
+                      any of the specified patterns.
+Conclusion: This function will cause REE Problem.

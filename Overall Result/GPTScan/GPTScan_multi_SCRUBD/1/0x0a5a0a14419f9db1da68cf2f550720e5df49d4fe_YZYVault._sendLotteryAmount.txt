@@ -1,0 +1,83 @@
+YZYVault._sendLotteryAmount: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _sendLotteryAmount() internal returns (bool) {
+        if (!_enabledLottery || _lotteryAmount <= 0)
+            return false;
+        uint256 usdcReserve = 0;
+        uint256 ethReserve1 = 0;
+        uint256 yzyReserve = 0;
+        uint256 ethReserve2 = 0;
+        address token0 = _usdcETHV2Pair.token0();
+        if (token0 == address(_weth)){
+            (ethReserve1, usdcReserve, ) = _usdcETHV2Pair.getReserves();
+        } else {
+            (usdcReserve, ethReserve1, ) = _usdcETHV2Pair.getReserves(); }
+        token0 = _yzyETHV2Pair.token0();
+        if (token0 == address(_weth)){
+            (ethReserve2, yzyReserve, ) = _yzyETHV2Pair.getReserves();
+        } else {
+            (yzyReserve, ethReserve2, ) = _yzyETHV2Pair.getReserves(); }
+        if (ethReserve1 <= 0 || yzyReserve <= 0)
+            return false;
+        uint256 yzyPrice = usdcReserve.mul(1 ether).div(ethReserve1).mul(ethReserve2).div(yzyReserve);
+        uint256 lotteryValue = yzyPrice.mul(_lotteryAmount).div(1 ether);
+        if (lotteryValue > 0 && lotteryValue >= _lotteryLimit) {
+            uint256 amount = _lotteryLimit.mul(1 ether).div(yzyPrice);
+            if (amount > _lotteryAmount)
+                amount = _lotteryAmount;
+            _yzy.transfer(_msgSender(), amount);
+            _lotteryAmount = _lotteryAmount.sub(amount);
+            _lotteryPaidOut = _lotteryPaidOut.add(amount);
+            emit SentLotteryAmount(_msgSender(), amount, true);
+            winnerInfo.push( WinnerInfo({ winner: _msgSender(), amount: amount, timestamp: block.timestamp }) );
+        }
+        return false;
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _sendLotteryAmount() internal returns (bool) {
+        if (!_enabledLottery || _lotteryAmount <= 0)
+            return false;
+        uint256 usdcReserve = 0;
+        uint256 ethReserve1 = 0;
+        uint256 yzyReserve = 0;
+        uint256 ethReserve2 = 0;
+        address token0 = _usdcETHV2Pair.token0();
+        if (token0 == address(_weth)){
+            (ethReserve1, usdcReserve, ) = _usdcETHV2Pair.getReserves();
+        } else {
+            (usdcReserve, ethReserve1, ) = _usdcETHV2Pair.getReserves(); }
+        token0 = _yzyETHV2Pair.token0();
+        if (token0 == address(_weth)){
+            (ethReserve2, yzyReserve, ) = _yzyETHV2Pair.getReserves();
+        } else {
+            (yzyReserve, ethReserve2, ) = _yzyETHV2Pair.getReserves(); }
+        if (ethReserve1 <= 0 || yzyReserve <= 0)
+            return false;
+        uint256 yzyPrice = usdcReserve.mul(1 ether).div(ethReserve1).mul(ethReserve2).div(yzyReserve);
+        uint256 lotteryValue = yzyPrice.mul(_lotteryAmount).div(1 ether);
+        if (lotteryValue > 0 && lotteryValue >= _lotteryLimit) {
+            uint256 amount = _lotteryLimit.mul(1 ether).div(yzyPrice);
+            if (amount > _lotteryAmount)
+                amount = _lotteryAmount;
+            _yzy.transfer(_msgSender(), amount);
+            _lotteryAmount = _lotteryAmount.sub(amount);
+            _lotteryPaidOut = _lotteryPaidOut.add(amount);
+            emit SentLotteryAmount(_msgSender(), amount, true);
+            winnerInfo.push( WinnerInfo({ winner: _msgSender(), amount: amount, timestamp: block.timestamp }) );
+        }
+        return false;
+    }
+    
+Response:
+No
+--------------------------------------------------

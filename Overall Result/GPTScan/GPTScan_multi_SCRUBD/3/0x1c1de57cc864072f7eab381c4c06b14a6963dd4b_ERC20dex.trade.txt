@@ -1,0 +1,373 @@
+ERC20dex.trade: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function trade(string token, uint maker, uint taker) public {
+        // Basic checks
+        require(msg.sender == trader);
+        require(maker < order_book[token].length);
+        require(taker < order_book[token].length);
+        
+        // Get coin
+        coin_t coin = shitcoins[shitcoin_index[token] - 1];
+        
+        // Validate coin
+        require(coin.state == COIN_APPROVED);
+
+        order_t make = order_book[token][maker];
+        order_t take = order_book[token][taker];
+        uint256 makerFee = 0;
+        uint256 takerFee = 0;
+        uint256 send_to_maker = 0;
+        uint256 send_to_taker = 0;
+        ERC20 shitcoin = ERC20(coin.base);
+        
+        // Check how many coins go into the deal
+        uint256 deal_amount = 0;
+        if (take.amount < make.amount) {
+            deal_amount = take.amount;
+        } else {
+            deal_amount = make.amount;
+        }
+        uint256 total_deal = total_amount(token, deal_amount, make.price);
+        
+        // If maker buys something
+        if (make.buy_sell == BUY) {
+            // Sanity check
+            require(take.price <= make.price);
+            
+            // Calculate fees
+            makerFee = safe_mul(deal_amount, maker_fee) / 10000;
+            takerFee = safe_mul(total_deal, taker_fee) / 10000;
+            
+            // Update accessible fees
+            coin.fee = coin.fee + makerFee;
+            main_fee = main_fee + takerFee;
+            
+            send_to_maker = safe_sub(deal_amount, makerFee);
+            send_to_taker = safe_sub(total_deal, takerFee);
+                
+            // Move shitcoin to maker
+            require(shitcoin.transfer(make.owner, send_to_maker));
+                
+            // Deduct from avaialble ETC balance
+            etx_balances[make.owner] = safe_sub(etx_balances[make.owner], total_deal);
+                
+            // Move funds to taker
+            require(take.owner.send(send_to_taker));
+                
+        } else {
+            // Sanity check
+            require(take.price >= make.price);
+            
+            // Calculate fees
+            makerFee = safe_mul(total_deal, maker_fee) / 10000;
+            takerFee = safe_mul(deal_amount, taker_fee) / 10000;
+            
+            // Update accessible fees
+            main_fee = main_fee + makerFee;
+            coin.fee = coin.fee + takerFee;
+            
+            send_to_maker = safe_sub(total_deal, makerFee);
+            send_to_taker = safe_sub(deal_amount, takerFee);
+                
+            // Move shitcoin to taker
+            require(shitcoin.transfer(take.owner, send_to_taker));
+                
+            // Deduct from avaialble ETC balance
+            etx_balances[take.owner] = safe_sub(etx_balances[take.owner], total_deal);
+                
+            // Move funds to maker
+            require(make.owner.send(send_to_maker));
+        }
+        
+        // Reduce order size
+        make.amount = safe_sub(make.amount, deal_amount);
+        take.amount = safe_sub(take.amount, deal_amount);
+        
+        // Update price
+        coin.price = make.price;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function trade(string token, uint maker, uint taker) public {
+        // Basic checks
+        require(msg.sender == trader);
+        require(maker < order_book[token].length);
+        require(taker < order_book[token].length);
+        
+        // Get coin
+        coin_t coin = shitcoins[shitcoin_index[token] - 1];
+        
+        // Validate coin
+        require(coin.state == COIN_APPROVED);
+
+        order_t make = order_book[token][maker];
+        order_t take = order_book[token][taker];
+        uint256 makerFee = 0;
+        uint256 takerFee = 0;
+        uint256 send_to_maker = 0;
+        uint256 send_to_taker = 0;
+        ERC20 shitcoin = ERC20(coin.base);
+        
+        // Check how many coins go into the deal
+        uint256 deal_amount = 0;
+        if (take.amount < make.amount) {
+            deal_amount = take.amount;
+        } else {
+            deal_amount = make.amount;
+        }
+        uint256 total_deal = total_amount(token, deal_amount, make.price);
+        
+        // If maker buys something
+        if (make.buy_sell == BUY) {
+            // Sanity check
+            require(take.price <= make.price);
+            
+            // Calculate fees
+            makerFee = safe_mul(deal_amount, maker_fee) / 10000;
+            takerFee = safe_mul(total_deal, taker_fee) / 10000;
+            
+            // Update accessible fees
+            coin.fee = coin.fee + makerFee;
+            main_fee = main_fee + takerFee;
+            
+            send_to_maker = safe_sub(deal_amount, makerFee);
+            send_to_taker = safe_sub(total_deal, takerFee);
+                
+            // Move shitcoin to maker
+            require(shitcoin.transfer(make.owner, send_to_maker));
+                
+            // Deduct from avaialble ETC balance
+            etx_balances[make.owner] = safe_sub(etx_balances[make.owner], total_deal);
+                
+            // Move funds to taker
+            require(take.owner.send(send_to_taker));
+                
+        } else {
+            // Sanity check
+            require(take.price >= make.price);
+            
+            // Calculate fees
+            makerFee = safe_mul(total_deal, maker_fee) / 10000;
+            takerFee = safe_mul(deal_amount, taker_fee) / 10000;
+            
+            // Update accessible fees
+            main_fee = main_fee + makerFee;
+            coin.fee = coin.fee + takerFee;
+            
+            send_to_maker = safe_sub(total_deal, makerFee);
+            send_to_taker = safe_sub(deal_amount, takerFee);
+                
+            // Move shitcoin to taker
+            require(shitcoin.transfer(take.owner, send_to_taker));
+                
+            // Deduct from avaialble ETC balance
+            etx_balances[take.owner] = safe_sub(etx_balances[take.owner], total_deal);
+                
+            // Move funds to maker
+            require(make.owner.send(send_to_maker));
+        }
+        
+        // Reduce order size
+        make.amount = safe_sub(make.amount, deal_amount);
+        take.amount = safe_sub(take.amount, deal_amount);
+        
+        // Update price
+        coin.price = make.price;
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function trade(string token, uint maker, uint taker) public {
+        // Basic checks
+        require(msg.sender == trader);
+        require(maker < order_book[token].length);
+        require(taker < order_book[token].length);
+        
+        // Get coin
+        coin_t coin = shitcoins[shitcoin_index[token] - 1];
+        
+        // Validate coin
+        require(coin.state == COIN_APPROVED);
+
+        order_t make = order_book[token][maker];
+        order_t take = order_book[token][taker];
+        uint256 makerFee = 0;
+        uint256 takerFee = 0;
+        uint256 send_to_maker = 0;
+        uint256 send_to_taker = 0;
+        ERC20 shitcoin = ERC20(coin.base);
+        
+        // Check how many coins go into the deal
+        uint256 deal_amount = 0;
+        if (take.amount < make.amount) {
+            deal_amount = take.amount;
+        } else {
+            deal_amount = make.amount;
+        }
+        uint256 total_deal = total_amount(token, deal_amount, make.price);
+        
+        // If maker buys something
+        if (make.buy_sell == BUY) {
+            // Sanity check
+            require(take.price <= make.price);
+            
+            // Calculate fees
+            makerFee = safe_mul(deal_amount, maker_fee) / 10000;
+            takerFee = safe_mul(total_deal, taker_fee) / 10000;
+            
+            // Update accessible fees
+            coin.fee = coin.fee + makerFee;
+            main_fee = main_fee + takerFee;
+            
+            send_to_maker = safe_sub(deal_amount, makerFee);
+            send_to_taker = safe_sub(total_deal, takerFee);
+                
+            // Move shitcoin to maker
+            require(shitcoin.transfer(make.owner, send_to_maker));
+                
+            // Deduct from avaialble ETC balance
+            etx_balances[make.owner] = safe_sub(etx_balances[make.owner], total_deal);
+                
+            // Move funds to taker
+            require(take.owner.send(send_to_taker));
+                
+        } else {
+            // Sanity check
+            require(take.price >= make.price);
+            
+            // Calculate fees
+            makerFee = safe_mul(total_deal, maker_fee) / 10000;
+            takerFee = safe_mul(deal_amount, taker_fee) / 10000;
+            
+            // Update accessible fees
+            main_fee = main_fee + makerFee;
+            coin.fee = coin.fee + takerFee;
+            
+            send_to_maker = safe_sub(total_deal, makerFee);
+            send_to_taker = safe_sub(deal_amount, takerFee);
+                
+            // Move shitcoin to taker
+            require(shitcoin.transfer(take.owner, send_to_taker));
+                
+            // Deduct from avaialble ETC balance
+            etx_balances[take.owner] = safe_sub(etx_balances[take.owner], total_deal);
+                
+            // Move funds to maker
+            require(make.owner.send(send_to_maker));
+        }
+        
+        // Reduce order size
+        make.amount = safe_sub(make.amount, deal_amount);
+        take.amount = safe_sub(take.amount, deal_amount);
+        
+        // Update price
+        coin.price = make.price;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function trade(string token, uint maker, uint taker) public {
+        // Basic checks
+        require(msg.sender == trader);
+        require(maker < order_book[token].length);
+        require(taker < order_book[token].length);
+        
+        // Get coin
+        coin_t coin = shitcoins[shitcoin_index[token] - 1];
+        
+        // Validate coin
+        require(coin.state == COIN_APPROVED);
+
+        order_t make = order_book[token][maker];
+        order_t take = order_book[token][taker];
+        uint256 makerFee = 0;
+        uint256 takerFee = 0;
+        uint256 send_to_maker = 0;
+        uint256 send_to_taker = 0;
+        ERC20 shitcoin = ERC20(coin.base);
+        
+        // Check how many coins go into the deal
+        uint256 deal_amount = 0;
+        if (take.amount < make.amount) {
+            deal_amount = take.amount;
+        } else {
+            deal_amount = make.amount;
+        }
+        uint256 total_deal = total_amount(token, deal_amount, make.price);
+        
+        // If maker buys something
+        if (make.buy_sell == BUY) {
+            // Sanity check
+            require(take.price <= make.price);
+            
+            // Calculate fees
+            makerFee = safe_mul(deal_amount, maker_fee) / 10000;
+            takerFee = safe_mul(total_deal, taker_fee) / 10000;
+            
+            // Update accessible fees
+            coin.fee = coin.fee + makerFee;
+            main_fee = main_fee + takerFee;
+            
+            send_to_maker = safe_sub(deal_amount, makerFee);
+            send_to_taker = safe_sub(total_deal, takerFee);
+                
+            // Move shitcoin to maker
+            require(shitcoin.transfer(make.owner, send_to_maker));
+                
+            // Deduct from avaialble ETC balance
+            etx_balances[make.owner] = safe_sub(etx_balances[make.owner], total_deal);
+                
+            // Move funds to taker
+            require(take.owner.send(send_to_taker));
+                
+        } else {
+            // Sanity check
+            require(take.price >= make.price);
+            
+            // Calculate fees
+            makerFee = safe_mul(total_deal, maker_fee) / 10000;
+            takerFee = safe_mul(deal_amount, taker_fee) / 10000;
+            
+            // Update accessible fees
+            main_fee = main_fee + makerFee;
+            coin.fee = coin.fee + takerFee;
+            
+            send_to_maker = safe_sub(total_deal, makerFee);
+            send_to_taker = safe_sub(deal_amount, takerFee);
+                
+            // Move shitcoin to taker
+            require(shitcoin.transfer(take.owner, send_to_taker));
+                
+            // Deduct from avaialble ETC balance
+            etx_balances[take.owner] = safe_sub(etx_balances[take.owner], total_deal);
+                
+            // Move funds to maker
+            require(make.owner.send(send_to_maker));
+        }
+        
+        // Reduce order size
+        make.amount = safe_sub(make.amount, deal_amount);
+        take.amount = safe_sub(take.amount, deal_amount);
+        
+        // Update price
+        coin.price = make.price;
+    }
+    
+Response:
+No
+--------------------------------------------------

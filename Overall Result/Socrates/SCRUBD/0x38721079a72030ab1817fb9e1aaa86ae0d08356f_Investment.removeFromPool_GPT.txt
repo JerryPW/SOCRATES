@@ -1,0 +1,32 @@
+
+Start analyze function: Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[])
+Function Security Analysis for Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[])
+    There are no modifiers should be examined in function removeFromPool.
+    Check direct function security
+        - function Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any conditions that resemble the mentioned structures for checking if 'msg.sender' is a specific owner, address, or role
+          such as Leader or CEO. Therefore, it does not satisfy any of the given conditions.
+        - function Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures: it does not have a 'require' that is immediately followed by setting the checked variable to
+          the opposite value, nor a conditional throw followed by setting the variable to true. Instead, it has 'require' statements with no direct state change on the
+          same variable afterwards.
+External Call Analysis
+    Direct external call: ['IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount)', 'WETHContract.withdraw(amountToPayToUser)',
+    'msg.sender.call{value:amountToPayToUser}()']
+    Analyze Transfer
+        - IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount) ISN'T subjected to gas limits.
+        - WETHContract.withdraw(amountToPayToUser) ISN'T subjected to gas limits.
+        - msg.sender.call{value:amountToPayToUser}() ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount)', 'WETHContract.withdraw(amountToPayToUser)',
+    'msg.sender.call{value:amountToPayToUser}()']
+    Analyze External Address
+        There are ['WETHAddress'] should be checked in variable WETHAddress
+        Checked variables: WETHAddress
+            State variable WETHAddress has initialized in public area after declaration.
+        There are ['WETHAddress'] should be checked in variable WETHContract
+        Checked variables: WETHAddress
+            State variable WETHAddress has initialized in public area after declaration.
+        External call msg.sender.call{value:amountToPayToUser}() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

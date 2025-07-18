@@ -1,0 +1,38 @@
+[
+    {
+        "function_name": "withdrawDividends",
+        "vulnerability": "Reentrancy attack",
+        "criticism": "The reasoning is correct. The function is vulnerable to reentrancy attacks because it updates state variables after transferring funds. This allows an attacker to repeatedly call the function before the state is updated, potentially withdrawing more funds than intended. The severity is high because it can lead to significant financial loss, and the profitability is high as an attacker could drain the contract's funds.",
+        "correctness": 9,
+        "severity": 8,
+        "profitability": 8,
+        "reason": "The withdrawDividends function is vulnerable to reentrancy attacks as it updates the state variables after the transfer function. This allows an attacker to call the function repeatedly before the state is updated, potentially withdrawing more funds than intended.",
+        "code": "function withdrawDividends(address payable _holder) public returns(uint) { uint dividends = getDividends(_holder); lastWithdrawTime[_holder] = block.timestamp; lastTotalPaymentAmount = lastTotalPaymentAmount.add(dividends); _holder.transfer(dividends); }",
+        "file_name": "0x1f42f986f9ef31d6ef787565b211bce0eb877bcc.sol",
+        "final_score": 8.5
+    },
+    {
+        "function_name": "getWinners",
+        "vulnerability": "Predictable randomness",
+        "criticism": "The reasoning is correct. The use of block.timestamp and block.difficulty for randomness is a well-known vulnerability, as these values can be influenced by miners. This makes the random number generation predictable and susceptible to manipulation, potentially allowing miners to influence the outcome. The severity is high because it affects the fairness of the game, and the profitability is also high as it could be exploited to consistently win or influence the game outcome.",
+        "correctness": 9,
+        "severity": 8,
+        "profitability": 7,
+        "reason": "The random number generation in getWinners uses predictable variables like block.timestamp and block.difficulty, making it vulnerable to manipulation and prediction by miners, potentially allowing them to influence the outcome.",
+        "code": "function getWinners() public { require(winner == 0 && !getState()); uint256 seed1 = address(this).balance; uint256 seed2 = totalSupplyOfBulls; uint256 seed3 = totalSupplyOfBears; uint256 seed4 = totalGWSupplyOfBulls; uint256 seed5 = totalGWSupplyOfBulls; uint256 seed6 = block.difficulty; uint256 seed7 = block.timestamp; bytes32 randomHash = keccak256(abi.encodePacked(seed1, seed2, seed3, seed4, seed5, seed6, seed7)); uint randomNumber = uint(randomHash); if (randomNumber == 0){ randomNumber = 1; } uint winningNumber = randomNumber % 10000; if (1 <= winningNumber && winningNumber <= probabilityOfBears){ winner = 1; } if (probabilityOfBears < winningNumber && winningNumber <= 10000){ winner = 2; } if (GameWaveContract.balanceOf(address(BullsContract)) > 0) GameWaveContract.transferFrom( address(BullsContract), address(this), GameWaveContract.balanceOf(address(BullsContract)) ); if (GameWaveContract.balanceOf(address(BearsContract)) > 0) GameWaveContract.transferFrom( address(BearsContract), address(this), GameWaveContract.balanceOf(address(BearsContract)) ); lastTotalSupplyOfBulls = totalSupplyOfBulls; lastTotalSupplyOfBears = totalSupplyOfBears; lastTotalGWSupplyOfBears = totalGWSupplyOfBears; lastTotalGWSupplyOfBulls = totalGWSupplyOfBulls; lastRoundHero = lastHero; lastJackPot = jackPot; lastWinner = winner; lastCountOfBears = countOfBears; lastCountOfBulls = countOfBulls; lastWithdrawn = withdrawn; lastWithdrawnGW = withdrawnGW; if (lastBalance > lastWithdrawn){ remainder = lastBalance.sub(lastWithdrawn); address(GameWaveContract).transfer(remainder); } lastBalance = lastTotalSupplyOfBears.add(lastTotalSupplyOfBulls).add(lastJackPot); if (lastBalanceGW > lastWithdrawnGW){ remainderGW = lastBalanceGW.sub(lastWithdrawnGW); tokenReturn = (totalGWSupplyOfBears.add(totalGWSupplyOfBulls)).mul(20).div(100).add(remainderGW); GameWaveContract.transfer(crowdSale, tokenReturn); } lastBalanceGW = GameWaveContract.balanceOf(address(this)); totalSupplyOfBulls = 0; totalSupplyOfBears = 0; totalGWSupplyOfBulls = 0; totalGWSupplyOfBears = 0; remainder = 0; remainderGW = 0; jackPot = 0; withdrawn = 0; winner = 0; withdrawnGW = 0; countOfBears = 0; countOfBulls = 0; probabilityOfBulls = 0; probabilityOfBears = 0; _setRoundTime(defaultCurrentDeadlineInHours, defaultLastDeadlineInHours); currentRound++; }",
+        "file_name": "0x1f42f986f9ef31d6ef787565b211bce0eb877bcc.sol",
+        "final_score": 8.25
+    },
+    {
+        "function_name": "transferFrom",
+        "vulnerability": "Missing approval check",
+        "criticism": "The reasoning is correct. The function does not check if the sender has sufficient allowance before performing the transfer, which can lead to unauthorized transfers. This is a significant issue as it violates the expected behavior of the ERC20 standard, where allowance checks are crucial. The severity is high because it can lead to unauthorized token transfers, and the profitability is moderate as an attacker could exploit this to transfer tokens without proper allowance.",
+        "correctness": 8,
+        "severity": 7,
+        "profitability": 5,
+        "reason": "The transferFrom function does not properly check if the sender has sufficient allowance before performing the transfer. This can lead to unauthorized transfers if the allowance is not correctly managed.",
+        "code": "function transferFrom( address from, address to, uint256 value ) public returns (bool) { _allowed[from][msg.sender] = _allowed[from][msg.sender].sub(value); _transfer(from, to, value); return true; }",
+        "file_name": "0x1f42f986f9ef31d6ef787565b211bce0eb877bcc.sol",
+        "final_score": 7.0
+    }
+]

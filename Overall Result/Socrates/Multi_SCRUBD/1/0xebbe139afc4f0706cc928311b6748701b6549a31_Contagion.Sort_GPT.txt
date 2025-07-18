@@ -1,0 +1,31 @@
+
+Start analyze function: Contagion.Sort()
+Function Security Analysis for Contagion.Sort()
+    There are no modifiers should be examined in function Sort.
+    Check direct function security
+        - function Contagion.Sort() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified checks regarding msg.sender.
+        - function Contagion.Sort() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not have any of the required structures. It involves arithmetic operations, sending ether, and modifying a transaction log, but does
+          not check a variable with "require" or an "if" statement according to any of the specified patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback']
+        Function Security Analysis for Contagion.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function Contagion.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function contains 'if (msg.sender == owner)', which is technically a comparison similar to 'require' or 'assert'. It does not match exactly
+                  with any of the given conditions because there is no negation or logic surrounding access control based on msg.sender alone. Thus, none of the specified
+                  conditions are directly satisfied.
+                - function Contagion.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any structure matching the patterns specified. It has a require statement, but it is not followed by resetting a
+                  boolean variable. None of the specified structures with 'require' or 'if' are present where a boolean variable is toggled.
+External Call Analysis
+    Direct external call: ['owner.send(feecounter)']
+    Analyze Transfer
+        - owner.send(feecounter) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, which satisfies one of the specified conditions.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

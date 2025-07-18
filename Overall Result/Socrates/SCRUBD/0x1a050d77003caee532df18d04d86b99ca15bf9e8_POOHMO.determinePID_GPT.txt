@@ -1,0 +1,49 @@
+
+Start analyze function: POOHMO.determinePID(POOHMODatasets.EventReturns)
+Function Security Analysis for POOHMO.determinePID(POOHMODatasets.EventReturns)
+    There are no modifiers should be examined in function determinePID.
+    Check direct function security
+        - function POOHMO.determinePID(POOHMODatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'determinePID' checks or enforces conditions on the 'msg.sender', but it does not constrain or restrict the access based on whether
+          'msg.sender' matches any owner or special address, such as an Owner, Address, Leader, or CEO. None of the specified patterns are present.
+        - function POOHMO.determinePID(POOHMODatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code doesn't contain any of the required structures mentioned in the characteristics.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyXaddr', 'fallback', 'buyXid', 'buyXname']
+        Function Security Analysis for POOHMO.buyXaddr(address)
+            The modifier of function buyXaddr are ['isActivated', 'isHuman', 'isWithinLimits']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier checks if 'activated_' is true, but does not enforce owner permissions or locking mechanism based on the criteria given.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: The modifier does not enforce owner-specific access or contain a lock operation, and the name 'isHuman' does not imply such functionalities.
+                - modifier isWithinLimits has no relation with controlled by owner.
+                  Reason: The code in the modifier enforces constraints on the input value '_eth' but does not ensure that only the owner or specified addresses can
+                  execute the function, nor does it use a lock operation to prevent re-entrance. Additionally, the modifier's name 'isWithinLimits' does not imply
+                  ownership or protection against re-entrance.
+            Check direct function security
+                - function POOHMO.buyXaddr(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any statements checking for specific roles or authorities such as xxxOwner, xxxAddress, Leader, CEO using msg.sender.
+                - function POOHMO.buyXaddr(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function `buyXaddr` doesn't match any of the given structural patterns for require or if statements with subsequent variable assignments.
+External Call Analysis
+    Direct external call: ['PlayerBook.getPlayerName(_pID)', 'PlayerBook.getPlayerLAff(_pID)', 'PlayerBook.getPlayerID(msg.sender)']
+    Analyze Transfer
+    Analyze Gas
+        - PlayerBook.getPlayerName(_pID) ISN'T subjected to gas limits.
+        - PlayerBook.getPlayerLAff(_pID) ISN'T subjected to gas limits.
+        - PlayerBook.getPlayerID(msg.sender) ISN'T subjected to gas limits.
+    Remaining external call: ['PlayerBook.getPlayerName(_pID)', 'PlayerBook.getPlayerLAff(_pID)', 'PlayerBook.getPlayerID(msg.sender)']
+    Analyze External Address
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            Yes 1. The function in the provided code is named 'constructor' and matches the contract name POOHMO, indicating it is the constructor of the contract.  2.
+            The state variable PlayerBook is being initialized with an address from the constructor's parameters, and not hardcoded with a specific, unchangeable value.
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            Yes The provided code is a constructor as evidenced by the function being named 'constructor'. Therefore, it satisfies the first characteristic.
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            Yes The function in the code is named 'constructor', explicitly indicating that it is a constructor function. This satisfies the first characteristic of
+            checking whether the code is a constructor by either matching the contract name or being named 'constructor'.
+Conclusion: This function will not cause REE Problem.

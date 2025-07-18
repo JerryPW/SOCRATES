@@ -1,0 +1,9 @@
+
+Start analyze function: PharaGoddess.withdrawFund()
+Function Security Analysis for PharaGoddess.withdrawFund()
+    The modifier of function withdrawFund are ['onlyOwner']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The code uses 'require(owner() == _msgSender(), "Ownable: caller is not the owner")', enforcing that only the owner can execute the function. This
+          matches rule 1, checking for owner-only execution. There is no indication of a lock operation, so rule 2 does not apply.
+Conclusion: This function will not cause REE Problem.

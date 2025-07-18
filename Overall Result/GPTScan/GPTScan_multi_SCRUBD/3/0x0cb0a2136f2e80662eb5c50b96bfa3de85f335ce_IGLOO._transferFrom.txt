@@ -1,0 +1,51 @@
+IGLOO._transferFrom: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transferFrom(address sender, address recipient, uint256 amount) private returns (bool) {
+        if (_swapping) return _basicTransfer(sender, recipient, amount);
+        bool _sell = recipient == dexPair || recipient == address(router);
+
+        if (_sell) {
+            if (msg.sender != dexPair && !_swapping && _tokens > 0) _payTreasury();
+        }
+        require(_balances[sender] >= amount, "Insufficient balance");
+        _balances[sender] = _balances[sender] - amount;
+
+        uint256 amountReceived = (((sender == dexPair || sender == address(router)) || (recipient == dexPair || recipient == address(router))) ? !noTax[sender] && !noTax[recipient] : false) ? _calcAmount(sender, recipient, amount) : amount;
+
+        _balances[recipient] = _balances[recipient] + amountReceived;
+
+        emit Transfer(sender, recipient, amountReceived);
+        return true;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transferFrom(address sender, address recipient, uint256 amount) private returns (bool) {
+        if (_swapping) return _basicTransfer(sender, recipient, amount);
+        bool _sell = recipient == dexPair || recipient == address(router);
+
+        if (_sell) {
+            if (msg.sender != dexPair && !_swapping && _tokens > 0) _payTreasury();
+        }
+        require(_balances[sender] >= amount, "Insufficient balance");
+        _balances[sender] = _balances[sender] - amount;
+
+        uint256 amountReceived = (((sender == dexPair || sender == address(router)) || (recipient == dexPair || recipient == address(router))) ? !noTax[sender] && !noTax[recipient] : false) ? _calcAmount(sender, recipient, amount) : amount;
+
+        _balances[recipient] = _balances[recipient] + amountReceived;
+
+        emit Transfer(sender, recipient, amountReceived);
+        return true;
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------

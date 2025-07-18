@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "remove_coin",
+        "code": "function remove_coin(uint index) public { require(msg.sender == owner); require(index < shitcoins.length); string ticker = shitcoins[index].ticker; delete shitcoins[index]; delete shitcoin_index[ticker]; for (uint16 i = 0; i < uint16(shitcoins.length); i++) { shitcoin_index[shitcoins[i].ticker] = i + 1; } }",
+        "vulnerability": "Inconsistent state and potential DoS",
+        "reason": "The `remove_coin` function deletes an element in the `shitcoins` array but does not properly manage the state of the array. This operation leaves a gap in the array and can lead to an inconsistent state because it doesn't shrink the array or fill the gap, potentially causing a Denial of Service (DoS) if iterating over the array. The loop that attempts to update the `shitcoin_index` mapping will also be incorrect since it does not account for the missing element.",
+        "file_name": "0x1c1de57cc864072f7eab381c4c06b14a6963dd4b.sol"
+    },
+    {
+        "function_name": "trade",
+        "code": "function trade(string token, uint maker, uint taker) public { require(msg.sender == trader); require(maker < order_book[token].length); require(taker < order_book[token].length); coin_t coin = shitcoins[shitcoin_index[token] - 1]; require(coin.state == COIN_APPROVED); order_t make = order_book[token][maker]; order_t take = order_book[token][taker]; uint256 makerFee = 0; uint256 takerFee = 0; uint256 send_to_maker = 0; uint256 send_to_taker = 0; ERC20 shitcoin = ERC20(coin.base); uint256 deal_amount = 0; if (take.amount < make.amount) { deal_amount = take.amount; } else { deal_amount = make.amount; } uint256 total_deal = total_amount(token, deal_amount, make.price); if (make.buy_sell == BUY) { require(take.price <= make.price); makerFee = safe_mul(deal_amount, maker_fee) / 10000; takerFee = safe_mul(total_deal, taker_fee) / 10000; coin.fee = coin.fee + makerFee; main_fee = main_fee + takerFee; send_to_maker = safe_sub(deal_amount, makerFee); send_to_taker = safe_sub(total_deal, takerFee); require(shitcoin.transfer(make.owner, send_to_maker)); etx_balances[make.owner] = safe_sub(etx_balances[make.owner], total_deal); require(take.owner.send(send_to_taker)); } else { require(take.price >= make.price); makerFee = safe_mul(total_deal, maker_fee) / 10000; takerFee = safe_mul(deal_amount, taker_fee) / 10000; main_fee = main_fee + makerFee; coin.fee = coin.fee + takerFee; send_to_maker = safe_sub(total_deal, makerFee); send_to_taker = safe_sub(deal_amount, takerFee); require(shitcoin.transfer(take.owner, send_to_taker)); etx_balances[take.owner] = safe_sub(etx_balances[take.owner], total_deal); require(make.owner.send(send_to_maker)); } make.amount = safe_sub(make.amount, deal_amount); take.amount = safe_sub(take.amount, deal_amount); coin.price = make.price; }",
+        "vulnerability": "Reentrancy vulnerability",
+        "reason": "The `trade` function can be exploited for reentrancy attacks because it sends Ether to users using `send` after modifying the state without using proper reentrancy guards. If an attacker uses a fallback function to call back into the contract, they could potentially manipulate the state and extract additional funds or disrupt the trade logic.",
+        "file_name": "0x1c1de57cc864072f7eab381c4c06b14a6963dd4b.sol"
+    },
+    {
+        "function_name": "cancel",
+        "code": "function cancel(string token, uint256 index) public { coin_t coin = shitcoins[shitcoin_index[token] - 1]; order_t order = order_book[token][index]; require(coin.state == COIN_APPROVED); require((msg.sender == order.owner) || (msg.sender == owner)); require(order.amount > 0); order.amount = 0; if (order.buy_sell == BUY) { uint256 total_deal = total_amount(token, order.amount, order.price); etx_balances[msg.sender] = safe_sub(etx_balances[msg.sender], total_deal); require(order.owner.send(total_deal)); } else { ERC20 shitcoin = ERC20(coin.base); shitcoin.transfer(order.owner, order.amount); } }",
+        "vulnerability": "Incorrect refund calculation and reentrancy",
+        "reason": "The `cancel` function calculates the refund after setting `order.amount` to zero. This leads to a zero refund being processed, which is incorrect. Additionally, the function uses `send` to refund Ether, which can be exploited for reentrancy attacks. An attacker could exploit this by repeatedly calling `cancel` to drain funds or disrupt the order book.",
+        "file_name": "0x1c1de57cc864072f7eab381c4c06b14a6963dd4b.sol"
+    }
+]

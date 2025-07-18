@@ -1,0 +1,36 @@
+Xlabs.swapAndLiquify: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapAndLiquify() private lockTheSwap {
+        uint256 contractTokenBalance = balanceOf(address(this));
+        if(liquidityTokens >= swapTokensAtAmount && contractTokenBalance >= swapTokensAtAmount) {
+            // split the contract balance into halves
+            uint256 half = swapTokensAtAmount.div(2);
+            uint256 otherHalf = swapTokensAtAmount.sub(half);
+
+            // capture the contract's current ETH balance.
+            uint256 initialBalance = address(this).balance;
+
+            // swap tokens for ETH
+            swapTokensForEth(half, address(this));
+
+            // how much ETH did we just swap into?
+            uint256 newBalance = address(this).balance.sub(initialBalance);
+
+            // add liquidity to uniswap
+            addLiquidity(otherHalf, newBalance);
+            emit SwapAndLiquify(half, newBalance, otherHalf);
+            liquidityTokens -= swapTokensAtAmount;
+        }
+
+        if(devTokens >= swapTokensAtAmount && contractTokenBalance >= swapTokensAtAmount) {
+            swapTokensForEth(swapTokensAtAmount, devWallet);
+            devTokens -= swapTokensAtAmount;
+        }
+
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

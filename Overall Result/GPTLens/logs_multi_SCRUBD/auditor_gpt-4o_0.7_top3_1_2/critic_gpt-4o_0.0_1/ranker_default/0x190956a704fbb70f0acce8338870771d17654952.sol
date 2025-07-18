@@ -1,0 +1,38 @@
+[
+    {
+        "function_name": "swapAndShare",
+        "vulnerability": "Lack of slippage control on Uniswap swap",
+        "criticism": "The reasoning is correct in identifying the lack of slippage control, which can lead to receiving fewer tokens than expected. This is a valid concern as it can result in financial loss if the market is manipulated. The severity is moderate because it can lead to significant losses, and the profitability is moderate as well, as an attacker could potentially exploit this to cause financial harm.",
+        "correctness": 8,
+        "severity": 5,
+        "profitability": 5,
+        "reason": "The `swapAndShare` function uses the `swapExactETHForTokensSupportingFeeOnTransferTokens` function without specifying a minimum amount of tokens to receive (slippage control). This can allow an attacker to manipulate the pool on Uniswap, causing the contract to receive fewer tokens than expected, leading to potential loss of funds.",
+        "code": "function swapAndShare() private { require(collectedFee > 0, \"Insufficient Amount\"); uint256 initialBalance = M87Token.balanceOf(address(this)); address[] memory path = new address[](2); path[0] = uniswapV2Router.WETH(); path[1] = address(M87Token); uniswapV2Router.swapExactETHForTokensSupportingFeeOnTransferTokens.value(collectedFee) ( 0, path, address(this), block.timestamp.mul(2) ); collectedFee = 0; uint256 newBalance = M87Token.balanceOf(address(this)).sub(initialBalance); if( shareOfReward[0] > 0 ) { M87Token.transfer( address(0x000000000000000000000000000000000000dEaD), newBalance.mul(shareOfReward[0]).div(100) ); } if( poolList[0] != address(0) && shareOfReward[1] > 0 && poolList[0] != address(this) ) { M87Token.transfer( poolList[0], newBalance.mul(shareOfReward[1]).div(100) ); } if( poolList[1] != address(0) && shareOfReward[2] > 0 && poolList[1] != address(this) ) { M87Token.transfer( poolList[1], newBalance.mul(shareOfReward[2]).div(100) ); } if( poolList[2] != address(0) && shareOfReward[3] > 0 && poolList[2] != address(this) ) { M87Token.transfer( poolList[2], newBalance.mul(shareOfReward[3]).div(100) ); } if( poolList[3] != address(0) && shareOfReward[4] > 0 && poolList[3] != address(this) ) { M87Token.transfer( poolList[3], newBalance.mul(shareOfReward[4]).div(100) ); } }",
+        "file_name": "0x190956a704fbb70f0acce8338870771d17654952.sol",
+        "final_score": 6.5
+    },
+    {
+        "function_name": "withdraw",
+        "vulnerability": "Reentrancy vulnerability",
+        "criticism": "The reasoning correctly identifies the use of low-level calls with `.value()` to send Ether, which can indeed be a vector for reentrancy attacks. However, the function is marked as `nonReentrant`, which suggests that a reentrancy guard is in place, mitigating the risk. The severity is moderate because the guard should prevent reentrancy, but the use of low-level calls is still risky. The profitability is low for an attacker due to the presence of the reentrancy guard.",
+        "correctness": 6,
+        "severity": 3,
+        "profitability": 2,
+        "reason": "The `withdraw` function uses low-level call with `.value()` to send Ether to `_relayer` and `_recipient` without implementing checks-effects-interactions or appropriate reentrancy guard. This can allow attackers to reenter the function and make multiple withdrawals before state variables like `numOfShares` are updated.",
+        "code": "function withdraw(bytes calldata _proof, bytes32 _root, bytes32 _nullifierHash, address payable _recipient, address payable _relayer, uint256 _relayerFee, uint256 _refund) external payable nonReentrant { require(_refund == 0, \"refund is not zero\"); require(!Address.isContract(_recipient), \"recipient of cannot be contract\"); require(isKnownRoot(_root), \"Cannot find your merkle root\"); require(verifier.verifyProof(_proof, [uint256(_root), uint256(_nullifierHash), uint256(_recipient), uint256(_relayer), _relayerFee, _refund]), \"Invalid withdraw proof\"); verifier.verifyNullifier(_nullifierHash); uint256 td = tokenDenomination; if (td > 0) { safeTransfer(token, _recipient, td); } updateBlockReward(); uint256 relayerFee = 0; uint256 M87Deno = getAccumulateM87().div(numOfShares); if (M87Deno > 0) { accumulateM87 -= M87Deno; safeTransfer(M87Token, _recipient, M87Deno); } uint256 cd = coinDenomination - feeToCollectAmount; if (_relayerFee > cd) { _relayerFee = cd; } if (_relayerFee > 0) { (bool success,) = _relayer.call.value(_relayerFee)(\"\"); require(success, \"failed to send relayer fee\"); cd -= _relayerFee; } if (cd > 0) { (bool success,) = _recipient.call.value(cd)(\"\"); require(success, \"failed to withdraw coin\"); } numOfShares -= 1; emit Withdrawal(_recipient, _nullifierHash, _relayer, M87Deno, relayerFee); }",
+        "file_name": "0x190956a704fbb70f0acce8338870771d17654952.sol",
+        "final_score": 4.25
+    },
+    {
+        "function_name": "deposit",
+        "vulnerability": "Potential reentrancy on refund",
+        "criticism": "The reasoning is correct in identifying the use of a low-level call for refunds, which can be a reentrancy risk. However, the function is marked as `nonReentrant`, which should prevent reentrancy attacks. The severity is low because the reentrancy guard should protect against this, and the profitability is also low due to the guard.",
+        "correctness": 7,
+        "severity": 2,
+        "profitability": 1,
+        "reason": "The `deposit` function contains a refund logic that uses a low-level call `.value()` to refund excess Ether to the sender. This operation is external and can potentially allow reentrancy attacks if the receiving contract has a fallback function that interacts with this contract, especially since the state updates like `numOfShares` are performed after the refund.",
+        "code": "function deposit(bytes32 _commitment) external payable nonReentrant returns (bytes32 commitment, uint32 insertedIndex, uint256 blocktime, uint256 M87Deno, uint256 fee){ require(!commitments[_commitment], \"The commitment has been submitted\"); require(msg.value >= coinDenomination, \"insufficient coin amount\"); commitment = _commitment; blocktime = block.timestamp; uint256 refund = msg.value - coinDenomination; insertedIndex = _insert(_commitment); commitments[_commitment] = true; M87Deno = M87Denomination(); fee = anonymityFee; if (M87Deno.add(fee) > 0) { require(M87Token.transferFrom(msg.sender, address(this), M87Deno.add(fee)), \"insufficient M87 allowance\"); } if (fee > 0) { address t = treasury; safeTransfer(M87Token, t, fee); } uint256 td = tokenDenomination; if (td > 0) { token.safeTransferFrom(msg.sender, address(this), td); } accumulateM87 += M87Deno; numOfShares += 1; if (refund > 0) { (bool success, ) = msg.sender.call.value(refund)(\"\"); require(success, \"failed to refund\"); } collectedFee += feeToCollectAmount; if(collectedFee > overMinEth) { swapAndShare(); } updateBlockReward(); emit Deposit(_commitment, insertedIndex, block.timestamp, M87Deno, fee); }",
+        "file_name": "0x190956a704fbb70f0acce8338870771d17654952.sol",
+        "final_score": 4.25
+    }
+]

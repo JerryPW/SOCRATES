@@ -1,0 +1,103 @@
+FarmMain.withdrawReward: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdrawReward(uint256 positionId) public byPositionOwner(positionId) {
+        FarmingPosition storage farmingPosition = _positions[positionId];
+        uint256 reward = farmingPosition.reward;
+        uint256 currentBlock = block.number;
+        if (!_setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free) {
+            require(farmingPosition.reward > 0, "No reward");
+            (reward,) = calculateLockedFarmingReward(0, 0, true, positionId);
+            require(reward <= farmingPosition.reward, "Reward is bigger than expected");
+            farmingPosition.reward = currentBlock >= _setups[farmingPosition.setupIndex].endBlock ? 0 : farmingPosition.reward - reward;
+            farmingPosition.creationBlock = block.number;
+        } else {
+            currentBlock = currentBlock > _setups[farmingPosition.setupIndex].endBlock ? _setups[farmingPosition.setupIndex].endBlock : currentBlock;
+            _rewardPerTokenPerSetup[farmingPosition.setupIndex] += (((currentBlock - _setups[farmingPosition.setupIndex].lastUpdateBlock) * _setups[farmingPosition.setupIndex].rewardPerBlock) * 1e18) / _setups[farmingPosition.setupIndex].totalSupply;
+            reward = calculateFreeFarmingReward(positionId, false);
+            _rewardPerTokenPaid[positionId] = _rewardPerTokenPerSetup[farmingPosition.setupIndex];
+            farmingPosition.reward = 0;
+            // update the last block update variable
+            _setups[farmingPosition.setupIndex].lastUpdateBlock = currentBlock;
+        }
+        if (reward > 0) {
+            if (_rewardTokenAddress != address(0)) {
+                _safeTransfer(_rewardTokenAddress, farmingPosition.uniqueOwner, reward);
+            } else {
+                (bool result,) = farmingPosition.uniqueOwner.call{value:reward}("");
+                require(result, "Invalid ETH transfer.");
+            }
+            _rewardPaid[farmingPosition.setupIndex] += reward;
+        }
+        if (_setups[farmingPosition.setupIndex].endBlock <= block.number) {
+            if (_setups[farmingPosition.setupIndex].active) {
+                _toggleSetup(farmingPosition.setupIndex);
+            }
+            if (!_setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free) {
+                _setupPositionsCount[farmingPosition.setupIndex] -= 1;
+                if (_setupPositionsCount[farmingPosition.setupIndex] == 0 && !_setups[farmingPosition.setupIndex].active) {
+                    _giveBack(_rewardReceived[farmingPosition.setupIndex] - _rewardPaid[farmingPosition.setupIndex]);
+                    delete _setups[farmingPosition.setupIndex];
+                }
+                delete _positions[positionId];
+            }
+        } else if (!_setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free) {
+            _partiallyRedeemed[positionId] += reward;
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdrawReward(uint256 positionId) public byPositionOwner(positionId) {
+        FarmingPosition storage farmingPosition = _positions[positionId];
+        uint256 reward = farmingPosition.reward;
+        uint256 currentBlock = block.number;
+        if (!_setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free) {
+            require(farmingPosition.reward > 0, "No reward");
+            (reward,) = calculateLockedFarmingReward(0, 0, true, positionId);
+            require(reward <= farmingPosition.reward, "Reward is bigger than expected");
+            farmingPosition.reward = currentBlock >= _setups[farmingPosition.setupIndex].endBlock ? 0 : farmingPosition.reward - reward;
+            farmingPosition.creationBlock = block.number;
+        } else {
+            currentBlock = currentBlock > _setups[farmingPosition.setupIndex].endBlock ? _setups[farmingPosition.setupIndex].endBlock : currentBlock;
+            _rewardPerTokenPerSetup[farmingPosition.setupIndex] += (((currentBlock - _setups[farmingPosition.setupIndex].lastUpdateBlock) * _setups[farmingPosition.setupIndex].rewardPerBlock) * 1e18) / _setups[farmingPosition.setupIndex].totalSupply;
+            reward = calculateFreeFarmingReward(positionId, false);
+            _rewardPerTokenPaid[positionId] = _rewardPerTokenPerSetup[farmingPosition.setupIndex];
+            farmingPosition.reward = 0;
+            // update the last block update variable
+            _setups[farmingPosition.setupIndex].lastUpdateBlock = currentBlock;
+        }
+        if (reward > 0) {
+            if (_rewardTokenAddress != address(0)) {
+                _safeTransfer(_rewardTokenAddress, farmingPosition.uniqueOwner, reward);
+            } else {
+                (bool result,) = farmingPosition.uniqueOwner.call{value:reward}("");
+                require(result, "Invalid ETH transfer.");
+            }
+            _rewardPaid[farmingPosition.setupIndex] += reward;
+        }
+        if (_setups[farmingPosition.setupIndex].endBlock <= block.number) {
+            if (_setups[farmingPosition.setupIndex].active) {
+                _toggleSetup(farmingPosition.setupIndex);
+            }
+            if (!_setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free) {
+                _setupPositionsCount[farmingPosition.setupIndex] -= 1;
+                if (_setupPositionsCount[farmingPosition.setupIndex] == 0 && !_setups[farmingPosition.setupIndex].active) {
+                    _giveBack(_rewardReceived[farmingPosition.setupIndex] - _rewardPaid[farmingPosition.setupIndex]);
+                    delete _setups[farmingPosition.setupIndex];
+                }
+                delete _positions[positionId];
+            }
+        } else if (!_setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free) {
+            _partiallyRedeemed[positionId] += reward;
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

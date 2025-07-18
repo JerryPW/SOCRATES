@@ -1,0 +1,9 @@
+
+Start analyze function: Staking.harvest()
+Function Security Analysis for Staking.harvest()
+    The modifier of function harvest are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The code in the 'nonReentrant' modifier implements a lock mechanism by setting '_status' to '_ENTERED' to prevent reentrancy and then resetting
+          '_status' to '_NOT_ENTERED' at the end to allow the function to be called again. This matches the description in characteristic 2 fully.
+Conclusion: This function will not cause REE Problem.

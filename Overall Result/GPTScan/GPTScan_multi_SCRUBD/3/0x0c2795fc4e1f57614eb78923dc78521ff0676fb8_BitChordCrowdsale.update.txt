@@ -1,0 +1,76 @@
+BitChordCrowdsale.update: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function update() internal {
+    oraclize_query(86400,"URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHUSD).result.XETHZUSD.c.0");
+    //86400 - 1 day
+  
+    oraclizeBalance = oraclizeBalance.sub(oraclize_getPrice("URL")); //request to oraclize
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function update() internal {
+    oraclize_query(86400,"URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHUSD).result.XETHZUSD.c.0");
+    //86400 - 1 day
+  
+    oraclizeBalance = oraclizeBalance.sub(oraclize_getPrice("URL")); //request to oraclize
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function update() internal {
+    oraclize_query(86400,"URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHUSD).result.XETHZUSD.c.0");
+    //86400 - 1 day
+  
+    oraclizeBalance = oraclizeBalance.sub(oraclize_getPrice("URL")); //request to oraclize
+  }
+Response:
+{"StatementsA": {"oraclizeBalance = oraclizeBalance.sub(oraclize_getPrice(\"URL\"));":"Updates the state variable oraclizeBalance."}, "StatementsB": {"oraclize_query(86400,\"URL\", \"json(https://api.kraken.com/0/public/Ticker?pair=ETHUSD).result.XETHZUSD.c.0\");":"Executes an external call to oraclize."}, "VariableA": {"": "No variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: oraclizeBalance = oraclizeBalance.sub(oraclize_getPrice("URL"));
+2.External Call: oraclize_query(86400,"URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHUSD).result.XETHZUSD.c.0");
+3.Variable A: 
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function update() internal {
+    oraclize_query(86400,"URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHUSD).result.XETHZUSD.c.0");
+    //86400 - 1 day
+  
+    oraclizeBalance = oraclizeBalance.sub(oraclize_getPrice("URL")); //request to oraclize
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function update() internal {
+    oraclize_query(86400,"URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHUSD).result.XETHZUSD.c.0");
+    //86400 - 1 day
+  
+    oraclizeBalance = oraclizeBalance.sub(oraclize_getPrice("URL")); //request to oraclize
+  }
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,49 @@
+XYZProtocol._beforeTokenTransfer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _beforeTokenTransfer(address recipient) private {
+            
+        if ( !isInPresale ){
+            uint256 contractTokenBalance = balanceOf(address(this));
+            // swap
+            bool canSwap = contractTokenBalance >= swapTokensAtAmount;
+            
+            if (!swapping && canSwap && swapEnabled && recipient == pair) {
+                swapping = true;
+                
+                swapBack();
+                
+                swapping = false;
+            }
+            
+        }
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _beforeTokenTransfer(address recipient) private {
+            
+        if ( !isInPresale ){
+            uint256 contractTokenBalance = balanceOf(address(this));
+            // swap
+            bool canSwap = contractTokenBalance >= swapTokensAtAmount;
+            
+            if (!swapping && canSwap && swapEnabled && recipient == pair) {
+                swapping = true;
+                
+                swapBack();
+                
+                swapping = false;
+            }
+            
+        }
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

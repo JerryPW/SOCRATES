@@ -1,0 +1,35 @@
+[
+    {
+        "function_name": "_mint",
+        "vulnerability": "Hardcoded address in Transfer event",
+        "criticism": "The reasoning is correct in identifying that the hardcoded address in the Transfer event is not a standard practice. This could indeed lead to confusion or incorrect assumptions about the origin of minted tokens. However, the severity of this issue is relatively low as it does not directly lead to a security vulnerability or financial loss. The profitability is also low because it does not provide a direct advantage to an attacker.",
+        "correctness": 8,
+        "severity": 2,
+        "profitability": 0,
+        "reason": "The _mint function emits a Transfer event with a hardcoded address (address(0xC78D0e403738c4a645014c551658162Ad33B1528)) as the sender, which is not a standard practice and could lead to potential confusion or misuse. This hardcoding can result in incorrect assumptions about the origin of minted tokens.",
+        "code": "function _mint(address account, uint256 amount) internal virtual {\n    require(account != address(0), \"ERC20: mint to the zero address\");\n    _beforeTokenTransfer(address(0), account, amount);\n    _totalSupply = _totalSupply.add(amount);\n    _balances[account] = _balances[account].add(amount);\n    emit Transfer(address(0xC78D0e403738c4a645014c551658162Ad33B1528), _msgSender(), amount);\n}",
+        "file_name": "0x119f4c9de5539fd053aed5091db4ba59f83330d7.sol"
+    },
+    {
+        "function_name": "_transfer",
+        "vulnerability": "Unrestricted external calls via 'try/catch'",
+        "criticism": "The reasoning correctly identifies that using 'try/catch' for external calls can mask errors and make debugging difficult. This could potentially lead to incorrect state updates if critical errors are not caught. The severity is moderate because it can lead to unexpected behavior, but it does not directly result in a security breach. The profitability is low as it does not provide a direct financial gain to an attacker.",
+        "correctness": 8,
+        "severity": 4,
+        "profitability": 1,
+        "reason": "The use of 'try/catch' for external calls to 'dividendTracker.setBalance' and 'dividendTracker.process' can potentially mask errors and make debugging difficult. If these functions fail, they will not revert the transaction, which could hide critical errors in the logic flow, potentially leading to incorrect state updates.",
+        "code": "function _transfer( address from, address to, uint256 amount ) internal override {\n    require(from != address(0), \"ERC20: transfer from the zero address\");\n    require(to != address(0), \"ERC20: transfer to the zero address\");\n    if(from != owner() && to != owner() && _maxBuyEnabled){\n        if(from != liquidityWallet && to != liquidityWallet){\n            require(amount <= MAX_SELL_TRANSACTION_AMOUNT, \"Transfer amount exceeds the maxTxAmount.\");\n        }\n    }\n    bool tradingIsEnabled = tradingEnabled;\n    if (!tradingIsEnabled) {\n        require(canTransferBeforeTradingIsEnabled[from], \"PENGU: This account cannot send tokens until trading is enabled\");\n    }\n    if ((from == uniswapV2Pair || to == uniswapV2Pair) && tradingIsEnabled) {\n    }\n    if (amount == 0) {\n        super._transfer(from, to, 0);\n        return;\n    }\n    if (!liquidating && tradingIsEnabled && automatedMarketMakerPairs[to] && from != address(uniswapV2Router) && !_isExcludedFromFees[to] ) {\n        require(amount <= MAX_SELL_TRANSACTION_AMOUNT, \"Sell transfer amount exceeds the MAX_SELL_TRANSACTION_AMOUNT.\");\n    }\n    uint256 contractTokenBalance = balanceOf(address(this));\n    bool canSwap = contractTokenBalance >= liquidateTokensAtAmount;\n    if (tradingIsEnabled && canSwap && _swapEnabled && !liquidating && !automatedMarketMakerPairs[from] && from != liquidityWallet && to != liquidityWallet ) {\n        liquidating = true;\n        uint256 swapTokens = contractTokenBalance.mul(LIQUIDITY_FEE).div(TOTAL_FEES);\n        swapAndSendToDev(swapTokens);\n        uint256 sellTokens = balanceOf(address(this));\n        swapAndSendDividends(sellTokens);\n        liquidating = false;\n    }\n    bool takeFee = tradingIsEnabled && !liquidating;\n    if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) {\n        takeFee = false;\n    }\n    if (takeFee) {\n        uint256 fees = amount.mul(TOTAL_FEES).div(100);\n        amount = amount.sub(fees);\n        super._transfer(from, address(this), fees);\n    }\n    super._transfer(from, to, amount);\n    try dividendTracker.setBalance(payable(from), balanceOf(from)) {} catch {}\n    try dividendTracker.setBalance(payable(to), balanceOf(to)) {} catch { }\n    if (!liquidating) {\n        uint256 gas = gasForProcessing;\n        try dividendTracker.process(gas) returns (uint256 iterations, uint256 claims, uint256 lastProcessedIndex) {\n            emit ProcessedDividendTracker(iterations, claims, lastProcessedIndex, true, gas, tx.origin);\n        } catch { }\n    }\n}",
+        "file_name": "0x119f4c9de5539fd053aed5091db4ba59f83330d7.sol"
+    },
+    {
+        "function_name": "excludeFromFees",
+        "vulnerability": "Potential centralization risk",
+        "criticism": "The reasoning is correct in identifying the centralization risk associated with the owner being able to exclude any address from fees. This could lead to unfair advantages or manipulation if the owner acts maliciously. The severity is moderate because it depends on the owner's actions, and the profitability is moderate as well, as it could allow the owner to bypass fees, leading to potential financial gain.",
+        "correctness": 9,
+        "severity": 5,
+        "profitability": 5,
+        "reason": "The excludeFromFees function allows the owner to exclude any address from fees. This introduces a centralization risk as the owner could potentially exclude malicious addresses or their own addresses, allowing them to bypass transaction fees that are supposed to apply to all users, potentially leading to unfair advantages or manipulation.",
+        "code": "function excludeFromFees(address account) public onlyOwner {\n    require(!_isExcludedFromFees[account], \"PENGU: Account is already excluded from fees\");\n    _isExcludedFromFees[account] = true;\n}",
+        "file_name": "0x119f4c9de5539fd053aed5091db4ba59f83330d7.sol"
+    }
+]

@@ -1,0 +1,26 @@
+
+Start analyze function: ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function tokenFulfillmentDeposit.
+    Check direct function security
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The code checks whether a signature is correct using ecrecover with the message sender but does not directly involve a comparison between msg.sender and
+          a predefined owner or leader variable.
+        - function ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code matches Structure 2 where it uses 'require(!orderRecord[msg.sender][orderHash].tokenDeposit)' followed by
+          'orderRecord[msg.sender][orderHash].tokenDeposit = true;'. However, the negation (setting to true) happens after the 'Token(tokenUser[0]).transferFrom(...)' and
+          'orderRecord[msg.sender][orderHash].shortBalance[...] = safeAdd(...)', which means the negation is not completed immediately after the require statement before
+          other main code logic executes.
+External Call Analysis
+    Direct external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze Transfer
+    Analyze Gas
+        - Token(tokenUser[0]).transferFrom(msg.sender,this,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenUser[0]).transferFrom(msg.sender,this,amount)']
+    Analyze External Address
+        The variable 'tokenUser' in external call 'Token(tokenUser[0]).transferFrom(msg.sender,this,amount)' has no state variable assigned in
+        ShortOrder.tokenFulfillmentDeposit(address[2],uint256,uint256[8],uint8,bytes32[2]). Therefore we check whether it has been hardcoded in the function.
+            No The variable 'tokenUser' in the function is not hardcoded. It is a parameter passed to the function, meaning its value is provided whenever the function is
+            called, rather than being hardcoded within the function itself.
+Conclusion: This function will cause REE Problem.

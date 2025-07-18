@@ -1,0 +1,28 @@
+
+Start analyze function: ABIO_BaseICO.burnRestTokens()
+Function Security Analysis for ABIO_BaseICO.burnRestTokens()
+    The modifier of function burnRestTokens are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier checks if the current time is greater than or equal to a deadline, and allows the function execution if this condition is true. It does not
+          enforce owner-only execution, nor does it protect against reentrancy through a lock mechanism, and its name does not suggest such behavior either.
+    Check direct function security
+        - function ABIO_BaseICO.burnRestTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks on msg.sender, such as require, if, or assert statements that compare msg.sender to an owner or authority address.
+          It simply has a require statement checking a token burning status.
+        - function ABIO_BaseICO.burnRestTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code satisfies structure 3: `{require(!xxx); xxx = True;}`. The first statement, `require(!restTokensBurned);`, checks the state of
+          `restTokensBurned`. The second line of code that matches the structure is `restTokensBurned = true;`, which is indeed a state negation operation, setting
+          `restTokensBurned` to true. However, this state negation operation happens after the main logic of the function, `abioToken.burnMyBalance();`, has executed.
+          Thus, it doesn't immediately negate the state before executing the main logic, which is required per the further check instructions.
+External Call Analysis
+    Direct external call: ['abioToken.burnMyBalance()']
+    Analyze Transfer
+    Analyze Gas
+        - abioToken.burnMyBalance() ISN'T subjected to gas limits.
+    Remaining external call: ['abioToken.burnMyBalance()']
+    Analyze External Address
+        There are ['abioToken'] should be checked in variable abioToken
+        Checked variables: abioToken
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

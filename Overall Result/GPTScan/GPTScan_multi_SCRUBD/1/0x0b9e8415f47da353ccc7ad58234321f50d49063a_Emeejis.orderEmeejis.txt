@@ -1,0 +1,95 @@
+Emeejis.orderEmeejis: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function orderEmeejis(uint256 orderSize) public payable {
+        require(msg.value >= orderSize * tokenPrice, "orderEmeejis: Insufficient Funds");
+        require(orderSize <= purchaseLimit, "orderEmeejis: Order Size too big");
+        require(orderSize < maximumTokens - _reserveTokens - numberMinted, "orderEmeejis: Not enough NFTs remaining to fill order");
+        require(!orderLock, "currently closed for business");
+        require(!reentrancyLock);  //Lock up this whole function just in case
+        reentrancyLock = true;
+        uint256 mintSeedValue = numberMinted; //Store the starting value of the mint batch
+        numberMinted += orderSize;
+        uint256 cashIn = msg.value;
+        uint256 cashChange = cashIn - (orderSize * tokenPrice);
+        approvePayouts(cashIn);        
+        for(uint256 i = 0; i < orderSize; i++) {
+            _safeMint(msg.sender, mintSeedValue + i);
+        }                
+        if (cashChange > 0){
+            (bool success, bytes memory data) = msg.sender.call{value: cashChange}("");
+            require(success, "orderEmeejis: unable to send change to user");
+        }
+        reentrancyLock = false;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function orderEmeejis(uint256 orderSize) public payable {
+        require(msg.value >= orderSize * tokenPrice, "orderEmeejis: Insufficient Funds");
+        require(orderSize <= purchaseLimit, "orderEmeejis: Order Size too big");
+        require(orderSize < maximumTokens - _reserveTokens - numberMinted, "orderEmeejis: Not enough NFTs remaining to fill order");
+        require(!orderLock, "currently closed for business");
+        require(!reentrancyLock);  //Lock up this whole function just in case
+        reentrancyLock = true;
+        uint256 mintSeedValue = numberMinted; //Store the starting value of the mint batch
+        numberMinted += orderSize;
+        uint256 cashIn = msg.value;
+        uint256 cashChange = cashIn - (orderSize * tokenPrice);
+        approvePayouts(cashIn);        
+        for(uint256 i = 0; i < orderSize; i++) {
+            _safeMint(msg.sender, mintSeedValue + i);
+        }                
+        if (cashChange > 0){
+            (bool success, bytes memory data) = msg.sender.call{value: cashChange}("");
+            require(success, "orderEmeejis: unable to send change to user");
+        }
+        reentrancyLock = false;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function orderEmeejis(uint256 orderSize) public payable {
+        require(msg.value >= orderSize * tokenPrice, "orderEmeejis: Insufficient Funds");
+        require(orderSize <= purchaseLimit, "orderEmeejis: Order Size too big");
+        require(orderSize < maximumTokens - _reserveTokens - numberMinted, "orderEmeejis: Not enough NFTs remaining to fill order");
+        require(!orderLock, "currently closed for business");
+        require(!reentrancyLock);  //Lock up this whole function just in case
+        reentrancyLock = true;
+        uint256 mintSeedValue = numberMinted; //Store the starting value of the mint batch
+        numberMinted += orderSize;
+        uint256 cashIn = msg.value;
+        uint256 cashChange = cashIn - (orderSize * tokenPrice);
+        approvePayouts(cashIn);        
+        for(uint256 i = 0; i < orderSize; i++) {
+            _safeMint(msg.sender, mintSeedValue + i);
+        }                
+        if (cashChange > 0){
+            (bool success, bytes memory data) = msg.sender.call{value: cashChange}("");
+            require(success, "orderEmeejis: unable to send change to user");
+        }
+        reentrancyLock = false;
+    }
+Response:
+{"StatementsA": {"numberMinted += orderSize;":"Updates the numberMinted state variable"}, "StatementsB": {"(bool success, bytes memory data) = msg.sender.call{value: cashChange}(\"\");":"Executes an external call to send Ether"}, "VariableA": {"msg.sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: numberMinted += orderSize;
+2.External Call: (bool success, bytes memory data) = msg.sender.call{value: cashChange}("");
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

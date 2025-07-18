@@ -1,0 +1,9 @@
+
+Start analyze function: ChipToken.swap()
+Function Security Analysis for ChipToken.swap()
+    The modifier of function swap are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The code in the modifier has a lock operation in the form of setting `inSwap` to true before the modifier's main operation (_) and resetting it to false
+          afterward. This satisfies rule 2, as both lock and unlock operations are present, ensuring the function enters only once.
+Conclusion: This function will not cause REE Problem.

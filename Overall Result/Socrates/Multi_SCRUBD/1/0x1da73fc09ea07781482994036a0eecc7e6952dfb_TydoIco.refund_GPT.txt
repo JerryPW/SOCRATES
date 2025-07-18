@@ -1,0 +1,26 @@
+
+Start analyze function: TydoIco.refund()
+Function Security Analysis for TydoIco.refund()
+    There are no modifiers should be examined in function refund.
+    Check direct function security
+        - function TydoIco.refund() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any condition using msg.sender with the specified structures.
+        - function TydoIco.refund() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code checks if 'state' is equal to 2 using 'require(state == 2);', but it doesn't set 'state' to False, True, or anything else within this function.
+          Therefore, it does not match any of the specified patterns.
+External Call Analysis
+    Direct external call: ['token.transfer(owner,balances[msg.sender])', 'msg.sender.transfer(weiAmount)']
+    Analyze Transfer
+        - token.transfer(owner,balances[msg.sender]) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - msg.sender.transfer(weiAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(', satisfying characteristic 1.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - token.transfer(owner,balances[msg.sender]) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(owner,balances[msg.sender])']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The provided code is a constructor because it is defined with the keyword 'constructor' in the function signature. In Solidity, constructors are special
+            functions that are executed only once when the contract is deployed, and they are typically used to initialize contract state variables. No hardcoded state
+            variables are detected in the provided code.
+Conclusion: This function will not cause REE Problem.

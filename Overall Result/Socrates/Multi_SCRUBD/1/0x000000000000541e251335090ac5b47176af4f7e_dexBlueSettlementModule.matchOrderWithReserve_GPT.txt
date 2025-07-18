@@ -1,0 +1,44 @@
+
+Start analyze function: dexBlueSettlementModule.matchOrderWithReserve(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade)
+Function Security Analysis for dexBlueSettlementModule.matchOrderWithReserve(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade)
+    There are no modifiers should be examined in function matchOrderWithReserve.
+    Check direct function security
+        - function dexBlueSettlementModule.matchOrderWithReserve(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade) has no security assurance protected by checking
+        the authority of msg.sender
+          Reason: The function code does not include any checks or require/assert statements that match the provided characteristics (e.g., checks involving msg.sender
+          with Owner/Address/Leader/CEO).
+        - function dexBlueSettlementModule.matchOrderWithReserve(dexBlueStructs.Order,address,dexBlueStructs.ReserveTrade) has no apparent security assurance by utilizing
+        a lock machinism.
+          Reason: The provided function does not contain any of the specified structures. It uses an if statement to check multiple conditions for a successful reserve
+          trade but does not include the require statement or a pattern where a variable is set to true or false following strict conditions as described in the
+          characteristics.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['batchSettleTrades', 'settleReserveTrade']
+        Function Security Analysis for dexBlueSettlementModule.batchSettleTrades(dexBlueStructs.OrderInputPacked[],dexBlueStructs.TradeInputPacked[])
+            There are no modifiers should be examined in function batchSettleTrades.
+            Check direct function security
+                - function dexBlueSettlementModule.batchSettleTrades(dexBlueStructs.OrderInputPacked[],dexBlueStructs.TradeInputPacked[]) has no security assurance
+                protected by checking the authority of msg.sender
+                  Reason: The code checks whether the function caller is in the 'arbiters' mapping but does not have any direct restrictions involving specific roles like
+                  'Owner', 'Address', 'Leader', or 'CEO'. Therefore, it doesn't match any of the specified patterns.
+                - function dexBlueSettlementModule.batchSettleTrades(dexBlueStructs.OrderInputPacked[],dexBlueStructs.TradeInputPacked[]) has no apparent security
+                assurance by utilizing a lock machinism.
+                  Reason: The provided code does not satisfy any of the specified structural patterns. There is a require statement, but it does not involve setting a
+                  variable true or false according to the given conditions.
+External Call Analysis
+    Direct external call:
+    ['address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTrade.selector,abi.encode(order.sellToken,trade.orderAmount-
+    trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve)))']
+    Analyze Transfer
+    Analyze Gas
+        - address(this).call.gas(trade.gasLimit)(abi.encodePacked(dexBlue(address(0)).executeReserveTrade.selector,abi.encode(order.sellToken,trade.orderAmount-
+        trade.reserveFee,order.buyToken,trade.reserveAmount-trade.reserveRebate,reserve))) is subjected to gas limits trade.gasLimit <= 3000. Therefore, it has no
+        potential REE problem. Here is the reason: The series of functions provided is empty, meaning there are no operations or assignments being made to the variable
+        'trade.gasLimit'. Consequently, without any code to modify or assign a new value to 'trade.gasLimit', we assume its value remains unchanged from its initial state
+        or default value.  In typical programming environments, if 'trade.gasLimit' is an uninitialized or default-initialized variable, it may be set to zero or another
+        initial value that is indeed less than 3000. However, without explicit code modifying this variable, we cannot definitively conclude any value for
+        'trade.gasLimit' or assume it is always less or equal to 3000 without more context on its initial setup or persistence in state/configuration. Given no
+        operations, we lean towards assuming no conditions are violated regarding it breaching a 3000 threshold considering only what is directly provided.
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

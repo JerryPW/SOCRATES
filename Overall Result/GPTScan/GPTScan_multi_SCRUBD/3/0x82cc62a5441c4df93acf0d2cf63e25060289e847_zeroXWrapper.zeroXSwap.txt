@@ -1,0 +1,63 @@
+zeroXWrapper.zeroXSwap: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function zeroXSwap (address to, address forwarder, bytes memory args) public payable{
+    	(bool success, bytes memory returnData) = forwarder.call.value(msg.value)(args);
+    	emit forwarderCall(success);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function zeroXSwap (address to, address forwarder, bytes memory args) public payable{
+    	(bool success, bytes memory returnData) = forwarder.call.value(msg.value)(args);
+    	emit forwarderCall(success);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function zeroXSwap (address to, address forwarder, bytes memory args) public payable{
+    	(bool success, bytes memory returnData) = forwarder.call.value(msg.value)(args);
+    	emit forwarderCall(success);
+    }
+Response:
+{"StatementsA": {}, "StatementsB": {"(bool success, bytes memory returnData) = forwarder.call.value(msg.value)(args);": "Executes an external call to the 'forwarder' address."}, "VariableA": {}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: None
+2.External Call: (bool success, bytes memory returnData) = forwarder.call.value(msg.value)(args);
+3.Variable A: None
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function zeroXSwap (address to, address forwarder, bytes memory args) public payable{
+    	(bool success, bytes memory returnData) = forwarder.call.value(msg.value)(args);
+    	emit forwarderCall(success);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function zeroXSwap (address to, address forwarder, bytes memory args) public payable{
+    	(bool success, bytes memory returnData) = forwarder.call.value(msg.value)(args);
+    	emit forwarderCall(success);
+    }
+    
+Response:
+No
+--------------------------------------------------

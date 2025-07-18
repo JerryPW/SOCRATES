@@ -1,0 +1,26 @@
+
+Start analyze function: ZTCrowdsale.refund()
+Function Security Analysis for ZTCrowdsale.refund()
+    The modifier of function refund are ['atStage']
+    The result of checking modifiers:
+        - modifier atStage has no relation with controlled by owner.
+          Reason: The provided modifier uses 'require' to check a condition but does not include any ownership or address control logic, nor does it employ a lock
+          mechanism.
+    Check direct function security
+        - function ZTCrowdsale.refund() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code inside the function does not contain any of the required structures that directly involve checking msg.sender against an
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function ZTCrowdsale.refund() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures for the following reasons:  1. While there is a require statement (`require(raised <
+          minAmount);`), it does not check for a boolean variable (xxx) against True or False, nor does it switch the value of that variable immediately afterwards.  2.
+          There is no "require(!xxx);" structure or changing boolean logic associated with the require statement.  3. Similarly, there is no "if(!xxx) throw;" structure
+          followed by changing the boolean state of "xxx".  Thus, none of the described patterns are matched in the code.
+External Call Analysis
+    Direct external call: ['msg.sender.send(receivedAmount)']
+    Analyze Transfer
+        - msg.sender.send(receivedAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

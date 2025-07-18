@@ -1,0 +1,127 @@
+ChipToken.swap: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swap() private lockTheSwap {
+        // How much are we swaping?
+        uint totalCollected = _marketingFeeCollected + _donationFeeCollected + _liquidityFeeCollected;
+        uint amountToSwap = _marketingFeeCollected + _donationFeeCollected + (_liquidityFeeCollected / 2);
+        uint amountTokensToLiquidity = totalCollected - amountToSwap;
+
+        if(minTokensBeforeSwap > totalCollected) return;
+
+        // Let's swap for eth now
+        address[] memory sellPath = new address[](2);
+        sellPath[0] = address(this);
+        sellPath[1] = router.WETH();       
+
+        uint balanceBefore = address(this).balance;
+
+        _approve(address(this), address(router), amountToSwap);
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(
+            amountToSwap,
+            0,
+            sellPath,
+            address(this),
+            block.timestamp
+        );
+
+        uint amountFee = address(this).balance - balanceBefore;
+        
+        // Send to marketing
+        uint amountMarketing = (amountFee * _marketingFeeCollected) / totalCollected;
+        if(amountMarketing > 0) sendViaCall(payable(marketing_wallet), amountMarketing);
+
+        // Send to donations
+        uint amountDonation = (amountFee * _donationFeeCollected) / totalCollected;
+        if(amountDonation > 0) sendViaCall(payable(donation_wallet), amountDonation);
+
+        // Send to LP
+        uint256 amountETHLiquidity = address(this).balance;
+        if(amountTokensToLiquidity > 0){
+            _approve(address(this), address(router), amountTokensToLiquidity);
+            router.addLiquidityETH{value: amountETHLiquidity}(
+                address(this),
+                amountTokensToLiquidity,
+                0,
+                0,
+                liquidity_wallet,
+                block.timestamp
+            );
+            emit AutoLiquify(amountETHLiquidity, amountTokensToLiquidity);
+        }
+        
+        _marketingFeeCollected = 0;
+        _donationFeeCollected = 0;
+        _liquidityFeeCollected = 0;
+
+        emit Swap(totalCollected, amountMarketing, amountDonation);
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swap() private lockTheSwap {
+        // How much are we swaping?
+        uint totalCollected = _marketingFeeCollected + _donationFeeCollected + _liquidityFeeCollected;
+        uint amountToSwap = _marketingFeeCollected + _donationFeeCollected + (_liquidityFeeCollected / 2);
+        uint amountTokensToLiquidity = totalCollected - amountToSwap;
+
+        if(minTokensBeforeSwap > totalCollected) return;
+
+        // Let's swap for eth now
+        address[] memory sellPath = new address[](2);
+        sellPath[0] = address(this);
+        sellPath[1] = router.WETH();       
+
+        uint balanceBefore = address(this).balance;
+
+        _approve(address(this), address(router), amountToSwap);
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(
+            amountToSwap,
+            0,
+            sellPath,
+            address(this),
+            block.timestamp
+        );
+
+        uint amountFee = address(this).balance - balanceBefore;
+        
+        // Send to marketing
+        uint amountMarketing = (amountFee * _marketingFeeCollected) / totalCollected;
+        if(amountMarketing > 0) sendViaCall(payable(marketing_wallet), amountMarketing);
+
+        // Send to donations
+        uint amountDonation = (amountFee * _donationFeeCollected) / totalCollected;
+        if(amountDonation > 0) sendViaCall(payable(donation_wallet), amountDonation);
+
+        // Send to LP
+        uint256 amountETHLiquidity = address(this).balance;
+        if(amountTokensToLiquidity > 0){
+            _approve(address(this), address(router), amountTokensToLiquidity);
+            router.addLiquidityETH{value: amountETHLiquidity}(
+                address(this),
+                amountTokensToLiquidity,
+                0,
+                0,
+                liquidity_wallet,
+                block.timestamp
+            );
+            emit AutoLiquify(amountETHLiquidity, amountTokensToLiquidity);
+        }
+        
+        _marketingFeeCollected = 0;
+        _donationFeeCollected = 0;
+        _liquidityFeeCollected = 0;
+
+        emit Swap(totalCollected, amountMarketing, amountDonation);
+    }
+    
+Response:
+No
+--------------------------------------------------

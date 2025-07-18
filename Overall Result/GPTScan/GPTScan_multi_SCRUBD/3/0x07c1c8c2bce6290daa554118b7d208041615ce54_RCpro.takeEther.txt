@@ -1,0 +1,185 @@
+RCpro.takeEther: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function takeEther(address _buyer) internal {
+	    require( now > startTime );
+        require( now < endTime );
+        require( msg.value >= etherMinimum); 
+        require( remainingTokens > 0 );
+        
+        uint256 oneToken = 10 ** uint256(tokenSaleContract.decimals());
+		
+		uint256 tknPriceApplied = 0;
+        for (uint i = 0; i < sendThreshold.length; i++) {
+            if ( msg.value >= sendThreshold[i] ) {
+                tknPriceApplied = oneTokenInFiatWei[i];
+			}
+		}    
+		require( tknPriceApplied > 0 );
+		
+        uint256 tokenValue = tokenSaleContract.tokenValueInEther(tknPriceApplied);
+        uint256 tokenAmount = msg.value.mul(oneToken).div(tokenValue);
+        
+        uint256 unboughtTokens = tokenInterface(tokenSaleContract.tokenContract()).balanceOf(tokenSaleContract);
+        if ( unboughtTokens > remainingTokens ) {
+            unboughtTokens = remainingTokens;
+        }
+        
+        uint256 refund = 0;
+        if ( unboughtTokens < tokenAmount ) {
+            refund = (tokenAmount - unboughtTokens).mul(tokenValue).div(oneToken);
+            tokenAmount = unboughtTokens;
+			remainingTokens = 0; // set remaining token to 0
+            _buyer.transfer(refund);
+        } else {
+			remainingTokens = remainingTokens.sub(tokenAmount); // update remaining token without bonus
+        }
+        
+        etherUser[_buyer] = etherUser[_buyer].add(msg.value.sub(refund));
+        pendingTokenUser[_buyer] = pendingTokenUser[_buyer].add(tokenAmount);	
+        
+        emit Buy( _buyer, msg.value, tokenAmount, tknPriceApplied );
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function takeEther(address _buyer) internal {
+	    require( now > startTime );
+        require( now < endTime );
+        require( msg.value >= etherMinimum); 
+        require( remainingTokens > 0 );
+        
+        uint256 oneToken = 10 ** uint256(tokenSaleContract.decimals());
+		
+		uint256 tknPriceApplied = 0;
+        for (uint i = 0; i < sendThreshold.length; i++) {
+            if ( msg.value >= sendThreshold[i] ) {
+                tknPriceApplied = oneTokenInFiatWei[i];
+			}
+		}    
+		require( tknPriceApplied > 0 );
+		
+        uint256 tokenValue = tokenSaleContract.tokenValueInEther(tknPriceApplied);
+        uint256 tokenAmount = msg.value.mul(oneToken).div(tokenValue);
+        
+        uint256 unboughtTokens = tokenInterface(tokenSaleContract.tokenContract()).balanceOf(tokenSaleContract);
+        if ( unboughtTokens > remainingTokens ) {
+            unboughtTokens = remainingTokens;
+        }
+        
+        uint256 refund = 0;
+        if ( unboughtTokens < tokenAmount ) {
+            refund = (tokenAmount - unboughtTokens).mul(tokenValue).div(oneToken);
+            tokenAmount = unboughtTokens;
+			remainingTokens = 0; // set remaining token to 0
+            _buyer.transfer(refund);
+        } else {
+			remainingTokens = remainingTokens.sub(tokenAmount); // update remaining token without bonus
+        }
+        
+        etherUser[_buyer] = etherUser[_buyer].add(msg.value.sub(refund));
+        pendingTokenUser[_buyer] = pendingTokenUser[_buyer].add(tokenAmount);	
+        
+        emit Buy( _buyer, msg.value, tokenAmount, tknPriceApplied );
+	}
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function takeEther(address _buyer) internal {
+	    require( now > startTime );
+        require( now < endTime );
+        require( msg.value >= etherMinimum); 
+        require( remainingTokens > 0 );
+        
+        uint256 oneToken = 10 ** uint256(tokenSaleContract.decimals());
+		
+		uint256 tknPriceApplied = 0;
+        for (uint i = 0; i < sendThreshold.length; i++) {
+            if ( msg.value >= sendThreshold[i] ) {
+                tknPriceApplied = oneTokenInFiatWei[i];
+			}
+		}    
+		require( tknPriceApplied > 0 );
+		
+        uint256 tokenValue = tokenSaleContract.tokenValueInEther(tknPriceApplied);
+        uint256 tokenAmount = msg.value.mul(oneToken).div(tokenValue);
+        
+        uint256 unboughtTokens = tokenInterface(tokenSaleContract.tokenContract()).balanceOf(tokenSaleContract);
+        if ( unboughtTokens > remainingTokens ) {
+            unboughtTokens = remainingTokens;
+        }
+        
+        uint256 refund = 0;
+        if ( unboughtTokens < tokenAmount ) {
+            refund = (tokenAmount - unboughtTokens).mul(tokenValue).div(oneToken);
+            tokenAmount = unboughtTokens;
+			remainingTokens = 0; // set remaining token to 0
+            _buyer.transfer(refund);
+        } else {
+			remainingTokens = remainingTokens.sub(tokenAmount); // update remaining token without bonus
+        }
+        
+        etherUser[_buyer] = etherUser[_buyer].add(msg.value.sub(refund));
+        pendingTokenUser[_buyer] = pendingTokenUser[_buyer].add(tokenAmount);	
+        
+        emit Buy( _buyer, msg.value, tokenAmount, tknPriceApplied );
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function takeEther(address _buyer) internal {
+	    require( now > startTime );
+        require( now < endTime );
+        require( msg.value >= etherMinimum); 
+        require( remainingTokens > 0 );
+        
+        uint256 oneToken = 10 ** uint256(tokenSaleContract.decimals());
+		
+		uint256 tknPriceApplied = 0;
+        for (uint i = 0; i < sendThreshold.length; i++) {
+            if ( msg.value >= sendThreshold[i] ) {
+                tknPriceApplied = oneTokenInFiatWei[i];
+			}
+		}    
+		require( tknPriceApplied > 0 );
+		
+        uint256 tokenValue = tokenSaleContract.tokenValueInEther(tknPriceApplied);
+        uint256 tokenAmount = msg.value.mul(oneToken).div(tokenValue);
+        
+        uint256 unboughtTokens = tokenInterface(tokenSaleContract.tokenContract()).balanceOf(tokenSaleContract);
+        if ( unboughtTokens > remainingTokens ) {
+            unboughtTokens = remainingTokens;
+        }
+        
+        uint256 refund = 0;
+        if ( unboughtTokens < tokenAmount ) {
+            refund = (tokenAmount - unboughtTokens).mul(tokenValue).div(oneToken);
+            tokenAmount = unboughtTokens;
+			remainingTokens = 0; // set remaining token to 0
+            _buyer.transfer(refund);
+        } else {
+			remainingTokens = remainingTokens.sub(tokenAmount); // update remaining token without bonus
+        }
+        
+        etherUser[_buyer] = etherUser[_buyer].add(msg.value.sub(refund));
+        pendingTokenUser[_buyer] = pendingTokenUser[_buyer].add(tokenAmount);	
+        
+        emit Buy( _buyer, msg.value, tokenAmount, tknPriceApplied );
+	}
+    
+Response:
+No
+--------------------------------------------------

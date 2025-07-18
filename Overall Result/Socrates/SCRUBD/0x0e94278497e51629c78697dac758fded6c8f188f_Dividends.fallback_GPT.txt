@@ -1,0 +1,26 @@
+
+Start analyze function: Dividends.fallback()
+Function Security Analysis for Dividends.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Dividends.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code uses a condition 'if (admins[msg.sender] != 1)' which checks the msg.sender against an entry in the admins mapping. However, this does not
+          match any of the structures listed as there is no reference to being equal to or not equal to a specific named entity like xxxOwner or xxxAddress, or using
+          assert/require with those specific structures.
+        - function Dividends.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains a structure that checks if a condition is not met using an if statement and then throws an exception if so, but does not re-assign the
+          checked variable afterwards. This doesn't match any of the specified structures.
+External Call Analysis
+    Direct external call: ['user.transfer(userether)', 'tokenReward.balanceOf(user)']
+    Analyze Transfer
+        - user.transfer(userether) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'user.transfer(userether)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.balanceOf(user) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.balanceOf(user)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code shows a function named "Dividends", which matches the contract name. According to the first characteristic, if the function name matches
+            the contract name, it is likely a constructor.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,28 @@
+
+Start analyze function: Bussiness.buy(uint256)
+Function Security Analysis for Bussiness.buy(uint256)
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function Bussiness.buy(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any statement that checks if msg.sender is equals or not equals to xxxOwner/xxxAddress/Leader/CEO.
+        - function Bussiness.buy(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does contain a `require(xxx == True);` structure where `xxx` is the approval of the token, but it does not include the necessary
+          assignment `xxx = False;`. Similarly, the second `require` and the rest of the code do not match any of the provided structures.
+External Call Analysis
+    Direct external call: ['prices[tokenId].tokenOwner.transfer(msg.value)', 'erc721Address.getApproved(tokenId)',
+    'erc721Address.transferFrom(prices[tokenId].tokenOwner,msg.sender,tokenId)']
+    Analyze Transfer
+        - prices[tokenId].tokenOwner.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        contains the '.transfer(' keyword, which qualifies it according to the given rule.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - erc721Address.getApproved(tokenId) ISN'T subjected to gas limits.
+        - erc721Address.transferFrom(prices[tokenId].tokenOwner,msg.sender,tokenId) ISN'T subjected to gas limits.
+    Remaining external call: ['erc721Address.getApproved(tokenId)', 'erc721Address.transferFrom(prices[tokenId].tokenOwner,msg.sender,tokenId)']
+    Analyze External Address
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

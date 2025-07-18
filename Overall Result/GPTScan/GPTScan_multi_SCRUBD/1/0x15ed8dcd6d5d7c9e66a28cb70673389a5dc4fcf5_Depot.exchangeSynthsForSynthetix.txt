@@ -1,0 +1,31 @@
+Depot.exchangeSynthsForSynthetix: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function exchangeSynthsForSynthetix(uint synthAmount)
+        public
+        pricesNotStale
+        notPaused
+        returns (uint) // Returns the number of SNX received
+    {
+        // How many SNX are they going to be receiving?
+        uint synthetixToSend = synthetixReceivedForSynths(synthAmount);
+
+        // Ok, transfer the Synths to our funds wallet.
+        // These do not go in the deposit queue as they aren't for sale as such unless
+        // they're sent back in from the funds wallet.
+        synth.transferFrom(msg.sender, fundsWallet, synthAmount);
+
+        // And send them the SNX.
+        synthetix.transfer(msg.sender, synthetixToSend);
+
+        emit Exchange("sUSD", synthAmount, "SNX", synthetixToSend);
+
+        return synthetixToSend;
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------

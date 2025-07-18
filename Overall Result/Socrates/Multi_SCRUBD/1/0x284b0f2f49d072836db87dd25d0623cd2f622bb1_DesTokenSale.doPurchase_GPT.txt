@@ -1,0 +1,53 @@
+
+Start analyze function: DesTokenSale.doPurchase(address)
+Function Security Analysis for DesTokenSale.doPurchase(address)
+    The modifier of function doPurchase are ['stopInEmergency']
+    The result of checking modifiers:
+        - modifier stopInEmergency has no relation with controlled by owner.
+          Reason: The modifier name does not align with typical names indicating owner checks or lock patterns like 'Onlyxxx' or 'nonReentrant'. The modifier does not
+          contain any logical structures or conditions that match those described in rules 1 or 2 (like checking msg.sender or using lock/unlock mechanisms). It checks a
+          state variable, 'halted', which does not imply owner control or reentrancy protection.
+    Check direct function security
+        - function DesTokenSale.doPurchase(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any explicit checks involving msg.sender compared to any xxxOwner/xxxAddress/Leader/CEO.
+        - function DesTokenSale.doPurchase(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not include any of the specified structures as it only contains multiple 'require' statements that check conditions without
+          subsequently altering a boolean variable corresponding to those checks as outlined in the instructions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback', 'doPurchaseFor']
+        Function Security Analysis for DesTokenSale.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function DesTokenSale.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: This function does not contain any checks or conditions related to msg.sender comparing to any owner or address. It simply calls another
+                  function with msg.sender as an argument.
+                - function DesTokenSale.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not contain any 'require' or 'if' statement checking a variable to be true or false, followed by changing the variable's
+                  state as specified in the problem's conditions.
+External Call Analysis
+    Direct external call: ['token.balanceOf(_sender)', 'token.balanceOf(_sender).add(tokens)', 'token.transfer(_sender,tokens)', 'beneficiary.transfer(msg.value)']
+    Analyze Transfer
+        - token.transfer(_sender,tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'beneficiary.transfer(msg.value)' contains the keyword '.transfer(' which matches the first rule.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - token.balanceOf(_sender) ISN'T subjected to gas limits.
+        - token.balanceOf(_sender).add(tokens) ISN'T subjected to gas limits.
+        - token.transfer(_sender,tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['token.balanceOf(_sender)', 'token.balanceOf(_sender).add(tokens)', 'token.transfer(_sender,tokens)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The given code snippet shows a function with the name 'DesTokenSale', which is the same as the contract name. This indicates that the function is a
+            constructor in earlier versions of Solidity (prior to 0.4.22) where constructors had the same name as the contract. Therefore, this external call satisfies
+            the first characteristic, which is to check if the code is a constructor.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function name 'DesTokenSale' matches the contract name, thus indicating that this is a constructor function. In Solidity, prior to version 0.4.22,
+            constructors were written as functions with the same name as the contract name, therefore fulfilling characteristic 1.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes 1. The function name 'DesTokenSale' matches the contract name 'DesTokenSale', which suggests it is a constructor. In Solidity versions prior to 0.4.22,
+            constructors were named the same as the contract name.  2. The code does not hardcode the state variable. The variable 'token' is set by passing an argument
+            '_token' to the constructor and assigning it to 'token', which means it is not hardcoded.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,23 @@
+
+Start analyze function: Sargasso.sendtoRecipient(uint256,uint256)
+Function Security Analysis for Sargasso.sendtoRecipient(uint256,uint256)
+    There are no modifiers should be examined in function sendtoRecipient.
+    Check direct function security
+        - function Sargasso.sendtoRecipient(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any condition or assertion that checks msg.sender against xxxOwner/xxxAddress/Leader/CEO, which is required for a 'Yes' answer.
+        - function Sargasso.sendtoRecipient(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided does not have any of the specified structures. It contains 'require' statements, but they do not match the structures needed. The
+          statements involve conditions like 'userNum != 0' and '_amount < contractTokens', which do not set any variable as True/False after the 'require'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['specialdeposit']
+        Function Security Analysis for Sargasso.specialdeposit(uint256,uint256)
+            There are no modifiers should be examined in function specialdeposit.
+            Check direct function security
+                - function Sargasso.specialdeposit(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code does not include any conditions or assertions that specifically check if msg.sender matches any specific ownership or leader
+                  addresses. It purely checks for a lock on the user address without any ownership check.
+                - function Sargasso.specialdeposit(uint256,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+                  Reason: The code satisfies Structure 2: it starts with 'require(userLock[msg.sender] == false);' followed immediately by 'userLock[msg.sender] = true;'.
+                  These statements are executed right at the beginning before the main logic of the function is executed, ensuring that userLock is set to true
+                  immediately after checking its state.
+Conclusion: This function will not cause REE Problem.

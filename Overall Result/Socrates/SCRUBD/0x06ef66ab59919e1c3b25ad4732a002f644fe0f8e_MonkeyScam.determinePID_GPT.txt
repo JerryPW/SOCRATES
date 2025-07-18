@@ -1,0 +1,52 @@
+
+Start analyze function: MonkeyScam.determinePID(LDdatasets.EventReturns)
+Function Security Analysis for MonkeyScam.determinePID(LDdatasets.EventReturns)
+    There are no modifiers should be examined in function determinePID.
+    Check direct function security
+        - function MonkeyScam.determinePID(LDdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any checks for specific roles like xxxOwner/xxxAddress/Leader/CEO associated with msg.sender in the form of require, if, throw,
+          or assert statements.
+        - function MonkeyScam.determinePID(LDdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures such as 'require(xxx == True);   xxx = False;' or equivalent. There are no consecutive statements
+          modifying the same boolean variable after a check as described in the structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyXid', 'fallback', 'buyXaddr', 'buyXname']
+        Function Security Analysis for MonkeyScam.buyXid(uint256)
+            The modifier of function buyXid are ['isActivated', 'isHuman', 'isWithinLimits']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier isActivated checks if a condition (activated_ == true) is met, but it does not enforce ownership or specific address execution, nor
+                  does it implement a lock mechanism. It also does not have a suggestive name like Onlyxxx or nonReentrant.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: The function does not meet any of the specified characteristics: it does not enforce execution by a specific owner or address and does not use a
+                  lock operation. The modifier checks that the sender is not a contract, as indicated by the extcodesize check, but this is not one of the specified
+                  characteristics for outputting 'Yes'.
+                - modifier isWithinLimits has no relation with controlled by owner.
+                  Reason: None of the characteristics 1, 2 or 3 are met based on the provided code. The modifier only checks if the passed value is within certain limits
+                  and does not restrict ownership access or implement a lock mechanism.
+            Check direct function security
+                - function MonkeyScam.buyXid(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not have any statement that specifically checks whether msg.sender is equal to or not equal to an
+                  xxxOwner/xxxAddress/Leader/CEO. It processes tx event data and manages affiliate residuals without any such checks based on msg.sender.
+                - function MonkeyScam.buyXid(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function doesn't have 'require' or 'if' statements checking the boolean state and then changing the variable state as specified in the
+                  conditions. Therefore, it doesn't contain the specified structures.
+External Call Analysis
+    Direct external call: ['PlayerBook.getPlayerLAff(_pID)', 'PlayerBook.getPlayerName(_pID)', 'PlayerBook.getPlayerID(msg.sender)']
+    Analyze Transfer
+    Analyze Gas
+        - PlayerBook.getPlayerLAff(_pID) ISN'T subjected to gas limits.
+        - PlayerBook.getPlayerName(_pID) ISN'T subjected to gas limits.
+        - PlayerBook.getPlayerID(msg.sender) ISN'T subjected to gas limits.
+    Remaining external call: ['PlayerBook.getPlayerLAff(_pID)', 'PlayerBook.getPlayerName(_pID)', 'PlayerBook.getPlayerID(msg.sender)']
+    Analyze External Address
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            State variable PlayerBook has initialized in public area after declaration.
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            State variable PlayerBook has initialized in public area after declaration.
+        There are ['PlayerBook'] should be checked in variable PlayerBook
+        Checked variables: PlayerBook
+            State variable PlayerBook has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

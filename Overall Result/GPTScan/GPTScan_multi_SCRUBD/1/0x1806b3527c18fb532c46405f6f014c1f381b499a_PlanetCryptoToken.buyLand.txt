@@ -1,0 +1,133 @@
+PlanetCryptoToken.buyLand: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function buyLand(bytes32 _name, 
+            int256[] _plots_lat, int256[] _plots_lng,
+            address _referrer
+            )
+                validatePurchase(_plots_lat, _plots_lng) 
+                validateLand(_plots_lat, _plots_lng) 
+                updateUsersLastAccess()
+                public payable {
+       require(_name.length > 4);
+       
+        // split payment
+        uint256 _runningTotal = msg.value;
+        
+        _runningTotal = _runningTotal.sub(processReferer(_referrer));
+        
+        /*
+        uint256 _referrerAmnt = 0;
+        if(_referrer != msg.sender && _referrer != address(0)) {
+            _referrerAmnt = m_refPercent.mul(msg.value);
+            if(_referrer.send(_referrerAmnt)) {
+                emit referralPaid(_referrer, _referrer, _referrerAmnt, now);
+                _runningTotal = _runningTotal.sub(_referrerAmnt);
+            }
+        }
+        */
+        tax_fund = tax_fund.add(m_newPlot_taxPercent.mul(_runningTotal));
+        
+        
+        processDevPayment(_runningTotal);
+        /*
+        if(!devBankAddress.send(m_newPlot_devPercent.mul(_runningTotal))){
+            devHoldings = devHoldings.add(m_newPlot_devPercent.mul(_runningTotal));
+        }
+        */
+        
+        
+
+        processPurchase(_name, _plots_lat, _plots_lng);
+        
+        calcPlayerDivs(m_newPlot_taxPercent.mul(_runningTotal));
+        
+        game_started = true;
+        
+        if(_plots_lat.length >= min_plots_purchase_for_token_reward
+            && tokens_rewards_available > 0) {
+                
+            uint256 _token_rewards = _plots_lat.length / plots_token_reward_divisor;
+            if(_token_rewards > tokens_rewards_available)
+                _token_rewards = tokens_rewards_available;
+                
+                
+            planetCryptoCoin_interface.transfer(msg.sender, _token_rewards);
+                
+            emit issueCoinTokens(msg.sender, msg.sender, _token_rewards, now);
+            tokens_rewards_allocated = tokens_rewards_allocated + _token_rewards;
+            tokens_rewards_available = tokens_rewards_available - _token_rewards;
+        }
+    
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function buyLand(bytes32 _name, 
+            int256[] _plots_lat, int256[] _plots_lng,
+            address _referrer
+            )
+                validatePurchase(_plots_lat, _plots_lng) 
+                validateLand(_plots_lat, _plots_lng) 
+                updateUsersLastAccess()
+                public payable {
+       require(_name.length > 4);
+       
+        // split payment
+        uint256 _runningTotal = msg.value;
+        
+        _runningTotal = _runningTotal.sub(processReferer(_referrer));
+        
+        /*
+        uint256 _referrerAmnt = 0;
+        if(_referrer != msg.sender && _referrer != address(0)) {
+            _referrerAmnt = m_refPercent.mul(msg.value);
+            if(_referrer.send(_referrerAmnt)) {
+                emit referralPaid(_referrer, _referrer, _referrerAmnt, now);
+                _runningTotal = _runningTotal.sub(_referrerAmnt);
+            }
+        }
+        */
+        tax_fund = tax_fund.add(m_newPlot_taxPercent.mul(_runningTotal));
+        
+        
+        processDevPayment(_runningTotal);
+        /*
+        if(!devBankAddress.send(m_newPlot_devPercent.mul(_runningTotal))){
+            devHoldings = devHoldings.add(m_newPlot_devPercent.mul(_runningTotal));
+        }
+        */
+        
+        
+
+        processPurchase(_name, _plots_lat, _plots_lng);
+        
+        calcPlayerDivs(m_newPlot_taxPercent.mul(_runningTotal));
+        
+        game_started = true;
+        
+        if(_plots_lat.length >= min_plots_purchase_for_token_reward
+            && tokens_rewards_available > 0) {
+                
+            uint256 _token_rewards = _plots_lat.length / plots_token_reward_divisor;
+            if(_token_rewards > tokens_rewards_available)
+                _token_rewards = tokens_rewards_available;
+                
+                
+            planetCryptoCoin_interface.transfer(msg.sender, _token_rewards);
+                
+            emit issueCoinTokens(msg.sender, msg.sender, _token_rewards, now);
+            tokens_rewards_allocated = tokens_rewards_allocated + _token_rewards;
+            tokens_rewards_available = tokens_rewards_available - _token_rewards;
+        }
+    
+    }
+    
+Response:
+No
+--------------------------------------------------

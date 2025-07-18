@@ -1,0 +1,25 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures with 'msg.sender' related to checking against an owner or specific address.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluation, the code contains 'require(!crowdsaleClosed);', but it doesn't include any subsequent statement that sets 'crowdsaleClosed = True;'.
+          Therefore, none of the specified structures are fully matched as required. The initial evaluation was incorrect.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount/price)', 'beneficiary.send(amountRaised)']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(amountRaised)' contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount/price)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided external call code is a constructor because the function name 'Crowdsale' matches the contract name 'Crowdsale'. However, the state variable
+            'tokenReward' is being assigned a value from an argument 'addressOfTokenUsedAsReward', and therefore, it is not hardcoded within the constructor.
+Conclusion: This function will not cause REE Problem.

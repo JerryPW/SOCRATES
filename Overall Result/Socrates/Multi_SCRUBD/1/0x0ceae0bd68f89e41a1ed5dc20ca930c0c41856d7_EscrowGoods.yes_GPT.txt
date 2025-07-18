@@ -1,0 +1,30 @@
+
+Start analyze function: EscrowGoods.yes(uint256,string,uint256)
+Function Security Analysis for EscrowGoods.yes(uint256,string,uint256)
+    There are no modifiers should be examined in function yes.
+    Check direct function security
+        - function EscrowGoods.yes(uint256,string,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The structure 'if(msg.sender != info.buyer && msg.sender != seller)' does not qualify as the specific required structure since info.buyer is a part of a
+          local variable (sub-property check), and not directly xxxOwner/xxxAddress/Leader/CEO. The condition involving msg.sender should directly compare to or involve
+          the specified global roles like Owner/Address/Leader/CEO without being part of locally scoped structures.
+        - function EscrowGoods.yes(uint256,string,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not have any 'require' or 'throw' statements, nor does it include setting the same variable to True/False or False/True in the
+          required manner. Therefore, none of the defined patterns are satisfied.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: EscrowGoods.safeSend(address,uint256)
+Function Security Analysis for EscrowGoods.safeSend(address,uint256)
+    There are no modifiers should be examined in function safeSend.
+    Check direct function security
+        - function EscrowGoods.safeSend(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any checks involving msg.sender.
+        - function EscrowGoods.safeSend(address,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: The code satisfies Structure 4, and the first two lines 'if(atomicLock) throw;' and 'atomicLock = true;' perform a state check and negation on
+          'atomicLock'. This negation is done immediately before proceeding to the main logic execution in the call operation.
+Conclusion: This function will not cause REE Problem.

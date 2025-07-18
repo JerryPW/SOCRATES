@@ -1,0 +1,44 @@
+
+Start analyze function: BlackErc20.mintProof(uint256,address,bytes32[])
+Function Security Analysis for BlackErc20.mintProof(uint256,address,bytes32[])
+    There are no modifiers should be examined in function mintProof.
+    Check direct function security
+        - function BlackErc20.mintProof(uint256,address,bytes32[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any checks involving msg.sender that meet the specified criteria.
+        - function BlackErc20.mintProof(uint256,address,bytes32[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function code doesn't match any of the specified structures.
+External Call Analysis
+    Direct external call: ['IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}()', 'IUniswapV2Pair(lpContract).sync()']
+    Analyze Transfer
+    Analyze Gas
+        - IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000) ISN'T subjected to gas limits.
+        - IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000) ISN'T subjected to gas limits.
+        - IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}() ISN'T subjected to gas limits.
+        - IUniswapV2Pair(lpContract).sync() ISN'T subjected to gas limits.
+    Remaining external call: ['IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}()', 'IUniswapV2Pair(lpContract).sync()']
+    Analyze External Address
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+        There are ['lpContract'] should be checked in variable lpContract
+        Checked variables: lpContract
+            No The function 'setLPContract' is neither a constructor (as its name does not match the contract name 'BlackErc20' nor is it explicitly named 'constructor')
+            nor does it hardcode the provided state variable 'lpContract' (since it assigns 'lpContract' based on the input parameter 'lp').
+            Function Security Analysis for BlackErc20.setLPContract(address)
+                The modifier of function setLPContract are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier name 'onlyOwner' suggests that it enforces owner-only access, satisfying rule 3. However, the exact implementation of
+                      _checkOwner(); is not provided, so the detailed enforcement structure is not visible in the code. Thus, my judgment is solely based on the
+                      convention implied by the modifier's name.
+Conclusion: This function will not cause REE Problem.

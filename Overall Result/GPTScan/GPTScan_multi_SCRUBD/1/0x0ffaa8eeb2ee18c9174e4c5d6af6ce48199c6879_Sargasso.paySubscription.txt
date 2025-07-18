@@ -1,0 +1,18 @@
+Sargasso.paySubscription: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function paySubscription() public {
+        require(secondaryUserLock[msg.sender] == false);
+        secondaryUserLock[msg.sender] = true;
+        buccTransfer = BuccV2(v2Address);
+        require(buccTransfer.transferFrom(msg.sender, address(this), subscriptionFee));
+        require(isaKey[msg.sender] == false);
+        contractTokens += subscriptionFee;
+        subscription[msg.sender] = now;
+        secondaryUserLock[msg.sender] = false;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

@@ -1,0 +1,36 @@
+
+Start analyze function: RAGE._transfer(address,address,uint256)
+Function Security Analysis for RAGE._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function RAGE._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures that check or assert the equivalence of msg.sender with any specific owner or leader address.
+        - function RAGE._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided does not contain any of the specified structures. The require statement checks if the balance is greater than or equal to the amount,
+          and there is no subsequent assignment of the same variable to True or False. Furthermore, the logic presented does not attempt to alter the state of a boolean
+          variable after a require statement or within an if-throw structure, as described in the patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for RAGE.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function RAGE.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any conditional logic or assertions related to 'msg.sender'.
+                - function RAGE.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: RAGE.swapTokenForETH(uint256)
+Function Security Analysis for RAGE.swapTokenForETH(uint256)
+    The modifier of function swapTokenForETH are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'lockTheSwap' sets the 'inSwap' flag to true before the function runs and resets it to false afterward. This demonstrates a lock operation
+          to ensure the function can enter only once, satisfying the second characteristic.
+Conclusion: This function will not cause REE Problem.

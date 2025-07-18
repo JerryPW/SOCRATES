@@ -1,0 +1,24 @@
+
+Start analyze function: X3ProfitMainFundTransfer.fallback()
+Function Security Analysis for X3ProfitMainFundTransfer.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function X3ProfitMainFundTransfer.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not use any require or if statements checking msg.sender against an owner or leader address directly. It checks msg.sender for a specific
+          known contract address (ADDRESS_EIFP2_CONTRACT), which does not fall under the relevant characteristics.
+        - function X3ProfitMainFundTransfer.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function contains the structure `{if(!xxx) throw; xxx = true; ... xxx = false;}` with `!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)()`
+          leading to `revert()` (acting as throw), followed by `isResend = true`, and ending with `isResend = false`. However, the `require` statement or `throw`
+          immediately followed by setting `xxx = true` or similar is not exactly matched. The perspective depends on considering `revert();` as implicitly meeting the
+          throwing condition due to the immediate failure of the call check.
+External Call Analysis
+    Direct external call: ['ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)()']
+    Analyze Transfer
+    Analyze Gas
+        - ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)() ISN'T subjected to gas limits.
+    Remaining external call: ['ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)()']
+    Analyze External Address
+        There are ['ADDRESS_EIFP2_CONTRACT'] should be checked in variable ADDRESS_EIFP2_CONTRACT
+        Checked variables: ADDRESS_EIFP2_CONTRACT
+            State variable ADDRESS_EIFP2_CONTRACT has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

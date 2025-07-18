@@ -1,0 +1,54 @@
+
+Start analyze function: Voting.addRaiseTapProposal(string,uint256)
+Function Security Analysis for Voting.addRaiseTapProposal(string,uint256)
+    There are no modifiers should be examined in function addRaiseTapProposal.
+    Check direct function security
+        - function Voting.addRaiseTapProposal(string,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any statements that involve checking msg.sender against an owner, address, Leader, or CEO as per the specified structures.
+        - function Voting.addRaiseTapProposal(string,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code includes the required statements: require(!queued[uint(Subject.RaiseTap)]); and queued[uint(Subject.RaiseTap)] = true;. However, the state
+          negation of queued[uint(Subject.RaiseTap)] does not occur immediately after the require statement. Instead, it occurs after executing addProposal and setting
+          proposals[newID].tapMultiplierRate, which are part of the main logic of the function. Thus, the state negation is not completed before the main logic, failing
+          the additional structural requirement.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Voting.addProposal(Voting.Subject,string)
+Function Security Analysis for Voting.addProposal(Voting.Subject,string)
+    There are no modifiers should be examined in function addProposal.
+    Check direct function security
+        - function Voting.addProposal(Voting.Subject,string) has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the specified conditions related to msg.sender exist in the function code.
+        - function Voting.addProposal(Voting.Subject,string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not meet any of the specified structures. The code includes require statements, but they do not match the outlined patterns (which
+          checks a boolean condition, sets a boolean variable, etc.).
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['addRaiseTapProposal', 'addDestructionProposal']
+        Function Security Analysis for Voting.addRaiseTapProposal(string,uint256)
+            There are no modifiers should be examined in function addRaiseTapProposal.
+            Check direct function security
+                - function Voting.addRaiseTapProposal(string,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain checks that specifically involve 'msg.sender'. The existing checks do not relate to the structures that match the
+                  patterns described for special roles such as Owner/Address/Leader/CEO.
+                - function Voting.addRaiseTapProposal(string,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code matches a structure that first checks the state of 'queued[uint(Subject.RaiseTap)]' and then negates it. However, this negation
+                  operation occurs after the main logic of the function is executed. The core logic of the function 'addProposal' and setting
+                  'proposals[newID].tapMultiplierRate' occurs right before setting 'queued[uint(Subject.RaiseTap)] = true;'.
+External Call Analysis
+    Direct external call: ['DaicoPool(poolAddr).isStateProjectInProgress()', 'poolAddr.transfer(msg.value)']
+    Analyze Transfer
+        - poolAddr.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer('
+        keyword: 'poolAddr.transfer(msg.value)'.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - DaicoPool(poolAddr).isStateProjectInProgress() ISN'T subjected to gas limits.
+    Remaining external call: ['DaicoPool(poolAddr).isStateProjectInProgress()']
+    Analyze External Address
+        There are ['poolAddr'] should be checked in variable poolAddr
+        Checked variables: poolAddr
+            Yes The provided code is a constructor because its name matches 'constructor', indicating it's the initial setup function for deploying the contract.
+Conclusion: This function will not cause REE Problem.

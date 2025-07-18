@@ -1,0 +1,52 @@
+
+Start analyze function: Crowdsale.buyTokens(address)
+Function Security Analysis for Crowdsale.buyTokens(address)
+    There are no modifiers should be examined in function buyTokens.
+    Check direct function security
+        - function Crowdsale.buyTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified patterns related to checking if `msg.sender` equals a specific owner/address/leader/CEO.
+        - function Crowdsale.buyTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures.
+External Call Analysis
+    Direct external call: ['token.transfer(beneficiary,tokens)']
+    Analyze Transfer
+        - token.transfer(beneficiary,tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(beneficiary,tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(beneficiary,tokens)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function provided is named 'Crowdsale', which matches the contract name 'Crowdsale'. Therefore, it can be inferred to be a constructor based on its
+            name. It initializes variables and sets initial conditions, which are typical operations in a constructor. This satisfies characteristic 1.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Crowdsale.forwardFunds()
+Function Security Analysis for Crowdsale.forwardFunds()
+    There are no modifiers should be examined in function forwardFunds.
+    Check direct function security
+        - function Crowdsale.forwardFunds() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks or conditions involving 'msg.sender'.
+        - function Crowdsale.forwardFunds() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any require or conditional statements like if that checks a boolean variable and then sets it. It only contains a transfer
+          function call.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyTokens', 'fallback']
+        Function Security Analysis for Crowdsale.buyTokens(address)
+            There are no modifiers should be examined in function buyTokens.
+            Check direct function security
+                - function Crowdsale.buyTokens(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided function does not contain any of the specified structures checking msg.sender against a variable named xxxOwner, xxxAddress,
+                  Leader, or CEO.
+                - function Crowdsale.buyTokens(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not match any of the specified structures. It checks some conditions using 'require', but none of the given patterns (require with
+                  specific conditions and the change of the variable later) are present.
+External Call Analysis
+    Direct external call: ['wallet.transfer(msg.value)']
+    Analyze Transfer
+        - wallet.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer('
+        keyword which satisfies the characteristic of transferring Ether using .transfer method.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

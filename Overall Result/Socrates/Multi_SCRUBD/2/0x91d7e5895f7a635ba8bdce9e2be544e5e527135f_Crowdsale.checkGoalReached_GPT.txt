@@ -1,0 +1,30 @@
+
+Start analyze function: Crowdsale.checkGoalReached()
+Function Security Analysis for Crowdsale.checkGoalReached()
+    The modifier of function checkGoalReached are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The function modifier named 'afterDeadline' does not clearly indicate any owner or specific address protection, nor does it enforce a lock operation to
+          ensure the function runs only once. It only checks if the current time is past a certain deadline. It does not fit any of the specified characteristics for a
+          'Yes' output.
+    Check direct function security
+        - function Crowdsale.checkGoalReached() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any lines of code that compare msg.sender to any variable or address like xxxOwner/xxxAddress/Leader/CEO using require,
+          if, or assert statements as specified in the listed characteristics.
+        - function Crowdsale.checkGoalReached() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not match any of the specified structures because it does not have 'require(xxx == True);', 'require(xxx == False);',
+          'require(!xxx);', or 'if(!xxx) throw;' statements followed by 'xxx = False;' or 'xxx = True;' respectively.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)*6/price)']
+    Analyze Transfer
+        - tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)*6/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)*6/price) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)*6/price)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function provided is named 'Crowdsale', which matches the contract name. This indicates that the function is a constructor. Constructors in smart
+            contracts are used for initializing the contract and are executed once when the contract is deployed. Based on the first rule, this constructor function
+            satisfies the condition because the function name matches the contract name.
+Conclusion: This function will not cause REE Problem.

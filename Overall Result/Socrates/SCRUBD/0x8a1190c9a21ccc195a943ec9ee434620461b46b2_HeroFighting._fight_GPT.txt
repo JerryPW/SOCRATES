@@ -1,0 +1,17 @@
+
+Start analyze function: HeroFighting._fight(uint32,uint32)
+Function Security Analysis for HeroFighting._fight(uint32,uint32)
+    The modifier of function _fight are ['whenNotPaused']
+    The result of checking modifiers:
+        - modifier whenNotPaused has no relation with controlled by owner.
+          Reason: The modifier checks whether the contract is paused but does not contain any owner or specific address requirement nor a lock mechanism. Also, the name
+          'whenNotPaused' does not imply owner restrictions or reentrancy prevention.
+    Check direct function security
+        - function HeroFighting._fight(uint32,uint32) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code snippet does not contain any of the specified patterns directly reflecting msg.sender checks against an owner or similar role.
+        - function HeroFighting._fight(uint32,uint32) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures like require(xxx == True) with xxx = False afterwards, require(xxx == False) with xxx = True
+          afterwards, require(!xxx) with xxx = True afterwards, or if(!xxx) throw with xxx = true afterwards.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    There are no reachable function for internal/private function, please manually check its successor contracts.
+Conclusion: This function will not cause REE Problem.

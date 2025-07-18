@@ -1,0 +1,87 @@
+TokenERC20.withdrawcommissions: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdrawcommissions()public olyowner returns(bool){
+        owner.send(users[msg.sender].pot);
+        users[msg.sender].pot=0;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdrawcommissions()public olyowner returns(bool){
+        owner.send(users[msg.sender].pot);
+        users[msg.sender].pot=0;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function withdrawcommissions()public olyowner returns(bool){
+        owner.send(users[msg.sender].pot);
+        users[msg.sender].pot=0;
+    }
+Response:
+{"StatementsA": {"users[msg.sender].pot=0;":"This statement updates the state variable 'pot' in the 'users' mapping."}, "StatementsB": {"owner.send(users[msg.sender].pot);":"This statement executes an external call to send ether to the 'owner'."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: users[msg.sender].pot=0;
+2.External Call: owner.send(users[msg.sender].pot);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdrawcommissions()public olyowner returns(bool){
+        owner.send(users[msg.sender].pot);
+        users[msg.sender].pot=0;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdrawcommissions()public olyowner returns(bool){
+        owner.send(users[msg.sender].pot);
+        users[msg.sender].pot=0;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function withdrawcommissions()public olyowner returns(bool){
+        owner.send(users[msg.sender].pot);
+        users[msg.sender].pot=0;
+    }
+Response:
+{"StatementsA": {"users[msg.sender].pot=0;":"This statement updates the state variable 'pot' for the user."}, "StatementsB": {"owner.send(users[msg.sender].pot);":"This statement executes an external call to send ether to the owner."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: users[msg.sender].pot=0;
+2.External Call: owner.send(users[msg.sender].pot);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

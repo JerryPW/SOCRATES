@@ -1,0 +1,28 @@
+
+Start analyze function: EtherRolling.withdraw(uint8)
+Function Security Analysis for EtherRolling.withdraw(uint8)
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function EtherRolling.withdraw(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not implement any checks based on the condition of the caller's address being specific owners, addresses, leader, or CEO as stated in the
+          required characteristics. The function checks and performs operations based on the payouts, bonuses, and other business logic but not on the identity of
+          msg.sender related to ownership or leadership roles.
+        - function EtherRolling.withdraw(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: This function does not have any structure matching the provided characteristics. It contains a require statement, but it does not change the state of
+          any boolean variables immediately before or after the require statement. It checks if 'to_payout' > 0 but does not involve toggling a boolean variable around
+          the check.
+External Call Analysis
+    Direct external call: ['_token.send(msg.sender,to_payout,TokenWithdrawed)', 'address(msg.sender).transfer(to_payout)']
+    Analyze Transfer
+        - _token.send(msg.sender,to_payout,TokenWithdrawed) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 3.
+        - address(msg.sender).transfer(to_payout) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword, fulfilling one of the specified characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - _token.send(msg.sender,to_payout,TokenWithdrawed) ISN'T subjected to gas limits.
+    Remaining external call: ['_token.send(msg.sender,to_payout,TokenWithdrawed)']
+    Analyze External Address
+        There are ['_token'] should be checked in variable _token
+        Checked variables: _token
+            Yes The provided code snippet is a constructor since it is explicitly named 'constructor'. Constructors are special functions in Solidity that are executed
+            once when the contract is deployed and are used for initializations. Therefore, it satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

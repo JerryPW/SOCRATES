@@ -1,0 +1,29 @@
+
+Start analyze function: Crowdsale.checkGoalReached()
+Function Security Analysis for Crowdsale.checkGoalReached()
+    The modifier of function checkGoalReached are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The code only checks if the current time is after a certain deadline, and does not involve any owner or specific address checks, nor does it implement a
+          lock mechanism. It also does not contain any function name suggesting access restriction or reentrancy protection.
+    Check direct function security
+        - function Crowdsale.checkGoalReached() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check or require the role of msg.sender against predefined owner or administrator addresses.
+        - function Crowdsale.checkGoalReached() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not follow any of the specified structures. There is no usage of 'require' or 'if' to check a condition with a subsequent assignment
+          to a variable within the same block as described in any of the patterns.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)*6/price)']
+    Analyze Transfer
+        - tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)*6/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)*6/price) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)*6/price)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The code snippet is naming a function that matches the contract name 'Crowdsale'. This indicates that the function could potentially be a constructor for
+            a contract in Solidity versions prior to 0.4.22; after which the 'constructor' keyword is used. Additionally, the state variable 'tokenReward' is being
+            assigned a value, but it is not hardcoded. The hardcoded state variable condition requires the state variable itself to have a hardcoded value within the
+            function, which is not the case here as it uses an argument to set the value.
+Conclusion: This function will not cause REE Problem.

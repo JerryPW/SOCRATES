@@ -1,0 +1,172 @@
+ZTCrowdsale.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable atStage(Stages.InProgress) {
+
+        // Require Crowdsale started
+        require(now > start);
+
+        // Require Crowdsale not expired
+        require(now < end);
+
+        // Enforce min amount
+        require(msg.value >= minAcceptedAmount);
+        
+        address sender = msg.sender;
+        uint256 received = msg.value;
+        uint256 valueInZT = toZT(msg.value);
+        if (!ztToken.issue(sender, valueInZT)) {
+            revert();
+        }
+
+        if (now <= start + ratePreICOEnd) {
+
+            // Fees
+            uint256 ethFees = received * 5 / 10**3; // 0.005
+
+            // 0.5% eth
+            if (!creator.send(ethFees)) {
+                revert();
+            }
+
+            // During pre-ico - Non-Refundable
+            if (!beneficiary.send(received - ethFees)) {
+                revert();
+            }
+
+        } else {
+
+            // During the ICO
+            balances[sender] += received; // 100% refundable
+        }
+
+        raised += received;
+
+        // Check maxAmount raised
+        if (raised >= maxAmount) {
+            stage = Stages.Ended;
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable atStage(Stages.InProgress) {
+
+        // Require Crowdsale started
+        require(now > start);
+
+        // Require Crowdsale not expired
+        require(now < end);
+
+        // Enforce min amount
+        require(msg.value >= minAcceptedAmount);
+        
+        address sender = msg.sender;
+        uint256 received = msg.value;
+        uint256 valueInZT = toZT(msg.value);
+        if (!ztToken.issue(sender, valueInZT)) {
+            revert();
+        }
+
+        if (now <= start + ratePreICOEnd) {
+
+            // Fees
+            uint256 ethFees = received * 5 / 10**3; // 0.005
+
+            // 0.5% eth
+            if (!creator.send(ethFees)) {
+                revert();
+            }
+
+            // During pre-ico - Non-Refundable
+            if (!beneficiary.send(received - ethFees)) {
+                revert();
+            }
+
+        } else {
+
+            // During the ICO
+            balances[sender] += received; // 100% refundable
+        }
+
+        raised += received;
+
+        // Check maxAmount raised
+        if (raised >= maxAmount) {
+            stage = Stages.Ended;
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () payable atStage(Stages.InProgress) {
+
+        // Require Crowdsale started
+        require(now > start);
+
+        // Require Crowdsale not expired
+        require(now < end);
+
+        // Enforce min amount
+        require(msg.value >= minAcceptedAmount);
+        
+        address sender = msg.sender;
+        uint256 received = msg.value;
+        uint256 valueInZT = toZT(msg.value);
+        if (!ztToken.issue(sender, valueInZT)) {
+            revert();
+        }
+
+        if (now <= start + ratePreICOEnd) {
+
+            // Fees
+            uint256 ethFees = received * 5 / 10**3; // 0.005
+
+            // 0.5% eth
+            if (!creator.send(ethFees)) {
+                revert();
+            }
+
+            // During pre-ico - Non-Refundable
+            if (!beneficiary.send(received - ethFees)) {
+                revert();
+            }
+
+        } else {
+
+            // During the ICO
+            balances[sender] += received; // 100% refundable
+        }
+
+        raised += received;
+
+        // Check maxAmount raised
+        if (raised >= maxAmount) {
+            stage = Stages.Ended;
+        }
+    }
+Response:
+{"StatementsA": {"balances[sender] += received;":"Updates the state variable 'balances'."}, "StatementsB": {"if (!creator.send(ethFees)) {":"Executes an external call to send ether."}, "VariableA": {"sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: balances[sender] += received;
+2.External Call: if (!creator.send(ethFees)) {
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,299 @@
+
+Start analyze function: GAME.startRaffle(uint256)
+Function Security Analysis for GAME.startRaffle(uint256)
+    There are no modifiers should be examined in function startRaffle.
+    Check direct function security
+        - function GAME.startRaffle(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not use any of the specified structures for access control related to msg.sender verification like require(msg.sender == xxxOwner), if
+          (msg.sender != xxxOwner) or assert(msg.sender == xxxOwner). Instead, it uses require and if statements that do not involve msg.sender.
+        - function GAME.startRaffle(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the matching structures specified in the criteria (1, 2, 3, or 4). The require statement checks for `ticketsBought ==
+          ticketPool` but does not set `ticketsBought` to a new value immediately after. Additionally, the check does not involve a False or True value directly, nor does
+          it use '!xxx'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['__callback', '__callback']
+        Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function GAME.__callback(bytes32,string,bytes) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code contains 'require (msg.sender == oraclize_cbAddress());', but 'oraclize_cbAddress()' is not a pattern defined by the
+                  xxxOwner/xxxAddress/Leader/CEO in structures 1, 2, 3, or 4.
+                - function GAME.__callback(bytes32,string,bytes) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not exhibit any of the specified structures. There are no require or if statements followed by changes to the same variable where
+                  it changes from True to False or vice versa.
+External Call Analysis
+    Direct external call: ['winner.transfer(winnerPrize)', 'bonus.receiveFromGame.value(tokenCut)()',
+    'bank.receiveFromGame.value(address(this).balance.sub((jackpot.add(tokenCut.add(queueFunds)))))()',
+    'winner.transfer(winnerPrize.add((jackpot.mul(jackpotFactor)).div(100)))']
+    Analyze Transfer
+        - winner.transfer(winnerPrize) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer('
+        keyword, which matches the first characteristic.. Parameter in 'transfer'/'send': 1.
+        - winner.transfer(winnerPrize.add((jackpot.mul(jackpotFactor)).div(100))) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the
+        reason: The external call contains '.transfer(' keyword, which matches the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - bonus.receiveFromGame.value(tokenCut)() ISN'T subjected to gas limits.
+        - bank.receiveFromGame.value(address(this).balance.sub((jackpot.add(tokenCut.add(queueFunds)))))() ISN'T subjected to gas limits.
+    Remaining external call: ['bonus.receiveFromGame.value(tokenCut)()',
+    'bank.receiveFromGame.value(address(this).balance.sub((jackpot.add(tokenCut.add(queueFunds)))))()']
+    Analyze External Address
+        There are ['bonus'] should be checked in variable bonus
+        Checked variables: bonus
+            Yes 1. The function name 'GAME' matches the contract name 'GAME'. This indicates that the code is a constructor.  2. There is no indication of a hardcoded
+            state variable by the name 'bonus' within the provided code. Hence, characteristic 2 is not satisfied.
+        There are ['bank'] should be checked in variable bank
+        Checked variables: bank
+            Yes 1. The function name is 'GAME', which matches the contract name given, indicating that it is a constructor.  2. The state variable 'bank' is not hardcoded
+            with a specific value, but is assigned using the parameter '_ICO'. Hence only the constructor condition is satisfied.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: GAME.fillFromQueue()
+Function Security Analysis for GAME.fillFromQueue()
+    There are no modifiers should be examined in function fillFromQueue.
+    Check direct function security
+        - function GAME.fillFromQueue() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any control structures that check the msg.sender against roles like Owner, Address, Leader, or CEO as specified in the
+          criteria.
+        - function GAME.fillFromQueue() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require(xxx == True)', 'require(xxx == False)', 'require(!xxx)', or 'if(!xxx) throw' statement to check or ensure a
+          condition before proceeding. Thus, it does not match any specified structure.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['__callback', 'startRaffle', '__callback', 'fillFromQueue']
+        Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function GAME.__callback(bytes32,string,bytes) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                REE problem.
+                  Reason: The 'require' statement does involve 'msg.sender' and it equates it to 'oraclize_cbAddress()', which fits the first specified structure
+                  (require(msg.sender == xxxOwner/xxxAddress/Leader/CEO)). Thus, the previous judgment remains correct.
+        Function Security Analysis for GAME.startRaffle(uint256)
+            There are no modifiers should be examined in function startRaffle.
+            Check direct function security
+                - function GAME.startRaffle(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code doesn't contain any require/assert/if statement that checks msg.sender against an owner/leader/CEO.
+                - function GAME.startRaffle(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code contains a statement 'require(ticketsBought == ticketPool);' which does not match any of the specified structures where a variable is
+                  set to a boolean value after a require or if statement, therefore it does not meet any of the given conditions.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['__callback', '__callback']
+                Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+                    There are no modifiers should be examined in function __callback.
+                    Check direct function security
+                        - function GAME.__callback(bytes32,string,bytes) has security assurance protected by checking the authority of msg.sender, the function would not
+                        cause REE problem.
+                          Reason: The code contains a require statement with msg.sender compared to a function call oraclize_cbAddress(), which fits the pattern of
+                          checking msg.sender against a specific address. The xxxOwner/xxxAddress pattern can include address comparisons from function calls, making the
+                          initial analysis correct.
+                Function Security Analysis for usingOraclize.__callback(bytes32,string)
+                    There are no modifiers should be examined in function __callback.
+                    Check direct function security
+                        - function usingOraclize.__callback(bytes32,string) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not contain any line or structure matching the specified patterns related to msg.sender validation.
+                        - function usingOraclize.__callback(bytes32,string) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided code is a function named __callback that takes two parameters: myid and result. It calls another overloaded '__callback'
+                          method within itself, passing an additional parameter of 'new bytes(0)'. There is no 'require' or 'if(!xxx) throw' statements mentioned in the
+                          code and hence doesn't fit any given structure.
+External Call Analysis
+    Direct external call: ['token.awardToken(queueAddress[queueIndex],queueAmount[queueIndex])', 'token.awardToken(queueAddress[queueIndex],openTicketsLeft)',
+    'token.awardToken(queueAddress[queueIndex],1)']
+    Analyze Transfer
+    Analyze Gas
+        - token.awardToken(queueAddress[queueIndex],queueAmount[queueIndex]) ISN'T subjected to gas limits.
+        - token.awardToken(queueAddress[queueIndex],openTicketsLeft) ISN'T subjected to gas limits.
+        - token.awardToken(queueAddress[queueIndex],1) ISN'T subjected to gas limits.
+    Remaining external call: ['token.awardToken(queueAddress[queueIndex],queueAmount[queueIndex])', 'token.awardToken(queueAddress[queueIndex],openTicketsLeft)',
+    'token.awardToken(queueAddress[queueIndex],1)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The function name 'GAME' matches the contract name, indicating it is a constructor. Constructors typically initialize contracts and are executed once when
+            a contract is created, not after. No state variable named 'token' is hardcoded within the function's code, making part 2 of the criteria unfulfilled. However,
+            since the function matches the contract name and is thus a constructor, it satisfies the first characteristic.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes 1. The function name matches the contract name 'GAME', indicating that this function is a constructor for the contract. 2. The state variable 'token' is
+            hardcoded in the function with the value AwardsTokensInterface(_BONUS).
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes 1. The function is named `GAME`, which matches the name of the contract indicating that it is a constructor function.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: usingOraclize.oraclize_query(string,bytes[],uint256)
+Function Security Analysis for usingOraclize.oraclize_query(string,bytes[],uint256)
+    The modifier of function oraclize_query are ['oraclizeAPI']
+    The result of checking modifiers:
+        - modifier oraclizeAPI has no relation with controlled by owner.
+          Reason: The modifier 'oraclizeAPI' does not meet any of the specified patterns for owner checks, lock mechanisms, or specific naming indicating restricted
+          access like 'Onlyxxx' or 'nonReentrant'. It appears to be setting some network and address values related to 'oraclize', but does not contain any restriction or
+          locking logic as per the provided criteria.
+    Check direct function security
+        - function usingOraclize.oraclize_query(string,bytes[],uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function provided does not include any checks using 'msg.sender' with respect to a specific owner, address, or role (like Leader/CEO) that fits the
+          structural patterns described.
+        - function usingOraclize.oraclize_query(string,bytes[],uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not follow any of the specified structures. There are no 'require' keyword or conditional checks that set a boolean variable to true or
+          false based on the specified conditions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['__callback', 'oraclize_newRandomDSQuery', 'startRaffle', 'oraclize_query', 'fillFromQueue', 'buyTicket', 'oraclize_query',
+    'oraclize_query', 'getRandom', 'forceRoll', '__callback', 'oraclize_query', 'oraclize_query']
+        Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function GAME.__callback(bytes32,string,bytes) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                REE problem.
+                  Reason: The condition 'require (msg.sender == oraclize_cbAddress())' does match the structure of checking 'msg.sender' against a specific address
+                  function, even though 'oraclize_cbAddress()' is a function call for a compliance check that is common in oraclize-based smart contracts.
+        Function Security Analysis for usingOraclize.oraclize_newRandomDSQuery(uint256,uint256,uint256)
+            There are no modifiers should be examined in function oraclize_newRandomDSQuery.
+            Check direct function security
+                - function usingOraclize.oraclize_newRandomDSQuery(uint256,uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code does not contain any lines that match the specified structures related to msg.sender checking against an owner or specific
+                  role.
+                - function usingOraclize.oraclize_newRandomDSQuery(uint256,uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures as it does not use a variable with the required pattern of checking a condition and
+                  then setting a boolean value opposite to the condition thereafter.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['__callback', 'getRandom', 'forceRoll', '__callback', 'startRaffle', 'fillFromQueue', 'buyTicket']
+                Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+                    There are no modifiers should be examined in function __callback.
+                    Check direct function security
+                        - function GAME.__callback(bytes32,string,bytes) has security assurance protected by checking the authority of msg.sender, the function would not
+                        cause REE problem.
+                          Reason: The require statement checks if 'msg.sender' equals 'oraclize_cbAddress()', which is an external function call, not a local variable.
+                          Therefore, this usage does satisfy the specified structures.
+                Function Security Analysis for GAME.getRandom()
+                    There are no modifiers should be examined in function getRandom.
+                    Check direct function security
+                        - function GAME.getRandom() has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not contain any of the structures specified such as require, if with a condition checking msg.sender, or assert statements
+                          involving msg.sender.
+                        - function GAME.getRandom() has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not have any 'require' or 'if' with 'throw' statements that follow the specified patterns.
+                    Since the function can only be called by functions, we start to analyze indirect function security.
+                    The reachable functions are ['__callback', 'forceRoll', '__callback', 'startRaffle', 'fillFromQueue', 'buyTicket']
+                        Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+                            There are no modifiers should be examined in function __callback.
+                            Check direct function security
+                                - function GAME.__callback(bytes32,string,bytes) has no security assurance protected by checking the authority of msg.sender
+                                  Reason: The condition uses a specific function (oraclize_cbAddress()) rather than a local variable or member like xxxOwner, xxxAddress,
+                                  etc.
+                                - function GAME.__callback(bytes32,string,bytes) has no apparent security assurance by utilizing a lock machinism.
+                                  Reason: The code does not have the required structures. There is no require statement followed by a variable being set directly to True
+                                  or False, nor is there any if-throw condition with these properties.
+External Call Analysis
+    Direct external call: ['oraclize.queryN_withGasLimit.value(price)(0,datasource,args,gaslimit)', 'oraclize.getPrice(datasource,gaslimit)']
+    Analyze Transfer
+    Analyze Gas
+        - oraclize.queryN_withGasLimit.value(price)(0,datasource,args,gaslimit) ISN'T subjected to gas limits. Here is the reason: The gaslimit is not explicitly assigned
+        within the provided code block which is empty (i.e., Code: []). Therefore, the value of gaslimit is undetermined based on the provided information. Without a
+        specific assignment or context, it cannot be determined whether gaslimit is always less than or equal to 3000. Thus, it is not possible to make a definitive
+        conclusion regarding the value of gaslimit.
+        - oraclize.getPrice(datasource,gaslimit) ISN'T subjected to gas limits.
+    Remaining external call: ['oraclize.queryN_withGasLimit.value(price)(0,datasource,args,gaslimit)', 'oraclize.getPrice(datasource,gaslimit)']
+    Analyze External Address
+        There are ['oraclize'] should be checked in variable oraclize
+        Checked variables: oraclize
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+        There are ['oraclize'] should be checked in variable oraclize
+        Checked variables: oraclize
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: usingOraclize.oraclize_randomDS_getSessionPubKeyHash()
+Function Security Analysis for usingOraclize.oraclize_randomDS_getSessionPubKeyHash()
+    The modifier of function oraclize_randomDS_getSessionPubKeyHash are ['oraclizeAPI']
+    The result of checking modifiers:
+        - modifier oraclizeAPI has no relation with controlled by owner.
+          Reason: The given modifier 'oraclizeAPI' does not include any explicit ownership checks like requiring specific addresses or using owner variables. It also does
+          not implement any lock operations to prevent reentrancy. Furthermore, the modifier name 'oraclizeAPI' does not imply ownership or locking functionalities.
+          Therefore, none of the specified characteristics are met.
+    Check direct function security
+        - function usingOraclize.oraclize_randomDS_getSessionPubKeyHash() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function oraclize_randomDS_getSessionPubKeyHash does not contain any of the specified msg.sender checks for xxxOwner/xxxAddress/Leader/CEO. It
+          simply returns a value, without enforcing access control based on msg.sender.
+        - function usingOraclize.oraclize_randomDS_getSessionPubKeyHash() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the structures specified in the list. It simply defines a function that calls another function and returns its
+          result. There are no 'require' statements, assignments, or error throws that match the described patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['__callback', 'getRandom', 'forceRoll', 'oraclize_newRandomDSQuery', '__callback', 'startRaffle', 'fillFromQueue', 'buyTicket']
+        Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function GAME.__callback(bytes32,string,bytes) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                REE problem.
+                  Reason: The function contains `require(msg.sender == oraclize_cbAddress())`, which matches structure 1 where `msg.sender` is compared with an address
+                  that is likely an owner address (oraclize_cbAddress).
+        Function Security Analysis for GAME.getRandom()
+            There are no modifiers should be examined in function getRandom.
+            Check direct function security
+                - function GAME.getRandom() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any verification or assertion related to the identity of the msg.sender in relation to ownership or leadership
+                  roles such as Owner, Leader, CEO, or any similar term.
+                - function GAME.getRandom() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not have any of the required structures such as `require(xxx == True);`, `require(xxx == False);`, `require(!xxx);`, or `if(!xxx)
+                  throw;` statements followed by their necessary conditions involving setting the variable `xxx`.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['__callback', 'forceRoll', '__callback', 'startRaffle', 'fillFromQueue', 'buyTicket']
+                Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+                    There are no modifiers should be examined in function __callback.
+                    Check direct function security
+                        - function GAME.__callback(bytes32,string,bytes) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The require statement checks if 'msg.sender' is equal to 'oraclize_cbAddress()', not a generic owner or address like
+                          xxxOwner/xxxAddress/Leader/CEO that the characteristics refer to. Therefore, it does not strictly meet the structure criteria specified.
+                        - function GAME.__callback(bytes32,string,bytes) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code provided does not have any of the required structures outlined in the prompt. There are no 'require' statements checking a
+                          boolean, followed by a boolean state change, nor are there conditional throws or checks on 'require(!xxx)' followed by similar changes. The
+                          function uses different logic without meeting the criteria.
+External Call Analysis
+    Direct external call: ['oraclize.randomDS_getSessionPubKeyHash()']
+    Analyze Transfer
+    Analyze Gas
+        - oraclize.randomDS_getSessionPubKeyHash() ISN'T subjected to gas limits.
+    Remaining external call: ['oraclize.randomDS_getSessionPubKeyHash()']
+    Analyze External Address
+        There are ['oraclize'] should be checked in variable oraclize
+        Checked variables: oraclize
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: GAME.getRandom()
+Function Security Analysis for GAME.getRandom()
+    There are no modifiers should be examined in function getRandom.
+    Check direct function security
+        - function GAME.getRandom() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks for msg.sender or any conditions related to ownership, address, leader, or CEO.
+        - function GAME.getRandom() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures with the 'require' or 'if' statements, nor does it contain the variable assignment sequences
+          required for the condition.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['__callback', 'forceRoll', '__callback', 'startRaffle', 'fillFromQueue', 'buyTicket']
+        Function Security Analysis for GAME.__callback(bytes32,string,bytes)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function GAME.__callback(bytes32,string,bytes) has security assurance protected by checking the authority of msg.sender, the function would not cause
+                REE problem.
+                  Reason: The code uses 'require (msg.sender == oraclize_cbAddress());' which satisfies the first structure as it checks if msg.sender is equal to a
+                  specific address (oraclize_cbAddress()), which is similar to checking if it's xxxAddress/Owner/...
+        Function Security Analysis for GAME.forceRoll()
+            The modifier of function forceRoll are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: Upon reviewing the code, the `onlyOwner` modifier contains the statement `require(msg.sender == owner)`, which directly checks that the caller
+                  is the owner. This aligns with rule 1, which requires checking if only the owner or specific addresses can execute the function. No other structures
+                  like lock and unlock operations are present, so rule 2 does not apply. The initial judgment of 'Yes' is based on a precise match to rule 1, without any
+                  structural omissions.
+        Function Security Analysis for usingOraclize.__callback(bytes32,string)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function usingOraclize.__callback(bytes32,string) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code contains a function '__callback' but there is no security check (like requiring or asserting a certain identity) based on 'msg.sender'.
+                  Hence, none of the specified patterns are present.
+                - function usingOraclize.__callback(bytes32,string) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain any require or if statements, nor does it modify any Boolean variables as required by the specified
+                  structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

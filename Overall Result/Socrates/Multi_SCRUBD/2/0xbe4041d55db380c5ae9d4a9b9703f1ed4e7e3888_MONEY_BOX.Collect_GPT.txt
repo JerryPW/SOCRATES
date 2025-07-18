@@ -1,0 +1,20 @@
+
+Start analyze function: MONEY_BOX.Collect(uint256)
+Function Security Analysis for MONEY_BOX.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function MONEY_BOX.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any explicit ownership or authorization checks involving conditions with 'msg.sender == xxxOwner/xxxAddress/Leader/CEO' or
+          'msg.sender != xxxOwner/xxxAddress/Leader/CEO'. The logic only involves checks on account balance and time, not ownership.
+        - function MONEY_BOX.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not meet any of the specified structures. There are no require statements or if throw patterns that match the criteria provided. The
+          variable manipulation with conditions does not occur in this code.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,26 @@
+
+Start analyze function: Bounty.getTokens(address)
+Function Security Analysis for Bounty.getTokens(address)
+    There are no modifiers should be examined in function getTokens.
+    Check direct function security
+        - function Bounty.getTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code snippet provided does not include any checks or assertions involving the msg.sender address being equal or not equal to an owner, leader, or
+          similar privileged address role as described in the characteristics. It mainly requires the beneficiary is not the zero address, and the purchase is valid.
+        - function Bounty.getTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures like setting a boolean variable to false, requiring it to be true, setting it to true, or
+          handling with an if/throw pattern. It checks a condition for the beneficiary address being non-zero and calls a function validPurchase. The function works with
+          transferring tokens and emitting an event, without interacting with any of the specified boolean variable patterns.
+External Call Analysis
+    Direct external call: ['token.transfer(beneficiary,BountyAmount)']
+    Analyze Transfer
+        - token.transfer(beneficiary,BountyAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(beneficiary,BountyAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(beneficiary,BountyAmount)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes 1. The function named 'Bounty' matches the contract name 'Bounty', indicating that it is a constructor. Constructors in Solidity prior to version 0.4.22
+            are functions with the same name as the contract. 2. The state variable 'token' is not hardcoded within the function, as it assigns the state variable 'token'
+            to a value passed as an argument '_tokenAddress', thus it is not hardcoded. Since the function satisfies the first characteristic, the answer is 'Yes'.
+Conclusion: This function will not cause REE Problem.

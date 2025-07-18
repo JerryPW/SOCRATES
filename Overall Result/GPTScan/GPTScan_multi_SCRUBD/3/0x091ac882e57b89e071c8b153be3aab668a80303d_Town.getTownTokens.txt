@@ -1,0 +1,411 @@
+Town.getTownTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function getTownTokens(address holder) public payable returns (bool) {
+        require(holder != address(0), "holder address cannot be null");
+
+        uint256 amount = msg.value;
+        uint256 tokenAmount = IWantTakeTokensToAmount(amount);
+        uint256 rate = currentRate();
+        if (_transactionsCount < _durationOfMinTokenGetAmount && tokenAmount < _minTokenGetAmount) {
+            return false;
+        }
+        if (tokenAmount >= _maxTokenGetAmount) {
+            tokenAmount = _maxTokenGetAmount;
+            uint256 change = amount.sub(_maxTokenGetAmount.mul(rate).div(10 ** 18));
+            msg.sender.transfer(change);
+            amount = amount.sub(change);
+        }
+
+        if (_token.balanceOf(address(this)) >= tokenAmount) {
+            TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenAmount);
+            _token.transfer(holder, tokenAmount);
+            _historyTransactions[holder].push(transactionsHistory);
+            _transactionsCount = _transactionsCount.add(1);
+        } else {
+            if (_token.balanceOf(address(this)) > 0) {
+                uint256 tokenBalance = _token.balanceOf(address(this));
+                _token.transfer(holder, tokenBalance);
+                TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenBalance);
+                _historyTransactions[holder].push(transactionsHistory);
+                tokenAmount = tokenAmount.sub(tokenBalance);
+            }
+
+            TransactionsInfo memory transactionsInfo = TransactionsInfo(rate, tokenAmount);
+            TownTokenRequest memory tokenRequest = TownTokenRequest(holder, transactionsInfo);
+            _queueTownTokenRequests.push(tokenRequest);
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._priority == 1) {
+                if (_remunerationsQueue[i]._amount > amount) {
+                    _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                    amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                    delete _remunerationsQueue[i];
+                    for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                        _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                    }
+                    _remunerationsQueue.length--;
+                } else {
+                    _remunerationsQueue[i]._address.transfer(amount);
+                    _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                    break;
+                }
+            }
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._amount > amount) {
+                _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                delete _remunerationsQueue[i];
+                for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                    _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                }
+                _remunerationsQueue.length--;
+            } else {
+                _remunerationsQueue[i]._address.transfer(amount);
+                _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                break;
+            }
+        }
+
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function getTownTokens(address holder) public payable returns (bool) {
+        require(holder != address(0), "holder address cannot be null");
+
+        uint256 amount = msg.value;
+        uint256 tokenAmount = IWantTakeTokensToAmount(amount);
+        uint256 rate = currentRate();
+        if (_transactionsCount < _durationOfMinTokenGetAmount && tokenAmount < _minTokenGetAmount) {
+            return false;
+        }
+        if (tokenAmount >= _maxTokenGetAmount) {
+            tokenAmount = _maxTokenGetAmount;
+            uint256 change = amount.sub(_maxTokenGetAmount.mul(rate).div(10 ** 18));
+            msg.sender.transfer(change);
+            amount = amount.sub(change);
+        }
+
+        if (_token.balanceOf(address(this)) >= tokenAmount) {
+            TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenAmount);
+            _token.transfer(holder, tokenAmount);
+            _historyTransactions[holder].push(transactionsHistory);
+            _transactionsCount = _transactionsCount.add(1);
+        } else {
+            if (_token.balanceOf(address(this)) > 0) {
+                uint256 tokenBalance = _token.balanceOf(address(this));
+                _token.transfer(holder, tokenBalance);
+                TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenBalance);
+                _historyTransactions[holder].push(transactionsHistory);
+                tokenAmount = tokenAmount.sub(tokenBalance);
+            }
+
+            TransactionsInfo memory transactionsInfo = TransactionsInfo(rate, tokenAmount);
+            TownTokenRequest memory tokenRequest = TownTokenRequest(holder, transactionsInfo);
+            _queueTownTokenRequests.push(tokenRequest);
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._priority == 1) {
+                if (_remunerationsQueue[i]._amount > amount) {
+                    _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                    amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                    delete _remunerationsQueue[i];
+                    for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                        _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                    }
+                    _remunerationsQueue.length--;
+                } else {
+                    _remunerationsQueue[i]._address.transfer(amount);
+                    _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                    break;
+                }
+            }
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._amount > amount) {
+                _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                delete _remunerationsQueue[i];
+                for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                    _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                }
+                _remunerationsQueue.length--;
+            } else {
+                _remunerationsQueue[i]._address.transfer(amount);
+                _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                break;
+            }
+        }
+
+        return true;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function getTownTokens(address holder) public payable returns (bool) {
+        require(holder != address(0), "holder address cannot be null");
+
+        uint256 amount = msg.value;
+        uint256 tokenAmount = IWantTakeTokensToAmount(amount);
+        uint256 rate = currentRate();
+        if (_transactionsCount < _durationOfMinTokenGetAmount && tokenAmount < _minTokenGetAmount) {
+            return false;
+        }
+        if (tokenAmount >= _maxTokenGetAmount) {
+            tokenAmount = _maxTokenGetAmount;
+            uint256 change = amount.sub(_maxTokenGetAmount.mul(rate).div(10 ** 18));
+            msg.sender.transfer(change);
+            amount = amount.sub(change);
+        }
+
+        if (_token.balanceOf(address(this)) >= tokenAmount) {
+            TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenAmount);
+            _token.transfer(holder, tokenAmount);
+            _historyTransactions[holder].push(transactionsHistory);
+            _transactionsCount = _transactionsCount.add(1);
+        } else {
+            if (_token.balanceOf(address(this)) > 0) {
+                uint256 tokenBalance = _token.balanceOf(address(this));
+                _token.transfer(holder, tokenBalance);
+                TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenBalance);
+                _historyTransactions[holder].push(transactionsHistory);
+                tokenAmount = tokenAmount.sub(tokenBalance);
+            }
+
+            TransactionsInfo memory transactionsInfo = TransactionsInfo(rate, tokenAmount);
+            TownTokenRequest memory tokenRequest = TownTokenRequest(holder, transactionsInfo);
+            _queueTownTokenRequests.push(tokenRequest);
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._priority == 1) {
+                if (_remunerationsQueue[i]._amount > amount) {
+                    _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                    amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                    delete _remunerationsQueue[i];
+                    for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                        _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                    }
+                    _remunerationsQueue.length--;
+                } else {
+                    _remunerationsQueue[i]._address.transfer(amount);
+                    _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                    break;
+                }
+            }
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._amount > amount) {
+                _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                delete _remunerationsQueue[i];
+                for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                    _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                }
+                _remunerationsQueue.length--;
+            } else {
+                _remunerationsQueue[i]._address.transfer(amount);
+                _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                break;
+            }
+        }
+
+        return true;
+    }
+Response:
+{"StatementsA": {"_transactionsCount = _transactionsCount.add(1);":"Updates the state variable _transactionsCount."}, "StatementsB": {"_token.transfer(holder, tokenAmount);":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _transactionsCount = _transactionsCount.add(1);
+2.External Call: _token.transfer(holder, tokenAmount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function getTownTokens(address holder) public payable returns (bool) {
+        require(holder != address(0), "holder address cannot be null");
+
+        uint256 amount = msg.value;
+        uint256 tokenAmount = IWantTakeTokensToAmount(amount);
+        uint256 rate = currentRate();
+        if (_transactionsCount < _durationOfMinTokenGetAmount && tokenAmount < _minTokenGetAmount) {
+            return false;
+        }
+        if (tokenAmount >= _maxTokenGetAmount) {
+            tokenAmount = _maxTokenGetAmount;
+            uint256 change = amount.sub(_maxTokenGetAmount.mul(rate).div(10 ** 18));
+            msg.sender.transfer(change);
+            amount = amount.sub(change);
+        }
+
+        if (_token.balanceOf(address(this)) >= tokenAmount) {
+            TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenAmount);
+            _token.transfer(holder, tokenAmount);
+            _historyTransactions[holder].push(transactionsHistory);
+            _transactionsCount = _transactionsCount.add(1);
+        } else {
+            if (_token.balanceOf(address(this)) > 0) {
+                uint256 tokenBalance = _token.balanceOf(address(this));
+                _token.transfer(holder, tokenBalance);
+                TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenBalance);
+                _historyTransactions[holder].push(transactionsHistory);
+                tokenAmount = tokenAmount.sub(tokenBalance);
+            }
+
+            TransactionsInfo memory transactionsInfo = TransactionsInfo(rate, tokenAmount);
+            TownTokenRequest memory tokenRequest = TownTokenRequest(holder, transactionsInfo);
+            _queueTownTokenRequests.push(tokenRequest);
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._priority == 1) {
+                if (_remunerationsQueue[i]._amount > amount) {
+                    _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                    amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                    delete _remunerationsQueue[i];
+                    for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                        _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                    }
+                    _remunerationsQueue.length--;
+                } else {
+                    _remunerationsQueue[i]._address.transfer(amount);
+                    _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                    break;
+                }
+            }
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._amount > amount) {
+                _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                delete _remunerationsQueue[i];
+                for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                    _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                }
+                _remunerationsQueue.length--;
+            } else {
+                _remunerationsQueue[i]._address.transfer(amount);
+                _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                break;
+            }
+        }
+
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function getTownTokens(address holder) public payable returns (bool) {
+        require(holder != address(0), "holder address cannot be null");
+
+        uint256 amount = msg.value;
+        uint256 tokenAmount = IWantTakeTokensToAmount(amount);
+        uint256 rate = currentRate();
+        if (_transactionsCount < _durationOfMinTokenGetAmount && tokenAmount < _minTokenGetAmount) {
+            return false;
+        }
+        if (tokenAmount >= _maxTokenGetAmount) {
+            tokenAmount = _maxTokenGetAmount;
+            uint256 change = amount.sub(_maxTokenGetAmount.mul(rate).div(10 ** 18));
+            msg.sender.transfer(change);
+            amount = amount.sub(change);
+        }
+
+        if (_token.balanceOf(address(this)) >= tokenAmount) {
+            TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenAmount);
+            _token.transfer(holder, tokenAmount);
+            _historyTransactions[holder].push(transactionsHistory);
+            _transactionsCount = _transactionsCount.add(1);
+        } else {
+            if (_token.balanceOf(address(this)) > 0) {
+                uint256 tokenBalance = _token.balanceOf(address(this));
+                _token.transfer(holder, tokenBalance);
+                TransactionsInfo memory transactionsHistory = TransactionsInfo(rate, tokenBalance);
+                _historyTransactions[holder].push(transactionsHistory);
+                tokenAmount = tokenAmount.sub(tokenBalance);
+            }
+
+            TransactionsInfo memory transactionsInfo = TransactionsInfo(rate, tokenAmount);
+            TownTokenRequest memory tokenRequest = TownTokenRequest(holder, transactionsInfo);
+            _queueTownTokenRequests.push(tokenRequest);
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._priority == 1) {
+                if (_remunerationsQueue[i]._amount > amount) {
+                    _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                    amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                    delete _remunerationsQueue[i];
+                    for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                        _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                    }
+                    _remunerationsQueue.length--;
+                } else {
+                    _remunerationsQueue[i]._address.transfer(amount);
+                    _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                    break;
+                }
+            }
+        }
+
+        for (uint256 i = 0; i < _remunerationsQueue.length; ++i) {
+            if (_remunerationsQueue[i]._amount > amount) {
+                _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount);
+                amount = amount.sub(_remunerationsQueue[i]._amount);
+
+                delete _remunerationsQueue[i];
+                for (uint j = i + 1; j < _remunerationsQueue.length; ++j) {
+                    _remunerationsQueue[j - 1] = _remunerationsQueue[j];
+                }
+                _remunerationsQueue.length--;
+            } else {
+                _remunerationsQueue[i]._address.transfer(amount);
+                _remunerationsQueue[i]._amount = _remunerationsQueue[i]._amount.sub(amount);
+                break;
+            }
+        }
+
+        return true;
+    }
+    
+Response:
+No
+--------------------------------------------------

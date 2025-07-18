@@ -1,0 +1,29 @@
+
+Start analyze function: PiZZa.withdraw(uint256)
+Function Security Analysis for PiZZa.withdraw(uint256)
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function PiZZa.withdraw(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks or assertions involving msg.sender in relation to a specific owner, address, leader, or CEO variable.
+        - function PiZZa.withdraw(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any structures such as require(xxx == True) or require(xxx == False) or require(!xxx) or if(!xxx) throw, followed by
+          a statement that sets xxx to True or true. Therefore, it does not match any of the outlined structures.
+External Call Analysis
+    Direct external call: ['resolveToken.transfer(address0,weightDiff)', 'sender.call{value:amount}()']
+    Analyze Transfer
+        - resolveToken.transfer(address0,weightDiff) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - resolveToken.transfer(address0,weightDiff) ISN'T subjected to gas limits.
+        - sender.call{value:amount}() ISN'T subjected to gas limits.
+    Remaining external call: ['resolveToken.transfer(address0,weightDiff)', 'sender.call{value:amount}()']
+    Analyze External Address
+        There are ['resolveToken'] should be checked in variable resolveToken
+        Checked variables: resolveToken
+            Yes The provided code is a constructor. The function is explicitly named 'constructor', which is a key aspect of the first characteristic to check, indicating
+            that it is indeed a constructor function. The function also interacts with the state variable 'resolveToken' by setting it to a new instance of 'Crust'. This
+            matches the check for the constructor definition.
+        The variable 'sender' in external call 'sender.call{value:amount}()' has no state variable assigned. Therefore we check whether it has been hardcoded in the
+        function.
+            No The variable 'sender' is defined in the function as 'address payable sender = msg.sender;', which assigns the address of the entity calling the function to
+            the variable. This means that 'sender' dynamically represents the caller's address at runtime and is not hardcoded.
+Conclusion: This function will cause REE Problem.

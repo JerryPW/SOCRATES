@@ -1,0 +1,21 @@
+
+Start analyze function: DividendTracker._withdrawDividendOfUser(address)
+Function Security Analysis for DividendTracker._withdrawDividendOfUser(address)
+    There are no modifiers should be examined in function _withdrawDividendOfUser.
+    Check direct function security
+        - function DividendTracker._withdrawDividendOfUser(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function does not have any of the control structures that involve checking the msg.sender against specific roles like xxxOwner, xxxAddress,
+          Leader, or CEO.
+        - function DividendTracker._withdrawDividendOfUser(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the listed structures where a variable is checked using a condition (e.g., 'require' or 'if(!xxx) throw'),
+          reassigned, and then optionally reassigned again later. The code primarily deals with checking a withdrawal condition and executing withdrawal accordingly,
+          without the specified structured reassignments.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['processAccount']
+        Function Security Analysis for DividendTracker.processAccount(address)
+            The modifier of function processAccount are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The judgment is based on structure 1 as the code uses 'require(owner() == _msgSender())' which checks that only the owner can execute the
+                  function. There is no structural omission for this characteristic.
+Conclusion: This function will not cause REE Problem.

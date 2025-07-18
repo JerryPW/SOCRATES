@@ -1,0 +1,37 @@
+
+Start analyze function: IGLOO._transferFrom(address,address,uint256)
+Function Security Analysis for IGLOO._transferFrom(address,address,uint256)
+    There are no modifiers should be examined in function _transferFrom.
+    Check direct function security
+        - function IGLOO._transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code doesn't contain any of the specified structures involving msg.sender and Owner/Address/Leader/CEO checks.
+        - function IGLOO._transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. There is no presence of a pattern where a 'require' or 'if' condition is immediately followed
+          by a variable assignment for the same variable as specified in the patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for IGLOO.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function IGLOO.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code checks the allowance of the sender for the msg.sender, but does not involve any checks against specific owner or address roles like
+                  xxxOwner/xxxAddress/Leader/CEO.
+                - function IGLOO.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures that involve checking a condition followed by changing the state of a boolean
+                  variable.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: IGLOO._payTreasury()
+Function Security Analysis for IGLOO._payTreasury()
+    The modifier of function _payTreasury are ['swapping']
+    The result of checking modifiers:
+        - modifier swapping is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'swapping' sets the flag '_swapping' to 'true' before the function's execution and resets it to 'false' afterward. Both lock and unlock
+          operations are present, matching rule 2.
+Conclusion: This function will not cause REE Problem.

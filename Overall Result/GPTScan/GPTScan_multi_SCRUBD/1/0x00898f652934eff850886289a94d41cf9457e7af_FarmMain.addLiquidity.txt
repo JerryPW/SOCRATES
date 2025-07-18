@@ -1,0 +1,25 @@
+FarmMain.addLiquidity: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function addLiquidity(uint256 positionId, FarmingPositionRequest memory request) public override payable activeSetupOnly(request.setupIndex) byPositionOwner(positionId) {
+        // retrieve farming position
+        FarmingPosition storage farmingPosition = _positions[positionId];
+        FarmingSetup storage chosenSetup = _setups[farmingPosition.setupIndex];
+        // check if farmoing position is valid
+        require(_setupsInfo[chosenSetup.infoIndex].free, "Invalid add liquidity");
+        // create the lp data for the amm
+        (LiquidityPoolData memory liquidityPoolData,) = _addLiquidity(farmingPosition.setupIndex, request);
+        // rebalance the reward per token
+        _rewardPerTokenPerSetup[farmingPosition.setupIndex] += (((block.number - chosenSetup.lastUpdateBlock) * chosenSetup.rewardPerBlock) * 1e18) / chosenSetup.totalSupply;
+        farmingPosition.reward = calculateFreeFarmingReward(positionId, false);
+        _rewardPerTokenPaid[positionId] = _rewardPerTokenPerSetup[farmingPosition.setupIndex];
+        farmingPosition.liquidityPoolTokenAmount += liquidityPoolData.amount;
+        // update the last block update variablex
+        chosenSetup.lastUpdateBlock = block.number;
+        chosenSetup.totalSupply += liquidityPoolData.amount;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

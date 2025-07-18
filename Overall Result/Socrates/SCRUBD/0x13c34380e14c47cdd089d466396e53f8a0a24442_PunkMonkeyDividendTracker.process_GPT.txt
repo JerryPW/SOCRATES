@@ -1,0 +1,25 @@
+
+Start analyze function: PunkMonkeyDividendTracker.process(uint256)
+Function Security Analysis for PunkMonkeyDividendTracker.process(uint256)
+    There are no modifiers should be examined in function process.
+    Check direct function security
+        - function PunkMonkeyDividendTracker.process(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not feature any of the listed structures like checking msg.sender against a role or address.
+        - function PunkMonkeyDividendTracker.process(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require(...);' or 'if(!xxx) throw;' structures, and does not manipulate a boolean as described in the specified patterns.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: PunkMonkeyDividendTracker.processAccount(address,bool)
+Function Security Analysis for PunkMonkeyDividendTracker.processAccount(address,bool)
+    The modifier of function processAccount are ['onlyOwner']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The code in the modifier enforces that only the owner can execute the function. It uses require(_owner == _msgSender(), "Ownable: caller is not the
+          owner"), which falls under characteristic 1 where the function ensures only specific addresses can execute it.
+Conclusion: This function will not cause REE Problem.

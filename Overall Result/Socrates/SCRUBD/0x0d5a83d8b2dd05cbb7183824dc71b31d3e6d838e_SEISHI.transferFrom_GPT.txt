@@ -1,0 +1,57 @@
+
+Start analyze function: SEISHI.transferFrom(address,address,uint256)
+Function Security Analysis for SEISHI.transferFrom(address,address,uint256)
+    There are no modifiers should be examined in function transferFrom.
+    Check direct function security
+        - function SEISHI.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks involving msg.sender compared to an owner, address, leader, or CEO for access control.
+        - function SEISHI.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code checks whether the transfer amount exceeds the allowance using a require statement, but it doesn't modify the checked variable afterwards as
+          required by the specified structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: SEISHI._transfer(address,address,uint256)
+Function Security Analysis for SEISHI._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function SEISHI._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any statement that checks if `msg.sender` is equal to or not equal to a specific address like xxxOwner or xxxAddress, nor does
+          it involve any assert or require condition directly related to `msg.sender` in such a way.
+        - function SEISHI._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures where a variable 'xxx' is checked with require or if statement and subsequently reassigned to
+          a boolean value as described in the characteristics. The checks present in the code, such as 'require(tradeEnabled == false)' and 'if(tradeEnabled == false)',
+          perform boolean checks but do not reassign 'tradeEnabled' to 'true', nor do they contain the full described structure.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for SEISHI.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function SEISHI.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not check for msg.sender against specific addresses like Owner, Address, Leader, or CEO, nor use assert or throw in that
+                  context.
+                - function SEISHI.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not satisfy any of the specified structures. The requirement mentions the usage of the 'require' keyword in combination with
+                  assignment operations on the same boolean variable; however, the provided code uses 'require' to check a condition involving an amount and allowances,
+                  which doesn't meet the pattern descriptions involving boolean variables.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: SEISHI.swapForTokenomics(uint256)
+Function Security Analysis for SEISHI.swapForTokenomics(uint256)
+    The modifier of function swapForTokenomics are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'lockTheSwap' sets 'inSwapAndLiquify' to true before the function executes and resets it to false afterward. This satisfies both parts of
+          the lock operation required in rule 2, ensuring the function is entered only once at a time.
+Conclusion: This function will not cause REE Problem.

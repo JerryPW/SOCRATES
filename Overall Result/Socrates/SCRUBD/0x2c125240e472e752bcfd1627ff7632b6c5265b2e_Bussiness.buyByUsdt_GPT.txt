@@ -1,0 +1,33 @@
+
+Start analyze function: Bussiness.buyByUsdt(uint256)
+Function Security Analysis for Bussiness.buyByUsdt(uint256)
+    There are no modifiers should be examined in function buyByUsdt.
+    Check direct function security
+        - function Bussiness.buyByUsdt(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not have any condition or requirement that directly checks msg.sender against xxxOwner/xxxAddress/Leader/CEO. It only has checks
+          related to usdtPrices, erc721Address approvals, and usdtToken transfers.
+        - function Bussiness.buyByUsdt(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't contain any of the specified structural patterns, such as requiring a boolean to be true or false and then setting it to the opposite
+          value.  The code uses require statements for conditions related to price and approval, not specifically checking a boolean and then altering it. The variable
+          manipulations are related to transferring tokens and resetting prices, without toggling a boolean flag in the specified manner.
+External Call Analysis
+    Direct external call: ['erc721Address.transferFrom(usdtPrices[tokenId].tokenOwner,msg.sender,tokenId)', 'erc721Address.getApproved(tokenId)',
+    'usdtToken.transferFrom(msg.sender,usdtPrices[tokenId].tokenOwner,usdtPrices[tokenId].price)']
+    Analyze Transfer
+    Analyze Gas
+        - erc721Address.transferFrom(usdtPrices[tokenId].tokenOwner,msg.sender,tokenId) ISN'T subjected to gas limits.
+        - erc721Address.getApproved(tokenId) ISN'T subjected to gas limits.
+        - usdtToken.transferFrom(msg.sender,usdtPrices[tokenId].tokenOwner,usdtPrices[tokenId].price) ISN'T subjected to gas limits.
+    Remaining external call: ['erc721Address.transferFrom(usdtPrices[tokenId].tokenOwner,msg.sender,tokenId)', 'erc721Address.getApproved(tokenId)',
+    'usdtToken.transferFrom(msg.sender,usdtPrices[tokenId].tokenOwner,usdtPrices[tokenId].price)']
+    Analyze External Address
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+        There are ['usdtToken'] should be checked in variable usdtToken
+        Checked variables: usdtToken
+            State variable usdtToken has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

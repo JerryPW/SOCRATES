@@ -1,0 +1,99 @@
+
+Start analyze function: UnicornToken._disperseEth()
+Function Security Analysis for UnicornToken._disperseEth()
+    There are no modifiers should be examined in function _disperseEth.
+    Check direct function security
+        - function UnicornToken._disperseEth() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code snippet does not contain any checks or conditions involving 'msg.sender' in relation to an owner or address requirement.
+        - function UnicornToken._disperseEth() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not meet any of the specified structural conditions. It lacks the 'require' or 'if(!xxx) throw' statements expected for evaluating
+          specific boolean conditions and changing them subsequently, as described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_tax', 'transfer', 'transferFrom', '_transfer']
+        Function Security Analysis for UnicornToken._tax(address)
+            There are no modifiers should be examined in function _tax.
+            Check direct function security
+                - function UnicornToken._tax(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any of the specified structures involving msg.sender. It checks a condition on _sender, not msg.sender.
+                - function UnicornToken._tax(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not include any of the specified structures. It doesn't have 'require' or 'if' statements checking the truthiness or falsity
+                  of a variable and setting it to its opposite value accordingly.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['transfer', 'transferFrom', '_transfer']
+                Function Security Analysis for UnicornToken.transfer(address,uint256)
+                    There are no modifiers should be examined in function transfer.
+                    Check direct function security
+                        - function UnicornToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The provided function does not include any of the specified structures involving msg.sender.
+                        - function UnicornToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided code does not contain any of the specified structures involving 'require' or 'if(!xxx) throw'. It is a simple function that
+                          calls another function and returns a boolean value directly.
+External Call Analysis
+    Direct external call: ['m_EthReflectSvcAddress.transfer(m_EthReflectAmount)']
+    Analyze Transfer
+        - m_EthReflectSvcAddress.transfer(m_EthReflectAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external
+        call contains the '.transfer(' keyword, which satisfies one of the specified characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Taxable.payTaxes(uint256,uint256)
+Function Security Analysis for Taxable.payTaxes(uint256,uint256)
+    There are no modifiers should be examined in function payTaxes.
+    Check direct function security
+        - function Taxable.payTaxes(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given code does not include any checks or statements related to 'msg.sender'. The function lacks any of the specified structures that compare
+          'msg.sender' to owner or managerial roles.
+        - function Taxable.payTaxes(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any require or if statements with the specific patterns listed in the criteria, such as require(xxx == True), require(xxx ==
+          False), require(!xxx), or if(!xxx) throw within the structure described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_tax', '_disperseEth', 'transfer', 'transferFrom', '_transfer']
+        Function Security Analysis for UnicornToken._tax(address)
+            There are no modifiers should be examined in function _tax.
+            Check direct function security
+                - function UnicornToken._tax(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any require, if-check with msg.sender related to checkAuthorizeOwner or similar logic.
+                - function UnicornToken._tax(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not have any 'require' statements or direct conditional checks with a throw. It also does not toggle a boolean variable between
+                  True and False. It only performs operations when _readyToTax returns true, without altering any boolean state variable. Hence, it doesn't match any of
+                  the specified structures.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['transfer', 'transferFrom', '_transfer']
+                Function Security Analysis for UnicornToken.transfer(address,uint256)
+                    There are no modifiers should be examined in function transfer.
+                    Check direct function security
+                        - function UnicornToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not include any checks for the authenticity of the sender as the owner, address, leader, or CEO using msg.sender.
+                        - function UnicornToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided code does not contain any of the specified structures that involve conditional checks using 'require' or 'if' followed by
+                          variable assignments that match the given patterns.
+External Call Analysis
+    Direct external call: ['_address.transfer(_amount)', 'External.deposit(_amount)']
+    Analyze Transfer
+        - _address.transfer(_amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call '_address.transfer(_amount)'
+        contains the keyword '.transfer('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - External.deposit(_amount) ISN'T subjected to gas limits.
+    Remaining external call: ['External.deposit(_amount)']
+    Analyze External Address
+        There are ['External'] should be checked in variable External
+        Checked variables: External
+            No The provided function 'initTax' does not satisfy the first characteristic as it is not a constructor. The function name, 'initTax', does not match the
+            contract name 'UnicornToken' nor is it explicitly named 'constructor'. The second characteristic is also not satisfied as there is no direct hardcoding of the
+            specific state variable 'External' within the function code; the 'External' in the function refers to an assignment of a new instance of 'FTPExternal', not a
+            state variable that matches 'External'.
+            Function Security Analysis for Taxable.initTax()
+                There are no modifiers should be examined in function initTax.
+                Check direct function security
+                    - function Taxable.initTax() has no security assurance protected by checking the authority of msg.sender
+                      Reason: The code does not have any require or assert statements checking msg.sender against owner or address roles.
+                    - function Taxable.initTax() has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The given code does not contain any require or if statement that matches the specified conditions. It directly assigns values to variables
+                      and calls a function, without any conditional check or state change as specified.
+                Since the function can only be called by functions, we start to analyze indirect function security.
+                The reachable functions are ['constructor']
+                    Function Security Analysis for UnicornToken.constructor()
+                        This is a constructor.
+Conclusion: This function will not cause REE Problem.

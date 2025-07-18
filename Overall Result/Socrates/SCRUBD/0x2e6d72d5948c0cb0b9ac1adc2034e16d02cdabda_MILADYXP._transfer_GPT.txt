@@ -1,0 +1,38 @@
+
+Start analyze function: MILADYXP._transfer(address,address,uint256)
+Function Security Analysis for MILADYXP._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function MILADYXP._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified patterns related to msg.sender checking for owner or specific addresses.
+        - function MILADYXP._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified patterns with the 'require' or 'if' statements directly leading to setting a boolean variable to true or
+          false.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for MILADYXP.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function MILADYXP.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function code provided does not include any check or assertion that compares `msg.sender` to a specific owner or authorized address. It
+                  simply calls another function `_transfer` with `msg.sender` as one of the parameters, and there are no conditional structures that match the criteria
+                  given.
+                - function MILADYXP.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not contain any `require` or `if(!xxx) throw` statement, nor does it involve changing a boolean variable within those
+                  conditional structures as described in any of the mentioned patterns.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: MILADYXP.swapBack()
+Function Security Analysis for MILADYXP.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: Upon review, the modifier lockTheSwap does indeed use a flag (inSwapAndLiquify) by setting it to true at the start and false at the end, ensuring the
+          function is entered only once. Both lock (setting true) and unlock (setting false) operations are present, which aligns with rule 2.
+Conclusion: This function will not cause REE Problem.

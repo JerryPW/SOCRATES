@@ -1,0 +1,299 @@
+Dex.tradeRoutes: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function tradeRoutes(ERC20 src, uint256 srcAmount, ERC20 dest, uint256 minDestAmount, address[] _tradingPaths) payable public returns(uint256)  {
+        uint256 destAmount;
+
+        if (etherERC20 != src) {
+            // Transfer token to This address
+            src.transferFrom(msg.sender, address(this), srcAmount);
+        }
+
+        uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // TODO: Check if amount send correctly, because solidty will not raise error when not enough amount
+            msg.sender.send(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        Trade( src, srcAmount, dest, destAmount);
+
+        return destAmount;
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function tradeRoutes(ERC20 src, uint256 srcAmount, ERC20 dest, uint256 minDestAmount, address[] _tradingPaths) payable public returns(uint256)  {
+        uint256 destAmount;
+
+        if (etherERC20 != src) {
+            // Transfer token to This address
+            src.transferFrom(msg.sender, address(this), srcAmount);
+        }
+
+        uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // TODO: Check if amount send correctly, because solidty will not raise error when not enough amount
+            msg.sender.send(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        Trade( src, srcAmount, dest, destAmount);
+
+        return destAmount;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function tradeRoutes(ERC20 src, uint256 srcAmount, ERC20 dest, uint256 minDestAmount, address[] _tradingPaths) payable public returns(uint256)  {
+        uint256 destAmount;
+
+        if (etherERC20 != src) {
+            // Transfer token to This address
+            src.transferFrom(msg.sender, address(this), srcAmount);
+        }
+
+        uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // TODO: Check if amount send correctly, because solidty will not raise error when not enough amount
+            msg.sender.send(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        Trade( src, srcAmount, dest, destAmount);
+
+        return destAmount;
+    }
+Response:
+{"StatementsA": {"destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);":"Updates the state variable destAmount with the result of the _trade function call."}, "StatementsB": {"msg.sender.send(destAmount);":"Executes an external call to send ether to the sender's address."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+2.External Call: msg.sender.send(destAmount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function tradeRoutes(ERC20 src, uint256 srcAmount, ERC20 dest, uint256 minDestAmount, address[] _tradingPaths) payable public returns(uint256)  {
+        uint256 destAmount;
+
+        if (etherERC20 != src) {
+            // Transfer token to This address
+            src.transferFrom(msg.sender, address(this), srcAmount);
+        }
+
+        uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // TODO: Check if amount send correctly, because solidty will not raise error when not enough amount
+            msg.sender.send(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        Trade( src, srcAmount, dest, destAmount);
+
+        return destAmount;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function tradeRoutes(ERC20 src, uint256 srcAmount, ERC20 dest, uint256 minDestAmount, address[] _tradingPaths) payable public returns(uint256)  {
+        uint256 destAmount;
+
+        if (etherERC20 != src) {
+            // Transfer token to This address
+            src.transferFrom(msg.sender, address(this), srcAmount);
+        }
+
+        uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // TODO: Check if amount send correctly, because solidty will not raise error when not enough amount
+            msg.sender.send(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        Trade( src, srcAmount, dest, destAmount);
+
+        return destAmount;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function tradeRoutes(ERC20 src, uint256 srcAmount, ERC20 dest, uint256 minDestAmount, address[] _tradingPaths) payable public returns(uint256)  {
+        uint256 destAmount;
+
+        if (etherERC20 != src) {
+            // Transfer token to This address
+            src.transferFrom(msg.sender, address(this), srcAmount);
+        }
+
+        uint256 pathSrcAmount = srcAmount;
+        for (uint i=0; i < _tradingPaths.length; i+=3) {
+            uint256 tradingProxyIndex =         uint256(_tradingPaths[i]);
+            ERC20 pathSrc =                     ERC20(_tradingPaths[i+1]);
+            ERC20 pathDest =                    ERC20(_tradingPaths[i+2]);
+
+            destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+            pathSrcAmount = destAmount;
+        }
+
+        // Throw exception if destination amount doesn't meet user requirement.
+        assert(destAmount >= minDestAmount);
+
+        // Trade Any -> ETH
+        if (etherERC20 == dest) {
+            // Send back ether to sender
+            // TODO: Check if amount send correctly, because solidty will not raise error when not enough amount
+            msg.sender.send(destAmount);
+        
+        // Trade Any -> Token
+        } else {
+            // Send back token to sender
+            // Some ERC20 Smart contract not return Bool, so we can't check here
+            // require(dest.transfer(msg.sender, destAmount));
+            dest.transfer(msg.sender, destAmount);
+        }
+
+        Trade( src, srcAmount, dest, destAmount);
+
+        return destAmount;
+    }
+Response:
+{"StatementsA": {"destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);":"Updates the state variable destAmount with the result of the _trade function."}, "StatementsB": {"msg.sender.send(destAmount);":"Executes an external call to send ether to the sender."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: destAmount = _trade(tradingProxyIndex, pathSrc, pathSrcAmount, pathDest, 1);
+2.External Call: msg.sender.send(destAmount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

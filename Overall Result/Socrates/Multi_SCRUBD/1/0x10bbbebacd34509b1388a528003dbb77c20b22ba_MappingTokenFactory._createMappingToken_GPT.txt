@@ -1,0 +1,44 @@
+
+Start analyze function: MappingTokenFactory._createMappingToken(uint256,address,address,string,string,uint8,uint256)
+Function Security Analysis for MappingTokenFactory._createMappingToken(uint256,address,address,string,string,uint8,uint256)
+    There are no modifiers should be examined in function _createMappingToken.
+    Check direct function security
+        - function MappingTokenFactory._createMappingToken(uint256,address,address,string,string,uint8,uint256) has no security assurance protected by checking the
+        authority of msg.sender
+          Reason: The function does not contain any of the specified require/assert or condition that checks the msg.sender against an owner address.
+        - function MappingTokenFactory._createMappingToken(uint256,address,address,string,string,uint8,uint256) has no apparent security assurance by utilizing a lock
+        machinism.
+          Reason: The code does not exhibit any of the defined structures. It does not contain any 'require' statement followed by reassignment of the same variable, as
+          described in either of the provided structures. It has a 'require' statement, but it checks the condition and throws an error if the condition is not met,
+          without further modifying the checked variable.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['createMappingToken', 'createMappingToken']
+        Function Security Analysis for MappingTokenFactory.createMappingToken(uint256,address,string,string,uint8,uint256,Signature[])
+            There are no modifiers should be examined in function createMappingToken.
+            Check direct function security
+                - function MappingTokenFactory.createMappingToken(uint256,address,string,string,uint8,uint256,Signature[]) has no security assurance protected by checking
+                the authority of msg.sender
+                  Reason: The function does not include any checks against `msg.sender` to verify if it is a specific owner or leader address.
+                - function MappingTokenFactory.createMappingToken(uint256,address,string,string,uint8,uint256,Signature[]) has no apparent security assurance by utilizing
+                a lock machinism.
+                  Reason: The code does not have any require statement to check if a variable is true or false, change its value to the opposite, and optionally change it
+                  back. It lacks the specified structures entirely.
+External Call Analysis
+    Direct external call: ['InitializableProductProxy(address(mappingToken)).__InitializableProductProxy_init(address(this),_MappingToken_,abi.encodeWithSignature(__Mappi
+    ngToken_init(address,uint256,address,address,string,string,uint8,uint256),address(this),mainChainId,token,creator,name,symbol,decimals,cap))']
+    Analyze Transfer
+    Analyze Gas
+        - InitializableProductProxy(address(mappingToken)).__InitializableProductProxy_init(address(this),_MappingToken_,abi.encodeWithSignature(__MappingToken_init(addre
+        ss,uint256,address,address,string,string,uint8,uint256),address(this),mainChainId,token,creator,name,symbol,decimals,cap)) ISN'T subjected to gas limits.
+    Remaining external call: ['InitializableProductProxy(address(mappingToken)).__InitializableProductProxy_init(address(this),_MappingToken_,abi.encodeWithSignature(__Ma
+    ppingToken_init(address,uint256,address,address,string,string,uint8,uint256),address(this),mainChainId,token,creator,name,symbol,decimals,cap))']
+    Analyze External Address
+        The variable 'mappingToken' in external call 'InitializableProductProxy(address(mappingToken)).__InitializableProductProxy_init(address(this),_MappingToken_,abi.e
+        ncodeWithSignature(__MappingToken_init(address,uint256,address,address,string,string,uint8,uint256),address(this),mainChainId,token,creator,name,symbol,decimals,c
+        ap))' has no state variable assigned in MappingTokenFactory._createMappingToken(uint256,address,address,string,string,uint8,uint256). Therefore we check whether
+        it has been hardcoded in the function.
+            No The function _createMappingToken dynamically creates a new contract using create2 and assigns a new address each time it's called. It utilizes variables
+            and inputs such as mainChainId, token, creator, name, symbol, decimals, and cap, which are parameters of the function and influence the output address of
+            mappingToken. Since the address of mappingToken is determined at runtime based on the inputs and is not fixed or predetermined, the variable mappingToken is
+            not hardcoded in this context.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,63 @@
+
+Start analyze function: EbyteDistribution.fallback()
+Function Security Analysis for EbyteDistribution.fallback()
+    The modifier of function fallback are ['onlyWhitelist', 'isUnlocked']
+    The result of checking modifiers:
+        - modifier onlyWhitelist has no relation with controlled by owner.
+          Reason: The modifier only checks if msg.sender is not in a blacklist. It does not check for a specific owner or address (Rule 1) nor does it refer to any
+          locking mechanism (Rule 2). The function name 'onlyWhitelist' does not inherently suggest ownership or reentrancy protection without additional context (Rule
+          3).
+        - modifier isUnlocked has no relation with controlled by owner.
+          Reason: Upon re-evaluating the modifier 'isUnlocked', it uses 'require(!contractLocked);', which indeed only checks if the contract is not locked before
+          proceeding with the function. However, there is no evidence of resetting or setting this flag within this modifier to ensure it enters only once, hence it does
+          not fully implement both lock and unlock operations required for a lock operation mechanism. Therefore, this does not satisfy the conditions for characteristic
+          2.
+    Check direct function security
+        - function EbyteDistribution.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures where msg.sender is checked for equivalence or inequality with an identifier like
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function EbyteDistribution.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code snippet does not contain any of the specified structures. It lacks 'require(xxx == True/False)' or 'if(!xxx) throw', as well as the
+          subsequent assignment of 'xxx = False/True'.
+External Call Analysis
+    Direct external call: ['ebyteToken.transfer(investor,toGiveT)', 'ebyteToken.transfer(investor,toGiveE)']
+    Analyze Transfer
+        - ebyteToken.transfer(investor,toGiveT) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - ebyteToken.transfer(investor,toGiveE) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - ebyteToken.transfer(investor,toGiveT) ISN'T subjected to gas limits.
+        - ebyteToken.transfer(investor,toGiveE) ISN'T subjected to gas limits.
+    Remaining external call: ['ebyteToken.transfer(investor,toGiveT)', 'ebyteToken.transfer(investor,toGiveE)']
+    Analyze External Address
+        There are ['ebyteToken'] should be checked in variable ebyteToken
+        Checked variables: ebyteToken
+            Yes The provided function is named 'EbyteDistribution', which matches the contract name, indicating that it is a constructor. Therefore, it satisfies the
+            first characteristic.
+        There are ['ebyteToken'] should be checked in variable ebyteToken
+        Checked variables: ebyteToken
+            Yes The provided function is named 'EbyteDistribution', which matches the contract name 'EbyteDistribution'. This indicates that the function is a constructor
+            based on its name matching the contract name.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: EbyteDistribution.getTokenBalance(address)
+Function Security Analysis for EbyteDistribution.getTokenBalance(address)
+    There are no modifiers should be examined in function getTokenBalance.
+    Check direct function security
+        - function EbyteDistribution.getTokenBalance(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures related to checking or asserting the identity of msg.sender against a specific owner or leader
+          address.
+        - function EbyteDistribution.getTokenBalance(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code snippet does not contain any 'require' or 'if' statements nor any assignment to a boolean variable, which are necessary components for the
+          structures specified in the criteria.
+External Call Analysis
+    Direct external call: ['ebyteToken.balanceOf(who)']
+    Analyze Transfer
+    Analyze Gas
+        - ebyteToken.balanceOf(who) ISN'T subjected to gas limits.
+    Remaining external call: ['ebyteToken.balanceOf(who)']
+    Analyze External Address
+        There are ['ebyteToken'] should be checked in variable ebyteToken
+        Checked variables: ebyteToken
+            Yes The function name 'EbyteDistribution' matches the contract name 'EbyteDistribution', indicating that this function is a constructor. Constructors do not
+            satisfy the characteristic of having hardcoded state variables as they are used for initializing state variables.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,22 @@
+
+Start analyze function: EasySmartolution.getOut()
+Function Security Analysis for EasySmartolution.getOut()
+    There are no modifiers should be examined in function getOut.
+    Check direct function security
+        - function EasySmartolution.getOut() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any check or assertion based on the condition of `msg.sender` equaling or not equaling an owner or leader-like variable as
+          described in the characteristics.
+        - function EasySmartolution.getOut() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't satisfy any of the specified structure characteristics for 'Yes'. The require statement doesn't check for boolean variable equality or
+          inequality, rather it checks address inequality.
+External Call Analysis
+    Direct external call: ['SmartolutionInterface(smartolution).users(address(participant))']
+    Analyze Transfer
+    Analyze Gas
+        - SmartolutionInterface(smartolution).users(address(participant)) ISN'T subjected to gas limits.
+    Remaining external call: ['SmartolutionInterface(smartolution).users(address(participant))']
+    Analyze External Address
+        There are ['smartolution'] should be checked in variable smartolution
+        Checked variables: smartolution
+            State variable smartolution has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

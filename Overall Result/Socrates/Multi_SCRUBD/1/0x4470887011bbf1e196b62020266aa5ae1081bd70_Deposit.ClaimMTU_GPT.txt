@@ -1,0 +1,32 @@
+
+Start analyze function: Deposit.ClaimMTU(bool)
+Function Security Analysis for Deposit.ClaimMTU(bool)
+    The modifier of function ClaimMTU are ['paused']
+    The result of checking modifiers:
+        - modifier paused has no relation with controlled by owner.
+          Reason: None of the specified characteristics are present in the code. Specifically, there is no check for ownership or specific address permissions, no lock
+          operation present, and the function name 'paused' does not imply ownership or reentrancy prevention.
+    Check direct function security
+        - function Deposit.ClaimMTU(bool) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks or assertions based on the msg.sender being equal or not equal to specific addresses like xxxOwner, xxxAddress,
+          Leader, or CEO.
+        - function Deposit.ClaimMTU(bool) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided function does not contain any of the specified code structures where a variable is required to be either true or false and then has its
+          value changed as described in conditions 1 to 4.
+External Call Analysis
+    Direct external call: ['tokenTransfer.transfer(msg.sender,claimTokens)', 'getAddress(team).transfer(ethVal/20)', 'msg.sender.transfer(ethVal)']
+    Analyze Transfer
+        - tokenTransfer.transfer(msg.sender,claimTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - getAddress(team).transfer(ethVal/20) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.transfer('
+        keyword.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(ethVal) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.transfer(' keyword..
+        Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenTransfer.transfer(msg.sender,claimTokens) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenTransfer.transfer(msg.sender,claimTokens)']
+    Analyze External Address
+        The variable 'tokenTransfer' in external call 'tokenTransfer.transfer(msg.sender,claimTokens)' has no state variable assigned in Deposit.ClaimMTU(bool). Therefore
+        we check whether it has been hardcoded in the function.
+            No The variable 'tokenTransfer' is declared as an instance of a token contract using the address obtained from getAddress("unit"). It is not hardcoded as the
+            actual address is dynamically retrieved from a function call and can vary based on the implementation of getAddress.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,57 @@
+
+Start analyze function: MonkeyScam.endRound(LDdatasets.EventReturns)
+Function Security Analysis for MonkeyScam.endRound(LDdatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function MonkeyScam.endRound(LDdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function doesn't have any condition or assertion related to msg.sender matching specific roles like xxxOwner or Leader.
+        - function MonkeyScam.endRound(LDdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not use the 'require' keyword and lacks conditions or variables that match any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyCore', 'withdraw', 'reLoadXname', 'reLoadXid', 'buyXid', 'reLoadXaddr', 'reLoadCore', 'buyXname', 'buyXaddr', 'fallback']
+        Function Security Analysis for MonkeyScam.buyCore(uint256,uint256,LDdatasets.EventReturns)
+            There are no modifiers should be examined in function buyCore.
+            Check direct function security
+                - function MonkeyScam.buyCore(uint256,uint256,LDdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified structures related to msg.sender checking against owner or similar roles.
+                - function MonkeyScam.buyCore(uint256,uint256,LDdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: Upon revisiting the code, the structure `require(xxx == False); xxx = True;` or equivalent variants in JavaScript format is not fully present.
+                  The initial judgment was based on the presence of `if (_now > round_.end && round_.ended == false)` followed by `round_.ended = true;`. However, this
+                  does not strictly conform to the given structures as it lacks a `throw` or `require` statement before setting `round_.ended = true;`. Thus, the criteria
+                  for a structural match have not been fully met.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['fallback', 'buyXid', 'buyXaddr', 'buyXname']
+                Function Security Analysis for MonkeyScam.fallback()
+                    The modifier of function fallback are ['isActivated', 'isHuman', 'isWithinLimits']
+                    The result of checking modifiers:
+                        - modifier isActivated has no relation with controlled by owner.
+                          Reason: The modifier does not enforce owner-only access, nor does it use a lock operation. It only checks if a variable 'activated_' is true,
+                          which does not fall under any of the specified characteristics.
+                        - modifier isHuman has no relation with controlled by owner.
+                          Reason: The modifier isHuman() checks if the sender's address has a code length of zero, implying it is not a smart contract. This does not
+                          directly enforce ownership checks or owner-specific execution. Neither does it use a lock mechanism. Therefore, none of the rules apply in this
+                          case.
+                        - modifier isWithinLimits has no relation with controlled by owner.
+                          Reason: The modifier checks if the input value `_eth` is within the specified limits but does not enforce ownership or specific address
+                          requirements, nor does it implement any lock operations. Therefore, it does not satisfy any of the rules required for a 'Yes' answer.
+                    Check direct function security
+                        - function MonkeyScam.fallback() has no security assurance protected by checking the authority of msg.sender
+                          Reason: The given code does not contain any of the specified structures related to msg.sender verification.
+                        - function MonkeyScam.fallback() has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided code does not exhibit any of the specified structures that include either require(xxx == True) or require(xxx == False)
+                          followed by setting the same variable to its opposite value.
+External Call Analysis
+    Direct external call: ['address(monkeyKing).call.value(_com)()', 'address(monkeyQueue).call.value(_queen)()']
+    Analyze Transfer
+    Analyze Gas
+        - address(monkeyKing).call.value(_com)() ISN'T subjected to gas limits.
+        - address(monkeyQueue).call.value(_queen)() ISN'T subjected to gas limits.
+    Remaining external call: ['address(monkeyKing).call.value(_com)()', 'address(monkeyQueue).call.value(_queen)()']
+    Analyze External Address
+        There are ['monkeyKing'] should be checked in variable monkeyKing
+        Checked variables: monkeyKing
+            State variable monkeyKing has initialized in public area after declaration.
+        There are ['monkeyQueue'] should be checked in variable monkeyQueue
+        Checked variables: monkeyQueue
+            State variable monkeyQueue has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

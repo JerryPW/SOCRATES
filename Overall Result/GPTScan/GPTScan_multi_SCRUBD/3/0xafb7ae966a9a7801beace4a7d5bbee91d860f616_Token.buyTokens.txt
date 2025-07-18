@@ -1,0 +1,77 @@
+Token.buyTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function buyTokens(address _buyer) private {
+		require(_buyer != 0x0);
+		require(msg.value > 0);
+
+		uint256 tokens = msg.value * WeiRatio;
+		require(tokenBalance() >= tokens, "Not enough tokens for sale");
+		token.transfer(_buyer, tokens);
+		SellAmount += tokens;
+
+		emit Buy(msg.sender,WeiRatio,msg.value,tokens);
+	}
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function buyTokens(address _buyer) private {
+		require(_buyer != 0x0);
+		require(msg.value > 0);
+
+		uint256 tokens = msg.value * WeiRatio;
+		require(tokenBalance() >= tokens, "Not enough tokens for sale");
+		token.transfer(_buyer, tokens);
+		SellAmount += tokens;
+
+		emit Buy(msg.sender,WeiRatio,msg.value,tokens);
+	}
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function buyTokens(address _buyer) private {
+		require(_buyer != 0x0);
+		require(msg.value > 0);
+
+		uint256 tokens = msg.value * WeiRatio;
+		require(tokenBalance() >= tokens, "Not enough tokens for sale");
+		token.transfer(_buyer, tokens);
+		SellAmount += tokens;
+
+		emit Buy(msg.sender,WeiRatio,msg.value,tokens);
+	}
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function buyTokens(address _buyer) private {
+		require(_buyer != 0x0);
+		require(msg.value > 0);
+
+		uint256 tokens = msg.value * WeiRatio;
+		require(tokenBalance() >= tokens, "Not enough tokens for sale");
+		token.transfer(_buyer, tokens);
+		SellAmount += tokens;
+
+		emit Buy(msg.sender,WeiRatio,msg.value,tokens);
+	}
+    
+Response:
+No
+--------------------------------------------------

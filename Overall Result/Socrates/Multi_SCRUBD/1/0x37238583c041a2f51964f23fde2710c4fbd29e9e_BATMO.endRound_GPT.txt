@@ -1,0 +1,60 @@
+
+Start analyze function: BATMO.endRound(BATMODatasets.EventReturns)
+Function Security Analysis for BATMO.endRound(BATMODatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function BATMO.endRound(BATMODatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks to verify whether the function caller (msg.sender) is an owner or specific address. It entirely lacks any
+          structures like require(msg.sender == xxxOwner) or if (msg.sender != xxxOwner) throw, which are typically used to control access based on the sender's address.
+        - function BATMO.endRound(BATMODatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function endRound does not contain any of the specified structures. There are no 'require' or 'if' statements related to a variable being checked
+          for true or false and then subsequently setting that variable to its opposite value.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyCore', 'reLoadXname', 'buyXid', 'reLoadCore', 'fallback', 'reLoadXaddr', 'buyXaddr', 'withdraw', 'buyXname', 'reLoadXid']
+        Function Security Analysis for BATMO.buyCore(uint256,uint256,BATMODatasets.EventReturns)
+            There are no modifiers should be examined in function buyCore.
+            Check direct function security
+                - function BATMO.buyCore(uint256,uint256,BATMODatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any require, if, or assert statements that check whether msg.sender is equal to xxxOwner/xxxAddress/Leader/CEO.
+                - function BATMO.buyCore(uint256,uint256,BATMODatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not satisfy any of the defined structures. There are no statements like 'require(xxx == True); xxx = False;' or 'require(xxx ==
+                  False); xxx = True;' or similar constructs in the provided code segment.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['buyXname', 'buyXid', 'buyXaddr', 'fallback']
+                Function Security Analysis for BATMO.buyXname(bytes32)
+                    The modifier of function buyXname are ['isActivated', 'isHuman', 'isWithinLimits']
+                    The result of checking modifiers:
+                        - modifier isActivated has no relation with controlled by owner.
+                          Reason: The modifier checks if 'activated_' is true, but this does not enforce owner-only execution or a single-entry lock, nor is there an
+                          indication like 'Onlyxxx' or 'nonReentrant' in its naming.
+                        - modifier isHuman has no relation with controlled by owner.
+                          Reason: The modifier isHuman does not show any ownership or lock pattern. It only checks if the caller is a regular user account (EOA) and not a
+                          contract by verifying msg.sender == tx.origin and that code size is zero.
+                        - modifier isWithinLimits has no relation with controlled by owner.
+                          Reason: The modifier 'isWithinLimits' checks if the '_eth' value is within a specific range using 'require' statements. It does not enforce that
+                          only the owner or specific addresses can execute the function, nor does it have lock operations like a reentrancy guard. Therefore, it does not
+                          satisfy any of the characteristics mentioned.
+                    Check direct function security
+                        - function BATMO.buyXname(bytes32) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not contain any of the explicit access control structures that were specified as a requirement. There are no `require`,
+                          `if`, or `assert` statements directly checking if `msg.sender` is associated with specific roles or addresses like
+                          xxxOwner/xxxAddress/Leader/CEO.
+                        - function BATMO.buyXname(bytes32) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The function 'buyXname' does not contain any of the specified structural patterns involving a require statement or throw with a specific
+                          variable being toggled between True and False.
+External Call Analysis
+    Direct external call: ['admin2.transfer(_dev/2)', 'address(ObokContract).call.value(_OBOK.sub((_OBOK/3).mul(2)))(bytes4(keccak256()(donateDivs())))',
+    'admin.transfer(_dev/2)']
+    Analyze Transfer
+        - admin2.transfer(_dev/2) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call 'admin2.transfer(_dev/2)' contains
+        the '.transfer(' keyword, satisfying the first condition.. Parameter in 'transfer'/'send': 1.
+        - admin.transfer(_dev/2) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call 'admin.transfer(_dev/2)' contains
+        the '.transfer(' keyword, satisfying the first condition.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - address(ObokContract).call.value(_OBOK.sub((_OBOK/3).mul(2)))(bytes4(keccak256()(donateDivs()))) ISN'T subjected to gas limits.
+    Remaining external call: ['address(ObokContract).call.value(_OBOK.sub((_OBOK/3).mul(2)))(bytes4(keccak256()(donateDivs())))']
+    Analyze External Address
+        There are ['ObokContract'] should be checked in variable ObokContract
+        Checked variables: ObokContract
+            Yes The provided function code is a constructor because its name matches the contract name 'BATMO'.
+Conclusion: This function will not cause REE Problem.

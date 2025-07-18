@@ -1,0 +1,40 @@
+
+Start analyze function: NamiPool._withdrawNAC(address,uint256)
+Function Security Analysis for NamiPool._withdrawNAC(address,uint256)
+    There are no modifiers should be examined in function _withdrawNAC.
+    Check direct function security
+        - function NamiPool._withdrawNAC(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures that relate to checking msg.sender against any owner or leader identifiers.
+        - function NamiPool._withdrawNAC(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. It has a `require` statement, but it does not set the variable to False or True afterwards.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawNonTop', 'withdrawTopForTeam', 'withdrawTop', 'withdrawNonTopForTeam']
+        Function Security Analysis for NamiPool.withdrawNonTop(uint256)
+            There are no modifiers should be examined in function withdrawNonTop.
+            Check direct function security
+                - function NamiPool.withdrawNonTop(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function includes no checks against msg.sender being a specific owner, address, or role like Leader/CEO. It only checks the state of certain
+                  conditions and the user's active or withdrawal status.
+                - function NamiPool.withdrawNonTop(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: Upon reevaluation, the prior assessment was incorrect. The code does not contain a complete structure as described in requirements 1 through 4.
+                  Specifically, for requirement 1, a matching `require(xxx == True);` and `xxx = False;` combination isn't observed. Similarly, for requirements 2, 3, and
+                  4, while the `require(namiPool[_roundIndex][msg.sender].isActive == false);` line is identified, there is no corresponding
+                  `namiPool[_roundIndex][msg.sender].isActive = True;` within the same structural guidelines.  Thus, none of the conditions outlined in the instructions
+                  are met completely and correctly.
+External Call Analysis
+    Direct external call: ['namiToken.balanceOf(this)', 'namiToken.transfer(_shareAddress,namiPool[_roundIndex][_shareAddress].stake)']
+    Analyze Transfer
+        - namiToken.transfer(_shareAddress,namiPool[_roundIndex][_shareAddress].stake) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - namiToken.balanceOf(this) ISN'T subjected to gas limits.
+        - namiToken.transfer(_shareAddress,namiPool[_roundIndex][_shareAddress].stake) ISN'T subjected to gas limits.
+    Remaining external call: ['namiToken.balanceOf(this)', 'namiToken.transfer(_shareAddress,namiPool[_roundIndex][_shareAddress].stake)']
+    Analyze External Address
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes The function 'NamiPool' provided in the code matches the contract name 'NamiPool', which indicates that this function is a constructor. Therefore, it
+            satisfies the first characteristic outlined.
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes The function is a constructor because it has the same name as the contract, NamiPool. This satisfies characteristic 1.
+Conclusion: This function will not cause REE Problem.

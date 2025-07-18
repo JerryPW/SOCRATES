@@ -1,0 +1,19 @@
+
+Start analyze function: DappVolumeAd.updateInvestor()
+Function Security Analysis for DappVolumeAd.updateInvestor()
+    There are no modifiers should be examined in function updateInvestor.
+    Check direct function security
+        - function DappVolumeAd.updateInvestor() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any require, if, or assert statements that check if msg.sender is equal or not equal to xxxOwner/xxxAddress/Leader/CEO.
+        - function DappVolumeAd.updateInvestor() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the prescribed structures. It does not have a require statement checking a boolean condition or an if statement
+          that throws based on a boolean condition.
+External Call Analysis
+    Direct external call: ['theInvestor.send(msg.value.div(100).mul(60))']
+    Analyze Transfer
+        - theInvestor.send(msg.value.div(100).mul(60)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        contains the '.send(' keyword, which matches the characteristic described in the instructions.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

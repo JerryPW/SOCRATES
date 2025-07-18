@@ -1,0 +1,25 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures as it does not perform a check against msg.sender being equal/unequal to a specific
+          address or role like xxxOwner/xxxAddress/Leader/CEO. It mainly performs operations related to the crowdsale and payment handling.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon closer inspection, the code contains only the 'require(!crowdsaleClosed);' without the subsequent 'crowdsaleClosed = True;' statement following it.
+          The second necessary statement for a match is missing, so none of the specified structures are fully matched.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount/price)', 'beneficiary.send(amountRaised)']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.send(amountRaised) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(amountRaised)' contains the '.send(' keyword, which satisfies the condition for the second characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount/price)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided function code indicates that the function name 'Crowdsale' matches the contract name 'Crowdsale'. This implies the function is a constructor.
+Conclusion: This function will not cause REE Problem.

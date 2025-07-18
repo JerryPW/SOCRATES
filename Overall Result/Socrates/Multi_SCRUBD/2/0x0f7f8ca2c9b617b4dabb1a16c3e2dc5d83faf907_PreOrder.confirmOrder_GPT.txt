@@ -1,0 +1,26 @@
+
+Start analyze function: PreOrder.confirmOrder()
+Function Security Analysis for PreOrder.confirmOrder()
+    There are no modifiers should be examined in function confirmOrder.
+    Check direct function security
+        - function PreOrder.confirmOrder() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function contains a condition that checks if msg.sender is equal to guestaddress, which is not one of the designated roles:
+          xxxOwner/xxxAddress/Leader/CEO, according to the rule set for identifying specific access modifiers in the code. Thus, the function does not meet any of the
+          specified structures for outputting 'Yes'.
+        - function PreOrder.confirmOrder() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified required structures. There are conditions and assignments to variables, but none match the
+          necessary structural patterns involving 'require' or 'if(!xxx) throw' alongside variable assignments as described.
+External Call Analysis
+    Direct external call: ['Token(tokenAddress).transfer(owneraddress,price)']
+    Analyze Transfer
+        - Token(tokenAddress).transfer(owneraddress,price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - Token(tokenAddress).transfer(owneraddress,price) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenAddress).transfer(owneraddress,price)']
+    Analyze External Address
+        There are ['tokenAddress'] should be checked in variable tokenAddress
+        Checked variables: tokenAddress
+            Yes 1. The function name 'PreOrder' matches the contract name 'PreOrder', indicating that it is a constructor function. 2. The state variable 'tokenAddress'
+            is assigned the value '_tokenAddress', which is not hardcoded but passed as an argument. Since the function is a constructor, it satisfies the first
+            characteristic.
+Conclusion: This function will not cause REE Problem.

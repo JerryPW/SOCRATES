@@ -1,0 +1,18 @@
+
+Start analyze function: HeroFighting._fight(uint32,uint32)
+Function Security Analysis for HeroFighting._fight(uint32,uint32)
+    The modifier of function _fight are ['whenNotPaused']
+    The result of checking modifiers:
+        - modifier whenNotPaused has no relation with controlled by owner.
+          Reason: The modifier code does not validate the ownership or check specific addresses, nor does it use a lock operation. It simply checks whether a condition
+          (paused) is false. Therefore, none of the characteristics are satisfied.
+    Check direct function security
+        - function HeroFighting._fight(uint32,uint32) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks or assertions involving msg.sender in relation to xxxOwner/xxxAddress/Leader/CEO.
+        - function HeroFighting._fight(uint32,uint32) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing, the previous response was incorrect as it did not fully adhere to one of the specified structures.   - The code includes the condition
+          'if(!flag)' but lacks a direct 'throw' statement following this condition so it does not match the 'if(!xxx) throw;' pattern neither it is a direct variable
+          assignment to true/false afterwards.   Therefore, there is no full match for any of the defined structures in the provided code segment.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    There are no reachable function for internal/private function, please manually check its successor contracts.
+Conclusion: This function will not cause REE Problem.

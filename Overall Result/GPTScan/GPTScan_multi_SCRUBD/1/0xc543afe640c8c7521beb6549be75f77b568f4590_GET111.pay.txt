@@ -1,0 +1,116 @@
+GET111.pay: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function pay() private {
+        uint128 money = uint128(address(this).balance);
+
+        for(uint i=0; i<queue.length; i++){
+
+            uint idx = currentReceiverIndex + i;
+
+            Deposit storage dep = queue[idx];
+
+            if(money >= dep.expect){
+                dep.depositor.send(dep.expect);
+                money -= dep.expect;
+
+                //User total paid
+                delete queue[idx];
+            }else{
+                
+                dep.depositor.send(money);
+                dep.expect -= money;
+                break;
+            }
+
+            if(gasleft() <= 50000)
+                break;
+        }
+
+        currentReceiverIndex += i;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function pay() private {
+        uint128 money = uint128(address(this).balance);
+
+        for(uint i=0; i<queue.length; i++){
+
+            uint idx = currentReceiverIndex + i;
+
+            Deposit storage dep = queue[idx];
+
+            if(money >= dep.expect){
+                dep.depositor.send(dep.expect);
+                money -= dep.expect;
+
+                //User total paid
+                delete queue[idx];
+            }else{
+                
+                dep.depositor.send(money);
+                dep.expect -= money;
+                break;
+            }
+
+            if(gasleft() <= 50000)
+                break;
+        }
+
+        currentReceiverIndex += i;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function pay() private {
+        uint128 money = uint128(address(this).balance);
+
+        for(uint i=0; i<queue.length; i++){
+
+            uint idx = currentReceiverIndex + i;
+
+            Deposit storage dep = queue[idx];
+
+            if(money >= dep.expect){
+                dep.depositor.send(dep.expect);
+                money -= dep.expect;
+
+                //User total paid
+                delete queue[idx];
+            }else{
+                
+                dep.depositor.send(money);
+                dep.expect -= money;
+                break;
+            }
+
+            if(gasleft() <= 50000)
+                break;
+        }
+
+        currentReceiverIndex += i;
+    }
+Response:
+{"StatementsA": {"currentReceiverIndex += i;":"Updates the state variable currentReceiverIndex."}, "StatementsB": {"dep.depositor.send(dep.expect);":"Executes an external call to send ether to the depositor."}, "VariableA": {"dep.depositor": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: currentReceiverIndex += i;
+2.External Call: dep.depositor.send(dep.expect);
+3.Variable A: dep.depositor
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

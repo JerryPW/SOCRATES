@@ -1,0 +1,29 @@
+
+Start analyze function: Pandora.returnDeposit()
+Function Security Analysis for Pandora.returnDeposit()
+    There are no modifiers should be examined in function returnDeposit.
+    Check direct function security
+        - function Pandora.returnDeposit() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain require, if with throw, or assert statements checking if msg.sender is an Owner, Address, Leader, or CEO, nor does it verify
+          msg.sender equality conditions.
+        - function Pandora.returnDeposit() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback']
+        Function Security Analysis for Pandora.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function Pandora.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: None of the specified structures involving msg.sender compared to an owner or equivalent exist in the code.
+                - function Pandora.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures. Specifically, it doesn't have require statements or if-throw patterns related to
+                  boolean variables (xxx) being set to true or false as described.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(getPay)']
+    Analyze Transfer
+        - msg.sender.transfer(getPay) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, which is one of the specified characteristics to check for.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

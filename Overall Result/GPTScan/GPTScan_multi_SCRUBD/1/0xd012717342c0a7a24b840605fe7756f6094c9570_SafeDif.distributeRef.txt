@@ -1,0 +1,83 @@
+SafeDif.distributeRef: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function distributeRef(uint256 _eth, uint256 _affID) private{
+        
+        uint256 _allaff = (_eth.mul(8)).div(100);
+        
+        uint256 _affID1 = _affID;
+        uint256 _affID2 = player_[_affID1].laff;
+        uint256 _affID3 = player_[_affID2].laff;
+        uint256 _aff = 0;
+
+        if (_affID1 != 0) {   
+            _aff = (_eth.mul(5)).div(100);
+            _allaff = _allaff.sub(_aff);
+            player_[_affID1].aff = _aff.add(player_[_affID1].aff);
+            player_[_affID1].addr.transfer(_aff);
+        }
+
+        if (_affID2 != 0) {   
+            _aff = (_eth.mul(2)).div(100);
+            _allaff = _allaff.sub(_aff);
+            player_[_affID2].aff = _aff.add(player_[_affID2].aff);
+            player_[_affID2].addr.transfer(_aff);
+        }
+
+        if (_affID3 != 0) {   
+            _aff = (_eth.mul(1)).div(100);
+            _allaff = _allaff.sub(_aff);
+            player_[_affID3].aff = _aff.add(player_[_affID3].aff);
+            player_[_affID3].addr.transfer(_aff);
+       }
+
+        if(_allaff > 0 ){
+            affiAddr_.transfer(_allaff);
+        }      
+    }	
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function distributeRef(uint256 _eth, uint256 _affID) private{
+        
+        uint256 _allaff = (_eth.mul(8)).div(100);
+        
+        uint256 _affID1 = _affID;
+        uint256 _affID2 = player_[_affID1].laff;
+        uint256 _affID3 = player_[_affID2].laff;
+        uint256 _aff = 0;
+
+        if (_affID1 != 0) {   
+            _aff = (_eth.mul(5)).div(100);
+            _allaff = _allaff.sub(_aff);
+            player_[_affID1].aff = _aff.add(player_[_affID1].aff);
+            player_[_affID1].addr.transfer(_aff);
+        }
+
+        if (_affID2 != 0) {   
+            _aff = (_eth.mul(2)).div(100);
+            _allaff = _allaff.sub(_aff);
+            player_[_affID2].aff = _aff.add(player_[_affID2].aff);
+            player_[_affID2].addr.transfer(_aff);
+        }
+
+        if (_affID3 != 0) {   
+            _aff = (_eth.mul(1)).div(100);
+            _allaff = _allaff.sub(_aff);
+            player_[_affID3].aff = _aff.add(player_[_affID3].aff);
+            player_[_affID3].addr.transfer(_aff);
+       }
+
+        if(_allaff > 0 ){
+            affiAddr_.transfer(_allaff);
+        }      
+    }	
+    
+Response:
+No
+--------------------------------------------------

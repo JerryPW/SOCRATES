@@ -1,0 +1,29 @@
+
+Start analyze function: XetherGames.sendDividends()
+Function Security Analysis for XetherGames.sendDividends()
+    There are no modifiers should be examined in function sendDividends.
+    Check direct function security
+        - function XetherGames.sendDividends() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any statement that compares 'msg.sender' with xxxOwner/xxxAddress/Leader/CEO using require, if, or assert statements.
+        - function XetherGames.sendDividends() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any statements that match the required patterns with specific use of "require" or "if throw" syntax with boolean variable
+          toggling.
+External Call Analysis
+    Direct external call: ['xEtherTokensContract.ecosystemDividends.value(tmpDividends)()']
+    Analyze Transfer
+    Analyze Gas
+        - xEtherTokensContract.ecosystemDividends.value(tmpDividends)() ISN'T subjected to gas limits.
+    Remaining external call: ['xEtherTokensContract.ecosystemDividends.value(tmpDividends)()']
+    Analyze External Address
+        There are ['xEtherTokensContract'] should be checked in variable xEtherTokensContract
+        Checked variables: xEtherTokensContract
+            No 1. The function name 'setXEtherContract' does not match the contract name 'XetherGames' and is not explicitly named 'constructor', so it is not a
+            constructor. 2. The function code assigns a value to 'xEtherTokensContract' but does not use a hardcoded value; it takes 'xEtherContract' as a parameter.
+            Hence, it is dynamic and not hardcoded. Therefore, the function does not satisfy any of the given conditions.
+            Function Security Analysis for XetherGames.setXEtherContract(address)
+                The modifier of function setXEtherContract are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier contains 'require(msg.sender == owner)' which matches the criteria of enforcing that only the owner can execute the function.
+                      This corresponds to structure 1, which checks whether the code enforces that only the owner can execute the function.
+Conclusion: This function will not cause REE Problem.

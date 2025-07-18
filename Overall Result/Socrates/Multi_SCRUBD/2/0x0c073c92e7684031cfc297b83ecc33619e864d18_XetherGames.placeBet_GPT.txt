@@ -1,0 +1,50 @@
+
+Start analyze function: XetherGames.placeBet(uint256,uint32,uint256,uint256,uint256,bytes32,bytes32)
+Function Security Analysis for XetherGames.placeBet(uint256,uint32,uint256,uint256,uint256,bytes32,bytes32)
+    There are no modifiers should be examined in function placeBet.
+    Check direct function security
+        - function XetherGames.placeBet(uint256,uint32,uint256,uint256,uint256,bytes32,bytes32) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The smart contract code does not contain any checks or assertions involving 'msg.sender' equality or inequality with a specified 'Owner', 'Address',
+          'Leader', or 'CEO'. It mainly contains 'require' statements for conditions like 'amount', 'modulo', and signature validation, but none of these compare
+          'msg.sender' explicitly against a specific address of a higher authority or role.
+        - function XetherGames.placeBet(uint256,uint32,uint256,uint256,uint256,bytes32,bytes32) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not explicitly contain any of the specified 'require' structures followed by reassignment as described. The requires are individually
+          placed, with no logical progression from a require of a boolean value followed by its opposite assignment or throwing exceptions. None of the characteristic
+          patterns outlined in the instructions are present.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: XetherGames.sendDividends()
+Function Security Analysis for XetherGames.sendDividends()
+    There are no modifiers should be examined in function sendDividends.
+    Check direct function security
+        - function XetherGames.sendDividends() has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the specified patterns (1-4) related to msg.sender checks are present in the function.
+        - function XetherGames.sendDividends() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not match any of the specified structures as it does not contain any 'require' or 'throw' statements that check a condition. It
+          lacks the specific conditional checking structure combined with state modification that is necessary to satisfy any of the characteristics.
+External Call Analysis
+    Direct external call: ['xEtherTokensContract.ecosystemDividends.value(tmpDividends)()']
+    Analyze Transfer
+    Analyze Gas
+        - xEtherTokensContract.ecosystemDividends.value(tmpDividends)() ISN'T subjected to gas limits.
+    Remaining external call: ['xEtherTokensContract.ecosystemDividends.value(tmpDividends)()']
+    Analyze External Address
+        There are ['xEtherTokensContract'] should be checked in variable xEtherTokensContract
+        Checked variables: xEtherTokensContract
+            No 1. The function name 'setXEtherContract' does not match the contract name 'XetherGames', nor is it explicitly named 'constructor'. Therefore, it is not a
+            constructor function.  2. The function does not hardcode the state variable 'xEtherTokensContract'; instead, it assigns it based on the input parameter
+            'xEtherContract'.  Since none of the conditions are met, the output is 'No'.
+            Function Security Analysis for XetherGames.setXEtherContract(address)
+                The modifier of function setXEtherContract are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The code in the modifier has a 'require' statement checking 'msg.sender == owner', which matches the first characteristic of enforcing
+                      execution by only the owner.
+Conclusion: This function will not cause REE Problem.

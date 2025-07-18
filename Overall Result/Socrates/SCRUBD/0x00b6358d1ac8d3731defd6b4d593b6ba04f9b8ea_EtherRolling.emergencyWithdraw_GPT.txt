@@ -1,0 +1,20 @@
+
+Start analyze function: EtherRolling.emergencyWithdraw()
+Function Security Analysis for EtherRolling.emergencyWithdraw()
+    There are no modifiers should be examined in function emergencyWithdraw.
+    Check direct function security
+        - function EtherRolling.emergencyWithdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any 'require', 'if', or 'assert' statements using 'msg.sender == xxxOwner' or 'msg.sender != xxxOwner'. The 'msg.sender' is
+          simply used to fetch data without any ownership or authority checks.
+        - function EtherRolling.emergencyWithdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required patterns. There's no "require(xxx == True); xxx = False;" or "require(xxx == False); xxx = True;" or
+          similar patterns present in the function.
+External Call Analysis
+    Direct external call: ['address(msg.sender).transfer(to_payout)']
+    Analyze Transfer
+        - address(msg.sender).transfer(to_payout) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        the '.transfer(' keyword, which matches one of the defined characteristics.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

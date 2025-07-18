@@ -1,0 +1,47 @@
+Router.withdrawSupportFee: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdrawSupportFee(address _paymentToken) external payable {
+        uint256 _totalFee = supporterFee[msg.sender][_paymentToken];
+
+        //check
+        require(_totalFee > 0, "Not Fee");
+
+        //effect
+        supporterFee[msg.sender][_paymentToken] = 0;
+
+        //intaraction
+        if (_paymentToken == address(0)) {
+            payable(msg.sender).transfer(_totalFee);
+        } else {
+            IERC20(_paymentToken).transfer(msg.sender, _totalFee);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdrawSupportFee(address _paymentToken) external payable {
+        uint256 _totalFee = supporterFee[msg.sender][_paymentToken];
+
+        //check
+        require(_totalFee > 0, "Not Fee");
+
+        //effect
+        supporterFee[msg.sender][_paymentToken] = 0;
+
+        //intaraction
+        if (_paymentToken == address(0)) {
+            payable(msg.sender).transfer(_totalFee);
+        } else {
+            IERC20(_paymentToken).transfer(msg.sender, _totalFee);
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

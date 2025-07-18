@@ -1,0 +1,54 @@
+
+Start analyze function: EscrowGoods.yes(uint256,string,uint256)
+Function Security Analysis for EscrowGoods.yes(uint256,string,uint256)
+    There are no modifiers should be examined in function yes.
+    Check direct function security
+        - function EscrowGoods.yes(uint256,string,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code structure does not contain checks on the identity of msg.sender comparing it to any owner, address, leader, or CEO.
+        - function EscrowGoods.yes(uint256,string,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures like `require(xxx == True)` followed by `xxx = False`, `require(xxx == False)` followed by
+          `xxx = True`, `require(!xxx)` followed by `xxx = True`, or `if(!xxx) throw` followed by `xxx = true`. It mainly consists of conditional checks and returns but
+          not with the specific required pattern.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: EscrowGoods.safeSend(address,uint256)
+Function Security Analysis for EscrowGoods.safeSend(address,uint256)
+    There are no modifiers should be examined in function safeSend.
+    Check direct function security
+        - function EscrowGoods.safeSend(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified checks involving msg.sender.
+        - function EscrowGoods.safeSend(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluating the code, the correct structure should involve:  4. {if(!xxx) throw; xxx = true; ... xxx = False;}  However, the code actually
+          contains: "if(atomicLock) throw; atomicLock = true;"  but the initial condition should be 'if(!atomicLock)' according to the structure in pattern 4. This
+          doesn't fully satisfy the requirement because the negation is missing. The existing code checks if atomicLock is true (without negation), instead of false as
+          specified in 'if(!xxx)'. This is a common mistake, leading to a misinterpretation previously.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['getMoney', 'reject', 'arbYes', 'getFees', 'yes']
+        Function Security Analysis for EscrowGoods.getMoney(uint256)
+            There are no modifiers should be examined in function getMoney.
+            Check direct function security
+                - function EscrowGoods.getMoney(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any condition that checks or asserts anything related to msg.sender. Therefore, it doesn't match any of the given
+                  structures.
+                - function EscrowGoods.getMoney(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not have any of the specified structures. There are checks and actions based on conditions, but they are not of the form
+                  'require(xxx)' then changing xxx's value, nor do they use 'if(!xxx) throw' followed by changing xxx's value. Instead, the logic revolves around
+                  conditionally sending payments and logging debug messages without redefining the same variable in the required pattern.
+External Call Analysis
+    Direct external call: ['addr.call.gas(safeGas).value(value)()']
+    Analyze Transfer
+    Analyze Gas
+        - addr.call.gas(safeGas).value(value)() is subjected to gas limits safeGas <= 3000. Therefore, it has no potential REE problem. Here is the reason: The variable
+        in question is `safeGas`, which is assigned a constant value of 25000 in the code. This value does not change anywhere in the code, as it is a constant. Constants
+        in Solidity, like `safeGas` here, are assigned with the `constant` keyword, indicating that this value is immutable and will not be updated or modified during the
+        execution of the contract. Therefore, since `safeGas` is always 25000, it is always less than or equal to 3000.  Thus, the statement that `safeGas` is always less
+        than or equal to 3000 is true, given that its value is fixed at 25000 from the start of the contract and never changes.
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

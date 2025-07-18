@@ -1,0 +1,159 @@
+BEAST._transfer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transfer(address sender, address recipient, uint256 amount) internal returns (bool) {
+        if (sender!= owner() && recipient!= owner()) require(tradingOpen, "hold ur horses big guy."); //transfers disabled before tradingActive
+        require(!bots[sender] && !bots[recipient]);
+
+        if(inSwapAndLiquify){ return _basicTransfer(sender, recipient, amount); }
+
+        require(amount <= maxTx || isTxLimitExempt[sender], "tx");
+
+        if(!isTxLimitExempt[recipient] && antiBot)
+        {
+            require(_balances[recipient].add(amount) <= maxWallet, "wallet");
+        }
+
+        if(msg.sender != pair && !inSwapAndLiquify && swapAndLiquifyEnabled && _balances[address(this)] >= swapThreshold){ swapBack(); }
+
+        _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
+        
+        uint256 finalAmount = !isFeeExempt[sender] && !isFeeExempt[recipient] ? takeFee(sender, recipient, amount) : amount;
+        _balances[recipient] = _balances[recipient].add(finalAmount);
+
+        // Dividend tracker
+        if(!isDividendExempt[sender]) {
+            try bensRevival.setShare(sender, _balances[sender]) {} catch {}
+        }
+
+        if(!isDividendExempt[recipient]) {
+            try bensRevival.setShare(recipient, _balances[recipient]) {} catch {} 
+        }
+
+        emit Transfer(sender, recipient, finalAmount);
+        return true;
+    }    
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _transfer(address sender, address recipient, uint256 amount) internal returns (bool) {
+        if (sender!= owner() && recipient!= owner()) require(tradingOpen, "hold ur horses big guy."); //transfers disabled before tradingActive
+        require(!bots[sender] && !bots[recipient]);
+
+        if(inSwapAndLiquify){ return _basicTransfer(sender, recipient, amount); }
+
+        require(amount <= maxTx || isTxLimitExempt[sender], "tx");
+
+        if(!isTxLimitExempt[recipient] && antiBot)
+        {
+            require(_balances[recipient].add(amount) <= maxWallet, "wallet");
+        }
+
+        if(msg.sender != pair && !inSwapAndLiquify && swapAndLiquifyEnabled && _balances[address(this)] >= swapThreshold){ swapBack(); }
+
+        _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
+        
+        uint256 finalAmount = !isFeeExempt[sender] && !isFeeExempt[recipient] ? takeFee(sender, recipient, amount) : amount;
+        _balances[recipient] = _balances[recipient].add(finalAmount);
+
+        // Dividend tracker
+        if(!isDividendExempt[sender]) {
+            try bensRevival.setShare(sender, _balances[sender]) {} catch {}
+        }
+
+        if(!isDividendExempt[recipient]) {
+            try bensRevival.setShare(recipient, _balances[recipient]) {} catch {} 
+        }
+
+        emit Transfer(sender, recipient, finalAmount);
+        return true;
+    }    
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transfer(address sender, address recipient, uint256 amount) internal returns (bool) {
+        if (sender!= owner() && recipient!= owner()) require(tradingOpen, "hold ur horses big guy."); //transfers disabled before tradingActive
+        require(!bots[sender] && !bots[recipient]);
+
+        if(inSwapAndLiquify){ return _basicTransfer(sender, recipient, amount); }
+
+        require(amount <= maxTx || isTxLimitExempt[sender], "tx");
+
+        if(!isTxLimitExempt[recipient] && antiBot)
+        {
+            require(_balances[recipient].add(amount) <= maxWallet, "wallet");
+        }
+
+        if(msg.sender != pair && !inSwapAndLiquify && swapAndLiquifyEnabled && _balances[address(this)] >= swapThreshold){ swapBack(); }
+
+        _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
+        
+        uint256 finalAmount = !isFeeExempt[sender] && !isFeeExempt[recipient] ? takeFee(sender, recipient, amount) : amount;
+        _balances[recipient] = _balances[recipient].add(finalAmount);
+
+        // Dividend tracker
+        if(!isDividendExempt[sender]) {
+            try bensRevival.setShare(sender, _balances[sender]) {} catch {}
+        }
+
+        if(!isDividendExempt[recipient]) {
+            try bensRevival.setShare(recipient, _balances[recipient]) {} catch {} 
+        }
+
+        emit Transfer(sender, recipient, finalAmount);
+        return true;
+    }    
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _transfer(address sender, address recipient, uint256 amount) internal returns (bool) {
+        if (sender!= owner() && recipient!= owner()) require(tradingOpen, "hold ur horses big guy."); //transfers disabled before tradingActive
+        require(!bots[sender] && !bots[recipient]);
+
+        if(inSwapAndLiquify){ return _basicTransfer(sender, recipient, amount); }
+
+        require(amount <= maxTx || isTxLimitExempt[sender], "tx");
+
+        if(!isTxLimitExempt[recipient] && antiBot)
+        {
+            require(_balances[recipient].add(amount) <= maxWallet, "wallet");
+        }
+
+        if(msg.sender != pair && !inSwapAndLiquify && swapAndLiquifyEnabled && _balances[address(this)] >= swapThreshold){ swapBack(); }
+
+        _balances[sender] = _balances[sender].sub(amount, "Insufficient Balance");
+        
+        uint256 finalAmount = !isFeeExempt[sender] && !isFeeExempt[recipient] ? takeFee(sender, recipient, amount) : amount;
+        _balances[recipient] = _balances[recipient].add(finalAmount);
+
+        // Dividend tracker
+        if(!isDividendExempt[sender]) {
+            try bensRevival.setShare(sender, _balances[sender]) {} catch {}
+        }
+
+        if(!isDividendExempt[recipient]) {
+            try bensRevival.setShare(recipient, _balances[recipient]) {} catch {} 
+        }
+
+        emit Transfer(sender, recipient, finalAmount);
+        return true;
+    }    
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,27 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check 'msg.sender' against any owner or specific address roles.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reviewing the code, the only matched statement in the provided structures is 'require(!crowdsaleClosed);'. However, the subsequent statement
+          'crowdsaleClosed = True;' or any equivalent assignment statement for the variable 'crowdsaleClosed' is absent. Therefore, none of the given structure
+          requirements that require both statements are fully satisfied in the code.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount*10000)', 'beneficiary.send(amount)']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount*10000) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - beneficiary.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(amount)' contains the '.send(' keyword, which is one of the criteria to satisfy the condition.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount*10000) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount*10000)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function matches the contract name 'Crowdsale', which indicates that this is a constructor function. Constructor functions typically initialize the
+            state of the contract and are expected to run once at the time of contract deployment. It also sets the state variable 'tokenReward', but this happens through
+            a parameter and not a hardcoded value, thus it does not satisfy the second condition.
+Conclusion: This function will not cause REE Problem.

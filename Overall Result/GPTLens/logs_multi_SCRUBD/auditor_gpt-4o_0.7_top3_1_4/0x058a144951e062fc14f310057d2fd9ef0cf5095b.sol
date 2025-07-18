@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "acceptNewOwner",
+        "code": "function acceptNewOwner() public { require(msg.sender == newOwner); owner = msg.sender; }",
+        "vulnerability": "Potential unauthorized ownership transfer",
+        "reason": "If the newOwner address is not properly controlled, anyone who can set themselves as the newOwner can call acceptNewOwner and become the contract owner. This could lead to control over the contract being transferred to an unintended party.",
+        "file_name": "0x058a144951e062fc14f310057d2fd9ef0cf5095b.sol"
+    },
+    {
+        "function_name": "transferFrom",
+        "code": "function transferFrom(address payable from, address payable to, uint value) public returns(bool success) { uint256 allowance = allowances[from][msg.sender]; require(allowance > 0, \"Not approved\"); require(allowance >= value, \"Over spending limit\"); allowances[from][msg.sender] = allowance.sub(value); actualTransfer(from, to, value, \"\", \"\", false); return true; }",
+        "vulnerability": "Missing event emission after allowance change",
+        "reason": "The function does not emit an Approval event after updating the allowance. This is against the ERC20 standard, which requires an Approval event to be emitted on any change of allowance, providing transparency and traceability of allowance changes.",
+        "file_name": "0x058a144951e062fc14f310057d2fd9ef0cf5095b.sol"
+    },
+    {
+        "function_name": "createTokens",
+        "code": "function createTokens(address creator, uint256 eth, address referrer, bool reinvestment) internal returns(uint256) { uint256 parentReferralRequirement = hourglass.stakingRequirement(); uint256 referralBonus = eth / HOURGLASS_FEE / HOURGLASS_BONUS; bool usedHourglassMasternode = false; bool invalidMasternode = false; if (referrer == NULL_ADDRESS) { referrer = savedReferral[creator]; } uint256 tmp = hourglass.balanceOf(address(refHandler)); if (creator == referrer) { invalidMasternode = true; } else if (referrer == NULL_ADDRESS) { usedHourglassMasternode = true; } else if (balances[referrer] >= referralRequirement && (tmp >= parentReferralRequirement || hourglass.balanceOf(address(this)) >= parentReferralRequirement)) { } else if (hourglass.balanceOf(referrer) >= parentReferralRequirement) { usedHourglassMasternode = true; } else { invalidMasternode = true; } uint256 createdTokens = hourglass.totalSupply(); if (tmp < parentReferralRequirement) { if (reinvestment) { tmp = refHandler.totalBalance(); if (tmp < eth) { tmp = eth - tmp; if (address(this).balance < tmp) { hourglass.withdraw(); } address(refHandler).transfer(tmp); } refHandler.buyTokensFromBalance(NULL_ADDRESS, eth); } else { refHandler.buyTokens.value(eth)(invalidMasternode ? NULL_ADDRESS : (usedHourglassMasternode ? referrer : address(this))); } tmp = hourglass.balanceOf(address(refHandler)); } else { if (reinvestment) { if (address(this).balance < eth && hourglass.myDividends(true) > 0) { hourglass.withdraw(); } if (address(this).balance < eth) { refHandler.sendETH(address(this), eth - address(this).balance); }} hourglass.buy.value(eth)(invalidMasternode ? NULL_ADDRESS : (usedHourglassMasternode ? referrer : address(refHandler)));} createdTokens = hourglass.totalSupply() - createdTokens; totalSupply += createdTokens; uint256 bonusTokens = hourglass.myTokens() + tmp - totalSupply; tmp = 0; if (invalidMasternode) { tmp |= 1; } if (usedHourglassMasternode) { tmp |= 2; } if (reinvestment) { tmp |= 4; } emit onTokenPurchase(creator, eth, createdTokens, bonusTokens, referrer, uint8(tmp)); createdTokens += bonusTokens; balances[creator] += createdTokens; totalSupply += bonusTokens; emit Transfer(address(this), creator, createdTokens, \"\"); emit Transfer(address(this), creator, createdTokens); payouts[creator] += int256(profitPerShare * createdTokens); if (reinvestment) { lastTotalBalance = lastTotalBalance.sub(eth); } distributeDividends((usedHourglassMasternode || invalidMasternode) ? 0 : referralBonus, referrer); if (referrer != NULL_ADDRESS) { savedReferral[creator] = referrer; } return createdTokens; }",
+        "vulnerability": "Potential misuse of referral system",
+        "reason": "The system allows the creation of tokens with a referral bonus even if the referrer is not valid (e.g., NULL_ADDRESS). This could be exploited to unfairly increase token balance by repeatedly using invalid referral data. Additionally, improper handling of referrer logic could allow token creation with inappropriate bonuses.",
+        "file_name": "0x058a144951e062fc14f310057d2fd9ef0cf5095b.sol"
+    }
+]

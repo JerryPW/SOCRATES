@@ -1,0 +1,23 @@
+
+Start analyze function: SynthetixEscrow.vest()
+Function Security Analysis for SynthetixEscrow.vest()
+    There are no modifiers should be examined in function vest.
+    Check direct function security
+        - function SynthetixEscrow.vest() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any form of sender verification using 'msg.sender == xxxOwner/xxxAddress/Leader/CEO' or any equivalent form.
+        - function SynthetixEscrow.vest() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified structures such as 'require(xxx == True); xxx = False;' or any of its variants as defined in the
+          criteria.
+External Call Analysis
+    Direct external call: ['synthetix.transfer(msg.sender,total)']
+    Analyze Transfer
+        - synthetix.transfer(msg.sender,total) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - synthetix.transfer(msg.sender,total) ISN'T subjected to gas limits.
+    Remaining external call: ['synthetix.transfer(msg.sender,total)']
+    Analyze External Address
+        There are ['synthetix'] should be checked in variable synthetix
+        Checked variables: synthetix
+            Yes The code contains a constructor function explicitly naming 'constructor' for the contract 'SynthetixEscrow', which initializes the state variable
+            'synthetix'. This matches characteristic 1.
+Conclusion: This function will not cause REE Problem.

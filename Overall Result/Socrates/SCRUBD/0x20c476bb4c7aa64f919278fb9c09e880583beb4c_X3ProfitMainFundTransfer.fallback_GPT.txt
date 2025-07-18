@@ -1,0 +1,24 @@
+
+Start analyze function: X3ProfitMainFundTransfer.fallback()
+Function Security Analysis for X3ProfitMainFundTransfer.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function X3ProfitMainFundTransfer.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not involve a direct or logical check ensuring msg.sender is equal or not equal to an Owner/Address/Leader/CEO before executing
+          sensitive operations. It only checks msg.sender in context of conditions like safe status or specific contract addresses which are not qualifying indicators for
+          security controls against roles like Owner/Leader or similar.
+        - function X3ProfitMainFundTransfer.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reevaluation, the code does not fulfill any of the specified structures completely. In the provided code, `isResend` is set to `msg.sender ==
+          ADDRESS_EIFP2_CONTRACT` and later to `false`, but it is not used in a condition like `require(!isResend)` or `require(isResend == True)`. Furthermore, it
+          doesn't contain both required statements as listed in any one of the four structures. Thus, the judgement of 'Yes' was incorrect; it should be 'No'.
+External Call Analysis
+    Direct external call: ['ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)()']
+    Analyze Transfer
+    Analyze Gas
+        - ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)() ISN'T subjected to gas limits.
+    Remaining external call: ['ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)()']
+    Analyze External Address
+        There are ['ADDRESS_EIFP2_CONTRACT'] should be checked in variable ADDRESS_EIFP2_CONTRACT
+        Checked variables: ADDRESS_EIFP2_CONTRACT
+            State variable ADDRESS_EIFP2_CONTRACT has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

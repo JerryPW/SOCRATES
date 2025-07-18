@@ -1,0 +1,357 @@
+BDSM_Crowdsale.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function() payable {
+	    
+	    if(now > 1519084800) price = 0.0105 * 1 ether; // if time later than - 20 February 2018 - price x3
+	    else if(now > 1516406400) price = 0.0070 * 1 ether; // if time later than - 20 January 2018 - price x2
+	    
+		tokenFree = sharesTokenAddress.balanceOf(this); // free tokens count
+		
+		if (now < startICO) {
+		    msg.sender.transfer(msg.value);
+		}
+		else if (now > stopICO) {
+			msg.sender.transfer(msg.value); // if crowdsale closed - cash back
+			if(!tokenWithdraw){ // when crowdsale closed - unsold tokens transfer to stopScamHolder
+			    sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+			    tokenFree = sharesTokenAddress.balanceOf(this);
+			    tokenWithdraw = true;
+			    crowdsaleClosed = true;
+			}
+		} 
+		else if (crowdsaleClosed) {
+			msg.sender.transfer(msg.value); // if no more tokens - cash back
+		} 
+		else {
+			uint256 tokenToBuy = msg.value / price * coeff; // tokens to buy
+			if(tokenToBuy <= 0) msg.sender.transfer(msg.value); // mistake protector
+			require(tokenToBuy > 0);
+			uint256 actualETHTransfer = tokenToBuy * price / coeff;
+			if (tokenFree >= tokenToBuy) { // free tokens >= tokens to buy, sell tokens
+				owner.transfer(actualETHTransfer);
+				if (msg.value > actualETHTransfer){ // if more than need - cash back
+					msg.sender.transfer(msg.value - actualETHTransfer);
+				}
+				sharesTokenAddress.transfer(msg.sender, tokenToBuy);
+				tokenSold += tokenToBuy;
+				tokenFree -= tokenToBuy;
+				if(tokenFree==0) crowdsaleClosed = true;
+			} else { // free tokens < tokens to buy 
+				uint256 sendETH = tokenFree * price / coeff; // price for all free tokens
+				owner.transfer(sendETH); 
+				sharesTokenAddress.transfer(msg.sender, tokenFree); 
+				msg.sender.transfer(msg.value - sendETH); // more than need - cash back
+				tokenSold += tokenFree;
+				tokenFree = sharesTokenAddress.balanceOf(this);
+				crowdsaleClosed = true;
+			}
+		}
+		TokenFree(tokenFree);
+		CrowdsaleClosed(crowdsaleClosed);
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function() payable {
+	    
+	    if(now > 1519084800) price = 0.0105 * 1 ether; // if time later than - 20 February 2018 - price x3
+	    else if(now > 1516406400) price = 0.0070 * 1 ether; // if time later than - 20 January 2018 - price x2
+	    
+		tokenFree = sharesTokenAddress.balanceOf(this); // free tokens count
+		
+		if (now < startICO) {
+		    msg.sender.transfer(msg.value);
+		}
+		else if (now > stopICO) {
+			msg.sender.transfer(msg.value); // if crowdsale closed - cash back
+			if(!tokenWithdraw){ // when crowdsale closed - unsold tokens transfer to stopScamHolder
+			    sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+			    tokenFree = sharesTokenAddress.balanceOf(this);
+			    tokenWithdraw = true;
+			    crowdsaleClosed = true;
+			}
+		} 
+		else if (crowdsaleClosed) {
+			msg.sender.transfer(msg.value); // if no more tokens - cash back
+		} 
+		else {
+			uint256 tokenToBuy = msg.value / price * coeff; // tokens to buy
+			if(tokenToBuy <= 0) msg.sender.transfer(msg.value); // mistake protector
+			require(tokenToBuy > 0);
+			uint256 actualETHTransfer = tokenToBuy * price / coeff;
+			if (tokenFree >= tokenToBuy) { // free tokens >= tokens to buy, sell tokens
+				owner.transfer(actualETHTransfer);
+				if (msg.value > actualETHTransfer){ // if more than need - cash back
+					msg.sender.transfer(msg.value - actualETHTransfer);
+				}
+				sharesTokenAddress.transfer(msg.sender, tokenToBuy);
+				tokenSold += tokenToBuy;
+				tokenFree -= tokenToBuy;
+				if(tokenFree==0) crowdsaleClosed = true;
+			} else { // free tokens < tokens to buy 
+				uint256 sendETH = tokenFree * price / coeff; // price for all free tokens
+				owner.transfer(sendETH); 
+				sharesTokenAddress.transfer(msg.sender, tokenFree); 
+				msg.sender.transfer(msg.value - sendETH); // more than need - cash back
+				tokenSold += tokenFree;
+				tokenFree = sharesTokenAddress.balanceOf(this);
+				crowdsaleClosed = true;
+			}
+		}
+		TokenFree(tokenFree);
+		CrowdsaleClosed(crowdsaleClosed);
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function() payable {
+	    
+	    if(now > 1519084800) price = 0.0105 * 1 ether; // if time later than - 20 February 2018 - price x3
+	    else if(now > 1516406400) price = 0.0070 * 1 ether; // if time later than - 20 January 2018 - price x2
+	    
+		tokenFree = sharesTokenAddress.balanceOf(this); // free tokens count
+		
+		if (now < startICO) {
+		    msg.sender.transfer(msg.value);
+		}
+		else if (now > stopICO) {
+			msg.sender.transfer(msg.value); // if crowdsale closed - cash back
+			if(!tokenWithdraw){ // when crowdsale closed - unsold tokens transfer to stopScamHolder
+			    sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+			    tokenFree = sharesTokenAddress.balanceOf(this);
+			    tokenWithdraw = true;
+			    crowdsaleClosed = true;
+			}
+		} 
+		else if (crowdsaleClosed) {
+			msg.sender.transfer(msg.value); // if no more tokens - cash back
+		} 
+		else {
+			uint256 tokenToBuy = msg.value / price * coeff; // tokens to buy
+			if(tokenToBuy <= 0) msg.sender.transfer(msg.value); // mistake protector
+			require(tokenToBuy > 0);
+			uint256 actualETHTransfer = tokenToBuy * price / coeff;
+			if (tokenFree >= tokenToBuy) { // free tokens >= tokens to buy, sell tokens
+				owner.transfer(actualETHTransfer);
+				if (msg.value > actualETHTransfer){ // if more than need - cash back
+					msg.sender.transfer(msg.value - actualETHTransfer);
+				}
+				sharesTokenAddress.transfer(msg.sender, tokenToBuy);
+				tokenSold += tokenToBuy;
+				tokenFree -= tokenToBuy;
+				if(tokenFree==0) crowdsaleClosed = true;
+			} else { // free tokens < tokens to buy 
+				uint256 sendETH = tokenFree * price / coeff; // price for all free tokens
+				owner.transfer(sendETH); 
+				sharesTokenAddress.transfer(msg.sender, tokenFree); 
+				msg.sender.transfer(msg.value - sendETH); // more than need - cash back
+				tokenSold += tokenFree;
+				tokenFree = sharesTokenAddress.balanceOf(this);
+				crowdsaleClosed = true;
+			}
+		}
+		TokenFree(tokenFree);
+		CrowdsaleClosed(crowdsaleClosed);
+	}
+Response:
+{"StatementsA": {"tokenSold += tokenToBuy;":"Updates the state variable tokenSold."}, "StatementsB": {"sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: tokenSold += tokenToBuy;
+2.External Call: sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function() payable {
+	    
+	    if(now > 1519084800) price = 0.0105 * 1 ether; // if time later than - 20 February 2018 - price x3
+	    else if(now > 1516406400) price = 0.0070 * 1 ether; // if time later than - 20 January 2018 - price x2
+	    
+		tokenFree = sharesTokenAddress.balanceOf(this); // free tokens count
+		
+		if (now < startICO) {
+		    msg.sender.transfer(msg.value);
+		}
+		else if (now > stopICO) {
+			msg.sender.transfer(msg.value); // if crowdsale closed - cash back
+			if(!tokenWithdraw){ // when crowdsale closed - unsold tokens transfer to stopScamHolder
+			    sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+			    tokenFree = sharesTokenAddress.balanceOf(this);
+			    tokenWithdraw = true;
+			    crowdsaleClosed = true;
+			}
+		} 
+		else if (crowdsaleClosed) {
+			msg.sender.transfer(msg.value); // if no more tokens - cash back
+		} 
+		else {
+			uint256 tokenToBuy = msg.value / price * coeff; // tokens to buy
+			if(tokenToBuy <= 0) msg.sender.transfer(msg.value); // mistake protector
+			require(tokenToBuy > 0);
+			uint256 actualETHTransfer = tokenToBuy * price / coeff;
+			if (tokenFree >= tokenToBuy) { // free tokens >= tokens to buy, sell tokens
+				owner.transfer(actualETHTransfer);
+				if (msg.value > actualETHTransfer){ // if more than need - cash back
+					msg.sender.transfer(msg.value - actualETHTransfer);
+				}
+				sharesTokenAddress.transfer(msg.sender, tokenToBuy);
+				tokenSold += tokenToBuy;
+				tokenFree -= tokenToBuy;
+				if(tokenFree==0) crowdsaleClosed = true;
+			} else { // free tokens < tokens to buy 
+				uint256 sendETH = tokenFree * price / coeff; // price for all free tokens
+				owner.transfer(sendETH); 
+				sharesTokenAddress.transfer(msg.sender, tokenFree); 
+				msg.sender.transfer(msg.value - sendETH); // more than need - cash back
+				tokenSold += tokenFree;
+				tokenFree = sharesTokenAddress.balanceOf(this);
+				crowdsaleClosed = true;
+			}
+		}
+		TokenFree(tokenFree);
+		CrowdsaleClosed(crowdsaleClosed);
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function() payable {
+	    
+	    if(now > 1519084800) price = 0.0105 * 1 ether; // if time later than - 20 February 2018 - price x3
+	    else if(now > 1516406400) price = 0.0070 * 1 ether; // if time later than - 20 January 2018 - price x2
+	    
+		tokenFree = sharesTokenAddress.balanceOf(this); // free tokens count
+		
+		if (now < startICO) {
+		    msg.sender.transfer(msg.value);
+		}
+		else if (now > stopICO) {
+			msg.sender.transfer(msg.value); // if crowdsale closed - cash back
+			if(!tokenWithdraw){ // when crowdsale closed - unsold tokens transfer to stopScamHolder
+			    sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+			    tokenFree = sharesTokenAddress.balanceOf(this);
+			    tokenWithdraw = true;
+			    crowdsaleClosed = true;
+			}
+		} 
+		else if (crowdsaleClosed) {
+			msg.sender.transfer(msg.value); // if no more tokens - cash back
+		} 
+		else {
+			uint256 tokenToBuy = msg.value / price * coeff; // tokens to buy
+			if(tokenToBuy <= 0) msg.sender.transfer(msg.value); // mistake protector
+			require(tokenToBuy > 0);
+			uint256 actualETHTransfer = tokenToBuy * price / coeff;
+			if (tokenFree >= tokenToBuy) { // free tokens >= tokens to buy, sell tokens
+				owner.transfer(actualETHTransfer);
+				if (msg.value > actualETHTransfer){ // if more than need - cash back
+					msg.sender.transfer(msg.value - actualETHTransfer);
+				}
+				sharesTokenAddress.transfer(msg.sender, tokenToBuy);
+				tokenSold += tokenToBuy;
+				tokenFree -= tokenToBuy;
+				if(tokenFree==0) crowdsaleClosed = true;
+			} else { // free tokens < tokens to buy 
+				uint256 sendETH = tokenFree * price / coeff; // price for all free tokens
+				owner.transfer(sendETH); 
+				sharesTokenAddress.transfer(msg.sender, tokenFree); 
+				msg.sender.transfer(msg.value - sendETH); // more than need - cash back
+				tokenSold += tokenFree;
+				tokenFree = sharesTokenAddress.balanceOf(this);
+				crowdsaleClosed = true;
+			}
+		}
+		TokenFree(tokenFree);
+		CrowdsaleClosed(crowdsaleClosed);
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function() payable {
+	    
+	    if(now > 1519084800) price = 0.0105 * 1 ether; // if time later than - 20 February 2018 - price x3
+	    else if(now > 1516406400) price = 0.0070 * 1 ether; // if time later than - 20 January 2018 - price x2
+	    
+		tokenFree = sharesTokenAddress.balanceOf(this); // free tokens count
+		
+		if (now < startICO) {
+		    msg.sender.transfer(msg.value);
+		}
+		else if (now > stopICO) {
+			msg.sender.transfer(msg.value); // if crowdsale closed - cash back
+			if(!tokenWithdraw){ // when crowdsale closed - unsold tokens transfer to stopScamHolder
+			    sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+			    tokenFree = sharesTokenAddress.balanceOf(this);
+			    tokenWithdraw = true;
+			    crowdsaleClosed = true;
+			}
+		} 
+		else if (crowdsaleClosed) {
+			msg.sender.transfer(msg.value); // if no more tokens - cash back
+		} 
+		else {
+			uint256 tokenToBuy = msg.value / price * coeff; // tokens to buy
+			if(tokenToBuy <= 0) msg.sender.transfer(msg.value); // mistake protector
+			require(tokenToBuy > 0);
+			uint256 actualETHTransfer = tokenToBuy * price / coeff;
+			if (tokenFree >= tokenToBuy) { // free tokens >= tokens to buy, sell tokens
+				owner.transfer(actualETHTransfer);
+				if (msg.value > actualETHTransfer){ // if more than need - cash back
+					msg.sender.transfer(msg.value - actualETHTransfer);
+				}
+				sharesTokenAddress.transfer(msg.sender, tokenToBuy);
+				tokenSold += tokenToBuy;
+				tokenFree -= tokenToBuy;
+				if(tokenFree==0) crowdsaleClosed = true;
+			} else { // free tokens < tokens to buy 
+				uint256 sendETH = tokenFree * price / coeff; // price for all free tokens
+				owner.transfer(sendETH); 
+				sharesTokenAddress.transfer(msg.sender, tokenFree); 
+				msg.sender.transfer(msg.value - sendETH); // more than need - cash back
+				tokenSold += tokenFree;
+				tokenFree = sharesTokenAddress.balanceOf(this);
+				crowdsaleClosed = true;
+			}
+		}
+		TokenFree(tokenFree);
+		CrowdsaleClosed(crowdsaleClosed);
+	}
+Response:
+{"StatementsA": {"price = 0.0105 * 1 ether;":"Updates the state variable 'price'."}, "StatementsB": {"sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));":"Executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: price = 0.0105 * 1 ether;
+2.External Call: sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

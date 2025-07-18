@@ -1,0 +1,30 @@
+
+Start analyze function: Slaughter3D.DivsToRefundpot()
+Function Security Analysis for Slaughter3D.DivsToRefundpot()
+    There are no modifiers should be examined in function DivsToRefundpot.
+    Check direct function security
+        - function Slaughter3D.DivsToRefundpot() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any of the specified structures related to checking msg.sender against specific roles or addresses before proceeding with
+          its logic.
+        - function Slaughter3D.DivsToRefundpot() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code includes the statement `require(dividends > 0);` which is a condition check ensuring that dividends are greater than 0. However, the code lacks
+          subsequent statements that set the same variable to True, False, or any explicit use of that variable afterwards as described in the provided structures.
+External Call Analysis
+    Direct external call: ['p3dContract.myDividends(true)', 'p3dContract.withdraw()', 'SPASM_.disburse.value(base)()']
+    Analyze Transfer
+    Analyze Gas
+        - p3dContract.myDividends(true) ISN'T subjected to gas limits.
+        - p3dContract.withdraw() ISN'T subjected to gas limits.
+        - SPASM_.disburse.value(base)() ISN'T subjected to gas limits.
+    Remaining external call: ['p3dContract.myDividends(true)', 'p3dContract.withdraw()', 'SPASM_.disburse.value(base)()']
+    Analyze External Address
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['SPASM_'] should be checked in variable SPASM_
+        Checked variables: SPASM_
+            State variable SPASM_ has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

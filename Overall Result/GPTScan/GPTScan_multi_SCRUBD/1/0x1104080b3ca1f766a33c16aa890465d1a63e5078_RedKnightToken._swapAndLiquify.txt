@@ -1,0 +1,140 @@
+RedKnightToken._swapAndLiquify: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function _swapAndLiquify() private {
+		uint256 contractBalance = balanceOf(address(this));
+		uint256 initialETHBalance = address(this).balance;
+
+		uint8 totalFeePrior = _totalFee;
+        uint8 liquidityFeePrior = _liquidityFee;
+        uint8 marketingFeePrior = _marketingFee;
+        uint8 devFeePrior = _devFee;
+        uint8 buyBackFeePrior  = _buyBackFee;
+
+		uint256 amountToLiquify = contractBalance * _liquidityFee / _totalFee / 2;
+		uint256 amountToSwapForETH = contractBalance - amountToLiquify;
+
+		_swapTokensForETH(amountToSwapForETH);
+
+		uint256 ETHBalanceAfterSwap = address(this).balance - initialETHBalance;
+		uint256 totalETHFee = _totalFee - (_liquidityFee / 2);
+		uint256 amountETHLiquidity = ETHBalanceAfterSwap * _liquidityFee / totalETHFee / 2;
+		uint256 amountETHDev = ETHBalanceAfterSwap * _devFee / totalETHFee;
+		uint256 amountETHBuyBack = ETHBalanceAfterSwap * _buyBackFee / totalETHFee;
+		uint256 amountETHMarketing = ETHBalanceAfterSwap - (amountETHLiquidity + amountETHDev + amountETHBuyBack);
+
+		payable(marketingWallet).transfer(amountETHMarketing);
+		payable(devWallet).transfer(amountETHDev);
+        payable(buyBackWallet).transfer(amountETHBuyBack);
+
+		if (amountToLiquify > 0) {
+			_addLiquidity(amountToLiquify, amountETHLiquidity);
+			emit SwapAndLiquify(amountToSwapForETH, amountETHLiquidity, amountToLiquify);
+		}
+		_totalFee = totalFeePrior;
+        _liquidityFee = liquidityFeePrior;
+        _marketingFee = marketingFeePrior;
+        _devFee = devFeePrior;
+        _buyBackFee = buyBackFeePrior;
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function _swapAndLiquify() private {
+		uint256 contractBalance = balanceOf(address(this));
+		uint256 initialETHBalance = address(this).balance;
+
+		uint8 totalFeePrior = _totalFee;
+        uint8 liquidityFeePrior = _liquidityFee;
+        uint8 marketingFeePrior = _marketingFee;
+        uint8 devFeePrior = _devFee;
+        uint8 buyBackFeePrior  = _buyBackFee;
+
+		uint256 amountToLiquify = contractBalance * _liquidityFee / _totalFee / 2;
+		uint256 amountToSwapForETH = contractBalance - amountToLiquify;
+
+		_swapTokensForETH(amountToSwapForETH);
+
+		uint256 ETHBalanceAfterSwap = address(this).balance - initialETHBalance;
+		uint256 totalETHFee = _totalFee - (_liquidityFee / 2);
+		uint256 amountETHLiquidity = ETHBalanceAfterSwap * _liquidityFee / totalETHFee / 2;
+		uint256 amountETHDev = ETHBalanceAfterSwap * _devFee / totalETHFee;
+		uint256 amountETHBuyBack = ETHBalanceAfterSwap * _buyBackFee / totalETHFee;
+		uint256 amountETHMarketing = ETHBalanceAfterSwap - (amountETHLiquidity + amountETHDev + amountETHBuyBack);
+
+		payable(marketingWallet).transfer(amountETHMarketing);
+		payable(devWallet).transfer(amountETHDev);
+        payable(buyBackWallet).transfer(amountETHBuyBack);
+
+		if (amountToLiquify > 0) {
+			_addLiquidity(amountToLiquify, amountETHLiquidity);
+			emit SwapAndLiquify(amountToSwapForETH, amountETHLiquidity, amountToLiquify);
+		}
+		_totalFee = totalFeePrior;
+        _liquidityFee = liquidityFeePrior;
+        _marketingFee = marketingFeePrior;
+        _devFee = devFeePrior;
+        _buyBackFee = buyBackFeePrior;
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function _swapAndLiquify() private {
+		uint256 contractBalance = balanceOf(address(this));
+		uint256 initialETHBalance = address(this).balance;
+
+		uint8 totalFeePrior = _totalFee;
+        uint8 liquidityFeePrior = _liquidityFee;
+        uint8 marketingFeePrior = _marketingFee;
+        uint8 devFeePrior = _devFee;
+        uint8 buyBackFeePrior  = _buyBackFee;
+
+		uint256 amountToLiquify = contractBalance * _liquidityFee / _totalFee / 2;
+		uint256 amountToSwapForETH = contractBalance - amountToLiquify;
+
+		_swapTokensForETH(amountToSwapForETH);
+
+		uint256 ETHBalanceAfterSwap = address(this).balance - initialETHBalance;
+		uint256 totalETHFee = _totalFee - (_liquidityFee / 2);
+		uint256 amountETHLiquidity = ETHBalanceAfterSwap * _liquidityFee / totalETHFee / 2;
+		uint256 amountETHDev = ETHBalanceAfterSwap * _devFee / totalETHFee;
+		uint256 amountETHBuyBack = ETHBalanceAfterSwap * _buyBackFee / totalETHFee;
+		uint256 amountETHMarketing = ETHBalanceAfterSwap - (amountETHLiquidity + amountETHDev + amountETHBuyBack);
+
+		payable(marketingWallet).transfer(amountETHMarketing);
+		payable(devWallet).transfer(amountETHDev);
+        payable(buyBackWallet).transfer(amountETHBuyBack);
+
+		if (amountToLiquify > 0) {
+			_addLiquidity(amountToLiquify, amountETHLiquidity);
+			emit SwapAndLiquify(amountToSwapForETH, amountETHLiquidity, amountToLiquify);
+		}
+		_totalFee = totalFeePrior;
+        _liquidityFee = liquidityFeePrior;
+        _marketingFee = marketingFeePrior;
+        _devFee = devFeePrior;
+        _buyBackFee = buyBackFeePrior;
+	}
+Response:
+{"StatementsA": {"_totalFee = totalFeePrior;":"Restores the _totalFee state variable to its prior value."}, "StatementsB": {"payable(marketingWallet).transfer(amountETHMarketing);":"Executes an external call to transfer ETH to the marketing wallet."}, "VariableA": {"marketingWallet": "Holds the address of the marketing wallet to which ETH is transferred."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _totalFee = totalFeePrior;
+2.External Call: payable(marketingWallet).transfer(amountETHMarketing);
+3.Variable A: marketingWallet
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,17 @@
+Depot.depositSynths: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function depositSynths(uint amount)
+        external
+    {
+        // Grab the amount of synths
+        synth.transferFrom(msg.sender, this, amount);
+
+        // Note, we don't need to add them to the deposit list below, as the Synth contract itself will
+        // call tokenFallback when the transfer happens, adding their deposit to the queue.
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

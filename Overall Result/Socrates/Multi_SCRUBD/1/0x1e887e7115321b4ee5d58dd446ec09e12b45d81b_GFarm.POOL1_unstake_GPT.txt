@@ -1,0 +1,199 @@
+
+Start analyze function: GFarm.POOL1_unstake(uint256)
+Function Security Analysis for GFarm.POOL1_unstake(uint256)
+    There are no modifiers should be examined in function POOL1_unstake.
+    Check direct function security
+        - function GFarm.POOL1_unstake(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function does not have any of the required structures involving 'msg.sender' directly comparing to 'xxxOwner', 'xxxAddress', 'Leader', or
+          'CEO'. It has operations using 'msg.sender' but none matching the specified conditions.
+        - function GFarm.POOL1_unstake(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't fulfill any of the required structures because it does not check for a boolean condition and subsequently change the same boolean as
+          specified.
+External Call Analysis
+    Direct external call: ['lp.transfer(msg.sender,amount)']
+    Analyze Transfer
+        - lp.transfer(msg.sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - lp.transfer(msg.sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['lp.transfer(msg.sender,amount)']
+    Analyze External Address
+        There are ['lp'] should be checked in variable lp
+        Checked variables: lp
+            No The function is named 'set_LP' and is not a constructor, as its name does not match the contract name 'GFarm', nor is it explicitly named 'constructor'.
+            The function does not hardcode the state variable 'lp'; instead, it updates 'lp' to a new value passed as an argument '_lp'. Therefore, the function does not
+            satisfy any of the specified characteristics.
+            Function Security Analysis for GFarm.set_LP(address)
+                The modifier of function set_LP are ['onlyGov']
+                The result of checking modifiers:
+                    - modifier onlyGov is controlled by owner, the function would not cause REE problem.
+                      Reason: The code in the modifier uses the 'require' statement to ensure that the function can only be executed by the 'GOVERNANCE' address. This
+                      directly falls under rule 1, as it restricts access to a specific address ('GOVERNANCE'). The structure does not exhibit characteristics of lock
+                      operations required by rule 2. There is no omission in the judgment based on the code provided.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: GFarm._POOL1_harvest(address)
+Function Security Analysis for GFarm._POOL1_harvest(address)
+    There are no modifiers should be examined in function _POOL1_harvest.
+    Check direct function security
+        - function GFarm._POOL1_harvest(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any condition or assert statement related to checking, comparing, or validating 'msg.sender' against any 'xxxOwner',
+          'xxxAddress', 'Leader', or 'CEO'. The function logic revolves around processing rewards and referrals but does not include access control using 'msg.sender'.
+        - function GFarm._POOL1_harvest(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specific structures as described in the provided characteristics.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['POOL1_harvest', 'POOL1_stake', 'POOL1_unstake']
+        Function Security Analysis for GFarm.POOL1_harvest()
+            There are no modifiers should be examined in function POOL1_harvest.
+            Check direct function security
+                - function GFarm.POOL1_harvest() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code only checks for the block number, it doesn't check or require the msg.sender to be an owner or specific address role like
+                  Owner/Leader/CEO.
+                - function GFarm.POOL1_harvest() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures. It contains a require statement checking block.number against POOLS_START, but this
+                  does not follow the patterns described, as it does not directly manipulate a boolean variable associated with the require statement.
+External Call Analysis
+    Direct external call: ['token.burn(a,pending.mul(POOL1_REFERRAL_P).div(100))']
+    Analyze Transfer
+    Analyze Gas
+        - token.burn(a,pending.mul(POOL1_REFERRAL_P).div(100)) ISN'T subjected to gas limits.
+    Remaining external call: ['token.burn(a,pending.mul(POOL1_REFERRAL_P).div(100))']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            No The provided code contains a function named 'set_TOKEN', which is not a constructor. This is determined because the function name does not match the
+            contract name 'GFarm', nor is the function explicitly named 'constructor'. Additionally, the state variable 'token' is not hardcoded. The function allows the
+            state variable 'token' to be set to a new value passed as a parameter '_token'.
+            Function Security Analysis for GFarm.set_TOKEN(address)
+                The modifier of function set_TOKEN are ['onlyGov']
+                The result of checking modifiers:
+                    - modifier onlyGov is controlled by owner, the function would not cause REE problem.
+                      Reason: The code uses 'require(msg.sender == GOVERNANCE);' to ensure only the GOVERNANCE address can execute the function. This directly matches
+                      rule 1 as it enforces that only a specific address can execute. There is no structural omission as this is the correct and only judgment needed to
+                      match the required rule.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: GFarm.POOL1_update()
+Function Security Analysis for GFarm.POOL1_update()
+    There are no modifiers should be examined in function POOL1_update.
+    Check direct function security
+        - function GFarm.POOL1_update() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not utilize 'msg.sender' at all, so none of the specified structures involving 'msg.sender' are present.
+        - function GFarm.POOL1_update() has no apparent security assurance by utilizing a lock machinism.
+          Reason: None of the structures defined in the task are present in the code.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['POOL1_harvest', 'POOL1_stake', '_POOL1_harvest', 'POOL1_unstake']
+        Function Security Analysis for GFarm.POOL1_harvest()
+            There are no modifiers should be examined in function POOL1_harvest.
+            Check direct function security
+                - function GFarm.POOL1_harvest() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The given code does not include any checks involving `msg.sender` against a specific owner, address, or role such as xxxOwner, xxxAddress,
+                  Leader, or CEO, as per the listed characteristics. It checks only whether the block number has reached POOLS_START before proceeding to execute
+                  _POOL1_harvest with msg.sender as an argument.
+                - function GFarm.POOL1_harvest() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not have any of the specified structures that involve changing a boolean variable's state after a condition check or exception
+                  handling with boolean state changes.
+External Call Analysis
+    Direct external call: ['token.mint(GOVERNANCE,reward.mul(GOVERNANCE_P).div(100*PRECISION))', 'token.mint(address(this),reward)',
+    'token.mint(DEV_FUND,reward.mul(DEV_FUND_P).div(100*PRECISION))']
+    Analyze Transfer
+    Analyze Gas
+        - token.mint(GOVERNANCE,reward.mul(GOVERNANCE_P).div(100*PRECISION)) ISN'T subjected to gas limits.
+        - token.mint(address(this),reward) ISN'T subjected to gas limits.
+        - token.mint(DEV_FUND,reward.mul(DEV_FUND_P).div(100*PRECISION)) ISN'T subjected to gas limits.
+    Remaining external call: ['token.mint(GOVERNANCE,reward.mul(GOVERNANCE_P).div(100*PRECISION))', 'token.mint(address(this),reward)',
+    'token.mint(DEV_FUND,reward.mul(DEV_FUND_P).div(100*PRECISION))']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            No The provided code is not a constructor because the function name 'set_TOKEN' does not match the contract name 'GFarm' and is not explicitly called
+            'constructor'. Additionally, the function does not have a hardcoded state variable as the variable 'token' is set based on an external input '_token' rather
+            than a specific hardcoded value. Thus, the function does not satisfy any of the given characteristics.
+            Function Security Analysis for GFarm.set_TOKEN(address)
+                The modifier of function set_TOKEN are ['onlyGov']
+                The result of checking modifiers:
+                    - modifier onlyGov is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon reviewing the modifier again, the code uses a require statement to enforce that only the address stored in GOVERNANCE can execute the
+                      function. This matches characteristic 1 of checking whether the function allows only the owner or specific addresses to execute it.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            No 1. The function provided is named 'set_TOKEN', which does not match the contract name (GFarm) and is not explicitly named 'constructor'. Therefore, it does
+            not satisfy the constructor characteristic.  2. The function 'set_TOKEN' does not hardcode the state variable 'token'. Instead, it sets the 'token' state
+            variable to the address provided as the '_token' argument, which is determined at runtime rather than being a hardcoded value. Additionally, there is a
+            condition that checks whether 'token' is already set, suggesting that 'token' should initially be zero (GFarmTokenInterface(0)), but this is not inherently
+            the same as hardcoding the variable 'token' in the function itself.
+            Function Security Analysis for GFarm.set_TOKEN(address)
+                The modifier of function set_TOKEN are ['onlyGov']
+                The result of checking modifiers:
+                    - modifier onlyGov is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier 'onlyGov' contains the statement 'require(msg.sender == GOVERNANCE);', which matches rule 1 by enforcing that only the address
+                      in the 'GOVERNANCE' variable can execute the function. No other relevant structural elements are omitted.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            No The function 'set_TOKEN' does not match the contract name 'GFarm', nor is it explicitly named 'constructor'. Therefore, it is not a constructor.
+            Additionally, the function does not hardcode the state variable 'token'; instead, it sets it to the value of the '_token' parameter. Thus, it does not satisfy
+            either of the given characteristics.
+            Function Security Analysis for GFarm.set_TOKEN(address)
+                The modifier of function set_TOKEN are ['onlyGov']
+                The result of checking modifiers:
+                    - modifier onlyGov is controlled by owner, the function would not cause REE problem.
+                      Reason: The code in the modifier enforces that only the GOVERNANCE address can execute the function, as seen in the statement 'require(msg.sender ==
+                      GOVERNANCE);'. This satisfies characteristic 1.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: GFarm.POOLS_safeTokenTransfer(address,uint256)
+Function Security Analysis for GFarm.POOLS_safeTokenTransfer(address,uint256)
+    There are no modifiers should be examined in function POOLS_safeTokenTransfer.
+    Check direct function security
+        - function GFarm.POOLS_safeTokenTransfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code provided does not include checks or assertions related to msg.sender matching specific roles such as owner, address, leader, or CEO.
+        - function GFarm.POOLS_safeTokenTransfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function, 'POOLS_safeTokenTransfer', doesn't explicitly utilize a 'require' statement to check a condition and then subsequently alter it. It
+          lacks the specific structural pattern outlined for conditions and state changes around a variable named 'xxx'. Hence, none of the specified characteristics are
+          satisfied.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['POOL2_harvest', '_POOL2_harvest', 'POOL2_unstake', 'POOL1_stake', 'POOL2_stake', '_POOL1_harvest', 'POOL1_harvest', 'POOL1_unstake']
+        Function Security Analysis for GFarm.POOL2_harvest()
+            There are no modifiers should be examined in function POOL2_harvest.
+            Check direct function security
+                - function GFarm.POOL2_harvest() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any of the required conditions checking for specific roles (like Owner, Address, Leader, CEO) related to
+                  msg.sender.
+                - function GFarm.POOL2_harvest() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not have any of the specific patterns mentioned: it does not set a variable to True or False after checking a condition with
+                  require or if.
+External Call Analysis
+    Direct external call: ['token.transfer(_to,_amount)', 'token.transfer(_to,bal)']
+    Analyze Transfer
+        - token.transfer(_to,_amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - token.transfer(_to,bal) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(_to,_amount) ISN'T subjected to gas limits.
+        - token.transfer(_to,bal) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(_to,_amount)', 'token.transfer(_to,bal)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            No The function provided is 'set_TOKEN', which is not named after the contract name 'GFarm', nor is it explicitly named 'constructor'. Thus, it is not a
+            constructor.   Additionally, this function does not appear to hardcode any state variables directly within the function. It takes an external input '_token'
+            to set the state variable 'token', which means the value is not hardcoded into the contract. Therefore, it does not meet the second characteristic either.
+            Since the function does not meet any of the specified characteristics, the answer is 'No'.
+            Function Security Analysis for GFarm.set_TOKEN(address)
+                The modifier of function set_TOKEN are ['onlyGov']
+                The result of checking modifiers:
+                    - modifier onlyGov is controlled by owner, the function would not cause REE problem.
+                      Reason: The code uses 'require(msg.sender == GOVERNANCE);' to ensure that only the specific address (GOVERNANCE) can execute the function. This
+                      strictly follows characteristic 1, which checks if the function is restricted to specific addresses using require(). There is no mention of lock
+                      operations, so characteristic 2 does not apply. The structure is complete and not omitted.
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            No The function 'set_TOKEN' is not a constructor because its name does not match the contract name 'GFarm' and it is not explicitly labeled as 'constructor'.
+            Additionally, the function does not have a hardcoded state variable 'token'; instead, it allows for setting the 'token' state variable to a new address
+            provided as a parameter, '_token'. The check `require(token == GFarmTokenInterface(0), "Token address already set")` only ensures that the 'token' is set
+            once, but it does not hardcode a specific address.
+            Function Security Analysis for GFarm.set_TOKEN(address)
+                The modifier of function set_TOKEN are ['onlyGov']
+                The result of checking modifiers:
+                    - modifier onlyGov is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier `onlyGov` contains the statement `require(msg.sender == GOVERNANCE);`, which checks if the caller is the specific address
+                      `GOVERNANCE`. This enforces that only the specified address can execute the function, satisfying characteristic 1.
+Conclusion: This function will not cause REE Problem.

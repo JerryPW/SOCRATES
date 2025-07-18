@@ -1,0 +1,31 @@
+
+Start analyze function: VestingContractWTTEST.transfer(address,uint256)
+Function Security Analysis for VestingContractWTTEST.transfer(address,uint256)
+    There are no modifiers should be examined in function transfer.
+    Check direct function security
+        - function VestingContractWTTEST.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specific checks for `msg.sender` being a specific owner or address (like Owner/Address/Leader/CEO) as outlined
+          in the characteristics. Hence, it does not match the structure.
+        - function VestingContractWTTEST.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any 'require(xxx == True)' or 'require(xxx == False)' structure, nor 'require(!xxx)' or 'if(!xxx) throw' structure defined under
+          the given structural conditions. The 'require' statement is used with multiple conditions, but they do not match the specified structural patterns with the use
+          of a single variable.
+External Call Analysis
+    Direct external call: ['we_test_token.balanceOf(this)', 'we_test_token.transfer(to,value)']
+    Analyze Transfer
+        - we_test_token.transfer(to,value) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - we_test_token.balanceOf(this) ISN'T subjected to gas limits.
+        - we_test_token.transfer(to,value) ISN'T subjected to gas limits.
+    Remaining external call: ['we_test_token.balanceOf(this)', 'we_test_token.transfer(to,value)']
+    Analyze External Address
+        There are ['we_test_token'] should be checked in variable we_test_token
+        Checked variables: we_test_token
+            Yes The function provided in the code is named 'VestingContractWTTEST', which matches the given contract name 'VestingContractWTTEST'. This indicates that it
+            is a constructor function for the contract. Constructor functions are used for initializing a contract and setting up its initial state, typically by
+            instantiating state variables like 'we_test_token'.
+        There are ['we_test_token'] should be checked in variable we_test_token
+        Checked variables: we_test_token
+            Yes The function 'VestingContractWTTEST' shares its name with the contract, suggesting it's likely a constructor. Additionally, the state variable
+            'we_test_token' is set using a parameter '_we_test_token', which is not hardcoded, meaning it does not satisfy the second characteristic.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,27 @@
+
+Start analyze function: WithdrawableV2._withdrawAllSurcharges()
+Function Security Analysis for WithdrawableV2._withdrawAllSurcharges()
+    There are no modifiers should be examined in function _withdrawAllSurcharges.
+    Check direct function security
+        - function WithdrawableV2._withdrawAllSurcharges() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any check involving 'msg.sender' against an owner or authority address.
+        - function WithdrawableV2._withdrawAllSurcharges() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures such as 'require(xxx == True); xxx = False;', 'require(xxx == False); xxx = True;',
+          'require(!xxx); xxx = True;', or 'if(!xxx) throw; xxx = true;'. It lacks the use of require statements with the subsequent setting of the same variable.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawRamppSurcharges', 'withdrawERC20']
+        Function Security Analysis for WithdrawableV2.withdrawRamppSurcharges()
+            The modifier of function withdrawRamppSurcharges are ['isRampp']
+            The result of checking modifiers:
+                - modifier isRampp is controlled by owner, the function would not cause REE problem.
+                  Reason: The code in the modifier contains the statement 'require(msg.sender == RAMPPADDRESS, "Ownable: caller is not RAMPP");', which enforces that only
+                  the specific address RAMPPADDRESS can execute the function. Therefore, it matches Rule 1. There are no structural omissions as this single condition is
+                  sufficient for satisfying the requirement of enforcing execution by a specific address or owner.
+        Function Security Analysis for WithdrawableV2.withdrawERC20(address,uint256)
+            The modifier of function withdrawERC20 are ['onlyTeamOrOwner']
+            The result of checking modifiers:
+                - modifier onlyTeamOrOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: Upon double-checking the provided code, it confirms that the modifier onlyTeamOrOwner includes a require statement: 'require(_isOwner ||
+                  _isTeam, "Team: caller is not the owner or in Team.")'. This enforces that only the owner or team members can execute the function. Thus, it satisfies
+                  the first characteristic of checking whether only specific addresses can execute the function.
+Conclusion: This function will not cause REE Problem.

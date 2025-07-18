@@ -1,0 +1,110 @@
+PiZZa.withdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function withdraw(uint amount) public returns(uint){
+		address payable sender = msg.sender;
+		// Retrieve the resolveEarnings associated with the address the request came from.
+		uint upScaleDivs = (uint)((int256)( earningsPerResolve * resolveWeight[sender] ) - payouts[sender]);
+		uint totalEarnings = upScaleDivs / scaleFactor;
+		require( amount <= totalEarnings && amount > 0 );
+		uint oldWeight = resolveWeight[sender];
+		resolveWeight[sender] = oldWeight * ( totalEarnings - amount ) / totalEarnings;
+		uint weightDiff = oldWeight - resolveWeight[sender];
+		resolveToken.transfer( address0, weightDiff);
+		dissolvingResolves -= weightDiff;
+		
+		// something about invariance
+		int withdrawnEarnings = (int)(upScaleDivs * amount / totalEarnings) - (int)(weightDiff*earningsPerResolve);
+		payouts[sender] += withdrawnEarnings;
+		// Increase the total amount that's been paid out to maintain invariance.
+		earningsOffset += withdrawnEarnings;
+
+
+		// Send the resolveEarnings to the address that requested the withdraw.
+		(bool success, ) = sender.call{value: amount}("");
+        require(success, "Transfer failed.");
+
+		emit Withdraw( sender, amount, weightDiff);
+		return weightDiff;
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function withdraw(uint amount) public returns(uint){
+		address payable sender = msg.sender;
+		// Retrieve the resolveEarnings associated with the address the request came from.
+		uint upScaleDivs = (uint)((int256)( earningsPerResolve * resolveWeight[sender] ) - payouts[sender]);
+		uint totalEarnings = upScaleDivs / scaleFactor;
+		require( amount <= totalEarnings && amount > 0 );
+		uint oldWeight = resolveWeight[sender];
+		resolveWeight[sender] = oldWeight * ( totalEarnings - amount ) / totalEarnings;
+		uint weightDiff = oldWeight - resolveWeight[sender];
+		resolveToken.transfer( address0, weightDiff);
+		dissolvingResolves -= weightDiff;
+		
+		// something about invariance
+		int withdrawnEarnings = (int)(upScaleDivs * amount / totalEarnings) - (int)(weightDiff*earningsPerResolve);
+		payouts[sender] += withdrawnEarnings;
+		// Increase the total amount that's been paid out to maintain invariance.
+		earningsOffset += withdrawnEarnings;
+
+
+		// Send the resolveEarnings to the address that requested the withdraw.
+		(bool success, ) = sender.call{value: amount}("");
+        require(success, "Transfer failed.");
+
+		emit Withdraw( sender, amount, weightDiff);
+		return weightDiff;
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function withdraw(uint amount) public returns(uint){
+		address payable sender = msg.sender;
+		// Retrieve the resolveEarnings associated with the address the request came from.
+		uint upScaleDivs = (uint)((int256)( earningsPerResolve * resolveWeight[sender] ) - payouts[sender]);
+		uint totalEarnings = upScaleDivs / scaleFactor;
+		require( amount <= totalEarnings && amount > 0 );
+		uint oldWeight = resolveWeight[sender];
+		resolveWeight[sender] = oldWeight * ( totalEarnings - amount ) / totalEarnings;
+		uint weightDiff = oldWeight - resolveWeight[sender];
+		resolveToken.transfer( address0, weightDiff);
+		dissolvingResolves -= weightDiff;
+		
+		// something about invariance
+		int withdrawnEarnings = (int)(upScaleDivs * amount / totalEarnings) - (int)(weightDiff*earningsPerResolve);
+		payouts[sender] += withdrawnEarnings;
+		// Increase the total amount that's been paid out to maintain invariance.
+		earningsOffset += withdrawnEarnings;
+
+
+		// Send the resolveEarnings to the address that requested the withdraw.
+		(bool success, ) = sender.call{value: amount}("");
+        require(success, "Transfer failed.");
+
+		emit Withdraw( sender, amount, weightDiff);
+		return weightDiff;
+	}
+Response:
+{"StatementsA": {"resolveWeight[sender] = oldWeight * ( totalEarnings - amount ) / totalEarnings;":"Updates the resolveWeight state variable for the sender", "dissolvingResolves -= weightDiff;":"Updates the dissolvingResolves state variable", "payouts[sender] += withdrawnEarnings;":"Updates the payouts state variable for the sender", "earningsOffset += withdrawnEarnings;":"Updates the earningsOffset state variable"}, "StatementsB": {"(bool success, ) = sender.call{value: amount}(\"\");":"Executes an external call to transfer Ether to the sender", "resolveToken.transfer( address0, weightDiff);":"Executes an external call to transfer tokens"}, "VariableA": {"sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: resolveWeight[sender] = oldWeight * ( totalEarnings - amount ) / totalEarnings;
+2.External Call: (bool success, ) = sender.call{value: amount}("");
+3.Variable A: sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

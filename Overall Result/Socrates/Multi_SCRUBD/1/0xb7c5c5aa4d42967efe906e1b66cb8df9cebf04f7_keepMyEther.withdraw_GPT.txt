@@ -1,0 +1,19 @@
+
+Start analyze function: keepMyEther.withdraw()
+Function Security Analysis for keepMyEther.withdraw()
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function keepMyEther.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any checks that relate to the identity or permissions of the msg.sender. It neither requires nor checks if msg.sender is a
+          specific owner, address, leader, or CEO.
+        - function keepMyEther.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the required conditional, assignment, or throw structures specified.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(balances[msg.sender])()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(balances[msg.sender])() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(balances[msg.sender])()']
+    Analyze External Address
+        External call msg.sender.call.value(balances[msg.sender])() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

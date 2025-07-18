@@ -1,0 +1,25 @@
+WINORWATCH._depositWETH: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function _depositWETH(uint256 _amount) private {
+        WETH.deposit{value: _amount}();
+        uint256 _wethBal = WETH.balanceOf(address(this));
+        WETH.transfer(m_UniswapV2Pair, _wethBal);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function _depositWETH(uint256 _amount) private {
+        WETH.deposit{value: _amount}();
+        uint256 _wethBal = WETH.balanceOf(address(this));
+        WETH.transfer(m_UniswapV2Pair, _wethBal);
+    }
+    
+Response:
+No
+--------------------------------------------------

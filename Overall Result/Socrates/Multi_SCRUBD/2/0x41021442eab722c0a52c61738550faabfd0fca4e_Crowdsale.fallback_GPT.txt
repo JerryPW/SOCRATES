@@ -1,0 +1,27 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any 'require', 'if', or 'assert' statements involving msg.sender and an owner, address, leader, or CEO.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code only contains the statement `require(!crowdsaleClosed...)`, which matches part of the structure 3 `{require(!xxx); xxx = True; ... xxx =
+          False;}`. However, the second statement `xxx = True;` is missing from the code. Therefore, the code does not fully satisfy any of the listed structures as both
+          required statements must be present.
+External Call Analysis
+    Direct external call: ['beneficiary.send(amount)', 'tokenReward.transfer(msg.sender,sendTokens)']
+    Analyze Transfer
+        - beneficiary.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(amount)' contains the keyword '.send('.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(msg.sender,sendTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,sendTokens) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,sendTokens)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided function 'Crowdsale' is a constructor since its name matches the contract name 'Crowdsale'. Constructors are special functions in Solidity
+            used for initializing the contract and they usually have the same name as the contract in versions prior to 0.4.22. This satisfies the first characteristic
+            for the judgment.
+Conclusion: This function will not cause REE Problem.

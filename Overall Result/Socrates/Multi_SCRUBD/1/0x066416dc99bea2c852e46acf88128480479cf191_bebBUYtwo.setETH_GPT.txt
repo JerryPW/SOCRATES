@@ -1,0 +1,23 @@
+
+Start analyze function: bebBUYtwo.setETH()
+Function Security Analysis for bebBUYtwo.setETH()
+    There are no modifiers should be examined in function setETH.
+    Check direct function security
+        - function bebBUYtwo.setETH() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any restriction or management checks on msg.sender based on roles.
+        - function bebBUYtwo.setETH() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. It contains a 'require' statement checking if '_user.amount' is 0, but it does not set the
+          same variable ('_user.amount') to True or False. Therefore, it does not match any of the provided structures.
+External Call Analysis
+    Direct external call: ['bebTokenTransfer.transferFrom(msg.sender,address(this),_beb)']
+    Analyze Transfer
+    Analyze Gas
+        - bebTokenTransfer.transferFrom(msg.sender,address(this),_beb) ISN'T subjected to gas limits.
+    Remaining external call: ['bebTokenTransfer.transferFrom(msg.sender,address(this),_beb)']
+    Analyze External Address
+        There are ['bebTokenTransfer'] should be checked in variable bebTokenTransfer
+        Checked variables: bebTokenTransfer
+            Yes 1. The function name 'bebBUYtwo' matches the contract name, which indicates that this is a constructor function.  2. The function contains hardcoded
+            values for several state variables such as 'bebethex', 'decimals', 'BEBday', 'bebjiage', 'bebtime', and 'usdtex'. This satisfies the condition of having
+            hardcoded state variables.
+Conclusion: This function will not cause REE Problem.

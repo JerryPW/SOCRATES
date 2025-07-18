@@ -1,0 +1,26 @@
+
+Start analyze function: FoundersVesting.withdrawTokens()
+Function Security Analysis for FoundersVesting.withdrawTokens()
+    There are no modifiers should be examined in function withdrawTokens.
+    Check direct function security
+        - function FoundersVesting.withdrawTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any of the specified patterns that involve checking or asserting the identity of msg.sender against some owner-like variable.
+        - function FoundersVesting.withdrawTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified patterns, as there is no 'require(xxx == True); xxx = False;' or 'require(xxx == False); xxx = True;'
+          structure, nor any of the other specified patterns in the given function.
+External Call Analysis
+    Direct external call: ['mntToken.balanceOf(this)', 'mntToken.transfer(teamAccountAddress,amountToSend)']
+    Analyze Transfer
+        - mntToken.transfer(teamAccountAddress,amountToSend) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - mntToken.balanceOf(this) ISN'T subjected to gas limits.
+        - mntToken.transfer(teamAccountAddress,amountToSend) ISN'T subjected to gas limits.
+    Remaining external call: ['mntToken.balanceOf(this)', 'mntToken.transfer(teamAccountAddress,amountToSend)']
+    Analyze External Address
+        There are ['mntToken'] should be checked in variable mntToken
+        Checked variables: mntToken
+            Yes The code provided is a constructor because the function name 'FoundersVesting' matches the contract name, 'FoundersVesting'.
+        There are ['mntToken'] should be checked in variable mntToken
+        Checked variables: mntToken
+            Yes The function 'FoundersVesting' matches the contract name 'FoundersVesting', indicating it is a constructor function.
+Conclusion: This function will not cause REE Problem.

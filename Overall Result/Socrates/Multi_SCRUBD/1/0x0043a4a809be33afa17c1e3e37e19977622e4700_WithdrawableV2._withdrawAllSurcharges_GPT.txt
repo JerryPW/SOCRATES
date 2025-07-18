@@ -1,0 +1,25 @@
+
+Start analyze function: WithdrawableV2._withdrawAllSurcharges()
+Function Security Analysis for WithdrawableV2._withdrawAllSurcharges()
+    There are no modifiers should be examined in function _withdrawAllSurcharges.
+    Check direct function security
+        - function WithdrawableV2._withdrawAllSurcharges() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not have any structures to check the identity of msg.sender against an owner, address, leader, or CEO.
+        - function WithdrawableV2._withdrawAllSurcharges() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any 'require' or 'if' statements checking a boolean variable (e.g., xxx == True/False or !xxx) with a subsequent assignment to a
+          different boolean state for the same variable.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawRamppSurcharges', 'withdrawERC20']
+        Function Security Analysis for WithdrawableV2.withdrawRamppSurcharges()
+            The modifier of function withdrawRamppSurcharges are ['isRampp']
+            The result of checking modifiers:
+                - modifier isRampp is controlled by owner, the function would not cause REE problem.
+                  Reason: The code snippet contains a require statement that checks if msg.sender is equal to RAMPPADDRESS, which satisfies Rule 1 for enforcing execution
+                  by a specific address.
+        Function Security Analysis for WithdrawableV2.withdrawERC20(address,uint256)
+            The modifier of function withdrawERC20 are ['onlyTeamOrOwner']
+            The result of checking modifiers:
+                - modifier onlyTeamOrOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier includes the line 'require(_isOwner || _isTeam, "Team: caller is not the owner or in Team.");', which enforces that only the owner
+                  or specific addresses (a team member) can execute the function. This fulfills the requirement of rule 1.
+Conclusion: This function will not cause REE Problem.

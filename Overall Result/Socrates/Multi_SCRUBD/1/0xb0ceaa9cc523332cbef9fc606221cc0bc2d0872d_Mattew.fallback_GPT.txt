@@ -1,0 +1,22 @@
+
+Start analyze function: Mattew.fallback()
+Function Security Analysis for Mattew.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Mattew.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check `msg.sender` against any specific owner or leader address in any of the forms specified. The logic only involves checks on
+          block number, msg.value, and does not involve user checks using `msg.sender`.
+        - function Mattew.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not have any of the specified structures where a requirement check directly leads to an alteration of a boolean variable. The
+          code contains conditionals and some checks on variables, but they do not match the required patterns for setting a boolean variable after a check.
+External Call Analysis
+    Direct external call: ['msg.sender.send(stake)', 'whale.send(stake)']
+    Analyze Transfer
+        - msg.sender.send(stake) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.send(' keyword,
+        indicating it is an external call that satisfies the specified characteristic.. Parameter in 'transfer'/'send': 1.
+        - whale.send(stake) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains '.send(' keyword, indicating it
+        is an external call that satisfies the specified characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

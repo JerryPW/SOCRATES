@@ -1,0 +1,317 @@
+bebBUYtwo.DayQuKuanUsdt: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+     function DayQuKuanUsdt()public{
+         if(now-bebtime>86400){
+            bebtime+=86400;
+            bebjiage+=660000000000;//每日固定上涨0.00000066ETH
+            bebethex=1 ether/bebjiage;
+        }
+        USDTuser storage _users=USDTusers[msg.sender];
+        uint256 _eths=_users.dayamount;
+        require(_eths>0,"You didn't invest");
+        require(_users.bebdays<BEBday,"Expired");
+        uint256 _time=(now-_users.usertime)/86400;
+        require(_time>=1,"Less than a day");
+        uint256 _ddaayy=_users.bebdays+1;
+        if(BEBday==20){
+        bebTokenTransferUSDT.transfer(msg.sender,_eths);
+        USDTWithdraw+=_eths;
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+        uint256 _bebs=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebs);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }
+        }else{
+         uint256 _values=SafeMath.safeDiv(_users.zhiyaBEB,BEBday);
+         bebTokenTransfer.transfer(msg.sender,_values);
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+         uint256 _bebss=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebss);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }   
+        }
+        
+     }
+Response:
+{
+  "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+     function DayQuKuanUsdt()public{
+         if(now-bebtime>86400){
+            bebtime+=86400;
+            bebjiage+=660000000000;//每日固定上涨0.00000066ETH
+            bebethex=1 ether/bebjiage;
+        }
+        USDTuser storage _users=USDTusers[msg.sender];
+        uint256 _eths=_users.dayamount;
+        require(_eths>0,"You didn't invest");
+        require(_users.bebdays<BEBday,"Expired");
+        uint256 _time=(now-_users.usertime)/86400;
+        require(_time>=1,"Less than a day");
+        uint256 _ddaayy=_users.bebdays+1;
+        if(BEBday==20){
+        bebTokenTransferUSDT.transfer(msg.sender,_eths);
+        USDTWithdraw+=_eths;
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+        uint256 _bebs=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebs);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }
+        }else{
+         uint256 _values=SafeMath.safeDiv(_users.zhiyaBEB,BEBday);
+         bebTokenTransfer.transfer(msg.sender,_values);
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+         uint256 _bebss=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebss);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }   
+        }
+        
+     }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+     function DayQuKuanUsdt()public{
+         if(now-bebtime>86400){
+            bebtime+=86400;
+            bebjiage+=660000000000;//每日固定上涨0.00000066ETH
+            bebethex=1 ether/bebjiage;
+        }
+        USDTuser storage _users=USDTusers[msg.sender];
+        uint256 _eths=_users.dayamount;
+        require(_eths>0,"You didn't invest");
+        require(_users.bebdays<BEBday,"Expired");
+        uint256 _time=(now-_users.usertime)/86400;
+        require(_time>=1,"Less than a day");
+        uint256 _ddaayy=_users.bebdays+1;
+        if(BEBday==20){
+        bebTokenTransferUSDT.transfer(msg.sender,_eths);
+        USDTWithdraw+=_eths;
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+        uint256 _bebs=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebs);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }
+        }else{
+         uint256 _values=SafeMath.safeDiv(_users.zhiyaBEB,BEBday);
+         bebTokenTransfer.transfer(msg.sender,_values);
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+         uint256 _bebss=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebss);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }   
+        }
+        
+     }
+Response:
+{"StatementsA": {"bebtime+=86400;":"Updates the state variable 'bebtime'."}, "StatementsB": {"bebTokenTransferUSDT.transfer(msg.sender,_eths);":"Executes an external call to transfer USDT tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: bebtime+=86400;
+2.External Call: bebTokenTransferUSDT.transfer(msg.sender,_eths);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+     function DayQuKuanUsdt()public{
+         if(now-bebtime>86400){
+            bebtime+=86400;
+            bebjiage+=660000000000;//每日固定上涨0.00000066ETH
+            bebethex=1 ether/bebjiage;
+        }
+        USDTuser storage _users=USDTusers[msg.sender];
+        uint256 _eths=_users.dayamount;
+        require(_eths>0,"You didn't invest");
+        require(_users.bebdays<BEBday,"Expired");
+        uint256 _time=(now-_users.usertime)/86400;
+        require(_time>=1,"Less than a day");
+        uint256 _ddaayy=_users.bebdays+1;
+        if(BEBday==20){
+        bebTokenTransferUSDT.transfer(msg.sender,_eths);
+        USDTWithdraw+=_eths;
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+        uint256 _bebs=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebs);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }
+        }else{
+         uint256 _values=SafeMath.safeDiv(_users.zhiyaBEB,BEBday);
+         bebTokenTransfer.transfer(msg.sender,_values);
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+         uint256 _bebss=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebss);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }   
+        }
+        
+     }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+     function DayQuKuanUsdt()public{
+         if(now-bebtime>86400){
+            bebtime+=86400;
+            bebjiage+=660000000000;//每日固定上涨0.00000066ETH
+            bebethex=1 ether/bebjiage;
+        }
+        USDTuser storage _users=USDTusers[msg.sender];
+        uint256 _eths=_users.dayamount;
+        require(_eths>0,"You didn't invest");
+        require(_users.bebdays<BEBday,"Expired");
+        uint256 _time=(now-_users.usertime)/86400;
+        require(_time>=1,"Less than a day");
+        uint256 _ddaayy=_users.bebdays+1;
+        if(BEBday==20){
+        bebTokenTransferUSDT.transfer(msg.sender,_eths);
+        USDTWithdraw+=_eths;
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+        uint256 _bebs=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebs);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }
+        }else{
+         uint256 _values=SafeMath.safeDiv(_users.zhiyaBEB,BEBday);
+         bebTokenTransfer.transfer(msg.sender,_values);
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+         uint256 _bebss=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebss);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }   
+        }
+        
+     }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+     function DayQuKuanUsdt()public{
+         if(now-bebtime>86400){
+            bebtime+=86400;
+            bebjiage+=660000000000;//每日固定上涨0.00000066ETH
+            bebethex=1 ether/bebjiage;
+        }
+        USDTuser storage _users=USDTusers[msg.sender];
+        uint256 _eths=_users.dayamount;
+        require(_eths>0,"You didn't invest");
+        require(_users.bebdays<BEBday,"Expired");
+        uint256 _time=(now-_users.usertime)/86400;
+        require(_time>=1,"Less than a day");
+        uint256 _ddaayy=_users.bebdays+1;
+        if(BEBday==20){
+        bebTokenTransferUSDT.transfer(msg.sender,_eths);
+        USDTWithdraw+=_eths;
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+        uint256 _bebs=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebs);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }
+        }else{
+         uint256 _values=SafeMath.safeDiv(_users.zhiyaBEB,BEBday);
+         bebTokenTransfer.transfer(msg.sender,_values);
+        _users.bebdays=_ddaayy;
+        _users.usertime=now;
+        if(_ddaayy==BEBday){
+         uint256 _bebss=_users.zhiyaBEB*90/100;
+         bebTokenTransfer.transfer(msg.sender,_bebss);
+         _users.amount=0;
+         _users.dayamount=0;
+          _users.bebdays=0;
+          _users.zhiyaBEB=0;
+        }   
+        }
+        
+     }
+Response:
+{"StatementsA": {"bebtime+=86400;":"Updates the state variable 'bebtime'."}, "StatementsB": {"bebTokenTransferUSDT.transfer(msg.sender,_eths);":"Executes an external call to transfer USDT tokens."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: bebtime+=86400;
+2.External Call: bebTokenTransferUSDT.transfer(msg.sender,_eths);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

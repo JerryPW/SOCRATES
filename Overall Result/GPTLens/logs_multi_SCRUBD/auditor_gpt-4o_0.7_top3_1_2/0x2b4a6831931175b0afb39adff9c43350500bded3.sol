@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "_transfer",
+        "code": "function _transfer(address sender, address recipient, uint256 amount) public { emit Transfer(sender,recipient,amount); uint lol = amount; delete(lol); return; }",
+        "vulnerability": "Function performs no actual transfer",
+        "reason": "The _transfer function emits a Transfer event but does not modify any balances, meaning no actual transfer of tokens occurs. This could mislead users and other contracts into thinking a transfer has happened when it has not, potentially being exploited for fraudulent purposes.",
+        "file_name": "0x2b4a6831931175b0afb39adff9c43350500bded3.sol"
+    },
+    {
+        "function_name": "_do_transfer",
+        "code": "function _do_transfer(address sender, address recipient, uint256 amount) private{ require(sender != address(0), \"Transfer from zero\"); require(recipient != address(0), \"Transfer to zero\"); bool isExcluded = (_excluded.contains(sender) || _excluded.contains(recipient) || isCouncil[sender] || isCouncil[recipient]); bool isContractTransfer=(sender==address(this) || recipient==address(this)); bool isBuy=sender==_UniswapPairAddress|| sender == UniswapRouter; bool isSell=recipient==_UniswapPairAddress|| recipient == UniswapRouter; bool isLiquidityTransfer = ((sender == _UniswapPairAddress && recipient == UniswapRouter) || (recipient == _UniswapPairAddress && sender == UniswapRouter)); if(isContractTransfer || isLiquidityTransfer || isExcluded){ _feelessTransfer(sender, recipient, (amount*99)/100); } else{ if(isSell) { if (!streit) { if (sender != owner() && recipient != owner()) { emit Transfer(sender,recipient,amount); return; } } } _taxedTransfer(sender,recipient,amount,isBuy,isSell); } }",
+        "vulnerability": "Inconsistent behavior based on 'streit' flag",
+        "reason": "The _do_transfer function contains logic that behaves differently based on the 'streit' flag. When 'streit' is false, it can potentially bypass the balance update and tax logic, resulting in a Transfer event being emitted without an actual transfer or tax deduction. This inconsistency can be exploited to circumvent tax deductions.",
+        "file_name": "0x2b4a6831931175b0afb39adff9c43350500bded3.sol"
+    },
+    {
+        "function_name": "importantFunction__RescueTokens",
+        "code": "function importantFunction__RescueTokens(address tknAddress) public important { ERC20 token = ERC20(tknAddress); uint256 ourBalance = token.balanceOf(address(this)); require(ourBalance>0, \"No tokens in our balance\"); token.transfer(msg.sender, ourBalance); }",
+        "vulnerability": "Allows arbitrary token withdrawal by council members",
+        "reason": "The importantFunction__RescueTokens function allows anyone with the 'important' modifier (i.e., council members or the owner) to withdraw any ERC20 tokens held by the contract. This could be exploited to drain tokens from the contract without any restrictions or checks on the token type or amount.",
+        "file_name": "0x2b4a6831931175b0afb39adff9c43350500bded3.sol"
+    }
+]

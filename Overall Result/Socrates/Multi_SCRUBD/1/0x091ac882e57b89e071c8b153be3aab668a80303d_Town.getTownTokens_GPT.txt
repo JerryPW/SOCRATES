@@ -1,0 +1,43 @@
+
+Start analyze function: Town.getTownTokens(address)
+Function Security Analysis for Town.getTownTokens(address)
+    There are no modifiers should be examined in function getTownTokens.
+    Check direct function security
+        - function Town.getTownTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks against msg.sender for specific owners or roles as specified.
+        - function Town.getTownTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function doesn't contain any of the specified structures, such as require with a boolean condition on a variable, followed by a state change
+          to that variable.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(change)', '_remunerationsQueue[i_scope_1]._address.transfer(_remunerationsQueue[i_scope_1]._amount)',
+    '_token.transfer(holder,tokenBalance)', '_remunerationsQueue[i]._address.transfer(amount)', '_remunerationsQueue[i_scope_1]._address.transfer(amount)',
+    '_token.transfer(holder,tokenAmount)', '_remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount)']
+    Analyze Transfer
+        - msg.sender.transfer(change) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer(',
+        which matches the condition for the characteristic.. Parameter in 'transfer'/'send': 1.
+        - _remunerationsQueue[i_scope_1]._address.transfer(_remunerationsQueue[i_scope_1]._amount) is subjected to gas limits. Therefore, it has no potential REE problem.
+        Here is the reason: The external call contains '.transfer(', which matches the condition for the characteristic.. Parameter in 'transfer'/'send': 1.
+        - _token.transfer(holder,tokenBalance) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - _remunerationsQueue[i]._address.transfer(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        contains '.transfer(', which matches the condition for the characteristic.. Parameter in 'transfer'/'send': 1.
+        - _remunerationsQueue[i_scope_1]._address.transfer(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains '.transfer(', which matches the condition for the characteristic.. Parameter in 'transfer'/'send': 1.
+        - _token.transfer(holder,tokenAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the
+        reason: The external call contains '.transfer(', which matches the condition for the characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - _token.transfer(holder,tokenBalance) ISN'T subjected to gas limits.
+        - _token.transfer(holder,tokenAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['_token.transfer(holder,tokenBalance)', '_token.transfer(holder,tokenAmount)']
+    Analyze External Address
+        There are ['_token'] should be checked in variable _token
+        Checked variables: _token
+            Yes The provided smart contract code is a constructor, as evident from the function explicitly named 'constructor'. Constructors in Solidity are not named
+            after the contract name as they were in older versions, but instead are declared with the 'constructor' keyword. This satisfies the first characteristic of
+            the external call function.
+        There are ['_token'] should be checked in variable _token
+        Checked variables: _token
+            Yes The provided code contains a constructor function, which is explicitly named 'constructor'. It initializes the contract with various parameters, including
+            hardcoded settings, but not specifically the '_token'. However, the presence of the constructor satisfies the first characteristic requirement regardless of
+            whether the state variable '_token' is hardcoded or not.
+Conclusion: This function will not cause REE Problem.

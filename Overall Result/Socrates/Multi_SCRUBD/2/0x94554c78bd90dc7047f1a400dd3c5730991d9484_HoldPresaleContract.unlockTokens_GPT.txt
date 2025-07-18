@@ -1,0 +1,23 @@
+
+Start analyze function: HoldPresaleContract.unlockTokens()
+Function Security Analysis for HoldPresaleContract.unlockTokens()
+    There are no modifiers should be examined in function unlockTokens.
+    Check direct function security
+        - function HoldPresaleContract.unlockTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any authorization checks involving `msg.sender`. It primarily focuses on verifying token holding conditions.
+        - function HoldPresaleContract.unlockTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code snippet does not match any of the mentioned patterns. There is no 'require' statement or 'if(!xxx) throw' structure with variable
+          reassignment.
+External Call Analysis
+    Direct external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze Transfer
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze External Address
+        There are ['OppToken'] should be checked in variable OppToken
+        Checked variables: OppToken
+            Yes The function 'HoldPresaleContract' in the provided code is a constructor because its name matches the contract name 'HoldPresaleContract'. Constructors
+            are defined by having the same name as the contract in older Solidity versions.
+Conclusion: This function will not cause REE Problem.

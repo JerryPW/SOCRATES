@@ -1,0 +1,11 @@
+
+Start analyze function: InterestTest.payout(address,uint256)
+Function Security Analysis for InterestTest.payout(address,uint256)
+    There are no modifiers should be examined in function payout.
+    Check direct function security
+        - function InterestTest.payout(address,uint256) has security assurance protected by checking the authority of msg.sender, the function would not cause REE
+        problem.
+          Reason: The code contains `if (msg.sender == creator || msg.sender == Owner0 || msg.sender == Owner1)` which does match the identified structures involving
+          checks on msg.sender against specific named roles like Owner or specific addresses. The local variable note about xxx.owner does not affect this particular code
+          as it refers to Owner0 and Owner1 variables defined elsewhere, not a local variable using the pattern like xxx.owner.
+Conclusion: This function will not cause REE Problem.

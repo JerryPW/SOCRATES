@@ -1,0 +1,301 @@
+dexBlueSettlementModule.swapWithReserve: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapWithReserve(address sell_token, uint256 sell_amount, address buy_token,  uint256 min_output, address reserve, uint256 deadline) public payable returns (uint256){
+        require(
+            (
+                deadline == 0                               // No deadline is set         
+                || deadline > block.timestamp               // Deadline is met
+            ),
+            "Call deadline exceeded."
+        );
+        
+        require(
+            public_reserves[reserve],                       // Check whether the reserve is registered
+            "Unknown reserve."
+        );
+        
+        if(sell_token == address(0)){                       // Caller wants to swap ETH
+            require(
+                msg.value == sell_amount,                   // Check whether the caller sent the required ETH
+                "ETH amount not sent with the call."
+            );
+        }else{                                              // Caller wants to swap a token
+            require(
+                msg.value == 0,                             // Check the caller hasn't sent any ETH with the call
+                "Don't send ETH when swapping a token."
+            );
+            
+            Token(sell_token).transferFrom(msg.sender, reserve, sell_amount);   // Deposit ERC20 into the reserve
+            
+            require(
+                checkERC20TransferSuccess(),                // Check whether the ERC20 token transfer was successful
+                "ERC20 token transfer failed."
+            );
+        }
+        
+        // Execute the swap with the reserve
+        uint256 output = dexBlueReserve(reserve).swap.value(msg.value)(
+            sell_token,
+            sell_amount,
+            buy_token,
+            min_output
+        );
+        
+        if(
+            output >= min_output                                // Check whether the output amount is sufficient 
+            && balances[buy_token][reserve] >= output           // Check whether the reserve deposited the output amount
+        ){
+            balances[buy_token][reserve] -= output;             // Substract the amount from the reserves balance
+            
+            if(buy_token == address(0)){                        // Is the bought asset ETH
+                require(
+                    msg.sender.send(output),                    // Send the output ETH of the swap to msg.sender
+                    "Sending of ETH failed."
+                );
+            }else{
+                Token(buy_token).transfer(msg.sender, output);  // Transfer the output token of the swap msg.sender
+                require(                                        // Revert if the transfer failed
+                    checkERC20TransferSuccess(),
+                    "ERC20 token transfer failed."
+                );
+            }
+
+            emit LogSwap(sell_token, sell_amount, buy_token, output);
+            
+            return output;
+        }else{
+            revert("Too much slippage.");
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapWithReserve(address sell_token, uint256 sell_amount, address buy_token,  uint256 min_output, address reserve, uint256 deadline) public payable returns (uint256){
+        require(
+            (
+                deadline == 0                               // No deadline is set         
+                || deadline > block.timestamp               // Deadline is met
+            ),
+            "Call deadline exceeded."
+        );
+        
+        require(
+            public_reserves[reserve],                       // Check whether the reserve is registered
+            "Unknown reserve."
+        );
+        
+        if(sell_token == address(0)){                       // Caller wants to swap ETH
+            require(
+                msg.value == sell_amount,                   // Check whether the caller sent the required ETH
+                "ETH amount not sent with the call."
+            );
+        }else{                                              // Caller wants to swap a token
+            require(
+                msg.value == 0,                             // Check the caller hasn't sent any ETH with the call
+                "Don't send ETH when swapping a token."
+            );
+            
+            Token(sell_token).transferFrom(msg.sender, reserve, sell_amount);   // Deposit ERC20 into the reserve
+            
+            require(
+                checkERC20TransferSuccess(),                // Check whether the ERC20 token transfer was successful
+                "ERC20 token transfer failed."
+            );
+        }
+        
+        // Execute the swap with the reserve
+        uint256 output = dexBlueReserve(reserve).swap.value(msg.value)(
+            sell_token,
+            sell_amount,
+            buy_token,
+            min_output
+        );
+        
+        if(
+            output >= min_output                                // Check whether the output amount is sufficient 
+            && balances[buy_token][reserve] >= output           // Check whether the reserve deposited the output amount
+        ){
+            balances[buy_token][reserve] -= output;             // Substract the amount from the reserves balance
+            
+            if(buy_token == address(0)){                        // Is the bought asset ETH
+                require(
+                    msg.sender.send(output),                    // Send the output ETH of the swap to msg.sender
+                    "Sending of ETH failed."
+                );
+            }else{
+                Token(buy_token).transfer(msg.sender, output);  // Transfer the output token of the swap msg.sender
+                require(                                        // Revert if the transfer failed
+                    checkERC20TransferSuccess(),
+                    "ERC20 token transfer failed."
+                );
+            }
+
+            emit LogSwap(sell_token, sell_amount, buy_token, output);
+            
+            return output;
+        }else{
+            revert("Too much slippage.");
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapWithReserve(address sell_token, uint256 sell_amount, address buy_token,  uint256 min_output, address reserve, uint256 deadline) public payable returns (uint256){
+        require(
+            (
+                deadline == 0                               // No deadline is set         
+                || deadline > block.timestamp               // Deadline is met
+            ),
+            "Call deadline exceeded."
+        );
+        
+        require(
+            public_reserves[reserve],                       // Check whether the reserve is registered
+            "Unknown reserve."
+        );
+        
+        if(sell_token == address(0)){                       // Caller wants to swap ETH
+            require(
+                msg.value == sell_amount,                   // Check whether the caller sent the required ETH
+                "ETH amount not sent with the call."
+            );
+        }else{                                              // Caller wants to swap a token
+            require(
+                msg.value == 0,                             // Check the caller hasn't sent any ETH with the call
+                "Don't send ETH when swapping a token."
+            );
+            
+            Token(sell_token).transferFrom(msg.sender, reserve, sell_amount);   // Deposit ERC20 into the reserve
+            
+            require(
+                checkERC20TransferSuccess(),                // Check whether the ERC20 token transfer was successful
+                "ERC20 token transfer failed."
+            );
+        }
+        
+        // Execute the swap with the reserve
+        uint256 output = dexBlueReserve(reserve).swap.value(msg.value)(
+            sell_token,
+            sell_amount,
+            buy_token,
+            min_output
+        );
+        
+        if(
+            output >= min_output                                // Check whether the output amount is sufficient 
+            && balances[buy_token][reserve] >= output           // Check whether the reserve deposited the output amount
+        ){
+            balances[buy_token][reserve] -= output;             // Substract the amount from the reserves balance
+            
+            if(buy_token == address(0)){                        // Is the bought asset ETH
+                require(
+                    msg.sender.send(output),                    // Send the output ETH of the swap to msg.sender
+                    "Sending of ETH failed."
+                );
+            }else{
+                Token(buy_token).transfer(msg.sender, output);  // Transfer the output token of the swap msg.sender
+                require(                                        // Revert if the transfer failed
+                    checkERC20TransferSuccess(),
+                    "ERC20 token transfer failed."
+                );
+            }
+
+            emit LogSwap(sell_token, sell_amount, buy_token, output);
+            
+            return output;
+        }else{
+            revert("Too much slippage.");
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapWithReserve(address sell_token, uint256 sell_amount, address buy_token,  uint256 min_output, address reserve, uint256 deadline) public payable returns (uint256){
+        require(
+            (
+                deadline == 0                               // No deadline is set         
+                || deadline > block.timestamp               // Deadline is met
+            ),
+            "Call deadline exceeded."
+        );
+        
+        require(
+            public_reserves[reserve],                       // Check whether the reserve is registered
+            "Unknown reserve."
+        );
+        
+        if(sell_token == address(0)){                       // Caller wants to swap ETH
+            require(
+                msg.value == sell_amount,                   // Check whether the caller sent the required ETH
+                "ETH amount not sent with the call."
+            );
+        }else{                                              // Caller wants to swap a token
+            require(
+                msg.value == 0,                             // Check the caller hasn't sent any ETH with the call
+                "Don't send ETH when swapping a token."
+            );
+            
+            Token(sell_token).transferFrom(msg.sender, reserve, sell_amount);   // Deposit ERC20 into the reserve
+            
+            require(
+                checkERC20TransferSuccess(),                // Check whether the ERC20 token transfer was successful
+                "ERC20 token transfer failed."
+            );
+        }
+        
+        // Execute the swap with the reserve
+        uint256 output = dexBlueReserve(reserve).swap.value(msg.value)(
+            sell_token,
+            sell_amount,
+            buy_token,
+            min_output
+        );
+        
+        if(
+            output >= min_output                                // Check whether the output amount is sufficient 
+            && balances[buy_token][reserve] >= output           // Check whether the reserve deposited the output amount
+        ){
+            balances[buy_token][reserve] -= output;             // Substract the amount from the reserves balance
+            
+            if(buy_token == address(0)){                        // Is the bought asset ETH
+                require(
+                    msg.sender.send(output),                    // Send the output ETH of the swap to msg.sender
+                    "Sending of ETH failed."
+                );
+            }else{
+                Token(buy_token).transfer(msg.sender, output);  // Transfer the output token of the swap msg.sender
+                require(                                        // Revert if the transfer failed
+                    checkERC20TransferSuccess(),
+                    "ERC20 token transfer failed."
+                );
+            }
+
+            emit LogSwap(sell_token, sell_amount, buy_token, output);
+            
+            return output;
+        }else{
+            revert("Too much slippage.");
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

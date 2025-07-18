@@ -1,0 +1,60 @@
+
+Start analyze function: BATMO.endRound(BATMODatasets.EventReturns)
+Function Security Analysis for BATMO.endRound(BATMODatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function BATMO.endRound(BATMODatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures that involve checking msg.sender against an owner, address, or leader role using require, if,
+          or assert statements as listed.
+        - function BATMO.endRound(BATMODatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures, such as 'require(xxx == True)', 'require(xxx == False)', 'require(!xxx)', or
+          'if(!xxx) throw' followed by setting 'xxx = True/False'. The function primarily handles financial calculations and conditional logic for game events without
+          involving the specific patterns outlined in the instructions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyCore', 'reLoadXname', 'buyXid', 'reLoadCore', 'fallback', 'reLoadXaddr', 'buyXaddr', 'withdraw', 'buyXname', 'reLoadXid']
+        Function Security Analysis for BATMO.buyCore(uint256,uint256,BATMODatasets.EventReturns)
+            There are no modifiers should be examined in function buyCore.
+            Check direct function security
+                - function BATMO.buyCore(uint256,uint256,BATMODatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any of the specified security checks related to msg.sender and owner roles.
+                - function BATMO.buyCore(uint256,uint256,BATMODatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures with the 'require' keyword or 'if(!xxx) throw'.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['buyXname', 'buyXid', 'buyXaddr', 'fallback']
+                Function Security Analysis for BATMO.buyXname(bytes32)
+                    The modifier of function buyXname are ['isActivated', 'isHuman', 'isWithinLimits']
+                    The result of checking modifiers:
+                        - modifier isActivated has no relation with controlled by owner.
+                          Reason: This modifier checks a flag (activated_) to determine if the function can execute, but it does not enforce ownership or address
+                          restriction, nor does it directly implement a lock mechanism (entering only once). It is not based on control by a specific address or a lock
+                          operation by its function name or code.
+                        - modifier isHuman has no relation with controlled by owner.
+                          Reason: The modifier does not explicitly enforce ownership or address-based restrictions (criteria 1). It also doesn't implement any lock
+                          mechanism (criteria 2), and the modifier name 'isHuman' does not imply ownership checks or reentrancy guards (criteria 3). Thus, none of the
+                          specified characteristics apply.
+                        - modifier isWithinLimits has no relation with controlled by owner.
+                          Reason: The modifier isWithinLimits only checks for a value range of a parameter and does not fulfill any of the rules: it does not enforce
+                          owner access or specific addresses, does not use a lock operation, nor can it be inferred by the modifier name alone to be involved with access
+                          control or reentrancy prevention.
+                    Check direct function security
+                        - function BATMO.buyXname(bytes32) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code provided does not contain any access control checks for msg.sender related to owner, address, leader or CEO.
+                        - function BATMO.buyXname(bytes32) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided code does not contain any of the specified structures. It involves assignments and checks but does not include require or
+                          throw statements that meet the criteria.
+External Call Analysis
+    Direct external call: ['admin2.transfer(_dev/2)', 'address(ObokContract).call.value(_OBOK.sub((_OBOK/3).mul(2)))(bytes4(keccak256()(donateDivs())))',
+    'admin.transfer(_dev/2)']
+    Analyze Transfer
+        - admin2.transfer(_dev/2) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: This external call contains the '.transfer('
+        keyword.. Parameter in 'transfer'/'send': 1.
+        - admin.transfer(_dev/2) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: This external call contains the '.transfer('
+        keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - address(ObokContract).call.value(_OBOK.sub((_OBOK/3).mul(2)))(bytes4(keccak256()(donateDivs()))) ISN'T subjected to gas limits.
+    Remaining external call: ['address(ObokContract).call.value(_OBOK.sub((_OBOK/3).mul(2)))(bytes4(keccak256()(donateDivs())))']
+    Analyze External Address
+        There are ['ObokContract'] should be checked in variable ObokContract
+        Checked variables: ObokContract
+            Yes The provided code is a constructor with the name 'constructor', which is explicitly mentioned, aligning with characteristic 1.
+Conclusion: This function will not cause REE Problem.

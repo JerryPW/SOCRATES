@@ -1,0 +1,24 @@
+
+Start analyze function: PreOrder.confirmOrder()
+Function Security Analysis for PreOrder.confirmOrder()
+    There are no modifiers should be examined in function confirmOrder.
+    Check direct function security
+        - function PreOrder.confirmOrder() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code snippet uses 'if (msg.sender == guestaddress && status == 0)', which doesn't match any of the specified patterns where 'msg.sender ==
+          xxxOwner/xxxAddress/Leader/CEO' is involved.
+        - function PreOrder.confirmOrder() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided lacks the specific required structures. It includes conditional logic to check sender and status, but none of the requirements such as
+          require conditions or "if(!xxx) throw" structures are present.
+External Call Analysis
+    Direct external call: ['Token(tokenAddress).transfer(owneraddress,price)']
+    Analyze Transfer
+        - Token(tokenAddress).transfer(owneraddress,price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - Token(tokenAddress).transfer(owneraddress,price) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(tokenAddress).transfer(owneraddress,price)']
+    Analyze External Address
+        There are ['tokenAddress'] should be checked in variable tokenAddress
+        Checked variables: tokenAddress
+            Yes The function provided is named 'PreOrder', which matches the contract name, indicating it is a constructor. Constructors are special functions in a
+            contract that have the same name as the contract and are used for initialization, which satisfies characteristic 1.
+Conclusion: This function will not cause REE Problem.

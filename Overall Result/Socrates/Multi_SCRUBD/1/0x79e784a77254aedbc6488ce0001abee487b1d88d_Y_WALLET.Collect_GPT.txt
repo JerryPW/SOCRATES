@@ -1,0 +1,20 @@
+
+Start analyze function: Y_WALLET.Collect(uint256)
+Function Security Analysis for Y_WALLET.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function Y_WALLET.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified patterns that restrict access based on `msg.sender`. There are no requirements or assertions checking if
+          `msg.sender` matches a specific owner or address.
+        - function Y_WALLET.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures with a 'require' or 'if' statement manipulating a boolean variable or condition as outlined in
+          the given patterns. It only checks conditions and makes a call without requiring a boolean flag to be toggled as described.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,24 @@
+
+Start analyze function: Investment.removeOrder(uint256)
+Function Security Analysis for Investment.removeOrder(uint256)
+    There are no modifiers should be examined in function removeOrder.
+    Check direct function security
+        - function Investment.removeOrder(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code has a require statement with msg.sender being compared to owner() and the contract address itself. Both expressions do not qualify under the
+          explanation's criteria as they are conditions involving function calls rather than direct variable identifiers that reflect ownership or a specific address for
+          a leader position.
+        - function Investment.removeOrder(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the required structures where a variable is checked with 'require' or an if-statement related to throwing, and
+          then the same variable is subsequently assigned to 'True' or 'False'.
+External Call Analysis
+    Direct external call: ['_userActions[indexOfOrder].user.call{value:_transactionFee}()']
+    Analyze Transfer
+    Analyze Gas
+        - _userActions[indexOfOrder].user.call{value:_transactionFee}() ISN'T subjected to gas limits.
+    Remaining external call: ['_userActions[indexOfOrder].user.call{value:_transactionFee}()']
+    Analyze External Address
+        The variable 'indexOfOrder' in external call '_userActions[indexOfOrder].user.call{value:_transactionFee}()' has no state variable assigned. Therefore we check
+        whether it has been hardcoded in the function.
+            No The variable 'indexOfOrder' in the function 'removeOrder' is not hardcoded as it is passed as a parameter to the function and not given a fixed value
+            directly in the code.
+Conclusion: This function will cause REE Problem.

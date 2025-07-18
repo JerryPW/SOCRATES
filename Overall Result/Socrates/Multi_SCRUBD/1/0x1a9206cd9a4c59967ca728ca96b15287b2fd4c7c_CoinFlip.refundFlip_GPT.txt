@@ -1,0 +1,9 @@
+
+Start analyze function: CoinFlip.refundFlip(bytes32)
+Function Security Analysis for CoinFlip.refundFlip(bytes32)
+    There are no modifiers should be examined in function refundFlip.
+    Check direct function security
+        - function CoinFlip.refundFlip(bytes32) has security assurance protected by checking the authority of msg.sender, the function would not cause REE problem.
+          Reason: The previous judgment was incorrect because `flips[_flipId].owner` does not match the pattern as it is a local variable, and only the `owner` variable
+          should be considered for the structures mentioned. However, `msg.sender == owner` is part of a require statement, fulfilling point 1.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,28 @@
+
+Start analyze function: GOOGTokenSale.fallback()
+Function Security Analysis for GOOGTokenSale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function GOOGTokenSale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not use any require, if, or assert statements with conditions involving msg.sender being compared to xxxOwner, xxxAddress, Leader, or CEO.
+        - function GOOGTokenSale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specific structures characterized by the conditions outlined. There are no require statements setting a
+          boolean variable and subsequently flipping that variable, nor is there any if statement immediately throwing based on a condition check of the aforementioned
+          types.
+External Call Analysis
+    Direct external call: ['tokenContract.balanceOf(this)', 'tokenContract.transfer(msg.sender,_numberOfTokens)']
+    Analyze Transfer
+        - tokenContract.transfer(msg.sender,_numberOfTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenContract.balanceOf(this) ISN'T subjected to gas limits.
+        - tokenContract.transfer(msg.sender,_numberOfTokens) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenContract.balanceOf(this)', 'tokenContract.transfer(msg.sender,_numberOfTokens)']
+    Analyze External Address
+        There are ['tokenContract'] should be checked in variable tokenContract
+        Checked variables: tokenContract
+            Yes The function provided in the code snippet matches the contract name 'GOOGTokenSale'. Therefore, it is a constructor function, which satisfies the first
+            characteristic of checking whether the function is a constructor.
+        There are ['tokenContract'] should be checked in variable tokenContract
+        Checked variables: tokenContract
+            Yes The function name matches the contract name 'GOOGTokenSale', indicating it is a constructor. Therefore, it satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

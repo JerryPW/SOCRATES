@@ -1,0 +1,105 @@
+MessierAnonymity.swapAndShare: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function swapAndShare() private {
+    require(collectedFee > 0, "Insufficient Amount");
+    uint256 initialBalance = M87Token.balanceOf(address(this));
+    // generate the uniswap pair path
+    address[] memory path = new address[](2);
+    path[0] = uniswapV2Router.WETH();
+    path[1] = address(M87Token);
+    // make the swap
+    uniswapV2Router.swapExactETHForTokensSupportingFeeOnTransferTokens.value(collectedFee)
+    (
+      0, // accept any amount of ETH
+      path,
+      address(this),
+      block.timestamp.mul(2)
+    );
+
+    // set to origin
+    collectedFee = 0;
+
+    uint256 newBalance = M87Token.balanceOf(address(this)).sub(initialBalance);
+
+    if( shareOfReward[0] > 0 ) {
+      M87Token.transfer( address(0x000000000000000000000000000000000000dEaD), newBalance.mul(shareOfReward[0]).div(100) );
+    }
+
+    if( poolList[0] != address(0) && shareOfReward[1] > 0 && poolList[0] != address(this) ) {
+      rewardAmounts[0] = rewardAmounts[0].add( newBalance.mul(shareOfReward[1]).div(100) );
+      // M87Token.transfer( poolList[0], newBalance.mul(shareOfReward[1]).div(100) );
+    }
+
+    if( poolList[1] != address(0) && shareOfReward[2] > 0 && poolList[1] != address(this) ) {
+      rewardAmounts[1] = rewardAmounts[1].add( newBalance.mul(shareOfReward[2]).div(100) );
+      // M87Token.transfer( poolList[1], newBalance.mul(shareOfReward[2]).div(100) );
+    }
+
+    if( poolList[2] != address(0) && shareOfReward[3] > 0 && poolList[2] != address(this) ) {
+      rewardAmounts[2] = rewardAmounts[2].add( newBalance.mul(shareOfReward[3]).div(100) );
+      // M87Token.transfer( poolList[2], newBalance.mul(shareOfReward[3]).div(100) );
+    }
+
+    if( poolList[3] != address(0) && shareOfReward[4] > 0 && poolList[3] != address(this) ) {
+      rewardAmounts[3] = rewardAmounts[3].add( newBalance.mul(shareOfReward[4]).div(100) );
+      // M87Token.transfer( poolList[3], newBalance.mul(shareOfReward[4]).div(100) );
+    }
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function swapAndShare() private {
+    require(collectedFee > 0, "Insufficient Amount");
+    uint256 initialBalance = M87Token.balanceOf(address(this));
+    // generate the uniswap pair path
+    address[] memory path = new address[](2);
+    path[0] = uniswapV2Router.WETH();
+    path[1] = address(M87Token);
+    // make the swap
+    uniswapV2Router.swapExactETHForTokensSupportingFeeOnTransferTokens.value(collectedFee)
+    (
+      0, // accept any amount of ETH
+      path,
+      address(this),
+      block.timestamp.mul(2)
+    );
+
+    // set to origin
+    collectedFee = 0;
+
+    uint256 newBalance = M87Token.balanceOf(address(this)).sub(initialBalance);
+
+    if( shareOfReward[0] > 0 ) {
+      M87Token.transfer( address(0x000000000000000000000000000000000000dEaD), newBalance.mul(shareOfReward[0]).div(100) );
+    }
+
+    if( poolList[0] != address(0) && shareOfReward[1] > 0 && poolList[0] != address(this) ) {
+      rewardAmounts[0] = rewardAmounts[0].add( newBalance.mul(shareOfReward[1]).div(100) );
+      // M87Token.transfer( poolList[0], newBalance.mul(shareOfReward[1]).div(100) );
+    }
+
+    if( poolList[1] != address(0) && shareOfReward[2] > 0 && poolList[1] != address(this) ) {
+      rewardAmounts[1] = rewardAmounts[1].add( newBalance.mul(shareOfReward[2]).div(100) );
+      // M87Token.transfer( poolList[1], newBalance.mul(shareOfReward[2]).div(100) );
+    }
+
+    if( poolList[2] != address(0) && shareOfReward[3] > 0 && poolList[2] != address(this) ) {
+      rewardAmounts[2] = rewardAmounts[2].add( newBalance.mul(shareOfReward[3]).div(100) );
+      // M87Token.transfer( poolList[2], newBalance.mul(shareOfReward[3]).div(100) );
+    }
+
+    if( poolList[3] != address(0) && shareOfReward[4] > 0 && poolList[3] != address(this) ) {
+      rewardAmounts[3] = rewardAmounts[3].add( newBalance.mul(shareOfReward[4]).div(100) );
+      // M87Token.transfer( poolList[3], newBalance.mul(shareOfReward[4]).div(100) );
+    }
+  }
+    
+Response:
+No
+--------------------------------------------------

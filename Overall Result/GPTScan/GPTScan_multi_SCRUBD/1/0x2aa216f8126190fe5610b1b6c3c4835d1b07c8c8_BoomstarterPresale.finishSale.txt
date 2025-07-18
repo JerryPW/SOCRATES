@@ -1,0 +1,83 @@
+BoomstarterPresale.finishSale: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function finishSale()
+        external
+        onlyIfSaleIsActive
+        onlymanyowners(keccak256(msg.data))
+    {
+        // next sale should be set using setNextSale
+        require( m_nextSale != address(0) );
+        // cannot accept ether anymore
+        m_active = false;
+        // send remaining oraclize ether to the next sale - we don't need oraclize anymore
+        EthPriceDependent next = EthPriceDependent(m_nextSale);
+        next.topUp.value(this.balance)();
+        // transfer all remaining tokens to the next sale account
+        m_token.transfer(m_nextSale, m_token.balanceOf(this));
+        // mark next sale as a valid sale account, unmark self as valid sale account
+        m_token.switchToNextSale(m_nextSale);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function finishSale()
+        external
+        onlyIfSaleIsActive
+        onlymanyowners(keccak256(msg.data))
+    {
+        // next sale should be set using setNextSale
+        require( m_nextSale != address(0) );
+        // cannot accept ether anymore
+        m_active = false;
+        // send remaining oraclize ether to the next sale - we don't need oraclize anymore
+        EthPriceDependent next = EthPriceDependent(m_nextSale);
+        next.topUp.value(this.balance)();
+        // transfer all remaining tokens to the next sale account
+        m_token.transfer(m_nextSale, m_token.balanceOf(this));
+        // mark next sale as a valid sale account, unmark self as valid sale account
+        m_token.switchToNextSale(m_nextSale);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function finishSale()
+        external
+        onlyIfSaleIsActive
+        onlymanyowners(keccak256(msg.data))
+    {
+        // next sale should be set using setNextSale
+        require( m_nextSale != address(0) );
+        // cannot accept ether anymore
+        m_active = false;
+        // send remaining oraclize ether to the next sale - we don't need oraclize anymore
+        EthPriceDependent next = EthPriceDependent(m_nextSale);
+        next.topUp.value(this.balance)();
+        // transfer all remaining tokens to the next sale account
+        m_token.transfer(m_nextSale, m_token.balanceOf(this));
+        // mark next sale as a valid sale account, unmark self as valid sale account
+        m_token.switchToNextSale(m_nextSale);
+    }
+Response:
+{"StatementsA": {"m_active = false;":"Updates the state variable m_active to false."}, "StatementsB": {"next.topUp.value(this.balance)();":"Executes an external call to the topUp function of the EthPriceDependent contract."}, "VariableA": {"m_nextSale": "Holds the address of the next sale, which is the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: m_active = false;
+2.External Call: next.topUp.value(this.balance)();
+3.Variable A: m_nextSale
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

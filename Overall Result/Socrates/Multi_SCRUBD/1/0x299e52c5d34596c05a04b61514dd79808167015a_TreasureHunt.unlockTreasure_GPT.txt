@@ -1,0 +1,24 @@
+
+Start analyze function: TreasureHunt.unlockTreasure(bytes32)
+Function Security Analysis for TreasureHunt.unlockTreasure(bytes32)
+    There are no modifiers should be examined in function unlockTreasure.
+    Check direct function security
+        - function TreasureHunt.unlockTreasure(bytes32) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function checks for certain conditions related to the treasure hunt, such as its active status and secret matching, but it does not involve
+          ownership or specific address controls over the caller using conditions like 'msg.sender == xxxOwner'.
+        - function TreasureHunt.unlockTreasure(bytes32) has no apparent security assurance by utilizing a lock machinism.
+          Reason: In the code, the negation of the 'isActive' state (i.e., setting it to false) is done after the main logic of the function which involves checking the
+          secret, transferring DGX tokens, etc. Thus, it does not immediately perform a state negation operation on 'isActive' after checking its state using 'require'.
+External Call Analysis
+    Direct external call: ['IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender,_dgxBalance)']
+    Analyze Transfer
+        - IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender,_dgxBalance) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender,_dgxBalance) ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender,_dgxBalance)']
+    Analyze External Address
+        There are ['DGX_TOKEN_ADDRESS'] should be checked in variable DGX_TOKEN_ADDRESS
+        Checked variables: DGX_TOKEN_ADDRESS
+            Yes The provided code is a constructor for the 'TreasureHunt' contract because the function is named 'constructor', which explicitly matches the second
+            condition for identifying a constructor.
+Conclusion: This function will not cause REE Problem.

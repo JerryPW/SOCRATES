@@ -1,0 +1,43 @@
+
+Start analyze function: Canvas.buy()
+Function Security Analysis for Canvas.buy()
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function Canvas.buy() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not have any conditional checks or assertions related to msg.sender being compared with xxxOwner/xxxAddress/Leader/CEO.
+        - function Canvas.buy() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not follow any of the specified structures.
+External Call Analysis
+    Direct external call: ['hodler.call{gas:20000,value:hodler_share}()']
+    Analyze Transfer
+    Analyze Gas
+        - The gas limit in hodler.call{gas:20000,value:hodler_share}() is 20000, which is too high. Therefore, it will not prevent REE problem.
+    Remaining external call: ['hodler.call{gas:20000,value:hodler_share}()']
+    Analyze External Address
+        There are ['hodler'] should be checked in variable hodler
+        Checked variables: hodler
+            No The given code snippet represents a function named 'buy'. This function is not a constructor because its name is 'buy', which does not match the contract
+            name 'Canvas', nor is it explicitly named 'constructor'.   Additionally, the function does not hardcode the state variable 'hodler'. In the provided code, the
+            'hodler' variable is used dynamically in the calculation of 'hodler_share' and in a conditional statement, but it is not directly assigned a fixed value
+            within the function. It calls the 'hodler' address with some calculated value, but that does not mean 'hodler' is hardcoded within the 'buy' function.
+            Function Security Analysis for BoringSingleNFT._transferBase(address)
+                There are no modifiers should be examined in function _transferBase.
+                Check direct function security
+                    - function BoringSingleNFT._transferBase(address) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The function _transferBase does not contain any condition checks involving msg.sender, so it does not match the required structures.
+                    - function BoringSingleNFT._transferBase(address) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code provided does not contain any of the required patterns, as there are no `require` statements or `if` conditions with logical checks
+                      that would lead to the toggling of the same boolean variable between true and false, or vice versa.
+                Since the function can only be called by functions, we start to analyze indirect function security.
+                The reachable functions are ['buy', '_transfer', 'safeTransferFrom', 'constructor', 'safeTransferFrom', 'transferFrom']
+                    Function Security Analysis for Canvas.buy()
+                        There are no modifiers should be examined in function buy.
+                        Check direct function security
+                            - function Canvas.buy() has no security assurance protected by checking the authority of msg.sender
+                              Reason: The function does not check for any conditions involving msg.sender with respect to xxxOwner/xxxAddress/Leader/CEO.
+                            - function Canvas.buy() has no apparent security assurance by utilizing a lock machinism.
+                              Reason: The code contains a `require` statement with a condition but does not satisfy the pattern outlined in the structures provided.
+                              Specifically, the statement `require(msg.value == price, "Value != price");` does not involve assigning a variable `xxx` to `True` or
+                              `False` as required by the templates, nor does it use a variable consistently in such manner afterwards in the code. Thus, it doesn't match
+                              any of the given structures.
+Conclusion: This function will cause REE Problem.

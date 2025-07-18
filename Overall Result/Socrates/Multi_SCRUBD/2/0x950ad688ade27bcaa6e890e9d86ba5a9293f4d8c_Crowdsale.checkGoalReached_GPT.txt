@@ -1,0 +1,26 @@
+
+Start analyze function: Crowdsale.checkGoalReached()
+Function Security Analysis for Crowdsale.checkGoalReached()
+    The modifier of function checkGoalReached are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier name 'afterDeadline' does not explicitly indicate ownership or lock mechanism based on provided guidelines, nor does the code inside
+          enforce execution restriction to specific addresses or utilize a lock mechanism like setting a flag before and after execution.
+    Check direct function security
+        - function Crowdsale.checkGoalReached() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks or conditions regarding the role or identity of 'msg.sender'.
+        - function Crowdsale.checkGoalReached() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the given structures as there is no 'require' statement or 'if(!xxx) throw' statement. Additionally, there are no
+          consecutive assignments to a boolean variable in the specified manner.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)/price)']
+    Analyze Transfer
+        - tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)/price) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(beneficiary,(fundingGoal-amountRaised)/price)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function name 'Crowdsale' matches the contract name, indicating it is a constructor. Therefore, it satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

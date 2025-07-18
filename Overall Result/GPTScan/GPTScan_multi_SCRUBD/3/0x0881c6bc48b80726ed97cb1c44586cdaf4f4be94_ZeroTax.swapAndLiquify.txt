@@ -1,0 +1,181 @@
+ZeroTax.swapAndLiquify: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapAndLiquify() private swaping
+    {
+        // Swapping the rest of the fees
+        if(balanceOf(address(this)) > 0)
+        {
+            uint256 tokensToSwap = AccumulatedFeeForDistribution.LiquidityFee / 2;
+            uint256 tokensForLiquidity = AccumulatedFeeForDistribution.LiquidityFee - tokensToSwap;
+
+            swapTokensForETH(AccumulatedFeeForDistribution.DevFee + AccumulatedFeeForDistribution.MarketingFee + tokensToSwap);
+
+            uint256 contractBalance = address(this).balance;
+            uint256 devShare = (contractBalance* DevDistributionPct)/100;
+            uint256 mktShare = (contractBalance * MarketingDistributionPct)/100;
+
+            DevAddress.transfer(devShare);
+            MarketingAddress.transfer(mktShare);
+
+            uint256 eth = address(this).balance;
+
+            UniswapV2Router.addLiquidityETH{value: address(this).balance}(
+                address(this),
+                tokensForLiquidity,
+                0, // slippage is unavoidable
+                0, // slippage is unavoidable
+                DevAddress,
+                block.timestamp
+            );
+
+            AccumulatedFeeForDistribution.LiquidityFee = 0;
+            AccumulatedFeeForDistribution.DevFee = 0;
+            AccumulatedFeeForDistribution.MarketingFee = 0;
+
+            TotalSwapped += tokensForLiquidity;
+
+
+            emit LiquidityAdded(tokensForLiquidity, eth);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapAndLiquify() private swaping
+    {
+        // Swapping the rest of the fees
+        if(balanceOf(address(this)) > 0)
+        {
+            uint256 tokensToSwap = AccumulatedFeeForDistribution.LiquidityFee / 2;
+            uint256 tokensForLiquidity = AccumulatedFeeForDistribution.LiquidityFee - tokensToSwap;
+
+            swapTokensForETH(AccumulatedFeeForDistribution.DevFee + AccumulatedFeeForDistribution.MarketingFee + tokensToSwap);
+
+            uint256 contractBalance = address(this).balance;
+            uint256 devShare = (contractBalance* DevDistributionPct)/100;
+            uint256 mktShare = (contractBalance * MarketingDistributionPct)/100;
+
+            DevAddress.transfer(devShare);
+            MarketingAddress.transfer(mktShare);
+
+            uint256 eth = address(this).balance;
+
+            UniswapV2Router.addLiquidityETH{value: address(this).balance}(
+                address(this),
+                tokensForLiquidity,
+                0, // slippage is unavoidable
+                0, // slippage is unavoidable
+                DevAddress,
+                block.timestamp
+            );
+
+            AccumulatedFeeForDistribution.LiquidityFee = 0;
+            AccumulatedFeeForDistribution.DevFee = 0;
+            AccumulatedFeeForDistribution.MarketingFee = 0;
+
+            TotalSwapped += tokensForLiquidity;
+
+
+            emit LiquidityAdded(tokensForLiquidity, eth);
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapAndLiquify() private swaping
+    {
+        // Swapping the rest of the fees
+        if(balanceOf(address(this)) > 0)
+        {
+            uint256 tokensToSwap = AccumulatedFeeForDistribution.LiquidityFee / 2;
+            uint256 tokensForLiquidity = AccumulatedFeeForDistribution.LiquidityFee - tokensToSwap;
+
+            swapTokensForETH(AccumulatedFeeForDistribution.DevFee + AccumulatedFeeForDistribution.MarketingFee + tokensToSwap);
+
+            uint256 contractBalance = address(this).balance;
+            uint256 devShare = (contractBalance* DevDistributionPct)/100;
+            uint256 mktShare = (contractBalance * MarketingDistributionPct)/100;
+
+            DevAddress.transfer(devShare);
+            MarketingAddress.transfer(mktShare);
+
+            uint256 eth = address(this).balance;
+
+            UniswapV2Router.addLiquidityETH{value: address(this).balance}(
+                address(this),
+                tokensForLiquidity,
+                0, // slippage is unavoidable
+                0, // slippage is unavoidable
+                DevAddress,
+                block.timestamp
+            );
+
+            AccumulatedFeeForDistribution.LiquidityFee = 0;
+            AccumulatedFeeForDistribution.DevFee = 0;
+            AccumulatedFeeForDistribution.MarketingFee = 0;
+
+            TotalSwapped += tokensForLiquidity;
+
+
+            emit LiquidityAdded(tokensForLiquidity, eth);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapAndLiquify() private swaping
+    {
+        // Swapping the rest of the fees
+        if(balanceOf(address(this)) > 0)
+        {
+            uint256 tokensToSwap = AccumulatedFeeForDistribution.LiquidityFee / 2;
+            uint256 tokensForLiquidity = AccumulatedFeeForDistribution.LiquidityFee - tokensToSwap;
+
+            swapTokensForETH(AccumulatedFeeForDistribution.DevFee + AccumulatedFeeForDistribution.MarketingFee + tokensToSwap);
+
+            uint256 contractBalance = address(this).balance;
+            uint256 devShare = (contractBalance* DevDistributionPct)/100;
+            uint256 mktShare = (contractBalance * MarketingDistributionPct)/100;
+
+            DevAddress.transfer(devShare);
+            MarketingAddress.transfer(mktShare);
+
+            uint256 eth = address(this).balance;
+
+            UniswapV2Router.addLiquidityETH{value: address(this).balance}(
+                address(this),
+                tokensForLiquidity,
+                0, // slippage is unavoidable
+                0, // slippage is unavoidable
+                DevAddress,
+                block.timestamp
+            );
+
+            AccumulatedFeeForDistribution.LiquidityFee = 0;
+            AccumulatedFeeForDistribution.DevFee = 0;
+            AccumulatedFeeForDistribution.MarketingFee = 0;
+
+            TotalSwapped += tokensForLiquidity;
+
+
+            emit LiquidityAdded(tokensForLiquidity, eth);
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

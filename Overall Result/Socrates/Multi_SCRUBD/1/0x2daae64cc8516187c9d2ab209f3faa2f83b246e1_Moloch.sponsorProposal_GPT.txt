@@ -1,0 +1,11 @@
+
+Start analyze function: Moloch.sponsorProposal(uint256)
+Function Security Analysis for Moloch.sponsorProposal(uint256)
+    The modifier of function sponsorProposal are ['nonReentrant', 'onlyDelegate']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The code within the modifier indicates a lock operation. The following operations confirm rule 2:  1. The modifier checks `_status != _ENTERED` to
+          ensure the modifier is not already active, suggesting an initial lock check. 2. It then sets `_status = _ENTERED` before the function runs to establish the
+          lock. 3. The lock is reset after the execution with `_status = _NOT_ENTERED`.  This structure clearly demonstrates both a lock and unlock operation in
+          accordance with rule 2.
+Conclusion: This function will not cause REE Problem.

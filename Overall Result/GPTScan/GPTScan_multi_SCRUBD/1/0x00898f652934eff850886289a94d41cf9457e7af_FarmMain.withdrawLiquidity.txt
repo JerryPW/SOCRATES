@@ -1,0 +1,37 @@
+FarmMain.withdrawLiquidity: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdrawLiquidity(uint256 positionId, uint256 objectId, bool unwrapPair, uint256 removedLiquidity) public {
+        FarmingPosition memory farmingPosition = _positions[positionId];
+        uint256 setupIndex = farmingPosition.setupIndex;
+        if (objectId != 0 && address(INativeV1(_farmTokenCollection).asInteroperable(objectId)) != address(0)) {
+            setupIndex = _objectIdSetup[objectId];
+        }
+        require((positionId != 0 && objectId == 0) || (objectId != 0 && positionId == 0 && _setups[setupIndex].objectId == objectId), "Invalid position");
+        require(
+            (
+                _setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free && 
+                farmingPosition.creationBlock != 0 &&
+                removedLiquidity <= farmingPosition.liquidityPoolTokenAmount &&
+                farmingPosition.uniqueOwner == msg.sender
+            ) || (INativeV1(_farmTokenCollection).balanceOf(msg.sender, objectId) >= removedLiquidity && (_setups[setupIndex].endBlock <= block.number)), "Invalid withdraw");
+        if (positionId == 0) {
+            _burnFarmTokenAmount(objectId, removedLiquidity);
+        } else {
+            withdrawReward(positionId);
+            _setups[farmingPosition.setupIndex].totalSupply -= removedLiquidity;
+        }
+        _removeLiquidity(positionId, setupIndex, unwrapPair, removedLiquidity, false);
+        if (positionId == 0) {
+            _setupPositionsCount[setupIndex] -= removedLiquidity;
+            if (_setupPositionsCount[setupIndex] == 0 && !_setups[setupIndex].active) {
+                _giveBack(_rewardReceived[setupIndex] - _rewardPaid[setupIndex]);
+                delete _setups[setupIndex];
+            }
+        }
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

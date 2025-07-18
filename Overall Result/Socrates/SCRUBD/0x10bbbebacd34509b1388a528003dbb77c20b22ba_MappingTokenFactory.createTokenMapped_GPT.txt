@@ -1,0 +1,27 @@
+
+Start analyze function: MappingTokenFactory.createTokenMapped(address)
+Function Security Analysis for MappingTokenFactory.createTokenMapped(address)
+    There are no modifiers should be examined in function createTokenMapped.
+    Check direct function security
+        - function MappingTokenFactory.createTokenMapped(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any condition that checks msg.sender against being a specific owner type entity such as Owner, Leader, CEO, or Address.
+        - function MappingTokenFactory.createTokenMapped(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains a `require` statement and subsequently changes the state of a variable related to the condition checked; however, none of the
+          specified structures (checking and updating a boolean condition on the same variable) are present.
+External Call Analysis
+    Direct external call: ['InitializableProductProxy(address(tokenMapped)).__InitializableProductProxy_init(address(this),_TokenMapped_,abi.encodeWithSignature(__TokenMa
+    pped_init(address,address),address(this),token))']
+    Analyze Transfer
+    Analyze Gas
+        - InitializableProductProxy(address(tokenMapped)).__InitializableProductProxy_init(address(this),_TokenMapped_,abi.encodeWithSignature(__TokenMapped_init(address,
+        address),address(this),token)) ISN'T subjected to gas limits.
+    Remaining external call: ['InitializableProductProxy(address(tokenMapped)).__InitializableProductProxy_init(address(this),_TokenMapped_,abi.encodeWithSignature(__Toke
+    nMapped_init(address,address),address(this),token))']
+    Analyze External Address
+        The variable 'tokenMapped' in external call 'InitializableProductProxy(address(tokenMapped)).__InitializableProductProxy_init(address(this),_TokenMapped_,abi.enco
+        deWithSignature(__TokenMapped_init(address,address),address(this),token))' has no state variable assigned. Therefore we check whether it has been hardcoded in the
+        function.
+            No The variable 'tokenMapped' in the code is not hardcoded. Rather, it is assigned dynamically to the result of a deployment of a new contract instance using
+            the 'create2' opcode, which generates an address based on certain inputs such as the deployment code and salt value. This indicates that the 'tokenMapped'
+            address is computed at runtime and depends on the 'token' address and the current chain's state, rather than being fixed or hardcoded in the code.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,47 @@
+ReserveAuctionMarketplace._removeReserveAuctionListing: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _removeReserveAuctionListing(uint256 _id) internal {
+        ReserveAuction storage reserveAuction = editionOrTokenWithReserveAuctions[_id];
+
+        require(reserveAuction.reservePrice > 0, "No active auction");
+        require(reserveAuction.bid < reserveAuction.reservePrice, "Can only convert before reserve met");
+        require(reserveAuction.seller == _msgSender(), "Only the seller can convert");
+
+        // refund any bids
+        if (reserveAuction.bid > 0) {
+            _refundBidder(_id, reserveAuction.bidder, reserveAuction.bid, address(0), 0);
+        }
+
+        delete editionOrTokenWithReserveAuctions[_id];
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _removeReserveAuctionListing(uint256 _id) internal {
+        ReserveAuction storage reserveAuction = editionOrTokenWithReserveAuctions[_id];
+
+        require(reserveAuction.reservePrice > 0, "No active auction");
+        require(reserveAuction.bid < reserveAuction.reservePrice, "Can only convert before reserve met");
+        require(reserveAuction.seller == _msgSender(), "Only the seller can convert");
+
+        // refund any bids
+        if (reserveAuction.bid > 0) {
+            _refundBidder(_id, reserveAuction.bidder, reserveAuction.bid, address(0), 0);
+        }
+
+        delete editionOrTokenWithReserveAuctions[_id];
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------

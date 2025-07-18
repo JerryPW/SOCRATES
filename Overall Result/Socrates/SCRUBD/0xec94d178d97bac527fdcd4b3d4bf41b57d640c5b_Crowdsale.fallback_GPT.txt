@@ -1,0 +1,25 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any checks or conditions that directly or indirectly reference msg.sender being equal to an owner or specific leader address. It
+          mainly checks for conditions related to crowdsale status and balance amounts.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the structure: `if(crowdsaleClosed || (maximumTarget - amountRaised) < msg.value) throw;`, which matches the pattern {if(!xxx) throw;}
+          with multiple conditions on xxx including a negation using ||, but not directly for a single variable with a specific boolean state transition.
+External Call Analysis
+    Direct external call: ['beneficiary.send(amount)', 'tokenReward.transfer(msg.sender,amount/price)']
+    Analyze Transfer
+        - beneficiary.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.send('
+        keyword, matching the criterion for examination.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount/price)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            State variable tokenReward has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

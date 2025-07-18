@@ -1,0 +1,73 @@
+KlownGasDrop.claimGasDrop: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function claimGasDrop() public returns(bool) {
+
+
+
+		//have they already receivered?
+        if(receivers[msg.sender] != true)
+	    {
+
+    	    //brpt = 1;
+    		if(amountToClaim <= balances[whoSent])
+    		{
+    		    //brpt = 2; 
+    		    balances[whoSent] -= amountToClaim;
+    			//brpt = 3;
+    			IERC20(currentTokenAddress).transfer(msg.sender, amountToClaim);
+    			
+    			receivers[msg.sender] = true;
+    			totalSent += amountToClaim;
+    			
+    			//brpt = 4;
+    			
+    			
+    		}
+
+	    }
+		
+
+	   
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function claimGasDrop() public returns(bool) {
+
+
+
+		//have they already receivered?
+        if(receivers[msg.sender] != true)
+	    {
+
+    	    //brpt = 1;
+    		if(amountToClaim <= balances[whoSent])
+    		{
+    		    //brpt = 2; 
+    		    balances[whoSent] -= amountToClaim;
+    			//brpt = 3;
+    			IERC20(currentTokenAddress).transfer(msg.sender, amountToClaim);
+    			
+    			receivers[msg.sender] = true;
+    			totalSent += amountToClaim;
+    			
+    			//brpt = 4;
+    			
+    			
+    		}
+
+	    }
+		
+
+	   
+    }
+    
+Response:
+No
+--------------------------------------------------

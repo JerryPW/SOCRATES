@@ -1,0 +1,35 @@
+
+Start analyze function: Loan.checkPayShareholder()
+Function Security Analysis for Loan.checkPayShareholder()
+    There are no modifiers should be examined in function checkPayShareholder.
+    Check direct function security
+        - function Loan.checkPayShareholder() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified checks involving msg.sender against an owner, address, Leader, or CEO. It only checks amounts and
+          conditions related to loans and dividends.
+        - function Loan.checkPayShareholder() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't contain any of the specific structures mentioned in the prompt, such as 'require(xxx == True)', 'require(xxx == False)',
+          'require(!xxx)', or 'if(!xxx) throw' with respective variable assignments.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['userRefund', 'autoCheckPayShareholder', '_userRefund']
+        Function Security Analysis for Loan.userRefund()
+            There are no modifiers should be examined in function userRefund.
+            Check direct function security
+                - function Loan.userRefund() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not involve any require, if, or assert statements that directly check if msg.sender is equal or not equal to some
+                  Owner/Address/Leader/CEO role.
+                - function Loan.userRefund() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function `userRefund` does not contain any of the specified structures. It consists of a simple call to another function `_userRefund`,
+                  without any `require`, variable assignments, or conditional throws.
+External Call Analysis
+    Direct external call: ['shareholder.transfer(toShareHolder)', 'token.profitOrgPay.value(toShareHolder)()']
+    Analyze Transfer
+        - shareholder.transfer(toShareHolder) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'shareholder.transfer(toShareHolder)' contains the '.transfer(' keyword, therefore it satisfies the characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - token.profitOrgPay.value(toShareHolder)() ISN'T subjected to gas limits.
+    Remaining external call: ['token.profitOrgPay.value(toShareHolder)()']
+    Analyze External Address
+        There are ['shareholder'] should be checked in variable token
+        Checked variables: shareholder
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

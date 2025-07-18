@@ -1,0 +1,25 @@
+
+Start analyze function: PepFarmer.reapFarm()
+Function Security Analysis for PepFarmer.reapFarm()
+    There are no modifiers should be examined in function reapFarm.
+    Check direct function security
+        - function PepFarmer.reapFarm() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code requires the presence of authorization checks based on specific roles such as xxxOwner or xxxAddress using structures like require or if
+          conditions. This function checks if `workDone[msg.sender] > 0` but does not include any check specifically involving msg.sender and roles like
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function PepFarmer.reapFarm() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains a line `require(workDone[msg.sender] > 0);` which is akin to `require(xxx == True);` when considering the logical implication of
+          checking if a condition holds true. However, the next line `workDone[msg.sender] = 0;` does not follow the pattern of setting the variable to False (or True).
+          Therefore, it does not fit the structure outlined.
+External Call Analysis
+    Direct external call: ['Corn(object).transfer(msg.sender,workDone[msg.sender])']
+    Analyze Transfer
+        - Corn(object).transfer(msg.sender,workDone[msg.sender]) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - Corn(object).transfer(msg.sender,workDone[msg.sender]) ISN'T subjected to gas limits.
+    Remaining external call: ['Corn(object).transfer(msg.sender,workDone[msg.sender])']
+    Analyze External Address
+        There are ['object'] should be checked in variable object
+        Checked variables: object
+            State variable object has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

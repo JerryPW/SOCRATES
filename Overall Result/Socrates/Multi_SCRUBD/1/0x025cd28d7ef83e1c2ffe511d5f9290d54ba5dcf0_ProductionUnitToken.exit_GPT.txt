@@ -1,0 +1,68 @@
+
+Start analyze function: ProductionUnitToken.exit()
+Function Security Analysis for ProductionUnitToken.exit()
+    There are no modifiers should be examined in function exit.
+    Check direct function security
+        - function ProductionUnitToken.exit() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not include any requirement or condition related to checking if `msg.sender` is an 'Owner', 'Address', 'Leader', or 'CEO'.
+        - function ProductionUnitToken.exit() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not satisfy any of the stated structures. There is no 'require' statement nor a conditional check followed by a throw or any assignment to
+          a boolean variable as described.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ProductionUnitToken.withdraw()
+Function Security Analysis for ProductionUnitToken.withdraw()
+    The modifier of function withdraw are ['onlyStronghands']
+    The result of checking modifiers:
+        - modifier onlyStronghands has no relation with controlled by owner.
+          Reason: The code in the modifier 'onlyStronghands' does not explicitly contain any of the characteristics mentioned: checking ownership/specific addresses or
+          lock mechanism. It checks if 'myDividends(true) > 0', which does not satisfy any provided rules.
+    Check direct function security
+        - function ProductionUnitToken.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function uses a modifier 'onlyStronghands' and does not include the structures required to answer 'Yes'.
+        - function ProductionUnitToken.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code structure does not include any of the specific patterns listed. It does not contain statements like "require(xxx == True); xxx =
+          False;" or "if(!xxx) throw; xxx = true;" where a variable is set based on a condition and then reassigned. The code mainly consists of operations on dividends
+          and customer address without meeting the specified patterns.
+External Call Analysis
+    Direct external call: ['_customerAddress.transfer(_dividends)']
+    Analyze Transfer
+        - _customerAddress.transfer(_dividends) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ProductionUnitToken.sell(uint256)
+Function Security Analysis for ProductionUnitToken.sell(uint256)
+    The modifier of function sell are ['onlyBagholders']
+    The result of checking modifiers:
+        - modifier onlyBagholders has no relation with controlled by owner.
+          Reason: The modifier checks if the caller has tokens by using `require(myTokens() > 0);`. There is no enforcement based on ownership or specific addresses (Rule
+          1), nor a lock operation (Rule 2). The name of the modifier, `onlyBagholders`, does not suggest ownership or non-reentrancy (Rule 3).
+    Check direct function security
+        - function ProductionUnitToken.sell(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any control structures checking for equality or inequality with msg.sender and specific ownership-related roles such as
+          xxxOwner, xxxAddress, Leader, CEO.
+        - function ProductionUnitToken.sell(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not include any of the specified structures. It uses 'require' but not with a boolean variable assignment as per the patterns
+          mentioned.
+External Call Analysis
+    Direct external call: ['moonIncContract.handleProductionDecrease.value(_dividends)(_customerAddress,_tokens*cookieProductionMultiplier)']
+    Analyze Transfer
+    Analyze Gas
+        - moonIncContract.handleProductionDecrease.value(_dividends)(_customerAddress,_tokens*cookieProductionMultiplier) ISN'T subjected to gas limits.
+    Remaining external call: ['moonIncContract.handleProductionDecrease.value(_dividends)(_customerAddress,_tokens*cookieProductionMultiplier)']
+    Analyze External Address
+        There are ['moonIncContract'] should be checked in variable moonIncContract
+        Checked variables: moonIncContract
+            Yes The provided function is named 'ProductionUnitToken', which matches the contract name 'ProductionUnitToken', hence it is the constructor of the contract.
+            Constructors satisfy the first characteristic since they initialize the contract.
+Conclusion: This function will not cause REE Problem.

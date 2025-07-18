@@ -1,0 +1,25 @@
+
+Start analyze function: HoldPresaleContract.unlockTokens()
+Function Security Analysis for HoldPresaleContract.unlockTokens()
+    There are no modifiers should be examined in function unlockTokens.
+    Check direct function security
+        - function HoldPresaleContract.unlockTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks involving msg.sender and any expected 'Owner', 'Address', 'Leader', or 'CEO'. It only verifies the conditions
+          related to 'holderList' and token transfer eligibility.
+        - function HoldPresaleContract.unlockTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain 'require(xxx == True)' followed by 'xxx = False', 'require(xxx == False)' followed by 'xxx = True', 'require(!xxx)' followed
+          by 'xxx = True', or 'if(!xxx) throw' followed by 'xxx = true'. Instead, it uses an 'if' condition to check 'holderList[contributor].isActive &&
+          !holderList[contributor].withdrawed' and then performs actions if true. The code doesn't fully match any of the specified structures, as it checks a combination
+          of conditions without directly tying them to variable assignments as described.
+External Call Analysis
+    Direct external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze Transfer
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - OppToken.transfer(msg.sender,holderList[contributor].tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['OppToken.transfer(msg.sender,holderList[contributor].tokens)']
+    Analyze External Address
+        There are ['OppToken'] should be checked in variable OppToken
+        Checked variables: OppToken
+            Yes The function name 'HoldPresaleContract' matches the contract name, indicating that it is a constructor function.
+Conclusion: This function will not cause REE Problem.

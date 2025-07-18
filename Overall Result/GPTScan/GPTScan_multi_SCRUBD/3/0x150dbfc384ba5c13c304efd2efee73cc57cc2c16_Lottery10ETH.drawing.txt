@@ -1,0 +1,457 @@
+Lottery10ETH.drawing: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function drawing() internal {
+
+        require(block.number > futureblock, "Awaiting for a future block");
+
+        if (block.number >= futureblock + 230) {
+            futureblock = block.number + 20;
+            return;
+        }
+
+        uint256 gas = gasleft();
+
+        for (uint256 i = 0; i < silver[0]; i++) {
+            address winner = players[uint((blockhash(futureblock - 1 - i))) % players.length];
+            winner.send(silver[1]);
+            WT.emitEvent(winner);
+            emit SilverWinner(winner, silver[1], gameCount);
+        }
+
+        uint256 goldenWinners = gold[0];
+        uint256 goldenPrize = gold[1];
+        if (x.count() < gold[0]) {
+            goldenWinners = x.count();
+            goldenPrize = gold[0] * gold[1] / x.count();
+        }
+        if (goldenWinners != 0) {
+            address[] memory addresses = x.draw(goldenWinners);
+            for (uint256 k = 0; k < addresses.length; k++) {
+                addresses[k].send(goldenPrize);
+                RS.sendBonus(addresses[k]);
+                WT.emitEvent(addresses[k]);
+                emit GoldenWinner(addresses[k], goldenPrize, gameCount);
+            }
+        }
+
+        uint256 laps = 10;
+        uint256 winnerIdx;
+        uint256 indexes = players.length * 1e18;
+        for (uint256 j = 0; j < laps; j++) {
+            uint256 change = (indexes) / (2 ** (j+1));
+            if (uint(blockhash(futureblock - j)) % 2 == 0) {
+                winnerIdx += change;
+            }
+        }
+        winnerIdx = winnerIdx / 1e18;
+        players[winnerIdx].send(brilliant[1]);
+        WT.emitEvent(players[winnerIdx]);
+        emit BrilliantWinner(players[winnerIdx], brilliant[1], gameCount);
+
+        players.length = 0;
+        futureblock = 0;
+        x = new Storage();
+        gameCount++;
+
+        uint256 txCost = tx.gasprice * (gas - gasleft());
+        msg.sender.send(txCost);
+        emit txCostRefunded(msg.sender, txCost);
+
+        uint256 fee = address(this).balance - msg.value;
+        owner.send(fee);
+        emit FeePayed(owner, fee);
+
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function drawing() internal {
+
+        require(block.number > futureblock, "Awaiting for a future block");
+
+        if (block.number >= futureblock + 230) {
+            futureblock = block.number + 20;
+            return;
+        }
+
+        uint256 gas = gasleft();
+
+        for (uint256 i = 0; i < silver[0]; i++) {
+            address winner = players[uint((blockhash(futureblock - 1 - i))) % players.length];
+            winner.send(silver[1]);
+            WT.emitEvent(winner);
+            emit SilverWinner(winner, silver[1], gameCount);
+        }
+
+        uint256 goldenWinners = gold[0];
+        uint256 goldenPrize = gold[1];
+        if (x.count() < gold[0]) {
+            goldenWinners = x.count();
+            goldenPrize = gold[0] * gold[1] / x.count();
+        }
+        if (goldenWinners != 0) {
+            address[] memory addresses = x.draw(goldenWinners);
+            for (uint256 k = 0; k < addresses.length; k++) {
+                addresses[k].send(goldenPrize);
+                RS.sendBonus(addresses[k]);
+                WT.emitEvent(addresses[k]);
+                emit GoldenWinner(addresses[k], goldenPrize, gameCount);
+            }
+        }
+
+        uint256 laps = 10;
+        uint256 winnerIdx;
+        uint256 indexes = players.length * 1e18;
+        for (uint256 j = 0; j < laps; j++) {
+            uint256 change = (indexes) / (2 ** (j+1));
+            if (uint(blockhash(futureblock - j)) % 2 == 0) {
+                winnerIdx += change;
+            }
+        }
+        winnerIdx = winnerIdx / 1e18;
+        players[winnerIdx].send(brilliant[1]);
+        WT.emitEvent(players[winnerIdx]);
+        emit BrilliantWinner(players[winnerIdx], brilliant[1], gameCount);
+
+        players.length = 0;
+        futureblock = 0;
+        x = new Storage();
+        gameCount++;
+
+        uint256 txCost = tx.gasprice * (gas - gasleft());
+        msg.sender.send(txCost);
+        emit txCostRefunded(msg.sender, txCost);
+
+        uint256 fee = address(this).balance - msg.value;
+        owner.send(fee);
+        emit FeePayed(owner, fee);
+
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function drawing() internal {
+
+        require(block.number > futureblock, "Awaiting for a future block");
+
+        if (block.number >= futureblock + 230) {
+            futureblock = block.number + 20;
+            return;
+        }
+
+        uint256 gas = gasleft();
+
+        for (uint256 i = 0; i < silver[0]; i++) {
+            address winner = players[uint((blockhash(futureblock - 1 - i))) % players.length];
+            winner.send(silver[1]);
+            WT.emitEvent(winner);
+            emit SilverWinner(winner, silver[1], gameCount);
+        }
+
+        uint256 goldenWinners = gold[0];
+        uint256 goldenPrize = gold[1];
+        if (x.count() < gold[0]) {
+            goldenWinners = x.count();
+            goldenPrize = gold[0] * gold[1] / x.count();
+        }
+        if (goldenWinners != 0) {
+            address[] memory addresses = x.draw(goldenWinners);
+            for (uint256 k = 0; k < addresses.length; k++) {
+                addresses[k].send(goldenPrize);
+                RS.sendBonus(addresses[k]);
+                WT.emitEvent(addresses[k]);
+                emit GoldenWinner(addresses[k], goldenPrize, gameCount);
+            }
+        }
+
+        uint256 laps = 10;
+        uint256 winnerIdx;
+        uint256 indexes = players.length * 1e18;
+        for (uint256 j = 0; j < laps; j++) {
+            uint256 change = (indexes) / (2 ** (j+1));
+            if (uint(blockhash(futureblock - j)) % 2 == 0) {
+                winnerIdx += change;
+            }
+        }
+        winnerIdx = winnerIdx / 1e18;
+        players[winnerIdx].send(brilliant[1]);
+        WT.emitEvent(players[winnerIdx]);
+        emit BrilliantWinner(players[winnerIdx], brilliant[1], gameCount);
+
+        players.length = 0;
+        futureblock = 0;
+        x = new Storage();
+        gameCount++;
+
+        uint256 txCost = tx.gasprice * (gas - gasleft());
+        msg.sender.send(txCost);
+        emit txCostRefunded(msg.sender, txCost);
+
+        uint256 fee = address(this).balance - msg.value;
+        owner.send(fee);
+        emit FeePayed(owner, fee);
+
+    }
+Response:
+{"StatementsA": {"futureblock = block.number + 20;":"Updates the state variable 'futureblock' with a new block number."}, "StatementsB": {"winner.send(silver[1]);":"Executes an external call to send ether to the 'winner' address."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: futureblock = block.number + 20;
+2.External Call: winner.send(silver[1]);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function drawing() internal {
+
+        require(block.number > futureblock, "Awaiting for a future block");
+
+        if (block.number >= futureblock + 230) {
+            futureblock = block.number + 20;
+            return;
+        }
+
+        uint256 gas = gasleft();
+
+        for (uint256 i = 0; i < silver[0]; i++) {
+            address winner = players[uint((blockhash(futureblock - 1 - i))) % players.length];
+            winner.send(silver[1]);
+            WT.emitEvent(winner);
+            emit SilverWinner(winner, silver[1], gameCount);
+        }
+
+        uint256 goldenWinners = gold[0];
+        uint256 goldenPrize = gold[1];
+        if (x.count() < gold[0]) {
+            goldenWinners = x.count();
+            goldenPrize = gold[0] * gold[1] / x.count();
+        }
+        if (goldenWinners != 0) {
+            address[] memory addresses = x.draw(goldenWinners);
+            for (uint256 k = 0; k < addresses.length; k++) {
+                addresses[k].send(goldenPrize);
+                RS.sendBonus(addresses[k]);
+                WT.emitEvent(addresses[k]);
+                emit GoldenWinner(addresses[k], goldenPrize, gameCount);
+            }
+        }
+
+        uint256 laps = 10;
+        uint256 winnerIdx;
+        uint256 indexes = players.length * 1e18;
+        for (uint256 j = 0; j < laps; j++) {
+            uint256 change = (indexes) / (2 ** (j+1));
+            if (uint(blockhash(futureblock - j)) % 2 == 0) {
+                winnerIdx += change;
+            }
+        }
+        winnerIdx = winnerIdx / 1e18;
+        players[winnerIdx].send(brilliant[1]);
+        WT.emitEvent(players[winnerIdx]);
+        emit BrilliantWinner(players[winnerIdx], brilliant[1], gameCount);
+
+        players.length = 0;
+        futureblock = 0;
+        x = new Storage();
+        gameCount++;
+
+        uint256 txCost = tx.gasprice * (gas - gasleft());
+        msg.sender.send(txCost);
+        emit txCostRefunded(msg.sender, txCost);
+
+        uint256 fee = address(this).balance - msg.value;
+        owner.send(fee);
+        emit FeePayed(owner, fee);
+
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function drawing() internal {
+
+        require(block.number > futureblock, "Awaiting for a future block");
+
+        if (block.number >= futureblock + 230) {
+            futureblock = block.number + 20;
+            return;
+        }
+
+        uint256 gas = gasleft();
+
+        for (uint256 i = 0; i < silver[0]; i++) {
+            address winner = players[uint((blockhash(futureblock - 1 - i))) % players.length];
+            winner.send(silver[1]);
+            WT.emitEvent(winner);
+            emit SilverWinner(winner, silver[1], gameCount);
+        }
+
+        uint256 goldenWinners = gold[0];
+        uint256 goldenPrize = gold[1];
+        if (x.count() < gold[0]) {
+            goldenWinners = x.count();
+            goldenPrize = gold[0] * gold[1] / x.count();
+        }
+        if (goldenWinners != 0) {
+            address[] memory addresses = x.draw(goldenWinners);
+            for (uint256 k = 0; k < addresses.length; k++) {
+                addresses[k].send(goldenPrize);
+                RS.sendBonus(addresses[k]);
+                WT.emitEvent(addresses[k]);
+                emit GoldenWinner(addresses[k], goldenPrize, gameCount);
+            }
+        }
+
+        uint256 laps = 10;
+        uint256 winnerIdx;
+        uint256 indexes = players.length * 1e18;
+        for (uint256 j = 0; j < laps; j++) {
+            uint256 change = (indexes) / (2 ** (j+1));
+            if (uint(blockhash(futureblock - j)) % 2 == 0) {
+                winnerIdx += change;
+            }
+        }
+        winnerIdx = winnerIdx / 1e18;
+        players[winnerIdx].send(brilliant[1]);
+        WT.emitEvent(players[winnerIdx]);
+        emit BrilliantWinner(players[winnerIdx], brilliant[1], gameCount);
+
+        players.length = 0;
+        futureblock = 0;
+        x = new Storage();
+        gameCount++;
+
+        uint256 txCost = tx.gasprice * (gas - gasleft());
+        msg.sender.send(txCost);
+        emit txCostRefunded(msg.sender, txCost);
+
+        uint256 fee = address(this).balance - msg.value;
+        owner.send(fee);
+        emit FeePayed(owner, fee);
+
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function drawing() internal {
+
+        require(block.number > futureblock, "Awaiting for a future block");
+
+        if (block.number >= futureblock + 230) {
+            futureblock = block.number + 20;
+            return;
+        }
+
+        uint256 gas = gasleft();
+
+        for (uint256 i = 0; i < silver[0]; i++) {
+            address winner = players[uint((blockhash(futureblock - 1 - i))) % players.length];
+            winner.send(silver[1]);
+            WT.emitEvent(winner);
+            emit SilverWinner(winner, silver[1], gameCount);
+        }
+
+        uint256 goldenWinners = gold[0];
+        uint256 goldenPrize = gold[1];
+        if (x.count() < gold[0]) {
+            goldenWinners = x.count();
+            goldenPrize = gold[0] * gold[1] / x.count();
+        }
+        if (goldenWinners != 0) {
+            address[] memory addresses = x.draw(goldenWinners);
+            for (uint256 k = 0; k < addresses.length; k++) {
+                addresses[k].send(goldenPrize);
+                RS.sendBonus(addresses[k]);
+                WT.emitEvent(addresses[k]);
+                emit GoldenWinner(addresses[k], goldenPrize, gameCount);
+            }
+        }
+
+        uint256 laps = 10;
+        uint256 winnerIdx;
+        uint256 indexes = players.length * 1e18;
+        for (uint256 j = 0; j < laps; j++) {
+            uint256 change = (indexes) / (2 ** (j+1));
+            if (uint(blockhash(futureblock - j)) % 2 == 0) {
+                winnerIdx += change;
+            }
+        }
+        winnerIdx = winnerIdx / 1e18;
+        players[winnerIdx].send(brilliant[1]);
+        WT.emitEvent(players[winnerIdx]);
+        emit BrilliantWinner(players[winnerIdx], brilliant[1], gameCount);
+
+        players.length = 0;
+        futureblock = 0;
+        x = new Storage();
+        gameCount++;
+
+        uint256 txCost = tx.gasprice * (gas - gasleft());
+        msg.sender.send(txCost);
+        emit txCostRefunded(msg.sender, txCost);
+
+        uint256 fee = address(this).balance - msg.value;
+        owner.send(fee);
+        emit FeePayed(owner, fee);
+
+    }
+Response:
+{
+    "StatementsA": {
+        "futureblock = block.number + 20;": "Updates the state variable 'futureblock'.",
+        "players.length = 0;": "Updates the state variable 'players'.",
+        "futureblock = 0;": "Updates the state variable 'futureblock'.",
+        "x = new Storage();": "Updates the state variable 'x'.",
+        "gameCount++;": "Updates the state variable 'gameCount'."
+    },
+    "StatementsB": {
+        "winner.send(silver[1]);": "Executes an external call to send Ether to 'winner'.",
+        "WT.emitEvent(winner);": "Executes an external call to 'WT' contract.",
+        "addresses[k].send(goldenPrize);": "Executes an external call to send Ether to 'addresses[k]'.",
+        "RS.sendBonus(addresses[k]);": "Executes an external call to 'RS' contract.",
+        "WT.emitEvent(addresses[k]);": "Executes an external call to 'WT' contract.",
+        "players[winnerIdx].send(brilliant[1]);": "Executes an external call to send Ether to 'players[winnerIdx]'.",
+        "WT.emitEvent(players[winnerIdx]);": "Executes an external call to 'WT' contract.",
+        "msg.sender.send(txCost);": "Executes an external call to send Ether to 'msg.sender'.",
+        "owner.send(fee);": "Executes an external call to send Ether to 'owner'."
+    },
+    "VariableA": {
+        "msg.sender": "Holds the sender's address of the external call."
+    }
+}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: futureblock = block.number + 20;
+2.External Call: winner.send(silver[1]);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

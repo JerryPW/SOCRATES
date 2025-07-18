@@ -1,0 +1,11 @@
+
+Start analyze function: MTVote.onTokenReceived(address,uint256,bytes)
+Function Security Analysis for MTVote.onTokenReceived(address,uint256,bytes)
+    There are no modifiers should be examined in function onTokenReceived.
+    Check direct function security
+        - function MTVote.onTokenReceived(address,uint256,bytes) has security assurance protected by checking the authority of msg.sender, the function would not cause
+        REE problem.
+          Reason: The function contains 'require(msg.sender == TVTokenAddress);' which matches the first structure pattern, requiring 'msg.sender' to be a specific
+          address, 'TVTokenAddress'. The guidance about ignoring local variable xxx is not applicable here because `TVTokenAddress` is likely a contract-level variable
+          and not a local variable within the function.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,26 @@
+
+Start analyze function: TrustlessOTC.cancelTrade(uint256)
+Function Security Analysis for TrustlessOTC.cancelTrade(uint256)
+    There are no modifiers should be examined in function cancelTrade.
+    Check direct function security
+        - function TrustlessOTC.cancelTrade(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The condition 'require(msg.sender == o.creator);' uses a local variable 'o' which is derived from the TradeOffer storage object. According to the note,
+          local variables such as this do not count as part of the specified structures.
+        - function TrustlessOTC.cancelTrade(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not meet any of the described structures. It involves a `require` statement but does not check for a boolean variable to validate or
+          toggle its state.
+External Call Analysis
+    Direct external call: ['Token(o.tokenFrom).transfer(o.creator,o.amountFrom)']
+    Analyze Transfer
+        - Token(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - Token(o.tokenFrom).transfer(o.creator,o.amountFrom) ISN'T subjected to gas limits.
+    Remaining external call: ['Token(o.tokenFrom).transfer(o.creator,o.amountFrom)']
+    Analyze External Address
+        The variable 'o' in external call 'Token(o.tokenFrom).transfer(o.creator,o.amountFrom)' has no state variable assigned in TrustlessOTC.cancelTrade(uint256).
+        Therefore we check whether it has been hardcoded in the function.
+            No The code defines a function `cancelTrade` which takes a `tradeID` as an argument, and uses this `tradeID` to access a `TradeOffer` object `o` from an
+            `offers` mapping. The operations that follow use the properties of `o`, which are dynamically retrieved based on the input `tradeID` provided when calling the
+            function. This means the behavior of the function depends on the input provided at runtime rather than a pre-set value embedded in the code, indicating the
+            absence of hardcoding.
+Conclusion: This function will cause REE Problem.

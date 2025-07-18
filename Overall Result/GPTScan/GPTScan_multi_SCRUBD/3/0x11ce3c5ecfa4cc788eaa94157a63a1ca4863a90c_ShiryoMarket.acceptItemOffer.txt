@@ -1,0 +1,263 @@
+ShiryoMarket.acceptItemOffer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function acceptItemOffer(uint256 _offerId) public nonReentrant {
+        uint256 itemId = offerIdToMarketOffer[_offerId].itemId;
+
+        require(idToMarketItem[itemId].seller == msg.sender, "Not item seller");
+
+        require(
+            offerIdToMarketOffer[_offerId].accepted == false &&
+                offerIdToMarketOffer[_offerId].cancelled == false,
+            "Already accepted or cancelled."
+        );
+
+        uint256 price = offerIdToMarketOffer[_offerId].offerAmount;
+        address bidder = payable(offerIdToMarketOffer[_offerId].bidder);
+
+        uint256 fees = SafeMath.div(price, 100).mul(saleFeePercentage);
+
+        // fees and payment
+        if (discountManager != address(0x0)) {
+            // how much discount does this user get?
+            uint256 feeDiscountPercent = IDiscountManager(discountManager)
+                .getDiscount(msg.sender);
+            fees = fees.div(100).mul(feeDiscountPercent);
+        }
+
+        uint256 saleAmount = price.sub(fees);
+        payable(msg.sender).transfer(saleAmount);
+        if (fees > 0) {
+            accumulatedFee+=fees;
+        }
+
+        transferAnyToken(
+            idToMarketItem[itemId].tokenType,
+            idToMarketItem[itemId].tokenContract,
+            address(this),
+            offerIdToMarketOffer[_offerId].bidder,
+            idToMarketItem[itemId].tokenId,
+            idToMarketItem[itemId].amount
+        );
+
+        offerIdToMarketOffer[_offerId].accepted = true;
+        
+        idToMarketItem[itemId].isSold = true;
+        idToMarketItem[itemId].buyer = offerIdToMarketOffer[_offerId].bidder;
+
+        _itemsSold.increment();
+
+        emit MarketSaleCreated(
+            itemId,
+            idToMarketItem[itemId].tokenContract,
+            idToMarketItem[itemId].tokenId,
+            msg.sender,
+            bidder,
+            idToMarketItem[itemId].category,
+            price
+        );
+
+        volumeTraded = volumeTraded.add(price);
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function acceptItemOffer(uint256 _offerId) public nonReentrant {
+        uint256 itemId = offerIdToMarketOffer[_offerId].itemId;
+
+        require(idToMarketItem[itemId].seller == msg.sender, "Not item seller");
+
+        require(
+            offerIdToMarketOffer[_offerId].accepted == false &&
+                offerIdToMarketOffer[_offerId].cancelled == false,
+            "Already accepted or cancelled."
+        );
+
+        uint256 price = offerIdToMarketOffer[_offerId].offerAmount;
+        address bidder = payable(offerIdToMarketOffer[_offerId].bidder);
+
+        uint256 fees = SafeMath.div(price, 100).mul(saleFeePercentage);
+
+        // fees and payment
+        if (discountManager != address(0x0)) {
+            // how much discount does this user get?
+            uint256 feeDiscountPercent = IDiscountManager(discountManager)
+                .getDiscount(msg.sender);
+            fees = fees.div(100).mul(feeDiscountPercent);
+        }
+
+        uint256 saleAmount = price.sub(fees);
+        payable(msg.sender).transfer(saleAmount);
+        if (fees > 0) {
+            accumulatedFee+=fees;
+        }
+
+        transferAnyToken(
+            idToMarketItem[itemId].tokenType,
+            idToMarketItem[itemId].tokenContract,
+            address(this),
+            offerIdToMarketOffer[_offerId].bidder,
+            idToMarketItem[itemId].tokenId,
+            idToMarketItem[itemId].amount
+        );
+
+        offerIdToMarketOffer[_offerId].accepted = true;
+        
+        idToMarketItem[itemId].isSold = true;
+        idToMarketItem[itemId].buyer = offerIdToMarketOffer[_offerId].bidder;
+
+        _itemsSold.increment();
+
+        emit MarketSaleCreated(
+            itemId,
+            idToMarketItem[itemId].tokenContract,
+            idToMarketItem[itemId].tokenId,
+            msg.sender,
+            bidder,
+            idToMarketItem[itemId].category,
+            price
+        );
+
+        volumeTraded = volumeTraded.add(price);
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function acceptItemOffer(uint256 _offerId) public nonReentrant {
+        uint256 itemId = offerIdToMarketOffer[_offerId].itemId;
+
+        require(idToMarketItem[itemId].seller == msg.sender, "Not item seller");
+
+        require(
+            offerIdToMarketOffer[_offerId].accepted == false &&
+                offerIdToMarketOffer[_offerId].cancelled == false,
+            "Already accepted or cancelled."
+        );
+
+        uint256 price = offerIdToMarketOffer[_offerId].offerAmount;
+        address bidder = payable(offerIdToMarketOffer[_offerId].bidder);
+
+        uint256 fees = SafeMath.div(price, 100).mul(saleFeePercentage);
+
+        // fees and payment
+        if (discountManager != address(0x0)) {
+            // how much discount does this user get?
+            uint256 feeDiscountPercent = IDiscountManager(discountManager)
+                .getDiscount(msg.sender);
+            fees = fees.div(100).mul(feeDiscountPercent);
+        }
+
+        uint256 saleAmount = price.sub(fees);
+        payable(msg.sender).transfer(saleAmount);
+        if (fees > 0) {
+            accumulatedFee+=fees;
+        }
+
+        transferAnyToken(
+            idToMarketItem[itemId].tokenType,
+            idToMarketItem[itemId].tokenContract,
+            address(this),
+            offerIdToMarketOffer[_offerId].bidder,
+            idToMarketItem[itemId].tokenId,
+            idToMarketItem[itemId].amount
+        );
+
+        offerIdToMarketOffer[_offerId].accepted = true;
+        
+        idToMarketItem[itemId].isSold = true;
+        idToMarketItem[itemId].buyer = offerIdToMarketOffer[_offerId].bidder;
+
+        _itemsSold.increment();
+
+        emit MarketSaleCreated(
+            itemId,
+            idToMarketItem[itemId].tokenContract,
+            idToMarketItem[itemId].tokenId,
+            msg.sender,
+            bidder,
+            idToMarketItem[itemId].category,
+            price
+        );
+
+        volumeTraded = volumeTraded.add(price);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function acceptItemOffer(uint256 _offerId) public nonReentrant {
+        uint256 itemId = offerIdToMarketOffer[_offerId].itemId;
+
+        require(idToMarketItem[itemId].seller == msg.sender, "Not item seller");
+
+        require(
+            offerIdToMarketOffer[_offerId].accepted == false &&
+                offerIdToMarketOffer[_offerId].cancelled == false,
+            "Already accepted or cancelled."
+        );
+
+        uint256 price = offerIdToMarketOffer[_offerId].offerAmount;
+        address bidder = payable(offerIdToMarketOffer[_offerId].bidder);
+
+        uint256 fees = SafeMath.div(price, 100).mul(saleFeePercentage);
+
+        // fees and payment
+        if (discountManager != address(0x0)) {
+            // how much discount does this user get?
+            uint256 feeDiscountPercent = IDiscountManager(discountManager)
+                .getDiscount(msg.sender);
+            fees = fees.div(100).mul(feeDiscountPercent);
+        }
+
+        uint256 saleAmount = price.sub(fees);
+        payable(msg.sender).transfer(saleAmount);
+        if (fees > 0) {
+            accumulatedFee+=fees;
+        }
+
+        transferAnyToken(
+            idToMarketItem[itemId].tokenType,
+            idToMarketItem[itemId].tokenContract,
+            address(this),
+            offerIdToMarketOffer[_offerId].bidder,
+            idToMarketItem[itemId].tokenId,
+            idToMarketItem[itemId].amount
+        );
+
+        offerIdToMarketOffer[_offerId].accepted = true;
+        
+        idToMarketItem[itemId].isSold = true;
+        idToMarketItem[itemId].buyer = offerIdToMarketOffer[_offerId].bidder;
+
+        _itemsSold.increment();
+
+        emit MarketSaleCreated(
+            itemId,
+            idToMarketItem[itemId].tokenContract,
+            idToMarketItem[itemId].tokenId,
+            msg.sender,
+            bidder,
+            idToMarketItem[itemId].category,
+            price
+        );
+
+        volumeTraded = volumeTraded.add(price);
+    }
+    
+Response:
+No
+--------------------------------------------------

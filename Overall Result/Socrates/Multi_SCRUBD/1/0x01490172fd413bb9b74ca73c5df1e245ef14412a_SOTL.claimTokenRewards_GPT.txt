@@ -1,0 +1,26 @@
+
+Start analyze function: SOTL.claimTokenRewards(address)
+Function Security Analysis for SOTL.claimTokenRewards(address)
+    There are no modifiers should be examined in function claimTokenRewards.
+    Check direct function security
+        - function SOTL.claimTokenRewards(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any conditional checks or assertions that involve msg.sender equality or inequality with respect to certain roles like owner,
+          address, leader, or CEO.
+        - function SOTL.claimTokenRewards(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the required structures. It lacks any statements involving require(xxx == True) with subsequent modification
+          of xxx, or require(xxx == False) with subsequent modification of xxx, or require(!xxx) with subsequent modification of xxx, or an if(!xxx) throw pattern with
+          modification of xxx afterwards.
+External Call Analysis
+    Direct external call: ['IERC20(token).transfer(_msgSender(),rewardsSent)']
+    Analyze Transfer
+        - IERC20(token).transfer(_msgSender(),rewardsSent) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - IERC20(token).transfer(_msgSender(),rewardsSent) ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(token).transfer(_msgSender(),rewardsSent)']
+    Analyze External Address
+        The variable 'token' in external call 'IERC20(token).transfer(_msgSender(),rewardsSent)' has no state variable assigned in SOTL.claimTokenRewards(address).
+        Therefore we check whether it has been hardcoded in the function.
+            No The provided variable 'token' is used as an address parameter in the function claimTokenRewards. It is passed as an argument to the function, and its value
+            is not directly defined or fixed within the function itself. Therefore, it is not hardcoded; instead, the function accepts a value for 'token' dynamically
+            when called.
+Conclusion: This function will cause REE Problem.

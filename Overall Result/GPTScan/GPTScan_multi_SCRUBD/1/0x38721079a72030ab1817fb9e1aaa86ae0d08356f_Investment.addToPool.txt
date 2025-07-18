@@ -1,0 +1,107 @@
+Investment.addToPool: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function addToPool(uint256[] memory minimumAmountsOut) public payable {
+        require(msg.value > 0);
+        if(totalSupply() == 0){
+            require(msg.value >= 10000000000000000 , "You must initiate the pool with at least 0.01 ETH!");
+        }
+        uint256 factoryFeeAmount = msg.value * _factoryFee / 10**18;
+        uint256 poolOwnerFeeAmount = msg.value * _poolFee / 10**18;
+        uint256 amountIn = msg.value - factoryFeeAmount - poolOwnerFeeAmount;
+
+        IWETH WETHContract = IWETH(WETHAddress);
+        WETHContract.deposit{value: msg.value}();
+        IERC20(WETHAddress).transfer(owner(), poolOwnerFeeAmount);
+        processFee(WETHAddress, factoryFeeAmount, 0);
+
+        uint256 poolTokensToMint = InvestmentLibrary.getPoolTokensToMint(
+            amountIn,
+            _tokensHeld,
+            totalSupply()
+        );
+
+        if(_tokensToSwapIntoOnDeposit.length != 0){
+            for (uint i = 0; i < _tokensToSwapIntoOnDeposit.length; i++){
+                InvestmentLibrary.autoSwapToken memory autoSwapParams = _tokensToSwapIntoOnDeposit[i];
+                _swapTokens(
+                    autoSwapParams.v2Path,
+                    autoSwapParams.v3Path,
+                    amountIn * autoSwapParams.ratio / 10**18,
+                    minimumAmountsOut[i],
+                    autoSwapParams.quoteToken
+                );
+            }
+        } 
+
+        if(balanceOf(msg.sender) == 0){
+            _totalHolders++;
+        }  
+
+        _mint(msg.sender, poolTokensToMint);
+        
+        if(InvestmentLibrary.isTokenHeld(_tokensHeld, WETHAddress) == false && IERC20(WETHAddress).balanceOf(address(this)) > 0){
+            _tokensHeld.push(InvestmentLibrary.heldToken(WETHAddress, address(0), false));
+        }
+
+        emit InvestmentLibrary.feePaidToOwner(msg.sender, owner(), poolOwnerFeeAmount);
+        emit InvestmentLibrary.poolAddedTo(msg.sender, msg.value, poolTokensToMint);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function addToPool(uint256[] memory minimumAmountsOut) public payable {
+        require(msg.value > 0);
+        if(totalSupply() == 0){
+            require(msg.value >= 10000000000000000 , "You must initiate the pool with at least 0.01 ETH!");
+        }
+        uint256 factoryFeeAmount = msg.value * _factoryFee / 10**18;
+        uint256 poolOwnerFeeAmount = msg.value * _poolFee / 10**18;
+        uint256 amountIn = msg.value - factoryFeeAmount - poolOwnerFeeAmount;
+
+        IWETH WETHContract = IWETH(WETHAddress);
+        WETHContract.deposit{value: msg.value}();
+        IERC20(WETHAddress).transfer(owner(), poolOwnerFeeAmount);
+        processFee(WETHAddress, factoryFeeAmount, 0);
+
+        uint256 poolTokensToMint = InvestmentLibrary.getPoolTokensToMint(
+            amountIn,
+            _tokensHeld,
+            totalSupply()
+        );
+
+        if(_tokensToSwapIntoOnDeposit.length != 0){
+            for (uint i = 0; i < _tokensToSwapIntoOnDeposit.length; i++){
+                InvestmentLibrary.autoSwapToken memory autoSwapParams = _tokensToSwapIntoOnDeposit[i];
+                _swapTokens(
+                    autoSwapParams.v2Path,
+                    autoSwapParams.v3Path,
+                    amountIn * autoSwapParams.ratio / 10**18,
+                    minimumAmountsOut[i],
+                    autoSwapParams.quoteToken
+                );
+            }
+        } 
+
+        if(balanceOf(msg.sender) == 0){
+            _totalHolders++;
+        }  
+
+        _mint(msg.sender, poolTokensToMint);
+        
+        if(InvestmentLibrary.isTokenHeld(_tokensHeld, WETHAddress) == false && IERC20(WETHAddress).balanceOf(address(this)) > 0){
+            _tokensHeld.push(InvestmentLibrary.heldToken(WETHAddress, address(0), false));
+        }
+
+        emit InvestmentLibrary.feePaidToOwner(msg.sender, owner(), poolOwnerFeeAmount);
+        emit InvestmentLibrary.poolAddedTo(msg.sender, msg.value, poolTokensToMint);
+    }
+    
+Response:
+No
+--------------------------------------------------

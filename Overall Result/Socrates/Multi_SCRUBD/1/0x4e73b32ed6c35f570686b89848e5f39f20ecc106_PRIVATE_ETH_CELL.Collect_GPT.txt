@@ -1,0 +1,19 @@
+
+Start analyze function: PRIVATE_ETH_CELL.Collect(uint256)
+Function Security Analysis for PRIVATE_ETH_CELL.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function PRIVATE_ETH_CELL.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any access control structures that compare msg.sender to a specific owner or address.
+        - function PRIVATE_ETH_CELL.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function does not contain any 'require' or 'if(!xxx) throw' statements with the specified pattern. It only checks conditions using simple 'if'
+          statements without negation or throwing exceptions as outlined in the required structures.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

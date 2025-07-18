@@ -1,0 +1,32 @@
+DogeviathanBasic.createCollectible: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function createCollectible()
+    public payable returns (uint256)
+    {
+        require(block.timestamp >= SALE_START_TIMESTAMP, "Sale has not started");
+        require(tokenCounter < FIRST_BATCH_SUPPLY, "First batch has been sold out");
+        require(getVoidPrice() == msg.value, "Ether value sent is not correct");
+        uint256 lastTokenId = tokenCounter;
+        address voidOwner = msg.sender;
+        if (lastTokenId == FIRST_BATCH_SUPPLY - 1) {
+            tokenIdToRand[lastTokenId] = 0;
+            tokenIdToVoid[lastTokenId] = indexToVoid(0);
+        } else {
+            uint256 r = uint(keccak256(abi.encodePacked(voidOwner, msg.value))) % 7776;
+            tokenIdToRand[lastTokenId] = r;
+            tokenIdToVoid[lastTokenId] = indexToVoid(r);
+        }
+        _safeMint(voidOwner, lastTokenId);
+        lastPrice = lastPrice * 1010 / 1000;
+        tokenIdToOwner[lastTokenId] = voidOwner;
+        emit createdCollectible(lastTokenId);
+        tokenCounter = tokenCounter + 1;
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------

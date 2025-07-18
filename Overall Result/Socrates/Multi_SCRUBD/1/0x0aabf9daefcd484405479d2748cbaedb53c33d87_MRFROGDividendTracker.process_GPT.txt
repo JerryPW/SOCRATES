@@ -1,0 +1,26 @@
+
+Start analyze function: MRFROGDividendTracker.process(uint256)
+Function Security Analysis for MRFROGDividendTracker.process(uint256)
+    There are no modifiers should be examined in function process.
+    Check direct function security
+        - function MRFROGDividendTracker.process(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any statements that check if msg.sender equals any owner, address, or similar authority positions. The messages do not
+          verify sender authorities such as xxxOwner, xxxAddress, Leader, or CEO.
+        - function MRFROGDividendTracker.process(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures involving require or if statements and variable assignments involving true/false.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: MRFROGDividendTracker.processAccount(address,bool)
+Function Security Analysis for MRFROGDividendTracker.processAccount(address,bool)
+    The modifier of function processAccount are ['onlyOwner']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The code in the modifier 'onlyOwner()' uses 'require(owner() == _msgSender(), "Ownable: caller is not the owner")', which checks if the caller is the
+          owner of the contract. This satisfies the first characteristic of checking for specific addresses or owner access, confirming the initial judgment as correct.
+Conclusion: This function will not cause REE Problem.

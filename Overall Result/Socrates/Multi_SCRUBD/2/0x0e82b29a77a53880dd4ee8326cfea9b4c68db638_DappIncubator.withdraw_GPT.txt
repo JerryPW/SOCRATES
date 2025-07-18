@@ -1,0 +1,10 @@
+
+Start analyze function: DappIncubator.withdraw(address)
+Function Security Analysis for DappIncubator.withdraw(address)
+    The modifier of function withdraw are ['nonReentrant']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: Upon review, the provided code employs a lock operation by setting the `_status` to `_ENTERED` and an unlock operation by resetting `_status` to
+          `_NOT_ENTERED` after the function execution. This ensures the function is entered only once at a time, fulfilling the criterion for Rule 2 regarding lock
+          operations.
+Conclusion: This function will not cause REE Problem.

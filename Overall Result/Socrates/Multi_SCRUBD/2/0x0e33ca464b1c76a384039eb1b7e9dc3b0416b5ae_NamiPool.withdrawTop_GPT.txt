@@ -1,0 +1,12 @@
+
+Start analyze function: NamiPool.withdrawTop(uint256)
+Function Security Analysis for NamiPool.withdrawTop(uint256)
+    There are no modifiers should be examined in function withdrawTop.
+    Check direct function security
+        - function NamiPool.withdrawTop(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any statements explicitly checking for specific owner or leader addresses using msg.sender.
+        - function NamiPool.withdrawTop(uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: In the code provided, the structure 'require(namiPool[_roundIndex][msg.sender].isWithdrawn == false);' is immediately followed by
+          'namiPool[_roundIndex][msg.sender].isWithdrawn = true;'. The state negation occurs immediately after the require statement and before the main logic of the
+          function execution, i.e., before transferring ether and logging the Withdraw event.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,253 @@
+Depot.exchangeEtherForSynths: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function exchangeEtherForSynths()
+        public
+        payable
+        pricesNotStale
+        notPaused
+        returns (uint) // Returns the number of Synths (sUSD) received
+    {
+        uint ethToSend;
+
+        // The multiplication works here because usdToEthPrice is specified in
+        // 18 decimal places, just like our currency base.
+        uint requestedToPurchase = msg.value.multiplyDecimal(usdToEthPrice);
+        uint remainingToFulfill = requestedToPurchase;
+
+        // Iterate through our outstanding deposits and sell them one at a time.
+        for (uint i = depositStartIndex; remainingToFulfill > 0 && i < depositEndIndex; i++) {
+            synthDeposit memory deposit = deposits[i];
+
+            // If it's an empty spot in the queue from a previous withdrawal, just skip over it and
+            // update the queue. It's already been deleted.
+            if (deposit.user == address(0)) {
+
+                depositStartIndex = depositStartIndex.add(1);
+            } else {
+                // If the deposit can more than fill the order, we can do this
+                // without touching the structure of our queue.
+                if (deposit.amount > remainingToFulfill) {
+
+                    // Ok, this deposit can fulfill the whole remainder. We don't need
+                    // to change anything about our queue we can just fulfill it.
+                    // Subtract the amount from our deposit and total.
+                    uint newAmount = deposit.amount.sub(remainingToFulfill);
+                    deposits[i] = synthDeposit({ user: deposit.user, amount: newAmount});
+                    
+                    totalSellableDeposits = totalSellableDeposits.sub(remainingToFulfill);
+
+                    // Transfer the ETH to the depositor. Send is used instead of transfer
+                    // so a non payable contract won't block the FIFO queue on a failed
+                    // ETH payable for synths transaction. The proceeds to be sent to the
+                    // synthetix foundation funds wallet. This is to protect all depositors
+                    // in the queue in this rare case that may occur.
+                    ethToSend = remainingToFulfill.divideDecimal(usdToEthPrice);
+
+                    // We need to use send here instead of transfer because transfer reverts
+                    // if the recipient is a non-payable contract. Send will just tell us it
+                    // failed by returning false at which point we can continue.
+                    // solium-disable-next-line security/no-send
+                    if(!deposit.user.send(ethToSend)) {
+                        fundsWallet.transfer(ethToSend);
+                        emit NonPayableContract(deposit.user, ethToSend);
+                    } else {
+                        emit ClearedDeposit(msg.sender, deposit.user, ethToSend, remainingToFulfill, i);
+                    }
+
+                    // And the Synths to the recipient.
+                    // Note: Fees are calculated by the Synth contract, so when
+                    //       we request a specific transfer here, the fee is
+                    //       automatically deducted and sent to the fee pool.
+                    synth.transfer(msg.sender, remainingToFulfill);
+
+                    // And we have nothing left to fulfill on this order.
+                    remainingToFulfill = 0;
+                } else if (deposit.amount <= remainingToFulfill) {
+                    // We need to fulfill this one in its entirety and kick it out of the queue.
+                    // Start by kicking it out of the queue.
+                    // Free the storage because we can.
+                    delete deposits[i];
+                    // Bump our start index forward one.
+                    depositStartIndex = depositStartIndex.add(1);
+                    // We also need to tell our total it's decreased
+                    totalSellableDeposits = totalSellableDeposits.sub(deposit.amount);
+
+                    // Now fulfill by transfering the ETH to the depositor. Send is used instead of transfer
+                    // so a non payable contract won't block the FIFO queue on a failed
+                    // ETH payable for synths transaction. The proceeds to be sent to the
+                    // synthetix foundation funds wallet. This is to protect all depositors
+                    // in the queue in this rare case that may occur.
+                    ethToSend = deposit.amount.divideDecimal(usdToEthPrice);
+
+                    // We need to use send here instead of transfer because transfer reverts
+                    // if the recipient is a non-payable contract. Send will just tell us it
+                    // failed by returning false at which point we can continue.
+                    // solium-disable-next-line security/no-send
+                    if(!deposit.user.send(ethToSend)) {
+                        fundsWallet.transfer(ethToSend);
+                        emit NonPayableContract(deposit.user, ethToSend);
+                    } else {
+                        emit ClearedDeposit(msg.sender, deposit.user, ethToSend, deposit.amount, i);
+                    }
+
+                    // And the Synths to the recipient.
+                    // Note: Fees are calculated by the Synth contract, so when
+                    //       we request a specific transfer here, the fee is
+                    //       automatically deducted and sent to the fee pool.
+                    synth.transfer(msg.sender, deposit.amount);
+
+                    // And subtract the order from our outstanding amount remaining
+                    // for the next iteration of the loop.
+                    remainingToFulfill = remainingToFulfill.sub(deposit.amount);
+                }
+            }
+        }
+
+        // Ok, if we're here and 'remainingToFulfill' isn't zero, then
+        // we need to refund the remainder of their ETH back to them.
+        if (remainingToFulfill > 0) {
+            msg.sender.transfer(remainingToFulfill.divideDecimal(usdToEthPrice));
+        }
+
+        // How many did we actually give them?
+        uint fulfilled = requestedToPurchase.sub(remainingToFulfill);
+
+        if (fulfilled > 0) {
+            // Now tell everyone that we gave them that many (only if the amount is greater than 0).
+            emit Exchange("ETH", msg.value, "sUSD", fulfilled);
+        }
+
+        return fulfilled;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function exchangeEtherForSynths()
+        public
+        payable
+        pricesNotStale
+        notPaused
+        returns (uint) // Returns the number of Synths (sUSD) received
+    {
+        uint ethToSend;
+
+        // The multiplication works here because usdToEthPrice is specified in
+        // 18 decimal places, just like our currency base.
+        uint requestedToPurchase = msg.value.multiplyDecimal(usdToEthPrice);
+        uint remainingToFulfill = requestedToPurchase;
+
+        // Iterate through our outstanding deposits and sell them one at a time.
+        for (uint i = depositStartIndex; remainingToFulfill > 0 && i < depositEndIndex; i++) {
+            synthDeposit memory deposit = deposits[i];
+
+            // If it's an empty spot in the queue from a previous withdrawal, just skip over it and
+            // update the queue. It's already been deleted.
+            if (deposit.user == address(0)) {
+
+                depositStartIndex = depositStartIndex.add(1);
+            } else {
+                // If the deposit can more than fill the order, we can do this
+                // without touching the structure of our queue.
+                if (deposit.amount > remainingToFulfill) {
+
+                    // Ok, this deposit can fulfill the whole remainder. We don't need
+                    // to change anything about our queue we can just fulfill it.
+                    // Subtract the amount from our deposit and total.
+                    uint newAmount = deposit.amount.sub(remainingToFulfill);
+                    deposits[i] = synthDeposit({ user: deposit.user, amount: newAmount});
+                    
+                    totalSellableDeposits = totalSellableDeposits.sub(remainingToFulfill);
+
+                    // Transfer the ETH to the depositor. Send is used instead of transfer
+                    // so a non payable contract won't block the FIFO queue on a failed
+                    // ETH payable for synths transaction. The proceeds to be sent to the
+                    // synthetix foundation funds wallet. This is to protect all depositors
+                    // in the queue in this rare case that may occur.
+                    ethToSend = remainingToFulfill.divideDecimal(usdToEthPrice);
+
+                    // We need to use send here instead of transfer because transfer reverts
+                    // if the recipient is a non-payable contract. Send will just tell us it
+                    // failed by returning false at which point we can continue.
+                    // solium-disable-next-line security/no-send
+                    if(!deposit.user.send(ethToSend)) {
+                        fundsWallet.transfer(ethToSend);
+                        emit NonPayableContract(deposit.user, ethToSend);
+                    } else {
+                        emit ClearedDeposit(msg.sender, deposit.user, ethToSend, remainingToFulfill, i);
+                    }
+
+                    // And the Synths to the recipient.
+                    // Note: Fees are calculated by the Synth contract, so when
+                    //       we request a specific transfer here, the fee is
+                    //       automatically deducted and sent to the fee pool.
+                    synth.transfer(msg.sender, remainingToFulfill);
+
+                    // And we have nothing left to fulfill on this order.
+                    remainingToFulfill = 0;
+                } else if (deposit.amount <= remainingToFulfill) {
+                    // We need to fulfill this one in its entirety and kick it out of the queue.
+                    // Start by kicking it out of the queue.
+                    // Free the storage because we can.
+                    delete deposits[i];
+                    // Bump our start index forward one.
+                    depositStartIndex = depositStartIndex.add(1);
+                    // We also need to tell our total it's decreased
+                    totalSellableDeposits = totalSellableDeposits.sub(deposit.amount);
+
+                    // Now fulfill by transfering the ETH to the depositor. Send is used instead of transfer
+                    // so a non payable contract won't block the FIFO queue on a failed
+                    // ETH payable for synths transaction. The proceeds to be sent to the
+                    // synthetix foundation funds wallet. This is to protect all depositors
+                    // in the queue in this rare case that may occur.
+                    ethToSend = deposit.amount.divideDecimal(usdToEthPrice);
+
+                    // We need to use send here instead of transfer because transfer reverts
+                    // if the recipient is a non-payable contract. Send will just tell us it
+                    // failed by returning false at which point we can continue.
+                    // solium-disable-next-line security/no-send
+                    if(!deposit.user.send(ethToSend)) {
+                        fundsWallet.transfer(ethToSend);
+                        emit NonPayableContract(deposit.user, ethToSend);
+                    } else {
+                        emit ClearedDeposit(msg.sender, deposit.user, ethToSend, deposit.amount, i);
+                    }
+
+                    // And the Synths to the recipient.
+                    // Note: Fees are calculated by the Synth contract, so when
+                    //       we request a specific transfer here, the fee is
+                    //       automatically deducted and sent to the fee pool.
+                    synth.transfer(msg.sender, deposit.amount);
+
+                    // And subtract the order from our outstanding amount remaining
+                    // for the next iteration of the loop.
+                    remainingToFulfill = remainingToFulfill.sub(deposit.amount);
+                }
+            }
+        }
+
+        // Ok, if we're here and 'remainingToFulfill' isn't zero, then
+        // we need to refund the remainder of their ETH back to them.
+        if (remainingToFulfill > 0) {
+            msg.sender.transfer(remainingToFulfill.divideDecimal(usdToEthPrice));
+        }
+
+        // How many did we actually give them?
+        uint fulfilled = requestedToPurchase.sub(remainingToFulfill);
+
+        if (fulfilled > 0) {
+            // Now tell everyone that we gave them that many (only if the amount is greater than 0).
+            emit Exchange("ETH", msg.value, "sUSD", fulfilled);
+        }
+
+        return fulfilled;
+    }
+    
+Response:
+No
+--------------------------------------------------

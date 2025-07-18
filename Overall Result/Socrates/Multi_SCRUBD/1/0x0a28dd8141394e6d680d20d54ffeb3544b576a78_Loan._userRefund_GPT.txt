@@ -1,0 +1,90 @@
+
+Start analyze function: Loan._userRefund(address)
+Function Security Analysis for Loan._userRefund(address)
+    There are no modifiers should be examined in function _userRefund.
+    Check direct function security
+        - function Loan._userRefund(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code contains a check for 'msg.sender == shareholder' but does not meet any of the outlined structures which focus on 'msg.sender ==
+          xxxOwner/xxxAddress/Leader/CEO' in require, if, or assert statements, or 'msg.sender !=' structures followed by throw or within conditions.
+        - function Loan._userRefund(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not conform to any of the defined structures as it lacks the pattern where a variable "xxx" is required to be true or false using
+          'require', and then the value of "xxx" is explicitly changed to the opposite boolean value immediately after.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['userRefund']
+        Function Security Analysis for Loan.userRefund()
+            There are no modifiers should be examined in function userRefund.
+            Check direct function security
+                - function Loan.userRefund() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code checks for msg.sender in the function `_userRefund`, but does not use msg.sender directly in any way related to the listed
+                  characteristics.
+                - function Loan.userRefund() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain any of the required structures. It is a function named `userRefund` which calls another function
+                  `_userRefund` with `msg.sender` as its argument, not involving conditions or variable assignments matching the specified patterns.
+External Call Analysis
+    Direct external call: ['_to.transfer(amount)']
+    Analyze Transfer
+        - _to.transfer(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the '.transfer('
+        keyword, which matches the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Loan.checkPayShareholder()
+Function Security Analysis for Loan.checkPayShareholder()
+    There are no modifiers should be examined in function checkPayShareholder.
+    Check direct function security
+        - function Loan.checkPayShareholder() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified msg.sender checks or assertions in the function.
+        - function Loan.checkPayShareholder() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not have a `require` or `if` statement checking a boolean condition or variable nor does it follow the patterns mentioned in the
+          structures (1-4).
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['autoCheckPayShareholder', '_userRefund', 'userRefund']
+        Function Security Analysis for Loan.autoCheckPayShareholder()
+            There are no modifiers should be examined in function autoCheckPayShareholder.
+            Check direct function security
+                - function Loan.autoCheckPayShareholder() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code uses an if statement to conditionally check a balance, but it does not involve any checks on msg.sender for specific roles like owner,
+                  address, leader, or CEO.
+                - function Loan.autoCheckPayShareholder() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not follow any of the specified structures. It checks a condition using an 'if' statement and calls a function based on that
+                  condition, but does not include 'require' or variable assignments as described in the specified structures.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            There are no reachable function for internal/private function, please manually check its successor contracts.
+        Function Security Analysis for Loan._userRefund(address)
+            There are no modifiers should be examined in function _userRefund.
+            Check direct function security
+                - function Loan._userRefund(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: None of the specified conditions in the problem statement are met. The code does not contain restrictive conditions that specifically check
+                  'msg.sender' against roles like xxxOwner/xxxAddress/Leader/CEO explicitly as required, using the exact patterns given (such as require, if, or assert
+                  with 'msg.sender' related to such roles).
+                - function Loan._userRefund(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function involves checking for a condition (`_to != 0x0`) and assigns `_result` to both `false` and `true` under certain conditions.
+                  However, none of the provided structures (1 to 4) exactly match with the ones described as the condition checked doesn't involve `require(xxx ==
+                  True/False)` or `require(!xxx)`, nor does it throw on a false condition. Therefore, the code doesn't meet any specific structure to return 'Yes'.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['userRefund']
+                Function Security Analysis for Loan.userRefund()
+                    There are no modifiers should be examined in function userRefund.
+                    Check direct function security
+                        - function Loan.userRefund() has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code provided does not contain any of the specified access control structures or permissions checks that involve comparing
+                          msg.sender with an owner or authority-like address (xxxOwner/xxxAddress/Leader/CEO). Therefore, it fails to meet any of the given criteria.
+                        - function Loan.userRefund() has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided code does not contain any of the specified structures. It simply defines a function named `userRefund` that calls another
+                          function `_userRefund` with the sender's address. There are no require statements or conditionals within this code, and no modifications to a
+                          boolean variable are present.
+External Call Analysis
+    Direct external call: ['shareholder.transfer(toShareHolder)', 'token.profitOrgPay.value(toShareHolder)()']
+    Analyze Transfer
+        - shareholder.transfer(toShareHolder) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains the
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - token.profitOrgPay.value(toShareHolder)() ISN'T subjected to gas limits.
+    Remaining external call: ['token.profitOrgPay.value(toShareHolder)()']
+    Analyze External Address
+        There are ['shareholder'] should be checked in variable token
+        Checked variables: shareholder
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

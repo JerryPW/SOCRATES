@@ -1,0 +1,24 @@
+
+Start analyze function: Sandwich._lockLiquidityForever(uint256)
+Function Security Analysis for Sandwich._lockLiquidityForever(uint256)
+    There are no modifiers should be examined in function _lockLiquidityForever.
+    Check direct function security
+        - function Sandwich._lockLiquidityForever(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures that check if 'msg.sender' is equal or not equal to a specific role or address like
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function Sandwich._lockLiquidityForever(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures involving `require` statements with boolean conditions or checking a variable's truthiness
+          followed by changing that variable's value. It simply calls a transfer function and emits an event, without any additional logic as specified.
+External Call Analysis
+    Direct external call: ['IUniswapV2Pair(uniswapV2Pair).transferFrom(_msgSender(),address(this),liquidity)']
+    Analyze Transfer
+    Analyze Gas
+        - IUniswapV2Pair(uniswapV2Pair).transferFrom(_msgSender(),address(this),liquidity) ISN'T subjected to gas limits.
+    Remaining external call: ['IUniswapV2Pair(uniswapV2Pair).transferFrom(_msgSender(),address(this),liquidity)']
+    Analyze External Address
+        There are ['uniswapV2Pair'] should be checked in variable uniswapV2Pair
+        Checked variables: uniswapV2Pair
+            Yes The provided code is a constructor for the contract named 'Sandwich'. The function is explicitly named 'constructor', which aligns with the contract
+            naming convention. The presence of the constructor directly satisfies one of the characteristics outlined, regardless of whether state variables are
+            hardcoded.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,55 @@
+Escrow.userRecover: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function userRecover(address _origin, address _destination, uint _baseAmt) external {
+
+        transactions[_origin] =
+        Transaction(
+            transactionStatus.PendingR1,
+            _baseAmt,
+            0,
+            eternal.getUint(2),
+            0,
+            0,
+            _destination,
+            0);
+
+        Transaction storage transaction = transactions[_origin];
+        base.transferFrom(_origin, owner, transaction.sellerFee);
+        base.transferFrom(_origin, reserve, rF);
+        uint destinationAmt = _baseAmt - (transaction.sellerFee + rF);
+        base.transferFrom(_origin, _destination, destinationAmt);
+        recovery(_origin);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function userRecover(address _origin, address _destination, uint _baseAmt) external {
+
+        transactions[_origin] =
+        Transaction(
+            transactionStatus.PendingR1,
+            _baseAmt,
+            0,
+            eternal.getUint(2),
+            0,
+            0,
+            _destination,
+            0);
+
+        Transaction storage transaction = transactions[_origin];
+        base.transferFrom(_origin, owner, transaction.sellerFee);
+        base.transferFrom(_origin, reserve, rF);
+        uint destinationAmt = _baseAmt - (transaction.sellerFee + rF);
+        base.transferFrom(_origin, _destination, destinationAmt);
+        recovery(_origin);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

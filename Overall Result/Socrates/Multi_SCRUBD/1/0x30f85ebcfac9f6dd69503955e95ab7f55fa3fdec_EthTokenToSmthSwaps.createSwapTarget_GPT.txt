@@ -1,0 +1,24 @@
+
+Start analyze function: EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address)
+Function Security Analysis for EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address)
+    There are no modifiers should be examined in function createSwapTarget.
+    Check direct function security
+        - function EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The function does not contain any statements using msg.sender in comparison with xxxOwner/xxxAddress/Leader/CEO.
+        - function EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures as the code only uses positive value checks and has no statement setting a variable to True or
+          False after a require or throw statement. All conditions in the requires are checking if a value is greater than zero or set to zero, which does not fit the
+          required patterns.
+External Call Analysis
+    Direct external call: ['ERC20(_token).transferFrom(msg.sender,this,_value)']
+    Analyze Transfer
+    Analyze Gas
+        - ERC20(_token).transferFrom(msg.sender,this,_value) ISN'T subjected to gas limits.
+    Remaining external call: ['ERC20(_token).transferFrom(msg.sender,this,_value)']
+    Analyze External Address
+        The variable '_token' in external call 'ERC20(_token).transferFrom(msg.sender,this,_value)' has no state variable assigned in
+        EthTokenToSmthSwaps.createSwapTarget(bytes20,address,address,uint256,address). Therefore we check whether it has been hardcoded in the function.
+            No The code uses the variable _token as an argument passed to the function createSwapTarget. Then, it checks within the function using
+            ERC20(_token).transferFrom, indicating that the value of _token is not hardcoded and can vary depending on the input provided by the caller of the function.
+Conclusion: This function will cause REE Problem.

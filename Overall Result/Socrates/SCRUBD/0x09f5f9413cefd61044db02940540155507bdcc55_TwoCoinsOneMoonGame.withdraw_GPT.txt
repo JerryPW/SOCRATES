@@ -1,0 +1,23 @@
+
+Start analyze function: TwoCoinsOneMoonGame.withdraw()
+Function Security Analysis for TwoCoinsOneMoonGame.withdraw()
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function TwoCoinsOneMoonGame.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code checks the balance of `feeCollector` but does not involve any checks or asserts related to `msg.sender` either being or not being a specific
+          owner, address, leader, or CEO.
+        - function TwoCoinsOneMoonGame.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not include any of the specified structures from the provided characteristics. There are no require or if(!xxx) throw statements
+          related to any boolean variable followed by an assignment change to that boolean variable.
+External Call Analysis
+    Direct external call: ['feeCollector.call.value(fee)()']
+    Analyze Transfer
+    Analyze Gas
+        - feeCollector.call.value(fee)() ISN'T subjected to gas limits.
+    Remaining external call: ['feeCollector.call.value(fee)()']
+    Analyze External Address
+        There are ['feeCollector'] should be checked in variable feeCollector
+        Checked variables: feeCollector
+            Yes The provided piece of code is a constructor for the contract 'TwoCoinsOneMoonGame'. This can be determined because the function is explicitly named
+            'constructor'. In this constructor, the state variable 'feeCollector' is hardcoded to the address '0xfd4e7b9f4f97330356f7d1b5ddb9843f2c3e9d87'.
+Conclusion: This function will not cause REE Problem.

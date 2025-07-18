@@ -1,0 +1,204 @@
+
+Start analyze function: CUELauncherToken._doBurn(uint256)
+Function Security Analysis for CUELauncherToken._doBurn(uint256)
+    There are no modifiers should be examined in function _doBurn.
+    Check direct function security
+        - function CUELauncherToken._doBurn(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks for the msg.sender against specific roles or addresses (like xxxOwner, xxxAddress, Leader, CEO), nor any assert
+          or throw statements that would restrict access based on msg.sender.
+        - function CUELauncherToken._doBurn(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures. It doesn't use a require statement or an if statement that throws based on the
+          condition of a boolean variable. Additionally, it doesn't change the value of a boolean variable after such a check.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_doBurn', 'transfer', '_doTokenomics', '_transfer', '_doLiquidity', 'transferFrom']
+        Function Security Analysis for CUELauncherToken.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function CUELauncherToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not include any checks or constraints related to 'msg.sender' being compared to an xxxOwner/xxxAddress/Leader/CEO. It directly
+                  performs a transfer action without such checks.
+                - function CUELauncherToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not contain any of the specified structures involving 'require', 'if' conditions, or variable assignments as described in
+                  the characteristics outlined. It is a simple function that calls another function and returns a boolean value, without the specified conditional
+                  structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: CUELauncherToken._transfer(address,address,uint256)
+Function Security Analysis for CUELauncherToken._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function CUELauncherToken._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not match any of the defined structures for checking msg.sender against roles like Owner/Leader/CEO. There are no conditions or
+          assertions involving msg.sender in this code.
+        - function CUELauncherToken._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures. The code consists of various checks and conditions, but it does not involve changing
+          the boolean state of a variable right after a require statement or handle boolean changes with a specific conditional throw pattern.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_doTokenomics', '_doBurn', 'transfer', '_transfer', '_doLiquidity', 'transferFrom']
+        Function Security Analysis for CUELauncherToken._doTokenomics()
+            The modifier of function _doTokenomics are ['lockLiquidities']
+            The result of checking modifiers:
+                - modifier lockLiquidities is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier sets a flag `_inLockLiquidities` to `true` before executing the function and resets it to `false` after, fulfilling the lock
+                  operation requirements outlined in rule 2. No structural omissions are present as both lock and unlock operations are correctly implemented.
+        Function Security Analysis for CUELauncherToken._doBurn(uint256)
+            There are no modifiers should be examined in function _doBurn.
+            Check direct function security
+                - function CUELauncherToken._doBurn(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not have any checks for msg.sender at all.
+                - function CUELauncherToken._doBurn(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided function `_doBurn` does not contain any `require` or `if` statement. Thus, it does not meet the conditional structure as described
+                  in the given criteria.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['_doBurn', 'transfer', '_doTokenomics', '_transfer', '_doLiquidity', 'transferFrom']
+                Function Security Analysis for CUELauncherToken.transfer(address,uint256)
+                    There are no modifiers should be examined in function transfer.
+                    Check direct function security
+                        - function CUELauncherToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not contain any check based on msg.sender related to ownership control or authority. Therefore, it does not meet any
+                          of the specified structures.
+                        - function CUELauncherToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The given function does not contain any of the structures mentioned, such as require(xxx == True); xxx = False; or similar patterns.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: CUELauncherToken._swapTokensForEth(uint256,address)
+Function Security Analysis for CUELauncherToken._swapTokensForEth(uint256,address)
+    There are no modifiers should be examined in function _swapTokensForEth.
+    Check direct function security
+        - function CUELauncherToken._swapTokensForEth(uint256,address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures involving msg.sender verification or assertions.
+        - function CUELauncherToken._swapTokensForEth(uint256,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not include any require statement or any structure as specified in the criteria. It involves token swapping using Uniswap but does not
+          include any variable checks or status conditions required by the task.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_doBurn', 'transfer', '_doTokenomics', '_transfer', '_doLiquidity', 'transferFrom']
+        Function Security Analysis for CUELauncherToken._doBurn(uint256)
+            There are no modifiers should be examined in function _doBurn.
+            Check direct function security
+                - function CUELauncherToken._doBurn(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not perform any sender check related to roles like Owner, Address, Leader, or CEO.
+                - function CUELauncherToken._doBurn(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not include any `require` or `if` statements that match the specified structures. It only performs a token transfer and
+                  emits an event.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['_doBurn', 'transfer', '_doTokenomics', '_transfer', '_doLiquidity', 'transferFrom']
+                Function Security Analysis for CUELauncherToken.transfer(address,uint256)
+                    There are no modifiers should be examined in function transfer.
+                    Check direct function security
+                        - function CUELauncherToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function 'transfer' does not contain any require, if, or assert statements that check if msg.sender is equal to or not equal to
+                          xxxOwner/xxxAddress/Leader/CEO.
+                        - function CUELauncherToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not contain any patterns like 'require(xxx == True); xxx = False;' or 'require(xxx == False); xxx = True;',
+                          'require(!xxx); xxx = True;', 'if(!xxx) throw; xxx = true;'. It simply calls a _transfer function and returns true.
+External Call Analysis
+    Direct external call: ['uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,tokenContract,block.timestamp)']
+    Analyze Transfer
+    Analyze Gas
+        - uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,tokenContract,block.timestamp) ISN'T subjected to gas limits.
+    Remaining external call: ['uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(tokenAmount,0,path,tokenContract,block.timestamp)']
+    Analyze External Address
+        There are ['uniswapV2Router'] should be checked in variable uniswapV2Router
+        Checked variables: uniswapV2Router
+            Yes The code snippet provided includes a constructor. In Solidity, constructors are special functions used to initialize contracts. This constructor is
+            explicitly named 'constructor', which matches one of the criteria for satisfying the characteristics. Also, the provided state variable 'uniswapV2Router' is
+            hardcoded in this constructor. Therefore, the constructor meets both criteria: it is named 'constructor' and it initializes the 'uniswapV2Router' variable
+            with a hardcoded value.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: CUELauncherToken._addLiquidity(uint256,uint256)
+Function Security Analysis for CUELauncherToken._addLiquidity(uint256,uint256)
+    There are no modifiers should be examined in function _addLiquidity.
+    Check direct function security
+        - function CUELauncherToken._addLiquidity(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures that check or assert msg.sender against an xxxOwner/xxxAddress/Leader/CEO.
+        - function CUELauncherToken._addLiquidity(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code snippet does not contain any code satisfying the structures defined in the conditions. Specifically, it lacks any 'require' statement
+          or 'if' statement checking the boolean value of a variable and subsequently changing that variable's value.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_doBurn', 'transfer', '_doTokenomics', '_transfer', '_doLiquidity', 'transferFrom']
+        Function Security Analysis for CUELauncherToken._doBurn(uint256)
+            There are no modifiers should be examined in function _doBurn.
+            Check direct function security
+                - function CUELauncherToken._doBurn(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function contains no conditional or requirement statements for msg.sender, so it does not satisfy any of the given patterns.
+                - function CUELauncherToken._doBurn(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not include any of the defined patterns as there is no 'require' statement, nor does it contain any variable assignment that
+                  matches the described conditions.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['_doBurn', 'transfer', '_doTokenomics', '_transfer', '_doLiquidity', 'transferFrom']
+                Function Security Analysis for CUELauncherToken.transfer(address,uint256)
+                    There are no modifiers should be examined in function transfer.
+                    Check direct function security
+                        - function CUELauncherToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not include any checks involving msg.sender against a role like Owner, Address, Leader, or CEO.
+                        - function CUELauncherToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided function does not match any of the given structures because it lacks any 'require', 'if throw', or boolean assignments as
+                          described in the specified patterns.
+External Call Analysis
+    Direct external call: ['uniswapV2Router.addLiquidityETH{value:ethAmount}(address(this),tokenAmount,0,0,owner(),block.timestamp)']
+    Analyze Transfer
+    Analyze Gas
+        - uniswapV2Router.addLiquidityETH{value:ethAmount}(address(this),tokenAmount,0,0,owner(),block.timestamp) ISN'T subjected to gas limits.
+    Remaining external call: ['uniswapV2Router.addLiquidityETH{value:ethAmount}(address(this),tokenAmount,0,0,owner(),block.timestamp)']
+    Analyze External Address
+        There are ['uniswapV2Router'] should be checked in variable uniswapV2Router
+        Checked variables: uniswapV2Router
+            Yes The provided list of external call functions includes a piece of code named 'constructor ().' The function's name is 'constructor', explicitly indicating
+            that this function is a constructor for the contract. This meets the first characteristic outlined in the instructions, which checks whether the function is a
+            constructor, identifiable by its explicit naming as 'constructor'.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: CUELauncherToken._doDev(uint256)
+Function Security Analysis for CUELauncherToken._doDev(uint256)
+    There are no modifiers should be examined in function _doDev.
+    Check direct function security
+        - function CUELauncherToken._doDev(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain msg.sender checks to ensure the caller is a specific owner/address/leader/CEO.
+        - function CUELauncherToken._doDev(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function '_doDev' does not contain any of the specified structures. It involves updating a value and adding an amount to a total, but no
+          'require' or 'if(!xxx) throw' statements are present, nor are there any updates to a boolean variable 'xxx' as described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_doBurn', 'transfer', '_doTokenomics', '_transfer', '_doLiquidity', 'transferFrom']
+        Function Security Analysis for CUELauncherToken._doBurn(uint256)
+            There are no modifiers should be examined in function _doBurn.
+            Check direct function security
+                - function CUELauncherToken._doBurn(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function '_doBurn' does not include any conditions or checks involving 'msg.sender'. It only transfers tokens to a burn address and updates
+                  a variable, without restricting the sender.
+                - function CUELauncherToken._doBurn(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain any of the specified structures such as 'require(xxx == True); xxx = False;' or 'if(!xxx) throw; xxx =
+                  true;'. These logical requirements or error handling blocks along with the state changes are not present in the function.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['_doBurn', 'transfer', '_doTokenomics', '_transfer', '_doLiquidity', 'transferFrom']
+                Function Security Analysis for CUELauncherToken.transfer(address,uint256)
+                    There are no modifiers should be examined in function transfer.
+                    Check direct function security
+                        - function CUELauncherToken.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The function does not include any access control mechanisms that involve `msg.sender` being compared to an owner, leader, or CEO
+                          address.
+                        - function CUELauncherToken.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code provided does not contain any of the specified structures, which involve requiring a condition with a boolean variable and
+                          changing its value. The function simply performs a transfer operation and returns true.
+External Call Analysis
+    Direct external call: ['Address.sendValue(_wDev,amount)']
+    Analyze Transfer
+        - Address.sendValue(_wDev,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - Address.sendValue(_wDev,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Address.sendValue(_wDev,amount)']
+    Analyze External Address
+        Error! No variable has been found.
+Conclusion: This function will cause REE Problem.

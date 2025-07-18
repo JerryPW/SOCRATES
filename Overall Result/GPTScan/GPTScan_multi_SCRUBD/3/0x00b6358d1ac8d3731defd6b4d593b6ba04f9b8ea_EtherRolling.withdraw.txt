@@ -1,0 +1,566 @@
+EtherRolling.withdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdraw(uint8 coin) external {
+        //coin = 1 --> token withdraw
+        //coin = 0 --> ether withdraw
+        (uint256 to_payout, uint256 max_payout) = this.payoutOf(msg.sender);
+
+        // Deposit payout
+        if(to_payout > 0) {
+            if(users[msg.sender].payouts + to_payout > max_payout) {
+                to_payout = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].deposit_payouts += to_payout;
+            users[msg.sender].payouts += to_payout;
+
+            _refPayout(msg.sender, to_payout);
+        }
+        
+        // Direct payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].direct_bonus > 0) {
+            uint256 direct_bonus = users[msg.sender].direct_bonus;
+
+            if(users[msg.sender].payouts + direct_bonus > max_payout) {
+                direct_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].direct_bonus -= direct_bonus;
+            users[msg.sender].payouts += direct_bonus;
+            to_payout += direct_bonus;
+        }
+        
+        // Pool payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].pool_bonus > 0) {
+            uint256 pool_bonus = users[msg.sender].pool_bonus;
+
+            if(users[msg.sender].payouts + pool_bonus > max_payout) {
+                pool_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].pool_bonus -= pool_bonus;
+            users[msg.sender].payouts += pool_bonus;
+            to_payout += pool_bonus;
+        }
+
+        // Match payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].match_bonus > 0) {
+            uint256 match_bonus = users[msg.sender].match_bonus;
+
+            if(users[msg.sender].payouts + match_bonus > max_payout) {
+                match_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].match_bonus -= match_bonus;
+            users[msg.sender].payouts += match_bonus;
+            to_payout += match_bonus;
+        }
+        
+        // Matrix payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].matrix_bonus > 0) {
+            if(users[msg.sender].isWithdrawActive){
+                uint256 matrix_bonus = matrixUser[msg.sender].matrix_bonus;
+                if(users[msg.sender].payouts + matrix_bonus > max_payout) {
+                    matrix_bonus = max_payout - users[msg.sender].payouts;
+                }
+                matrixUser[msg.sender].matrix_bonus -= matrix_bonus;
+                users[msg.sender].payouts += matrix_bonus;
+                to_payout += matrix_bonus;
+            } else{
+                matrixUser[msg.sender].matrix_bonus = 0;
+            }
+        }
+        
+        // Team leader payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].leader_bonus > 0) {
+            uint256 leader_bonus = matrixUser[msg.sender].leader_bonus;
+
+            if(users[msg.sender].payouts + leader_bonus > max_payout) {
+                leader_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            matrixUser[msg.sender].leader_bonus -= leader_bonus;
+            users[msg.sender].payouts += leader_bonus;
+            to_payout += leader_bonus;
+        }
+        
+        require(to_payout > 0, "Zero payout");
+        
+        users[msg.sender].total_payouts += to_payout;
+        total_withdraw += to_payout;
+        uint256 matrixbonus = to_payout.mul(20).div(100);
+        calcMatrixBonus(msg.sender,matrixbonus);
+        to_payout -= to_payout.mul(20).div(100);
+        if(coin == 0){
+           payable(msg.sender).transfer(to_payout); 
+        }
+        else if(coin == 1){
+            _token.send(msg.sender,to_payout,"Token Withdrawed");
+        }
+        emit Withdraw(msg.sender, to_payout);
+
+        if(users[msg.sender].payouts >= max_payout) {
+            users[msg.sender].isWithdrawActive = false;
+            emit LimitReached(msg.sender, users[msg.sender].payouts);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdraw(uint8 coin) external {
+        //coin = 1 --> token withdraw
+        //coin = 0 --> ether withdraw
+        (uint256 to_payout, uint256 max_payout) = this.payoutOf(msg.sender);
+
+        // Deposit payout
+        if(to_payout > 0) {
+            if(users[msg.sender].payouts + to_payout > max_payout) {
+                to_payout = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].deposit_payouts += to_payout;
+            users[msg.sender].payouts += to_payout;
+
+            _refPayout(msg.sender, to_payout);
+        }
+        
+        // Direct payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].direct_bonus > 0) {
+            uint256 direct_bonus = users[msg.sender].direct_bonus;
+
+            if(users[msg.sender].payouts + direct_bonus > max_payout) {
+                direct_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].direct_bonus -= direct_bonus;
+            users[msg.sender].payouts += direct_bonus;
+            to_payout += direct_bonus;
+        }
+        
+        // Pool payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].pool_bonus > 0) {
+            uint256 pool_bonus = users[msg.sender].pool_bonus;
+
+            if(users[msg.sender].payouts + pool_bonus > max_payout) {
+                pool_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].pool_bonus -= pool_bonus;
+            users[msg.sender].payouts += pool_bonus;
+            to_payout += pool_bonus;
+        }
+
+        // Match payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].match_bonus > 0) {
+            uint256 match_bonus = users[msg.sender].match_bonus;
+
+            if(users[msg.sender].payouts + match_bonus > max_payout) {
+                match_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].match_bonus -= match_bonus;
+            users[msg.sender].payouts += match_bonus;
+            to_payout += match_bonus;
+        }
+        
+        // Matrix payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].matrix_bonus > 0) {
+            if(users[msg.sender].isWithdrawActive){
+                uint256 matrix_bonus = matrixUser[msg.sender].matrix_bonus;
+                if(users[msg.sender].payouts + matrix_bonus > max_payout) {
+                    matrix_bonus = max_payout - users[msg.sender].payouts;
+                }
+                matrixUser[msg.sender].matrix_bonus -= matrix_bonus;
+                users[msg.sender].payouts += matrix_bonus;
+                to_payout += matrix_bonus;
+            } else{
+                matrixUser[msg.sender].matrix_bonus = 0;
+            }
+        }
+        
+        // Team leader payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].leader_bonus > 0) {
+            uint256 leader_bonus = matrixUser[msg.sender].leader_bonus;
+
+            if(users[msg.sender].payouts + leader_bonus > max_payout) {
+                leader_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            matrixUser[msg.sender].leader_bonus -= leader_bonus;
+            users[msg.sender].payouts += leader_bonus;
+            to_payout += leader_bonus;
+        }
+        
+        require(to_payout > 0, "Zero payout");
+        
+        users[msg.sender].total_payouts += to_payout;
+        total_withdraw += to_payout;
+        uint256 matrixbonus = to_payout.mul(20).div(100);
+        calcMatrixBonus(msg.sender,matrixbonus);
+        to_payout -= to_payout.mul(20).div(100);
+        if(coin == 0){
+           payable(msg.sender).transfer(to_payout); 
+        }
+        else if(coin == 1){
+            _token.send(msg.sender,to_payout,"Token Withdrawed");
+        }
+        emit Withdraw(msg.sender, to_payout);
+
+        if(users[msg.sender].payouts >= max_payout) {
+            users[msg.sender].isWithdrawActive = false;
+            emit LimitReached(msg.sender, users[msg.sender].payouts);
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function withdraw(uint8 coin) external {
+        //coin = 1 --> token withdraw
+        //coin = 0 --> ether withdraw
+        (uint256 to_payout, uint256 max_payout) = this.payoutOf(msg.sender);
+
+        // Deposit payout
+        if(to_payout > 0) {
+            if(users[msg.sender].payouts + to_payout > max_payout) {
+                to_payout = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].deposit_payouts += to_payout;
+            users[msg.sender].payouts += to_payout;
+
+            _refPayout(msg.sender, to_payout);
+        }
+        
+        // Direct payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].direct_bonus > 0) {
+            uint256 direct_bonus = users[msg.sender].direct_bonus;
+
+            if(users[msg.sender].payouts + direct_bonus > max_payout) {
+                direct_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].direct_bonus -= direct_bonus;
+            users[msg.sender].payouts += direct_bonus;
+            to_payout += direct_bonus;
+        }
+        
+        // Pool payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].pool_bonus > 0) {
+            uint256 pool_bonus = users[msg.sender].pool_bonus;
+
+            if(users[msg.sender].payouts + pool_bonus > max_payout) {
+                pool_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].pool_bonus -= pool_bonus;
+            users[msg.sender].payouts += pool_bonus;
+            to_payout += pool_bonus;
+        }
+
+        // Match payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].match_bonus > 0) {
+            uint256 match_bonus = users[msg.sender].match_bonus;
+
+            if(users[msg.sender].payouts + match_bonus > max_payout) {
+                match_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].match_bonus -= match_bonus;
+            users[msg.sender].payouts += match_bonus;
+            to_payout += match_bonus;
+        }
+        
+        // Matrix payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].matrix_bonus > 0) {
+            if(users[msg.sender].isWithdrawActive){
+                uint256 matrix_bonus = matrixUser[msg.sender].matrix_bonus;
+                if(users[msg.sender].payouts + matrix_bonus > max_payout) {
+                    matrix_bonus = max_payout - users[msg.sender].payouts;
+                }
+                matrixUser[msg.sender].matrix_bonus -= matrix_bonus;
+                users[msg.sender].payouts += matrix_bonus;
+                to_payout += matrix_bonus;
+            } else{
+                matrixUser[msg.sender].matrix_bonus = 0;
+            }
+        }
+        
+        // Team leader payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].leader_bonus > 0) {
+            uint256 leader_bonus = matrixUser[msg.sender].leader_bonus;
+
+            if(users[msg.sender].payouts + leader_bonus > max_payout) {
+                leader_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            matrixUser[msg.sender].leader_bonus -= leader_bonus;
+            users[msg.sender].payouts += leader_bonus;
+            to_payout += leader_bonus;
+        }
+        
+        require(to_payout > 0, "Zero payout");
+        
+        users[msg.sender].total_payouts += to_payout;
+        total_withdraw += to_payout;
+        uint256 matrixbonus = to_payout.mul(20).div(100);
+        calcMatrixBonus(msg.sender,matrixbonus);
+        to_payout -= to_payout.mul(20).div(100);
+        if(coin == 0){
+           payable(msg.sender).transfer(to_payout); 
+        }
+        else if(coin == 1){
+            _token.send(msg.sender,to_payout,"Token Withdrawed");
+        }
+        emit Withdraw(msg.sender, to_payout);
+
+        if(users[msg.sender].payouts >= max_payout) {
+            users[msg.sender].isWithdrawActive = false;
+            emit LimitReached(msg.sender, users[msg.sender].payouts);
+        }
+    }
+Response:
+{"StatementsA": {"users[msg.sender].deposit_payouts += to_payout;":"Updates the deposit_payouts state variable for the user", "users[msg.sender].payouts += to_payout;":"Updates the payouts state variable for the user", "users[msg.sender].direct_bonus -= direct_bonus;":"Updates the direct_bonus state variable for the user", "users[msg.sender].pool_bonus -= pool_bonus;":"Updates the pool_bonus state variable for the user", "users[msg.sender].match_bonus -= match_bonus;":"Updates the match_bonus state variable for the user", "matrixUser[msg.sender].matrix_bonus -= matrix_bonus;":"Updates the matrix_bonus state variable for the matrix user", "matrixUser[msg.sender].matrix_bonus = 0;":"Resets the matrix_bonus state variable for the matrix user", "matrixUser[msg.sender].leader_bonus -= leader_bonus;":"Updates the leader_bonus state variable for the matrix user", "users[msg.sender].total_payouts += to_payout;":"Updates the total_payouts state variable for the user", "total_withdraw += to_payout;":"Updates the total_withdraw state variable", "users[msg.sender].isWithdrawActive = false;":"Updates the isWithdrawActive state variable for the user"}, "StatementsB": {"(uint256 to_payout, uint256 max_payout) = this.payoutOf(msg.sender);":"Executes an external call to the payoutOf function", "payable(msg.sender).transfer(to_payout);":"Executes an external call to transfer Ether", "_token.send(msg.sender,to_payout,\"Token Withdrawed\");":"Executes an external call to send tokens"}, "VariableA": {"msg.sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: users[msg.sender].deposit_payouts += to_payout;
+2.External Call: (uint256 to_payout, uint256 max_payout) = this.payoutOf(msg.sender);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdraw(uint8 coin) external {
+        //coin = 1 --> token withdraw
+        //coin = 0 --> ether withdraw
+        (uint256 to_payout, uint256 max_payout) = this.payoutOf(msg.sender);
+
+        // Deposit payout
+        if(to_payout > 0) {
+            if(users[msg.sender].payouts + to_payout > max_payout) {
+                to_payout = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].deposit_payouts += to_payout;
+            users[msg.sender].payouts += to_payout;
+
+            _refPayout(msg.sender, to_payout);
+        }
+        
+        // Direct payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].direct_bonus > 0) {
+            uint256 direct_bonus = users[msg.sender].direct_bonus;
+
+            if(users[msg.sender].payouts + direct_bonus > max_payout) {
+                direct_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].direct_bonus -= direct_bonus;
+            users[msg.sender].payouts += direct_bonus;
+            to_payout += direct_bonus;
+        }
+        
+        // Pool payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].pool_bonus > 0) {
+            uint256 pool_bonus = users[msg.sender].pool_bonus;
+
+            if(users[msg.sender].payouts + pool_bonus > max_payout) {
+                pool_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].pool_bonus -= pool_bonus;
+            users[msg.sender].payouts += pool_bonus;
+            to_payout += pool_bonus;
+        }
+
+        // Match payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].match_bonus > 0) {
+            uint256 match_bonus = users[msg.sender].match_bonus;
+
+            if(users[msg.sender].payouts + match_bonus > max_payout) {
+                match_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].match_bonus -= match_bonus;
+            users[msg.sender].payouts += match_bonus;
+            to_payout += match_bonus;
+        }
+        
+        // Matrix payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].matrix_bonus > 0) {
+            if(users[msg.sender].isWithdrawActive){
+                uint256 matrix_bonus = matrixUser[msg.sender].matrix_bonus;
+                if(users[msg.sender].payouts + matrix_bonus > max_payout) {
+                    matrix_bonus = max_payout - users[msg.sender].payouts;
+                }
+                matrixUser[msg.sender].matrix_bonus -= matrix_bonus;
+                users[msg.sender].payouts += matrix_bonus;
+                to_payout += matrix_bonus;
+            } else{
+                matrixUser[msg.sender].matrix_bonus = 0;
+            }
+        }
+        
+        // Team leader payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].leader_bonus > 0) {
+            uint256 leader_bonus = matrixUser[msg.sender].leader_bonus;
+
+            if(users[msg.sender].payouts + leader_bonus > max_payout) {
+                leader_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            matrixUser[msg.sender].leader_bonus -= leader_bonus;
+            users[msg.sender].payouts += leader_bonus;
+            to_payout += leader_bonus;
+        }
+        
+        require(to_payout > 0, "Zero payout");
+        
+        users[msg.sender].total_payouts += to_payout;
+        total_withdraw += to_payout;
+        uint256 matrixbonus = to_payout.mul(20).div(100);
+        calcMatrixBonus(msg.sender,matrixbonus);
+        to_payout -= to_payout.mul(20).div(100);
+        if(coin == 0){
+           payable(msg.sender).transfer(to_payout); 
+        }
+        else if(coin == 1){
+            _token.send(msg.sender,to_payout,"Token Withdrawed");
+        }
+        emit Withdraw(msg.sender, to_payout);
+
+        if(users[msg.sender].payouts >= max_payout) {
+            users[msg.sender].isWithdrawActive = false;
+            emit LimitReached(msg.sender, users[msg.sender].payouts);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdraw(uint8 coin) external {
+        //coin = 1 --> token withdraw
+        //coin = 0 --> ether withdraw
+        (uint256 to_payout, uint256 max_payout) = this.payoutOf(msg.sender);
+
+        // Deposit payout
+        if(to_payout > 0) {
+            if(users[msg.sender].payouts + to_payout > max_payout) {
+                to_payout = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].deposit_payouts += to_payout;
+            users[msg.sender].payouts += to_payout;
+
+            _refPayout(msg.sender, to_payout);
+        }
+        
+        // Direct payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].direct_bonus > 0) {
+            uint256 direct_bonus = users[msg.sender].direct_bonus;
+
+            if(users[msg.sender].payouts + direct_bonus > max_payout) {
+                direct_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].direct_bonus -= direct_bonus;
+            users[msg.sender].payouts += direct_bonus;
+            to_payout += direct_bonus;
+        }
+        
+        // Pool payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].pool_bonus > 0) {
+            uint256 pool_bonus = users[msg.sender].pool_bonus;
+
+            if(users[msg.sender].payouts + pool_bonus > max_payout) {
+                pool_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].pool_bonus -= pool_bonus;
+            users[msg.sender].payouts += pool_bonus;
+            to_payout += pool_bonus;
+        }
+
+        // Match payout
+        if(users[msg.sender].payouts < max_payout && users[msg.sender].match_bonus > 0) {
+            uint256 match_bonus = users[msg.sender].match_bonus;
+
+            if(users[msg.sender].payouts + match_bonus > max_payout) {
+                match_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            users[msg.sender].match_bonus -= match_bonus;
+            users[msg.sender].payouts += match_bonus;
+            to_payout += match_bonus;
+        }
+        
+        // Matrix payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].matrix_bonus > 0) {
+            if(users[msg.sender].isWithdrawActive){
+                uint256 matrix_bonus = matrixUser[msg.sender].matrix_bonus;
+                if(users[msg.sender].payouts + matrix_bonus > max_payout) {
+                    matrix_bonus = max_payout - users[msg.sender].payouts;
+                }
+                matrixUser[msg.sender].matrix_bonus -= matrix_bonus;
+                users[msg.sender].payouts += matrix_bonus;
+                to_payout += matrix_bonus;
+            } else{
+                matrixUser[msg.sender].matrix_bonus = 0;
+            }
+        }
+        
+        // Team leader payout
+        if(users[msg.sender].payouts < max_payout && matrixUser[msg.sender].leader_bonus > 0) {
+            uint256 leader_bonus = matrixUser[msg.sender].leader_bonus;
+
+            if(users[msg.sender].payouts + leader_bonus > max_payout) {
+                leader_bonus = max_payout - users[msg.sender].payouts;
+            }
+
+            matrixUser[msg.sender].leader_bonus -= leader_bonus;
+            users[msg.sender].payouts += leader_bonus;
+            to_payout += leader_bonus;
+        }
+        
+        require(to_payout > 0, "Zero payout");
+        
+        users[msg.sender].total_payouts += to_payout;
+        total_withdraw += to_payout;
+        uint256 matrixbonus = to_payout.mul(20).div(100);
+        calcMatrixBonus(msg.sender,matrixbonus);
+        to_payout -= to_payout.mul(20).div(100);
+        if(coin == 0){
+           payable(msg.sender).transfer(to_payout); 
+        }
+        else if(coin == 1){
+            _token.send(msg.sender,to_payout,"Token Withdrawed");
+        }
+        emit Withdraw(msg.sender, to_payout);
+
+        if(users[msg.sender].payouts >= max_payout) {
+            users[msg.sender].isWithdrawActive = false;
+            emit LimitReached(msg.sender, users[msg.sender].payouts);
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

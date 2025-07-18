@@ -1,0 +1,58 @@
+
+Start analyze function: InstaDice.roll(uint8)
+Function Security Analysis for InstaDice.roll(uint8)
+    There are no modifiers should be examined in function roll.
+    Check direct function security
+        - function InstaDice.roll(uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks or assertions for msg.sender against an owner or equivalent privileged account identifier.
+        - function InstaDice.roll(uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not have any structure that matches the four given patterns, as it lacks any 'require' statements or 'if' throwing logic with
+          variable flipping as described.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: InstaDice._errorAndRefund(string,uint256,uint8)
+Function Security Analysis for InstaDice._errorAndRefund(string,uint256,uint8)
+    There are no modifiers should be examined in function _errorAndRefund.
+    Check direct function security
+        - function InstaDice._errorAndRefund(string,uint256,uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any checks against msg.sender for ownership or specific roles.
+        - function InstaDice._errorAndRefund(string,uint256,uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the outlined structures. The function only uses 'require' with a call but does not involve an assignment of a boolean
+          variable that satisfies the given conditions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['_validateBetOrRefund', 'roll']
+        Function Security Analysis for InstaDice._validateBetOrRefund(uint8)
+            There are no modifiers should be examined in function _validateBetOrRefund.
+            Check direct function security
+                - function InstaDice._validateBetOrRefund(uint8) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any access control based on msg.sender like comparing it against an owner or leader variable.
+                - function InstaDice._validateBetOrRefund(uint8) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not match any of the provided structures. It mainly consists of a series of condition checks and error handling, without
+                  setting or requiring conditions on any variable in the manner described in the structures.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['roll']
+                Function Security Analysis for InstaDice.roll(uint8)
+                    There are no modifiers should be examined in function roll.
+                    Check direct function security
+                        - function InstaDice.roll(uint8) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not contain any checks related to specific addresses like xxxOwner/xxxAddress/Leader/CEO, thus none of the provided
+                          patterns match.
+                        - function InstaDice.roll(uint8) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The function does not have any of the specified structures. Conditions that would allow a 'Yes' answer are not present. It doesn't use
+                          'require' with the specified variable patterns or 'if(!xxx) throw' structure with subsequent assignments to the same variable within the scope
+                          of the function.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(msg.value)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(msg.value)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(msg.value)()']
+    Analyze External Address
+        External call msg.sender.call.value(msg.value)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

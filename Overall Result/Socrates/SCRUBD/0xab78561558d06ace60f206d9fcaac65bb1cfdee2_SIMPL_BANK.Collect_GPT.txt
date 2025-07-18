@@ -1,0 +1,18 @@
+
+Start analyze function: SIMPL_BANK.Collect(uint256)
+Function Security Analysis for SIMPL_BANK.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function SIMPL_BANK.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the required checks for msg.sender against xxxOwner/xxxAddress/Leader/CEO.
+        - function SIMPL_BANK.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code snippet does not contain a 'require' statement or an 'if(!xxx) throw' pattern that reflects any of the specified structures.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,56 @@
+
+Start analyze function: CryptoFun.doInvest(address)
+Function Security Analysis for CryptoFun.doInvest(address)
+    The modifier of function doInvest are ['notFromContract', 'balanceChanged']
+    The result of checking modifiers:
+        - modifier notFromContract has no relation with controlled by owner.
+          Reason: The code doesn't satisfy any of the given conditions. It checks if the sender is not a contract address, which doesn't relate to owner or specific
+          address verification nor lock operation.
+        - modifier balanceChanged has no relation with controlled by owner.
+          Reason: The given modifier only logs when the balance changes and doesn't enforce ownership or a lock mechanism. It does not satisfy any of the listed
+          conditions.
+    Check direct function security
+        - function CryptoFun.doInvest(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include a require, if condition, or assert statement that checks if msg.sender is or is not equal to an address with 'Owner',
+          'Address', 'Leader', or 'CEO' in its name.
+        - function CryptoFun.doInvest(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any require statements that are immediately followed by an assignment altering the truth value of the same variable. The
+          requires and asserts present do not align with the specific patterns listed in the question.
+External Call Analysis
+    Direct external call: ['m_investors.isInvestor(msg.sender)', 'adminsAddress.transfer(m_referrer_percent.mmul(investment))',
+    'referrerAddr.transfer(m_referrer_percent.mmul(investment))', 'msg.sender.transfer(excess)', 'referrerAddr.notZero()', 'm_investors.isInvestor(referrerAddr)',
+    'advertisingAddress.transfer(m_advertisingPercent.mul(receivedEther))', 'adminsAddress.transfer(m_adminsPercent.mul(receivedEther))',
+    'm_investors.setPaymentTime(msg.sender,now)', 'm_investors.newInvestor(msg.sender,investment,now)', 'm_investors.addInvestment(msg.sender,investment)']
+    Analyze Transfer
+        - adminsAddress.transfer(m_referrer_percent.mmul(investment)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'adminsAddress.transfer(m_referrer_percent.mmul(investment))' contains '.transfer(' keyword, so it meets the first criterion.. Parameter in 'transfer'/'send': 1.
+        - referrerAddr.transfer(m_referrer_percent.mmul(investment)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'referrerAddr.transfer(m_referrer_percent.mmul(investment))' contains '.transfer(' keyword, so it meets the first criterion.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(excess) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call 'msg.sender.transfer(excess)'
+        contains '.transfer(' keyword, so it meets the first criterion.. Parameter in 'transfer'/'send': 1.
+        - advertisingAddress.transfer(m_advertisingPercent.mul(receivedEther)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason:
+        The call 'advertisingAddress.transfer(m_advertisingPercent.mul(receivedEther))' contains '.transfer(' keyword, so it meets the first criterion.. Parameter in
+        'transfer'/'send': 1.
+        - adminsAddress.transfer(m_adminsPercent.mul(receivedEther)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call
+        'adminsAddress.transfer(m_adminsPercent.mul(receivedEther))' contains '.transfer(' keyword, so it meets the first criterion.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - m_investors.isInvestor(msg.sender) ISN'T subjected to gas limits.
+        - referrerAddr.notZero() ISN'T subjected to gas limits.
+        - m_investors.isInvestor(referrerAddr) ISN'T subjected to gas limits.
+        - m_investors.setPaymentTime(msg.sender,now) ISN'T subjected to gas limits.
+        - m_investors.newInvestor(msg.sender,investment,now) ISN'T subjected to gas limits.
+        - m_investors.addInvestment(msg.sender,investment) ISN'T subjected to gas limits.
+    Remaining external call: ['m_investors.isInvestor(msg.sender)', 'referrerAddr.notZero()', 'm_investors.isInvestor(referrerAddr)',
+    'm_investors.setPaymentTime(msg.sender,now)', 'm_investors.newInvestor(msg.sender,investment,now)', 'm_investors.addInvestment(msg.sender,investment)']
+    Analyze External Address
+        There are ['m_investors'] should be checked in variable m_investors
+        Checked variables: m_investors
+            Yes The function 'nextWave' is a private function and does not match the contract name 'CryptoFun', nor is it explicitly named 'constructor'. However, it does
+            modify the state variable 'm_investors' by setting it to a new instance of 'InvestorsStorage'. Since modifying the state variable is part of the second
+            characteristic, this function fits the criterion.
+        The variable 'referrerAddr' in external call 'referrerAddr.notZero()' has no state variable assigned. Therefore we check whether it has been hardcoded in the
+        function.
+            No The variable `referrerAddr` is used in the function but is not assigned a constant, predefined value. It is passed as a parameter to the `doInvest`
+            function, which means its value must be provided by the caller of the function and can vary with each call. Therefore, it is not hardcoded within the
+            function.
+Conclusion: This function will cause REE Problem.

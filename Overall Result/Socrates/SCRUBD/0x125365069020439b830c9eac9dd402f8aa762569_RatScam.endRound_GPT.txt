@@ -1,0 +1,39 @@
+
+Start analyze function: RatScam.endRound(RSdatasets.EventReturns)
+Function Security Analysis for RatScam.endRound(RSdatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function RatScam.endRound(RSdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any access control checks based on the msg.sender variable addressing an Owner or Leader role. The private visibility
+          indicates internal access, but doesn't involve msg.sender checks relevant to the specified patterns.
+        - function RatScam.endRound(RSdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided Smart Contract code does not contain any of the required structures involving require() or if() statements as described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdraw', 'buyXaddr', 'reLoadCore', 'buyCore', 'reLoadXid', 'reLoadXname', 'buyXname', 'fallback', 'buyXid', 'reLoadXaddr']
+        Function Security Analysis for RatScam.withdraw()
+            The modifier of function withdraw are ['isActivated', 'isHuman']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier checks a state variable 'activated_' to determine if it's true, but doesn't enforce ownership or a lock mechanism. It doesn't
+                  fulfil any of the specified conditions.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: The modifier enforces that only externally owned accounts (not contracts) can execute the function. This does not match any of the specific
+                  characteristics, since it doesn't check for a specific owner or a locking mechanism, nor does it have a name suggesting such a mechanism.
+            Check direct function security
+                - function RatScam.withdraw() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code does not contain any of the specified patterns related to permission checks with msg.sender for specific roles such as
+                  xxxOwner, xxxAddress, Leader, or CEO.
+                - function RatScam.withdraw() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures. There are no `require(!xxx)`, `require(xxx == True)`, `require(xxx == False)`, or
+                  `if(!xxx) throw` conditions followed by an assignment to the same variable inside the function provided.
+External Call Analysis
+    Direct external call: ['address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze Transfer
+    Analyze Gas
+        - address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit()))) ISN'T subjected to gas limits.
+    Remaining external call: ['address(RatKingCorp).call.value(_com)(bytes4(keccak256()(deposit())))']
+    Analyze External Address
+        There are ['RatKingCorp'] should be checked in variable RatKingCorp
+        Checked variables: RatKingCorp
+            State variable RatKingCorp has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

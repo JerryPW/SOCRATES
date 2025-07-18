@@ -1,0 +1,20 @@
+
+Start analyze function: SimpleDeposit.RefundDeposit(address,uint256)
+Function Security Analysis for SimpleDeposit.RefundDeposit(address,uint256)
+    There are no modifiers should be examined in function RefundDeposit.
+    Check direct function security
+        - function SimpleDeposit.RefundDeposit(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'RefundDeposit' checks for the conditions related to the depositor's balance and an allowance condition, but does not involve any checks or
+          assertions related to 'msg.sender'.
+        - function SimpleDeposit.RefundDeposit(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified patterns involving require or if statements with specific variable checks followed by assignment
+          changes.
+External Call Analysis
+    Direct external call: ['_addr.send(_wei)']
+    Analyze Transfer
+        - _addr.send(_wei) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send(' keyword, which
+        satisfies the second characteristic mentioned in the rules.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

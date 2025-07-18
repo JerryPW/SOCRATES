@@ -1,0 +1,15 @@
+
+Start analyze function: ReserveAuctionMarketplace._removeReserveAuctionListing(uint256)
+Function Security Analysis for ReserveAuctionMarketplace._removeReserveAuctionListing(uint256)
+    There are no modifiers should be examined in function _removeReserveAuctionListing.
+    Check direct function security
+        - function ReserveAuctionMarketplace._removeReserveAuctionListing(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code uses 'require(reserveAuction.seller == _msgSender(), ...)' but 'reserveAuction.seller' does not match the accepted roles directly stated in the
+          characteristics, such as xxxOwner/xxxAddress/Leader/CEO without relying on a dynamic local variable.
+        - function ReserveAuctionMarketplace._removeReserveAuctionListing(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures. There are no pairs of on-chain variable changes with require statements as defined by the
+          patterns given (e.g., require(xxx == True); xxx = False;). The require statements present check conditions and do not directly alter any variables as per the
+          listed structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    There are no reachable function for internal/private function, please manually check its successor contracts.
+Conclusion: This function will not cause REE Problem.

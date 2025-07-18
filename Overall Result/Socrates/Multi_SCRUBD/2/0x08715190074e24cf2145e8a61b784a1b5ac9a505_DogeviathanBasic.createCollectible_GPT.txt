@@ -1,0 +1,89 @@
+
+Start analyze function: DogeviathanBasic.createCollectible()
+Function Security Analysis for DogeviathanBasic.createCollectible()
+    There are no modifiers should be examined in function createCollectible.
+    Check direct function security
+        - function DogeviathanBasic.createCollectible() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code doesn't have a check for specific sender identity like requiring or asserting that msg.sender is a specific owner or leader.
+        - function DogeviathanBasic.createCollectible() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any structures where a variable is checked via 'require' or an 'if' statement and then flipped from True to False or
+          vice versa using the structures specified.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ERC721._safeMint(address,uint256)
+Function Security Analysis for ERC721._safeMint(address,uint256)
+    There are no modifiers should be examined in function _safeMint.
+    Check direct function security
+        - function ERC721._safeMint(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified msg.sender checks for ownership or role.
+        - function ERC721._safeMint(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any `require` or `if` statements that match the given function structures. It only contains a single line that calls
+          another function `_safeMint` with parameters `to`, `tokenId`, and an empty string.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['createCollectible']
+        Function Security Analysis for DogeviathanBasic.createCollectible()
+            There are no modifiers should be examined in function createCollectible.
+            Check direct function security
+                - function DogeviathanBasic.createCollectible() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function `createCollectible` does not contain any structures that assert specific ownership checks against `msg.sender`. It does not check
+                  if `msg.sender` is equal to or not equal to any specific owner, address, leader, or CEO.
+                - function DogeviathanBasic.createCollectible() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not contain any of the specified structures where a variable is required to be true or false and then modified accordingly.
+                  The `require` statements in the code do not meet these conditions as they are not checking a boolean variable that's subsequently modified in the
+                  specified manner.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ERC721._checkOnERC721Received(address,address,uint256,bytes)
+Function Security Analysis for ERC721._checkOnERC721Received(address,address,uint256,bytes)
+    There are no modifiers should be examined in function _checkOnERC721Received.
+    Check direct function security
+        - function ERC721._checkOnERC721Received(address,address,uint256,bytes) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function _checkOnERC721Received does not check the identity of msg.sender against any specific owner or address, nor does it require or assert any
+          conditions on msg.sender, hence it doesn't match any of the given structures.
+        - function ERC721._checkOnERC721Received(address,address,uint256,bytes) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't have any of the required control structures or variable assignments specified in the patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['safeTransferFrom', '_safeMint', 'safeTransferFrom', '_safeTransfer', '_safeMint', 'createCollectible']
+        Function Security Analysis for ERC721.safeTransferFrom(address,address,uint256,bytes)
+            There are no modifiers should be examined in function safeTransferFrom.
+            Check direct function security
+                - function ERC721.safeTransferFrom(address,address,uint256,bytes) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The given code checks if the message sender is approved or is the owner using '_isApprovedOrOwner(_msgSender(), tokenId)'. It doesn't explicitly
+                  check if the message sender is a specific owner or address like in the described structures.
+                - function ERC721.safeTransferFrom(address,address,uint256,bytes) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code snippet does not match any of the specified structures. It contains a single 'require' statement and does not have
+                  corresponding assignments to a variable as specified in any of the criteria.
+External Call Analysis
+    Direct external call: ['to.functionCall(abi.encodeWithSelector(IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data),ERC721:transfertononERC7
+    21Receiverimplementer)']
+    Analyze Transfer
+    Analyze Gas
+        - to.functionCall(abi.encodeWithSelector(IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data),ERC721:transfertononERC721Receiverimplemen
+        ter) ISN'T subjected to gas limits.
+    Remaining external call: ['to.functionCall(abi.encodeWithSelector(IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data),ERC721:transfertononE
+    RC721Receiverimplementer)']
+    Analyze External Address
+        The variable 'to' in external call 'to.functionCall(abi.encodeWithSelector(IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data),ERC721:t
+        ransfertononERC721Receiverimplementer)' has no state variable assigned in ERC721._checkOnERC721Received(address,address,uint256,bytes). Considering that it is an
+        internal/private function, we analyze the function inputs.
+        Analyze External Address
+            The variable 'to' in external call 'to' has no state variable assigned in ERC721._safeTransfer(address,address,uint256,bytes). Considering that it is an
+            internal/private function, we analyze the function inputs.
+            Analyze External Address
+                The variable 'to' in external call 'to' has no state variable assigned in ERC721.safeTransferFrom(address,address,uint256,bytes). Therefore we check
+                whether it has been hardcoded in the function.
+                    No The variable 'to' is passed as an argument to the 'safeTransferFrom' function, and its value is not directly set or used as a constant within the
+                    function. It is used in the '_safeTransfer' method, showing that it's not hardcoded.
+Conclusion: This function will cause REE Problem.

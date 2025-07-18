@@ -1,0 +1,29 @@
+
+Start analyze function: EasySmart.withdraw()
+Function Security Analysis for EasySmart.withdraw()
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function EasySmart.withdraw() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified patterns related to checking msg.sender against an owner or specific address role.
+        - function EasySmart.withdraw() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The structure of the code does not match any of the conditions provided. There is no use of require statements or any other constructs that check a
+          boolean variable and then modify it as outlined in the conditions.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback']
+        Function Security Analysis for EasySmart.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function EasySmart.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not check, require, or assert msg.sender against xxxOwner/xxxAddress/Leader/CEO.
+                - function EasySmart.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code provided does not contain any of the specified structures. It uses an if-else statement without any of the require or throw structures
+                  related to a single variable being toggled between true and false.
+External Call Analysis
+    Direct external call: ['sender.send(amount)']
+    Analyze Transfer
+        - sender.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send(' keyword..
+        Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

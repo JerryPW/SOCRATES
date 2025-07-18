@@ -1,0 +1,71 @@
+HeroFighting._fight: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _fight(uint32 _yinId, uint32 _yangId)
+        internal 
+        whenNotPaused
+        returns(uint256)
+    {
+        Hero storage yin = heroes[_yinId];
+        require(yin.recruitmentTime != 0);
+        Hero storage yang = heroes[_yangId];
+        uint16 parentGen = yin.generation;
+        if (yang.generation > yin.generation) {
+            parentGen = yang.generation;
+        }        
+        var (flag, childTalent, belongings1,  belongings2) = masterRecruitment.fightMix(yin.belongings,yang.belongings);
+        yin.belongings = belongings1;
+        yang.belongings = belongings2;                
+	      if(!flag){      
+           (_yinId,_yangId) = (_yangId,_yinId);
+        }    
+        address owner = heroIndexToOwner[_yinId];
+        heroIndexToWin[_yinId] +=1;
+        heroIndexToLoss[_yangId] +=1;
+        uint256 newHeroId = _createHero(_yinId, _yangId, parentGen + 1, childTalent, owner); 
+        _triggerCooldown(yang);
+        _triggerCooldown(yin);
+        return (newHeroId );
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _fight(uint32 _yinId, uint32 _yangId)
+        internal 
+        whenNotPaused
+        returns(uint256)
+    {
+        Hero storage yin = heroes[_yinId];
+        require(yin.recruitmentTime != 0);
+        Hero storage yang = heroes[_yangId];
+        uint16 parentGen = yin.generation;
+        if (yang.generation > yin.generation) {
+            parentGen = yang.generation;
+        }        
+        var (flag, childTalent, belongings1,  belongings2) = masterRecruitment.fightMix(yin.belongings,yang.belongings);
+        yin.belongings = belongings1;
+        yang.belongings = belongings2;                
+	      if(!flag){      
+           (_yinId,_yangId) = (_yangId,_yinId);
+        }    
+        address owner = heroIndexToOwner[_yinId];
+        heroIndexToWin[_yinId] +=1;
+        heroIndexToLoss[_yangId] +=1;
+        uint256 newHeroId = _createHero(_yinId, _yangId, parentGen + 1, childTalent, owner); 
+        _triggerCooldown(yang);
+        _triggerCooldown(yin);
+        return (newHeroId );
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------

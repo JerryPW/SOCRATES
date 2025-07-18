@@ -1,0 +1,24 @@
+
+Start analyze function: Sargasso.sendtoRecipient(uint256,uint256)
+Function Security Analysis for Sargasso.sendtoRecipient(uint256,uint256)
+    There are no modifiers should be examined in function sendtoRecipient.
+    Check direct function security
+        - function Sargasso.sendtoRecipient(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code doesn't include any of the specified conditions related to msg.sender checks, so it does not meet the criteria. It doesn't involve any
+          ownership or specific address checks.
+        - function Sargasso.sendtoRecipient(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures involving require statements or if(!xxx) throw statements with corresponding variable
+          assignments.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['specialdeposit']
+        Function Security Analysis for Sargasso.specialdeposit(uint256,uint256)
+            There are no modifiers should be examined in function specialdeposit.
+            Check direct function security
+                - function Sargasso.specialdeposit(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code requires that the function caller doesn't have a lock, but doesn't specifically check or enforce any ownership role using msg.sender
+                  against Owner/Address/Leader/CEO variables or roles.
+                - function Sargasso.specialdeposit(uint256,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+                  Reason: The code contains the structure 'require(userLock[msg.sender] == false); userLock[msg.sender] = true;' which matches Structure 2. The negation
+                  from false to true using 'userLock[msg.sender]' is done immediately after the require statement and before the main logic of the function executes.
+                  Hence, the code satisfies the requirement.
+Conclusion: This function will not cause REE Problem.

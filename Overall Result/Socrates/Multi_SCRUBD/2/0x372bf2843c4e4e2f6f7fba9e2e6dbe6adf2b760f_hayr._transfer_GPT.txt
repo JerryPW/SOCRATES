@@ -1,0 +1,50 @@
+
+Start analyze function: hayr._transfer(address,address,uint256)
+Function Security Analysis for hayr._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function hayr._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function contains a check using the pattern `if (msg.sender != pair && !inSwapAndLiquify && swapAndLiquifyEnabled && _balances[address(this)] >=
+          swapThreshold){ swapBack(); }`, but none of the conditions '1, 2, 3, or 4' checks for `msg.sender != xxxOwner/xxxAddress/Leader/CEO` or its variations as
+          listed. Hence, the function does not match any of the specified structures.
+        - function hayr._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not utilize any of the structures specified in the task: it does not have a 'require' statement followed by modifying the same condition
+          variable to false, or vice versa, or an 'if' statement for throwing conditions followed by changing the flag to true. It uses 'require' statements but these are
+          unrelated to setting conditions flags as specified.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for hayr.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function hayr.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified structures that compare msg.sender to an owner or leader address.
+                - function hayr.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not contain any of the identified structures with the 'require' or 'if' statement followed by a variable assignment as
+                  specified.
+External Call Analysis
+    Direct external call: ['hayReflections.setShare(sender,_balances[sender])', 'hayReflections.setShare(recipient,_balances[recipient])']
+    Analyze Transfer
+    Analyze Gas
+        - hayReflections.setShare(sender,_balances[sender]) ISN'T subjected to gas limits.
+        - hayReflections.setShare(recipient,_balances[recipient]) ISN'T subjected to gas limits.
+    Remaining external call: ['hayReflections.setShare(sender,_balances[sender])', 'hayReflections.setShare(recipient,_balances[recipient])']
+    Analyze External Address
+        There are ['hayReflections'] should be checked in variable hayReflections
+        Checked variables: hayReflections
+            Yes The function code provided is a constructor for the contract named 'hayr'. The function is explicitly named 'constructor', which matches one of the
+            characteristics we are checking for. Therefore, the code satisfies one of the required characteristics due to it being a constructor.
+        There are ['hayReflections'] should be checked in variable hayReflections
+        Checked variables: hayReflections
+            Yes The provided code is a constructor since the function name is 'constructor', which matches the typical pattern of defining a constructor in Solidity. Even
+            though the state variable 'hayReflections' is mentioned in the constructor, it is being assigned a new instance of 'HayReflections', which does not signify
+            hardcoding it in a way that affects the constructor determination. Thus, the primary characteristic satisfied here is that the function is a constructor.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: hayr.swapBack()
+Function Security Analysis for hayr.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The code contains a lock operation where 'inSwapAndLiquify' is set to true at the beginning and reset to false at the end of the function block. Both
+          lock and unlock operations are present.
+Conclusion: This function will not cause REE Problem.

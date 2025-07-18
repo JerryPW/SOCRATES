@@ -1,0 +1,14 @@
+Bussiness.removePrice: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function removePrice(uint256 tokenId) public returns (uint256){
+      require(erc721Address.ownerOf(tokenId) == msg.sender);
+      if (prices[tokenId].fee > 0) msg.sender.transfer(prices[tokenId].fee);
+      resetPrice(tokenId);
+      return prices[tokenId].price;
+  }
+Response:
+{"1": "No"}
+--------------------------------------------------

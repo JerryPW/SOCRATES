@@ -1,0 +1,31 @@
+
+Start analyze function: DCY_preICO.fallback()
+Function Security Analysis for DCY_preICO.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function DCY_preICO.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code snippet does not contain any of the specified structures related to verifying 'msg.sender' against an 'xxxOwner', 'xxxAddress', 'Leader', or
+          'CEO'.
+        - function DCY_preICO.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluating the code, it starts with 'require(!crowdsaleClosed);' but does not immediately follow with 'crowdsaleClosed = true;'. Instead,
+          'crowdsaleClosed = true;' is conditionally set only if 'tokensLeft == 0', which does not satisfy the strict requirement of the structure where 'xxx = True;'
+          should unconditionally follow after the 'require(!xxx);' statement without any intermediate conditions, other code execution paths, or dependencies. Therefore,
+          both required statements that match the structure are not contiguous in this code block, meaning the structure match was incorrect.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount/price)', 'tokenReward.getBalanceOf(address(this))']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount/price) ISN'T subjected to gas limits.
+        - tokenReward.getBalanceOf(address(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount/price)', 'tokenReward.getBalanceOf(address(this))']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function name 'DCY_preICO' matches the contract name 'DCY_preICO', indicating it is likely a constructor. There is no evidence of tokenReward being
+            hardcoded with a constant value, but since the first condition is satisfied, the answer is 'Yes'.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function name 'DCY_preICO' matches the contract name 'DCY_preICO', indicating that this function is a constructor. Constructor detection satisfies the
+            first characteristic in the list.
+Conclusion: This function will not cause REE Problem.

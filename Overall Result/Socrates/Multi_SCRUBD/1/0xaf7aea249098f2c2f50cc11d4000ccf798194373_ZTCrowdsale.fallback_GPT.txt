@@ -1,0 +1,31 @@
+
+Start analyze function: ZTCrowdsale.fallback()
+Function Security Analysis for ZTCrowdsale.fallback()
+    The modifier of function fallback are ['atStage']
+    The result of checking modifiers:
+        - modifier atStage has no relation with controlled by owner.
+          Reason: The 'atStage' modifier checks if a function is being called at a particular stage by comparing the 'stage' with '_stage', it doesn't enforce owner or
+          specific address execution, nor does it implement a lock mechanism. Thus, it doesn't satisfy any of the specified characteristics.
+    Check direct function security
+        - function ZTCrowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified conditions that involve checking msg.sender against an ownership or leadership role.
+        - function ZTCrowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures involving conditional checks on a single variable and subsequent assignments as outlined in
+          the characteristics. It uses regular `require` statements to make checks and does not follow up with state changes on the same condition variable, focusing
+          mostly on transaction logics and conditions related to crowdsale parameters.
+External Call Analysis
+    Direct external call: ['ztToken.issue(sender,valueInZT)', 'creator.send(ethFees)', 'beneficiary.send(received-ethFees)']
+    Analyze Transfer
+        - creator.send(ethFees) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call 'creator.send(ethFees)'
+        contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+        - beneficiary.send(received-ethFees) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'beneficiary.send(received-ethFees)' contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - ztToken.issue(sender,valueInZT) ISN'T subjected to gas limits.
+    Remaining external call: ['ztToken.issue(sender,valueInZT)']
+    Analyze External Address
+        There are ['ztToken'] should be checked in variable ztToken
+        Checked variables: ztToken
+            Yes The function name "ZTCrowdsale" matches the contract name, which indicates it is a constructor function according to Solidity conventions prior to version
+            0.4.22. Constructors within Solidity are used to initialize the contract's state variables when it is deployed.
+Conclusion: This function will not cause REE Problem.

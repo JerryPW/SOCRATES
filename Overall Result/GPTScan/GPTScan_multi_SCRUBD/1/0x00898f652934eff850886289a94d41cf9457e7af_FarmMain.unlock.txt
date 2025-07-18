@@ -1,0 +1,26 @@
+FarmMain.unlock: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function unlock(uint256 positionId, bool unwrapPair) public payable byPositionOwner(positionId) {
+        // retrieve liquidity mining position
+        FarmingPosition storage farmingPosition = _positions[positionId];
+        require(!_setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].free && _setups[farmingPosition.setupIndex].endBlock > block.number, "Invalid unlock");
+        uint256 rewardToGiveBack = _partiallyRedeemed[positionId];
+        // must pay a penalty fee
+        rewardToGiveBack += _setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].penaltyFee == 0 ? 0 : (farmingPosition.reward * ((_setupsInfo[_setups[farmingPosition.setupIndex].infoIndex].penaltyFee * 1e18) / ONE_HUNDRED) / 1e18);
+        // add all the unissued reward
+        if (rewardToGiveBack > 0) {
+            _safeTransferFrom(_rewardTokenAddress, msg.sender, address(this), rewardToGiveBack);
+            _giveBack(rewardToGiveBack);
+        } 
+        _setups[farmingPosition.setupIndex].totalSupply -= farmingPosition.mainTokenAmount;
+        _burnFarmTokenAmount(_setups[farmingPosition.setupIndex].objectId, farmingPosition.liquidityPoolTokenAmount);
+        _removeLiquidity(positionId, farmingPosition.setupIndex, unwrapPair, farmingPosition.liquidityPoolTokenAmount, true);
+        _setupPositionsCount[farmingPosition.setupIndex] -= 1 + farmingPosition.liquidityPoolTokenAmount;
+        delete _positions[positionId];
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

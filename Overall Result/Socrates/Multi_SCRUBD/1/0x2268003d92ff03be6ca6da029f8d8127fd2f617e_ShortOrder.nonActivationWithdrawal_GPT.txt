@@ -1,0 +1,20 @@
+
+Start analyze function: ShortOrder.nonActivationWithdrawal(address[2],uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.nonActivationWithdrawal(address[2],uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function nonActivationWithdrawal.
+    Check direct function security
+        - function ShortOrder.nonActivationWithdrawal(address[2],uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the specified characteristics (require statements, if statements or assert statements concerning msg.sender) are present in the code.
+        - function ShortOrder.nonActivationWithdrawal(address[2],uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't match any of the specified structures. The given function uses require statements, but it doesn't involve changing the same variable
+          after the require statement. The structures outlined involve conditional assignment to a state variable contingent on the pre-condition defined by the require
+          statement, which is not present here.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(orderRecord[tokenUser[1]][orderHash].longBalance[msg.sender])']
+    Analyze Transfer
+        - msg.sender.transfer(orderRecord[tokenUser[1]][orderHash].longBalance[msg.sender]) is subjected to gas limits. Therefore, it has no potential REE problem. Here
+        is the reason: The external call contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

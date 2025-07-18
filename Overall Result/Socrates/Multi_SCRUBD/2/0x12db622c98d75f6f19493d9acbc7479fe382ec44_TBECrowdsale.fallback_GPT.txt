@@ -1,0 +1,24 @@
+
+Start analyze function: TBECrowdsale.fallback()
+Function Security Analysis for TBECrowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function TBECrowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code doesn't include any of the specified patterns that involve checking the `msg.sender` against a particular owner, address, or role like Leader,
+          CEO, etc. It lacks any 'require', 'if', or 'assert' statement doing such a comparison that targets an 'Owner', 'Address', 'Leader', or 'CEO'.
+        - function TBECrowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,amount)']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,amount) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,amount)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function 'TBECrowdsale' is a constructor since it matches the contract name. Constructors in Solidity (<0.4.22) are defined with the same name as the
+            contract. Additionally, the function hardcodes the 'tokenReward' state variable by assigning it a specific address
+            '0xf18b97b312EF48C5d2b5C21c739d499B7c65Cf96'.
+Conclusion: This function will not cause REE Problem.

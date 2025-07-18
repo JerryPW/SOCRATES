@@ -1,0 +1,20 @@
+
+Start analyze function: Multiplier.verify(address)
+Function Security Analysis for Multiplier.verify(address)
+    There are no modifiers should be examined in function verify.
+    Check direct function security
+        - function Multiplier.verify(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code has a check 'if (msg.sender != owner())', but 'owner' in this context is the result of a function call (owner()), not a direct variable like
+          xxxOwner. Therefore, it does not strictly fit the structures outlined in 2 or the other listed characteristics considering the note provided.
+        - function Multiplier.verify(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not include the "require" statement checking a variable for being either true or false, followed by an assignment of that same variable to
+          the opposite boolean value, as described in the provided structures.
+External Call Analysis
+    Direct external call: ['support.send(verificationPrice)']
+    Analyze Transfer
+        - support.send(verificationPrice) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,19 @@
+
+Start analyze function: Web3NameService.registerSubdomain(string,string)
+Function Security Analysis for Web3NameService.registerSubdomain(string,string)
+    There are no modifiers should be examined in function registerSubdomain.
+    Check direct function security
+        - function Web3NameService.registerSubdomain(string,string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code checks if the sender is the owner before allowing certain operations, but it uses a custom structure to determine ownership.
+        - function Web3NameService.registerSubdomain(string,string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not include any 'require(xxx == True)' or 'require(xxx == False)' constructs that are directly followed by setting the same
+          variable 'xxx' to False or True. Also, it doesn't utilize the '!xxx' notation nor throws in an 'if(!xxx)' structure.
+External Call Analysis
+    Direct external call: ['address(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100)']
+    Analyze Transfer
+        - address(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason:
+        The external call contains the '.transfer(' keyword, which matches the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

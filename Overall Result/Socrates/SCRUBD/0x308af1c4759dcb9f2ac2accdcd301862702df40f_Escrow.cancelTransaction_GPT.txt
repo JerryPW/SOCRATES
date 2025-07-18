@@ -1,0 +1,20 @@
+
+Start analyze function: Escrow.cancelTransaction(address)
+Function Security Analysis for Escrow.cancelTransaction(address)
+    There are no modifiers should be examined in function cancelTransaction.
+    Check direct function security
+        - function Escrow.cancelTransaction(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check or restrict access based on the msg.sender address or compare it against a specific owner or privileged address.
+        - function Escrow.cancelTransaction(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the line 'require(transaction.status == transactionStatus.Pending);' but does not have the corresponding line where
+          'transaction.status' is set to 'transactionStatus.Pending'. Instead, 'transaction.status' is set to 'transactionStatus.Canceled'. Therefore, it doesn't match
+          any of the outlined structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['cancel']
+        Function Security Analysis for Escrow.cancel(address)
+            The modifier of function cancel are ['onlyAllowed']
+            The result of checking modifiers:
+                - modifier onlyAllowed is controlled by owner, the function would not cause REE problem.
+                  Reason: The code contains 'require(msg.sender == owner || msg.sender == eternal.getAddress(0));', which enforces that only specific addresses (owner or
+                  an address from getAddress) can execute the function. This matches rule 1.
+Conclusion: This function will not cause REE Problem.

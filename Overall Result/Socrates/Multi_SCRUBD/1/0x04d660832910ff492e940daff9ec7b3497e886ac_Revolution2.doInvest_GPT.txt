@@ -1,0 +1,49 @@
+
+Start analyze function: Revolution2.doInvest(address)
+Function Security Analysis for Revolution2.doInvest(address)
+    The modifier of function doInvest are ['notFromContract', 'balanceChanged']
+    The result of checking modifiers:
+        - modifier notFromContract has no relation with controlled by owner.
+          Reason: The modifier enforces that the function can only be executed by external accounts, not contracts, using require(msg.sender.isNotContract()). This fits
+          none of the specified characteristics for the answer to be 'Yes'.
+        - modifier balanceChanged has no relation with controlled by owner.
+          Reason: The modifier 'balanceChanged' does not enforce any owner restriction by checking the msg.sender field nor does it implement any lock mechanism. It only
+          emits an event. There is no evidence of characteristics mentioned in rule 1 or rule 2, and the modifier name doesn't suggest such functionality either, based on
+          rule 3.
+    Check direct function security
+        - function Revolution2.doInvest(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any of the specified patterns involving msg.sender with roles like xxxOwner, xxxAddress, Leader, or CEO.
+        - function Revolution2.doInvest(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures directly. There are multiple require statements, but none of them involve setting a boolean
+          variable directly after the require. There is also no use of 'require(!xxx)' or 'if(!xxx) throw' structures, nor are any boolean variables manipulated in the
+          pattern specified.
+External Call Analysis
+    Direct external call: ['adminsAddress.send(m_adminsPercent.mul(receivedEther))', 'referrerAddr.notZero()', 'm_investors.isInvestor(msg.sender)',
+    'm_investors.setPaymentTime(msg.sender,now)', 'msg.sender.transfer(excess)', 'm_investors.addInvestment(referrerAddr,referrerBonus)',
+    'advertisingAddress.send(m_advertisingPercent.mul(receivedEther))', 'm_investors.newInvestor(msg.sender,investment,now)',
+    'm_investors.addInvestment(msg.sender,investment)', 'm_investors.isInvestor(referrerAddr)']
+    Analyze Transfer
+        - adminsAddress.send(m_adminsPercent.mul(receivedEther)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external
+        call contains '.send(' keyword, which satisfies the second characteristic.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.transfer(excess) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer('
+        keyword, which satisfies the first characteristic.. Parameter in 'transfer'/'send': 1.
+        - advertisingAddress.send(m_advertisingPercent.mul(receivedEther)) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains '.send(' keyword, which satisfies the second characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - referrerAddr.notZero() ISN'T subjected to gas limits.
+        - m_investors.isInvestor(msg.sender) ISN'T subjected to gas limits.
+        - m_investors.setPaymentTime(msg.sender,now) ISN'T subjected to gas limits.
+        - m_investors.addInvestment(referrerAddr,referrerBonus) ISN'T subjected to gas limits.
+        - m_investors.newInvestor(msg.sender,investment,now) ISN'T subjected to gas limits.
+        - m_investors.addInvestment(msg.sender,investment) ISN'T subjected to gas limits.
+        - m_investors.isInvestor(referrerAddr) ISN'T subjected to gas limits.
+    Remaining external call: ['referrerAddr.notZero()', 'm_investors.isInvestor(msg.sender)', 'm_investors.setPaymentTime(msg.sender,now)',
+    'm_investors.addInvestment(referrerAddr,referrerBonus)', 'm_investors.newInvestor(msg.sender,investment,now)', 'm_investors.addInvestment(msg.sender,investment)',
+    'm_investors.isInvestor(referrerAddr)']
+    Analyze External Address
+        The variable 'referrerAddr' in external call 'referrerAddr.notZero()' has no state variable assigned in Revolution2.doInvest(address). Therefore we check whether
+        it has been hardcoded in the function.
+            No The variable 'referrerAddr' is passed as a parameter to the function and is used dynamically within the function based on the provided conditions. It is
+            checked against various conditions such as 'notZero()', checking if it's different from the sender, and if it belongs to an existing investor. Therefore,
+            'referrerAddr' is not hardcoded within the function.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,30 @@
+
+Start analyze function: ViVICO.successful()
+Function Security Analysis for ViVICO.successful()
+    There are no modifiers should be examined in function successful.
+    Check direct function security
+        - function ViVICO.successful() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the required structures involving 'msg.sender'. Specifically, there is no use of 'msg.sender' in relation to the
+          ownership or specific address checks that must validate conditions like equality or inequality with certain roles (Owner, Address, Leader, CEO).
+        - function ViVICO.successful() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains a statement `require(state == State.Successful);` but does not include `state = State.Unsuccessful` or vice versa, or equivalent logic
+          adjustments with the associated variable `state`. Therefore, the necessary structure outlined is not entirely present in the given code.
+External Call Analysis
+    Direct external call: ['tokenReward.balanceOf(this)', 'creator.transfer(address(this).balance)', 'tokenReward.transfer(creator,remanent)']
+    Analyze Transfer
+        - creator.transfer(address(this).balance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'creator.transfer(address(this).balance)' contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.balanceOf(this) ISN'T subjected to gas limits.
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.balanceOf(this)', 'tokenReward.transfer(creator,remanent)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function is named 'constructor', which matches the characteristic of being a constructor function.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function provided is explicitly named 'constructor'. This indicates that it is indeed a constructor function, which matches the first characteristic
+            outlined.
+Conclusion: This function will not cause REE Problem.

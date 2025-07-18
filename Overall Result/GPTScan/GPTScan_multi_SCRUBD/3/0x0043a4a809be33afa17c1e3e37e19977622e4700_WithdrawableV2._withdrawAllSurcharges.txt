@@ -1,0 +1,43 @@
+WithdrawableV2._withdrawAllSurcharges: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function _withdrawAllSurcharges() private {
+    uint256 balance = ramppSurchargeBalance;
+    if(balance == 0) { return; }
+    
+    for(uint i=0; i < surchargePayableAddressCount; i++ ) {
+        _widthdraw(
+            surchargePayableAddresses[i],
+            (balance * surchargePayableFees[i]) / 100
+        );
+    }
+    ramppSurchargeBalance = 0 ether;
+  }
+Response:
+{
+  "1": "No"
+}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function _withdrawAllSurcharges() private {
+    uint256 balance = ramppSurchargeBalance;
+    if(balance == 0) { return; }
+    
+    for(uint i=0; i < surchargePayableAddressCount; i++ ) {
+        _widthdraw(
+            surchargePayableAddresses[i],
+            (balance * surchargePayableFees[i]) / 100
+        );
+    }
+    ramppSurchargeBalance = 0 ether;
+  }
+Response:
+{
+  "1": "No"
+}
+--------------------------------------------------

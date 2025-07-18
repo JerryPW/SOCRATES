@@ -1,0 +1,29 @@
+UserfeedsClaimWithValueMultiSendUnsafe.send: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function send(bytes20[] recipients) public payable {
+    uint amount = msg.value / recipients.length;
+    for (uint i = 0; i < recipients.length; i++) {
+      address(recipients[i]).send(amount);
+    }
+    msg.sender.transfer(address(this).balance);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function send(bytes20[] recipients) public payable {
+    uint amount = msg.value / recipients.length;
+    for (uint i = 0; i < recipients.length; i++) {
+      address(recipients[i]).send(amount);
+    }
+    msg.sender.transfer(address(this).balance);
+  }
+    
+Response:
+No
+--------------------------------------------------

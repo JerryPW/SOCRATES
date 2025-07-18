@@ -1,0 +1,31 @@
+
+Start analyze function: EscrowGoods.getMoney(uint256)
+Function Security Analysis for EscrowGoods.getMoney(uint256)
+    There are no modifiers should be examined in function getMoney.
+    Check direct function security
+        - function EscrowGoods.getMoney(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not contain any of the specified conditions related to 'msg.sender'. There are no checks or assertions based on the sender of
+          the transaction in the function code.
+        - function EscrowGoods.getMoney(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures involving 'require' or 'if'. There is no usage of 'require(xxx == True)', 'require(xxx ==
+          False)', 'require(!xxx)' or 'if(!xxx) throw'. The function primarily checks for conditions using 'if' statements and logs debug messages without throwing
+          exceptions or using 'require'.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: EscrowGoods.safeSend(address,uint256)
+Function Security Analysis for EscrowGoods.safeSend(address,uint256)
+    There are no modifiers should be examined in function safeSend.
+    Check direct function security
+        - function EscrowGoods.safeSend(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function lacks any checks involving msg.sender against an xxxOwner, xxxAddress, Leader, or CEO in the forms listed in the criteria.
+        - function EscrowGoods.safeSend(address,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: The code matches the fourth structure: 'if(!xxx) throw;' corresponds to 'if(atomicLock) throw;', and 'xxx = true;' corresponds to 'atomicLock = true;'.
+          The structure is satisfied because the operation 'atomicLock = true;' immediately follows the check 'if(atomicLock) throw;' before the main logic of the
+          function executes. Thus, it meets the structural requirement.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,109 @@
+Moloch.sponsorProposal: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function sponsorProposal(uint256 proposalId) external nonReentrant onlyDelegate {
+        // collect proposal deposit from sponsor and store it in the Moloch until the proposal is processed
+        IERC20(depositToken).transferFrom(msg.sender, address(this), proposalDeposit);
+        unsafeAddToBalance(ESCROW, depositToken, proposalDeposit);
+
+        Proposal storage proposal = proposals[proposalId];
+
+        require(proposal.proposer != address(0), "unproposed");
+        require(proposal.flags[0] == 0, "already sponsored");
+        require(proposal.flags[3] == 0, "cancelled");
+        require(members[proposal.applicant].jailed == 0, "applicant jailed");
+
+        if (proposal.tributeOffered > 0 && userTokenBalances[GUILD][proposal.tributeToken] == 0) {
+            require(totalGuildBankTokens < MAX_TOKEN_GUILDBANK_COUNT, "guildbank maxed");
+        }
+
+        // whitelist proposal
+        if (proposal.flags[4] == 1) {
+            require(!tokenWhitelist[address(proposal.tributeToken)], "already whitelisted");
+            require(!proposedToWhitelist[address(proposal.tributeToken)], "already whitelist proposed");
+            require(approvedTokens.length < MAX_TOKEN_WHITELIST_COUNT, "whitelist maxed");
+            proposedToWhitelist[address(proposal.tributeToken)] = true;
+
+        // guild kick proposal
+        } else if (proposal.flags[5] == 1) {
+            require(!proposedToKick[proposal.applicant], "kick already proposed");
+            proposedToKick[proposal.applicant] = true;
+        }
+
+        // compute startingPeriod for proposal
+        uint256 startingPeriod = max(
+            getCurrentPeriod(),
+            proposalQueue.length == 0 ? 0 : proposals[proposalQueue[proposalQueue.length - 1]].startingPeriod
+        ) + 1;
+
+        proposal.startingPeriod = startingPeriod;
+
+        address memberAddress = memberAddressByDelegateKey[msg.sender];
+        proposal.sponsor = memberAddress;
+
+        proposal.flags[0] = 1; // sponsored
+
+        // append proposal to the queue
+        proposalQueue.push(proposalId);
+        
+        emit SponsorProposal(msg.sender, memberAddress, proposalId, proposalQueue.length - 1, startingPeriod);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function sponsorProposal(uint256 proposalId) external nonReentrant onlyDelegate {
+        // collect proposal deposit from sponsor and store it in the Moloch until the proposal is processed
+        IERC20(depositToken).transferFrom(msg.sender, address(this), proposalDeposit);
+        unsafeAddToBalance(ESCROW, depositToken, proposalDeposit);
+
+        Proposal storage proposal = proposals[proposalId];
+
+        require(proposal.proposer != address(0), "unproposed");
+        require(proposal.flags[0] == 0, "already sponsored");
+        require(proposal.flags[3] == 0, "cancelled");
+        require(members[proposal.applicant].jailed == 0, "applicant jailed");
+
+        if (proposal.tributeOffered > 0 && userTokenBalances[GUILD][proposal.tributeToken] == 0) {
+            require(totalGuildBankTokens < MAX_TOKEN_GUILDBANK_COUNT, "guildbank maxed");
+        }
+
+        // whitelist proposal
+        if (proposal.flags[4] == 1) {
+            require(!tokenWhitelist[address(proposal.tributeToken)], "already whitelisted");
+            require(!proposedToWhitelist[address(proposal.tributeToken)], "already whitelist proposed");
+            require(approvedTokens.length < MAX_TOKEN_WHITELIST_COUNT, "whitelist maxed");
+            proposedToWhitelist[address(proposal.tributeToken)] = true;
+
+        // guild kick proposal
+        } else if (proposal.flags[5] == 1) {
+            require(!proposedToKick[proposal.applicant], "kick already proposed");
+            proposedToKick[proposal.applicant] = true;
+        }
+
+        // compute startingPeriod for proposal
+        uint256 startingPeriod = max(
+            getCurrentPeriod(),
+            proposalQueue.length == 0 ? 0 : proposals[proposalQueue[proposalQueue.length - 1]].startingPeriod
+        ) + 1;
+
+        proposal.startingPeriod = startingPeriod;
+
+        address memberAddress = memberAddressByDelegateKey[msg.sender];
+        proposal.sponsor = memberAddress;
+
+        proposal.flags[0] = 1; // sponsored
+
+        // append proposal to the queue
+        proposalQueue.push(proposalId);
+        
+        emit SponsorProposal(msg.sender, memberAddress, proposalId, proposalQueue.length - 1, startingPeriod);
+    }
+    
+Response:
+No
+--------------------------------------------------

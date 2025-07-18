@@ -1,0 +1,48 @@
+
+Start analyze function: MonkeyScam.endRound(LDdatasets.EventReturns)
+Function Security Analysis for MonkeyScam.endRound(LDdatasets.EventReturns)
+    There are no modifiers should be examined in function endRound.
+    Check direct function security
+        - function MonkeyScam.endRound(LDdatasets.EventReturns) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks for msg.sender, which would match the specified structures (e.g., require, if, assert with msg.sender checks).
+        - function MonkeyScam.endRound(LDdatasets.EventReturns) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require' or 'if(!xxx) throw' statements with the corresponding variable assignments as described in the patterns. The
+          available conditions using if statements are for other purposes, such as handling errors from external calls, not as boolean logic checks followed by
+          assignments.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['reLoadXid', 'reLoadXaddr', 'reLoadCore', 'buyXname', 'withdraw', 'buyXaddr', 'buyCore', 'fallback', 'buyXid', 'reLoadXname']
+        Function Security Analysis for MonkeyScam.reLoadXid(uint256,uint256)
+            The modifier of function reLoadXid are ['isActivated', 'isHuman', 'isWithinLimits']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier 'isActivated' does not explicitly show any characteristics mentioned in the rules. It does not check for a specific owner or
+                  address, and it does not involve any kind of lock mechanism. The name 'isActivated' doesn't imply permission restriction based on the caller's address
+                  or a lock operation.
+                - modifier isHuman has no relation with controlled by owner.
+                  Reason: The modifier 'isHuman' does not enforce specific owner or address check, nor does it use a reentrancy lock pattern. It only checks for non-
+                  contract addresses using extcodesize.
+                - modifier isWithinLimits has no relation with controlled by owner.
+                  Reason: The modifier 'isWithinLimits' only checks if an amount is within a given range and does not enforce checks on the caller's identity or involve
+                  lock operations. It does not fit any of the specified characteristics that would output 'Yes'.
+            Check direct function security
+                - function MonkeyScam.reLoadXid(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The given function code does not have any of the specified structures like checking msg.sender with xxxOwner/xxxAddress/Leader/CEO or
+                  assert/require statements involving msg.sender.
+                - function MonkeyScam.reLoadXid(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain any 'require' or 'if' statements with 'throw' that match any of the specified structures. There are neither
+                  require statements setting a variable to true or false nor any conditionals that match the provided pattern.
+External Call Analysis
+    Direct external call: ['address(monkeyKing).call.value(_com)()', 'address(monkeyQueue).call.value(_queen)()']
+    Analyze Transfer
+    Analyze Gas
+        - address(monkeyKing).call.value(_com)() ISN'T subjected to gas limits.
+        - address(monkeyQueue).call.value(_queen)() ISN'T subjected to gas limits.
+    Remaining external call: ['address(monkeyKing).call.value(_com)()', 'address(monkeyQueue).call.value(_queen)()']
+    Analyze External Address
+        There are ['monkeyKing'] should be checked in variable monkeyKing
+        Checked variables: monkeyKing
+            State variable monkeyKing has initialized in public area after declaration.
+        There are ['monkeyQueue'] should be checked in variable monkeyQueue
+        Checked variables: monkeyQueue
+            State variable monkeyQueue has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

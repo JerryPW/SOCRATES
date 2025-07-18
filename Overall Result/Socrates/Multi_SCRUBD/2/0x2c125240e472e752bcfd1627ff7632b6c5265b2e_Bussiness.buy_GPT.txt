@@ -1,0 +1,45 @@
+
+Start analyze function: Bussiness.buy(uint256)
+Function Security Analysis for Bussiness.buy(uint256)
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function Bussiness.buy(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any conditional checks or assertions involving msg.sender compared to an xxxOwner, xxxAddress, Leader, or CEO role.
+        - function Bussiness.buy(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not meet any of the specified structures. It contains 'require(getApproved(tokenId) == address(this));', but there are no variable
+          assignments changing from true to false or vice versa corresponding to this requirement violation, nor is there a '!xxx' pattern with a following assignment
+          that matches any provided structures.
+External Call Analysis
+    Direct external call: ['prices[tokenId].tokenOwner.transfer(msg.value)', 'erc721Address.transferFrom(prices[tokenId].tokenOwner,msg.sender,tokenId)']
+    Analyze Transfer
+        - prices[tokenId].tokenOwner.transfer(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'prices[tokenId].tokenOwner.transfer(msg.value)' contains the keyword '.transfer('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - erc721Address.transferFrom(prices[tokenId].tokenOwner,msg.sender,tokenId) ISN'T subjected to gas limits.
+    Remaining external call: ['erc721Address.transferFrom(prices[tokenId].tokenOwner,msg.sender,tokenId)']
+    Analyze External Address
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Bussiness.getApproved(uint256)
+Function Security Analysis for Bussiness.getApproved(uint256)
+    There are no modifiers should be examined in function getApproved.
+    Check direct function security
+        - function Bussiness.getApproved(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any of the specified patterns related to msg.sender access control checks.
+        - function Bussiness.getApproved(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code snippet does not contain any of the listed structures involving a `require` statement or a conditional `throw` with variable updates. It
+          consists of a simple function returning the result of a method call.
+External Call Analysis
+    Direct external call: ['erc721Address.getApproved(_tokenId)']
+    Analyze Transfer
+    Analyze Gas
+        - erc721Address.getApproved(_tokenId) ISN'T subjected to gas limits.
+    Remaining external call: ['erc721Address.getApproved(_tokenId)']
+    Analyze External Address
+        There are ['erc721Address'] should be checked in variable erc721Address
+        Checked variables: erc721Address
+            State variable erc721Address has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

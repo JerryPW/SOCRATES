@@ -1,0 +1,21 @@
+
+Start analyze function: TokenERC20.sell(uint256)
+Function Security Analysis for TokenERC20.sell(uint256)
+    There are no modifiers should be examined in function sell.
+    Check direct function security
+        - function TokenERC20.sell(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function checks if the sender has enough tokens to sell, but it does not check if the sender is a specific owner/leader or require them to be, which
+          does not match any of the outlined structures.
+        - function TokenERC20.sell(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon reevaluation, the code contains an 'if (balanceOf[msg.sender] < amount) throw;' statement, which matches the first part of the fourth structure.
+          However, there is no subsequent 'xxx = true;' statement relating to the same variable (balanceOf[msg.sender]). Therefore, it does not fully match any of the
+          specified structures.
+External Call Analysis
+    Direct external call: ['msg.sender.send(revenue)']
+    Analyze Transfer
+        - msg.sender.send(revenue) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.send('
+        keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

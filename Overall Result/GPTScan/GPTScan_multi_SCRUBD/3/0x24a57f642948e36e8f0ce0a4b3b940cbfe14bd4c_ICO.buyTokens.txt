@@ -1,0 +1,181 @@
+ICO.buyTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function buyTokens(uint _quantity, uint _priceToBuyInFinney) payable returns (bool){
+
+        if (priceToBuyInFinney <= 0) {throw;}
+        // if priceToBuy == 0 selling stops;
+
+        // if (_priceToBuyInFinney <= 0) {throw;}
+        // if (_quantity <= 0) {throw;}
+
+        if (priceToBuyInFinney != _priceToBuyInFinney) {
+            //    Result(msg.sender, "transaction failed: price already changed");
+            throw;
+        }
+
+        if (
+        (msg.value / priceToBuyInWei) != _quantity
+        ) {
+            // Result(msg.sender, "provided sum is not correct for this amount of tokens");
+            throw;
+        }
+        // if everything is O.K. make transfer (~ 37046 gas):
+        // check balance in token contract:
+        uint currentBalance = erc20TokensContract.balanceOf(this);
+        if (erc20TokensContract.balanceOf(this) < _quantity) {throw;}
+        else {
+            // make transfer
+            erc20TokensContract.transfer(msg.sender, _quantity);
+            // check if tx changed erc20TokensContract:
+            if (currentBalance == erc20TokensContract.balanceOf(this)) {
+                throw;
+            }
+            // record this :
+            dealsNumber = dealsNumber + 1;
+            deals[dealsNumber] = [_priceToBuyInFinney, _quantity, block.number, block.timestamp];
+            // event
+            Deal(msg.sender, _priceToBuyInFinney, _quantity);
+            return true;
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function buyTokens(uint _quantity, uint _priceToBuyInFinney) payable returns (bool){
+
+        if (priceToBuyInFinney <= 0) {throw;}
+        // if priceToBuy == 0 selling stops;
+
+        // if (_priceToBuyInFinney <= 0) {throw;}
+        // if (_quantity <= 0) {throw;}
+
+        if (priceToBuyInFinney != _priceToBuyInFinney) {
+            //    Result(msg.sender, "transaction failed: price already changed");
+            throw;
+        }
+
+        if (
+        (msg.value / priceToBuyInWei) != _quantity
+        ) {
+            // Result(msg.sender, "provided sum is not correct for this amount of tokens");
+            throw;
+        }
+        // if everything is O.K. make transfer (~ 37046 gas):
+        // check balance in token contract:
+        uint currentBalance = erc20TokensContract.balanceOf(this);
+        if (erc20TokensContract.balanceOf(this) < _quantity) {throw;}
+        else {
+            // make transfer
+            erc20TokensContract.transfer(msg.sender, _quantity);
+            // check if tx changed erc20TokensContract:
+            if (currentBalance == erc20TokensContract.balanceOf(this)) {
+                throw;
+            }
+            // record this :
+            dealsNumber = dealsNumber + 1;
+            deals[dealsNumber] = [_priceToBuyInFinney, _quantity, block.number, block.timestamp];
+            // event
+            Deal(msg.sender, _priceToBuyInFinney, _quantity);
+            return true;
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function buyTokens(uint _quantity, uint _priceToBuyInFinney) payable returns (bool){
+
+        if (priceToBuyInFinney <= 0) {throw;}
+        // if priceToBuy == 0 selling stops;
+
+        // if (_priceToBuyInFinney <= 0) {throw;}
+        // if (_quantity <= 0) {throw;}
+
+        if (priceToBuyInFinney != _priceToBuyInFinney) {
+            //    Result(msg.sender, "transaction failed: price already changed");
+            throw;
+        }
+
+        if (
+        (msg.value / priceToBuyInWei) != _quantity
+        ) {
+            // Result(msg.sender, "provided sum is not correct for this amount of tokens");
+            throw;
+        }
+        // if everything is O.K. make transfer (~ 37046 gas):
+        // check balance in token contract:
+        uint currentBalance = erc20TokensContract.balanceOf(this);
+        if (erc20TokensContract.balanceOf(this) < _quantity) {throw;}
+        else {
+            // make transfer
+            erc20TokensContract.transfer(msg.sender, _quantity);
+            // check if tx changed erc20TokensContract:
+            if (currentBalance == erc20TokensContract.balanceOf(this)) {
+                throw;
+            }
+            // record this :
+            dealsNumber = dealsNumber + 1;
+            deals[dealsNumber] = [_priceToBuyInFinney, _quantity, block.number, block.timestamp];
+            // event
+            Deal(msg.sender, _priceToBuyInFinney, _quantity);
+            return true;
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function buyTokens(uint _quantity, uint _priceToBuyInFinney) payable returns (bool){
+
+        if (priceToBuyInFinney <= 0) {throw;}
+        // if priceToBuy == 0 selling stops;
+
+        // if (_priceToBuyInFinney <= 0) {throw;}
+        // if (_quantity <= 0) {throw;}
+
+        if (priceToBuyInFinney != _priceToBuyInFinney) {
+            //    Result(msg.sender, "transaction failed: price already changed");
+            throw;
+        }
+
+        if (
+        (msg.value / priceToBuyInWei) != _quantity
+        ) {
+            // Result(msg.sender, "provided sum is not correct for this amount of tokens");
+            throw;
+        }
+        // if everything is O.K. make transfer (~ 37046 gas):
+        // check balance in token contract:
+        uint currentBalance = erc20TokensContract.balanceOf(this);
+        if (erc20TokensContract.balanceOf(this) < _quantity) {throw;}
+        else {
+            // make transfer
+            erc20TokensContract.transfer(msg.sender, _quantity);
+            // check if tx changed erc20TokensContract:
+            if (currentBalance == erc20TokensContract.balanceOf(this)) {
+                throw;
+            }
+            // record this :
+            dealsNumber = dealsNumber + 1;
+            deals[dealsNumber] = [_priceToBuyInFinney, _quantity, block.number, block.timestamp];
+            // event
+            Deal(msg.sender, _priceToBuyInFinney, _quantity);
+            return true;
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

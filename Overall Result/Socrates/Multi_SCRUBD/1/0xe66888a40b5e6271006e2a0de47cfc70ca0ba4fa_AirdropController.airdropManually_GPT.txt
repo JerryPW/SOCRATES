@@ -1,0 +1,9 @@
+
+Start analyze function: AirdropController.airdropManually(address,uint256)
+Function Security Analysis for AirdropController.airdropManually(address,uint256)
+    The modifier of function airdropManually are ['onlyOwner', 'isAllowed']
+    The result of checking modifiers:
+        - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier onlyOwner uses 'require(msg.sender == owner);', matching characteristic 1 (Check whether the code in the modifier enforces that only the
+          owner can execute the function). There are no omissions in the structural check, as this statement sufficiently implements the required functionality.
+Conclusion: This function will not cause REE Problem.

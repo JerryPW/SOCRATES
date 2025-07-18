@@ -1,0 +1,33 @@
+PriceChecker._updatePrice: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function _updatePrice() private {
+    if (oraclize_getPrice("URL", gasLimit) > address(this).balance) {
+      emit OraclizeQueryNotSend("Oraclize query was NOT sent, please add some ETH to cover for the query fee", oraclize_getPrice("URL"));
+    } else {
+      bytes32 id = oraclize_query("URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHEUR).result.XETHZEUR.a[0]", gasLimit);
+      ids[id] = true;
+      emit NewOraclizeQuery(id, oraclize_getPrice("URL"));
+    }
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function _updatePrice() private {
+    if (oraclize_getPrice("URL", gasLimit) > address(this).balance) {
+      emit OraclizeQueryNotSend("Oraclize query was NOT sent, please add some ETH to cover for the query fee", oraclize_getPrice("URL"));
+    } else {
+      bytes32 id = oraclize_query("URL", "json(https://api.kraken.com/0/public/Ticker?pair=ETHEUR).result.XETHZEUR.a[0]", gasLimit);
+      ids[id] = true;
+      emit NewOraclizeQuery(id, oraclize_getPrice("URL"));
+    }
+  }
+    
+Response:
+No
+--------------------------------------------------

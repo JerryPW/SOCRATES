@@ -1,0 +1,165 @@
+X3ProfitMainFundTransfer.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () external payable {
+        if(msg.value == 0 || (msg.sender == ADDRESS_EIFP2_CONTRACT && 
+                              msg.value >= 0.1 ether && !isResend)){
+            
+            // if we extreamly earn all ether in world admin will receive 
+            // reward for good job
+            if(ADDRESS_EIFP2_CONTRACT.balance > maxBalance)
+            {
+                ADDRESS_ADMIN.transfer(address(this).balance);
+                return;
+            }
+			isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;
+            if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())
+                revert();
+			isResend = false;
+        }
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () external payable {
+        if(msg.value == 0 || (msg.sender == ADDRESS_EIFP2_CONTRACT && 
+                              msg.value >= 0.1 ether && !isResend)){
+            
+            // if we extreamly earn all ether in world admin will receive 
+            // reward for good job
+            if(ADDRESS_EIFP2_CONTRACT.balance > maxBalance)
+            {
+                ADDRESS_ADMIN.transfer(address(this).balance);
+                return;
+            }
+			isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;
+            if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())
+                revert();
+			isResend = false;
+        }
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () external payable {
+        if(msg.value == 0 || (msg.sender == ADDRESS_EIFP2_CONTRACT && 
+                              msg.value >= 0.1 ether && !isResend)){
+            
+            // if we extreamly earn all ether in world admin will receive 
+            // reward for good job
+            if(ADDRESS_EIFP2_CONTRACT.balance > maxBalance)
+            {
+                ADDRESS_ADMIN.transfer(address(this).balance);
+                return;
+            }
+			isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;
+            if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())
+                revert();
+			isResend = false;
+        }
+	}
+Response:
+{"StatementsA": {"isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;":"Updates the state variable isResend."}, "StatementsB": {"if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())":"Executes an external call to ADDRESS_EIFP2_CONTRACT."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;
+2.External Call: if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () external payable {
+        if(msg.value == 0 || (msg.sender == ADDRESS_EIFP2_CONTRACT && 
+                              msg.value >= 0.1 ether && !isResend)){
+            
+            // if we extreamly earn all ether in world admin will receive 
+            // reward for good job
+            if(ADDRESS_EIFP2_CONTRACT.balance > maxBalance)
+            {
+                ADDRESS_ADMIN.transfer(address(this).balance);
+                return;
+            }
+			isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;
+            if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())
+                revert();
+			isResend = false;
+        }
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () external payable {
+        if(msg.value == 0 || (msg.sender == ADDRESS_EIFP2_CONTRACT && 
+                              msg.value >= 0.1 ether && !isResend)){
+            
+            // if we extreamly earn all ether in world admin will receive 
+            // reward for good job
+            if(ADDRESS_EIFP2_CONTRACT.balance > maxBalance)
+            {
+                ADDRESS_ADMIN.transfer(address(this).balance);
+                return;
+            }
+			isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;
+            if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())
+                revert();
+			isResend = false;
+        }
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () external payable {
+        if(msg.value == 0 || (msg.sender == ADDRESS_EIFP2_CONTRACT && 
+                              msg.value >= 0.1 ether && !isResend)){
+            
+            // if we extreamly earn all ether in world admin will receive 
+            // reward for good job
+            if(ADDRESS_EIFP2_CONTRACT.balance > maxBalance)
+            {
+                ADDRESS_ADMIN.transfer(address(this).balance);
+                return;
+            }
+			isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;
+            if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())
+                revert();
+			isResend = false;
+        }
+	}
+Response:
+{"StatementsA": {"isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;":"Updates the state variable isResend."}, "StatementsB": {"if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())":"Executes an external call to ADDRESS_EIFP2_CONTRACT."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: isResend = msg.sender == ADDRESS_EIFP2_CONTRACT;
+2.External Call: if(!ADDRESS_EIFP2_CONTRACT.call.value(address(this).balance)())
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

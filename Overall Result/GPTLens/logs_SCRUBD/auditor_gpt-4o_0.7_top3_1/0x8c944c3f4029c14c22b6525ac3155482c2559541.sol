@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "BDSM_Presale",
+        "code": "function BDSM_Presale(address _tokenAddress, address _owner, address _stopScamHolder) { owner = _owner; sharesTokenAddress = token(_tokenAddress); safeContract = _stopScamHolder; }",
+        "vulnerability": "Lack of input validation",
+        "reason": "The constructor does not validate the provided addresses. If any of the addresses are zero addresses or invalid contracts, it could lead to incorrect functioning of the contract, such as failing to transfer tokens or Ether, or potentially allowing malicious addresses to be set.",
+        "file_name": "0x8c944c3f4029c14c22b6525ac3155482c2559541.sol"
+    },
+    {
+        "function_name": "function() payable",
+        "code": "function() payable { tokenFree = sharesTokenAddress.balanceOf(this); if (now < presaleStart_6_December) { msg.sender.transfer(msg.value); } else if (now > presaleStop_13_December) { msg.sender.transfer(msg.value); if(!tokensWithdrawn){ sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this)); tokenFree = sharesTokenAddress.balanceOf(this); tokensWithdrawn = true; presaleClosed = true; } } else if (presaleClosed) { msg.sender.transfer(msg.value); } else { uint256 tokenToBuy = msg.value / realPrice * coeff; if(tokenToBuy <= 0) msg.sender.transfer(msg.value); require(tokenToBuy > 0); uint256 actualETHTransfer = tokenToBuy * realPrice / coeff; if (tokenFree >= tokenToBuy) { owner.transfer(actualETHTransfer); if (msg.value > actualETHTransfer){ msg.sender.transfer(msg.value - actualETHTransfer); } sharesTokenAddress.transfer(msg.sender, tokenToBuy); tokenSold += tokenToBuy; tokenFree -= tokenToBuy; if(tokenFree==0) presaleClosed = true; } else { uint256 sendETH = tokenFree * realPrice / coeff; owner.transfer(sendETH); sharesTokenAddress.transfer(msg.sender, tokenFree); msg.sender.transfer(msg.value - sendETH); tokenSold += tokenFree; tokenFree = sharesTokenAddress.balanceOf(this); presaleClosed = true; } } TokenFree(tokenFree); PresaleClosed(presaleClosed); }",
+        "vulnerability": "Reentrancy vulnerability",
+        "reason": "The fallback function is vulnerable to reentrancy attacks because it first sends Ether back to the sender before updating the state variables. An attacker can exploit this by recursively calling the fallback function to drain funds from the contract. It is important to follow the 'checks-effects-interactions' pattern to mitigate this vulnerability, where state changes are made before external calls.",
+        "file_name": "0x8c944c3f4029c14c22b6525ac3155482c2559541.sol"
+    },
+    {
+        "function_name": "function() payable",
+        "code": "function() payable { tokenFree = sharesTokenAddress.balanceOf(this); if (now < presaleStart_6_December) { msg.sender.transfer(msg.value); } else if (now > presaleStop_13_December) { msg.sender.transfer(msg.value); if(!tokensWithdrawn){ sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this)); tokenFree = sharesTokenAddress.balanceOf(this); tokensWithdrawn = true; presaleClosed = true; } } else if (presaleClosed) { msg.sender.transfer(msg.value); } else { uint256 tokenToBuy = msg.value / realPrice * coeff; if(tokenToBuy <= 0) msg.sender.transfer(msg.value); require(tokenToBuy > 0); uint256 actualETHTransfer = tokenToBuy * realPrice / coeff; if (tokenFree >= tokenToBuy) { owner.transfer(actualETHTransfer); if (msg.value > actualETHTransfer){ msg.sender.transfer(msg.value - actualETHTransfer); } sharesTokenAddress.transfer(msg.sender, tokenToBuy); tokenSold += tokenToBuy; tokenFree -= tokenToBuy; if(tokenFree==0) presaleClosed = true; } else { uint256 sendETH = tokenFree * realPrice / coeff; owner.transfer(sendETH); sharesTokenAddress.transfer(msg.sender, tokenFree); msg.sender.transfer(msg.value - sendETH); tokenSold += tokenFree; tokenFree = sharesTokenAddress.balanceOf(this); presaleClosed = true; } } TokenFree(tokenFree); PresaleClosed(presaleClosed); }",
+        "vulnerability": "Unsafe arithmetic operations",
+        "reason": "The contract uses arithmetic operations without checking for overflows or underflows. For example, 'uint256 tokenToBuy = msg.value / realPrice * coeff;' and 'uint256 actualETHTransfer = tokenToBuy * realPrice / coeff;' can lead to incorrect calculations if overflow occurs. In modern Solidity, SafeMath library should be used to prevent such vulnerabilities.",
+        "file_name": "0x8c944c3f4029c14c22b6525ac3155482c2559541.sol"
+    }
+]

@@ -1,0 +1,76 @@
+
+Start analyze function: ViVICO.contribute()
+Function Security Analysis for ViVICO.contribute()
+    The modifier of function contribute are ['notFinishedOrHold']
+    The result of checking modifiers:
+        - modifier notFinishedOrHold has no relation with controlled by owner.
+          Reason: The modifier checks the state and does not relate to the characteristics specified (checking the sender's address or using a lock operation).
+    Check direct function security
+        - function ViVICO.contribute() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any of the specified patterns where "msg.sender" is compared to an owner or similar role. The conditions are primarily
+          focused on whitelist, state validation, and KYC checks.
+        - function ViVICO.contribute() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't meet any of the specified structural patterns. It doesn't contain a pattern where a 'require' function checks a boolean variable (xxx)
+          and then changes its value. It only contains require statements with other logical conditions unrelated to the modification of a boolean variable as a result of
+          the 'require' check.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,tokenBought.add(tempBalance))']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,tokenBought.add(tempBalance)) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,tokenBought.add(tempBalance)) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,tokenBought.add(tempBalance))']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The code provided indicates a constructor function because it explicitly uses the 'constructor' keyword in the function definition. This matches the
+            criteria for identifying a constructor, fulfilling the first characteristic. Therefore, the function meets at least one of the specified characteristics.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ViVICO.checkIfFundingCompleteOrExpired()
+Function Security Analysis for ViVICO.checkIfFundingCompleteOrExpired()
+    There are no modifiers should be examined in function checkIfFundingCompleteOrExpired.
+    Check direct function security
+        - function ViVICO.checkIfFundingCompleteOrExpired() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any conditional checks or assertions that directly involve comparing msg.sender with a variable or constant representing an
+          owner, leader, or any administrative address as specified in the required characteristics.
+        - function ViVICO.checkIfFundingCompleteOrExpired() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any 'require' statements or specific condition and assignment structures mentioned in the characteristics. All logic is based
+          on 'if-else' constructs without using require or similar checks with variable assignments as outlined.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ViVICO.successful()
+Function Security Analysis for ViVICO.successful()
+    There are no modifiers should be examined in function successful.
+    Check direct function security
+        - function ViVICO.successful() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any condition or assertion that directly involves msg.sender compared against an owner, leader, address etc., which matches
+          any of the provided patterns.
+        - function ViVICO.successful() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code includes the statement 'require(state == State.Successful);' but it does not modify the 'state' variable following the pattern required by the
+          structures listed in the prompt. Thus, it does not match any of the provided structures.
+External Call Analysis
+    Direct external call: ['creator.transfer(address(this).balance)', 'tokenReward.balanceOf(this)', 'tokenReward.transfer(creator,remanent)']
+    Analyze Transfer
+        - creator.transfer(address(this).balance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'creator.transfer(address(this).balance)' contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.balanceOf(this) ISN'T subjected to gas limits.
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.balanceOf(this)', 'tokenReward.transfer(creator,remanent)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code is a constructor because the function is explicitly named 'constructor', which matches the requirement for characteristic 1.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code appears to be a constructor for the contract ViVICO. This is because the function is explicitly named 'constructor', meeting the
+            conditions of characteristic 1. Therefore, it satisfies one of the specified characteristics.
+Conclusion: This function will not cause REE Problem.

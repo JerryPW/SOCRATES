@@ -1,0 +1,141 @@
+IGLOO._payTreasury: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _payTreasury() private swapping {
+        address[] memory path = new address[](2);
+        path[0] = address(this);
+        path[1] = WETH;
+        uint256 _preview = address(this).balance;
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);
+        uint256 _net = address(this).balance - _preview;
+        if (_net > 0) {
+            payable(treasury).call{value: _net * 7000 / 10000}("");
+            staking.deposit{value: _net * 3000 / 10000}();
+        }
+        _tokens = 0;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _payTreasury() private swapping {
+        address[] memory path = new address[](2);
+        path[0] = address(this);
+        path[1] = WETH;
+        uint256 _preview = address(this).balance;
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);
+        uint256 _net = address(this).balance - _preview;
+        if (_net > 0) {
+            payable(treasury).call{value: _net * 7000 / 10000}("");
+            staking.deposit{value: _net * 3000 / 10000}();
+        }
+        _tokens = 0;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function _payTreasury() private swapping {
+        address[] memory path = new address[](2);
+        path[0] = address(this);
+        path[1] = WETH;
+        uint256 _preview = address(this).balance;
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);
+        uint256 _net = address(this).balance - _preview;
+        if (_net > 0) {
+            payable(treasury).call{value: _net * 7000 / 10000}("");
+            staking.deposit{value: _net * 3000 / 10000}();
+        }
+        _tokens = 0;
+    }
+Response:
+{"StatementsA": {"_tokens = 0;":"Resets the _tokens state variable to 0."}, "StatementsB": {"router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);":"Executes an external call to the router contract to swap tokens for ETH."}, "VariableA": {"treasury": "Holds the address to which a portion of the net ETH is sent."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _tokens = 0;
+2.External Call: router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);
+3.Variable A: treasury
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _payTreasury() private swapping {
+        address[] memory path = new address[](2);
+        path[0] = address(this);
+        path[1] = WETH;
+        uint256 _preview = address(this).balance;
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);
+        uint256 _net = address(this).balance - _preview;
+        if (_net > 0) {
+            payable(treasury).call{value: _net * 7000 / 10000}("");
+            staking.deposit{value: _net * 3000 / 10000}();
+        }
+        _tokens = 0;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _payTreasury() private swapping {
+        address[] memory path = new address[](2);
+        path[0] = address(this);
+        path[1] = WETH;
+        uint256 _preview = address(this).balance;
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);
+        uint256 _net = address(this).balance - _preview;
+        if (_net > 0) {
+            payable(treasury).call{value: _net * 7000 / 10000}("");
+            staking.deposit{value: _net * 3000 / 10000}();
+        }
+        _tokens = 0;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function _payTreasury() private swapping {
+        address[] memory path = new address[](2);
+        path[0] = address(this);
+        path[1] = WETH;
+        uint256 _preview = address(this).balance;
+        router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);
+        uint256 _net = address(this).balance - _preview;
+        if (_net > 0) {
+            payable(treasury).call{value: _net * 7000 / 10000}("");
+            staking.deposit{value: _net * 3000 / 10000}();
+        }
+        _tokens = 0;
+    }
+Response:
+{"StatementsA": {"_tokens = 0;":"Resets the _tokens state variable to zero."}, "StatementsB": {"router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);":"Executes an external call to the router contract to swap tokens for ETH."}, "VariableA": {"treasury": "Holds the address to which a portion of the net ETH is sent."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _tokens = 0;
+2.External Call: router.swapExactTokensForETHSupportingFeeOnTransferTokens(balanceOf(address(this)), 0, path, address(this), block.timestamp);
+3.Variable A: treasury
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

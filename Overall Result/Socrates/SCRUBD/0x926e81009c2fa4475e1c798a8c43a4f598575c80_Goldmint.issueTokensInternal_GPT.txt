@@ -1,0 +1,44 @@
+
+Start analyze function: Goldmint.issueTokensInternal(address,uint256)
+Function Security Analysis for Goldmint.issueTokensInternal(address,uint256)
+    There are no modifiers should be examined in function issueTokensInternal.
+    Check direct function security
+        - function Goldmint.issueTokensInternal(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any of the specified structures that involve checking msg.sender with respect to xxxOwner/xxxAddress/Leader/CEO.
+        - function Goldmint.issueTokensInternal(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code uses a `require` statement, but it does not check a boolean variable to update it in the manner described in the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['issueTokensFromOtherCurrency', 'buyTokens', 'fallback']
+        Function Security Analysis for Goldmint.issueTokensFromOtherCurrency(address,uint256)
+            The modifier of function issueTokensFromOtherCurrency are ['onlyInState', 'onlyOtherCurrenciesChecker']
+            The result of checking modifiers:
+                - modifier onlyInState has no relation with controlled by owner.
+                  Reason: The modifier only checks whether the contract is in a specific state (`state == currentState`). It does not enforce any ownership or authorized
+                  address access control, does not use lock operations, nor does it have a function name suggesting such a behavior.
+                - modifier onlyOtherCurrenciesChecker is controlled by owner, the function would not cause REE problem.
+                  Reason: Rule 1: The require statement in the modifier enforces that only the specific address (otherCurrenciesChecker) can execute the function. There
+                  are no structural omissions as this matches the characteristic directly.
+        Function Security Analysis for Goldmint.buyTokens(address)
+            The modifier of function buyTokens are ['onlyInState']
+            The result of checking modifiers:
+                - modifier onlyInState has no relation with controlled by owner.
+                  Reason: The modifier 'onlyInState' seems to suggest a restriction based on the function name, but it doesn't match the specific conditions outlined in
+                  the provided characteristics. It does not enforce access control based on addresses or include any non-reentrancy mechanisms.
+            Check direct function security
+                - function Goldmint.buyTokens(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code doesn't check for the specific structures related to msg.sender == xxxOwner/xxxAddress/Leader/CEO, which are essential to output 'Yes'.
+                - function Goldmint.buyTokens(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code has a `require(msg.value!=0);` statement but does not contain any subsequent statements that assign a boolean value to the
+                  variable checked or throw an exception based on a boolean variable. Therefore, it does not match any of the specified structures.
+External Call Analysis
+    Direct external call: ['mntToken.issueTokens(_to,_tokens)']
+    Analyze Transfer
+    Analyze Gas
+        - mntToken.issueTokens(_to,_tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['mntToken.issueTokens(_to,_tokens)']
+    Analyze External Address
+        There are ['mntToken'] should be checked in variable mntToken
+        Checked variables: mntToken
+            Yes The function name 'Goldmint' matches the contract name, indicating that it is a constructor. Constructors are typically used for initialization purposes
+            during contract deployment.
+Conclusion: This function will not cause REE Problem.

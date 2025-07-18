@@ -1,0 +1,38 @@
+[
+    {
+        "function_name": "usdcToETH",
+        "vulnerability": "Front-running vulnerability",
+        "criticism": "The reasoning is correct that the function is vulnerable to front-running attacks due to the lack of a minimum amount of ETH to receive. This could allow an attacker to manipulate the price on Uniswap before the swap is processed. The severity and profitability of this vulnerability are high as it could result in significant financial loss.",
+        "correctness": 9,
+        "severity": 8,
+        "profitability": 8,
+        "reason": "The function swaps USDC for ETH on Uniswap without specifying a minimum amount of ETH to receive (using amountOutMin = 0), which makes it susceptible to front-running attacks. An attacker could listen for the transaction and manipulate the price on Uniswap to their advantage before this swap is processed, causing the function to receive less ETH than expected.",
+        "code": "function usdcToETH(uint256 _amount) internal returns(uint256) { IERC20(usdc).safeApprove(uniswapRouter, 0); IERC20(usdc).safeApprove(uniswapRouter, _amount); address[] memory path = new address[](2); path[0] = usdc; path[1] = weth; uint[] memory amounts = IUniswap(uniswapRouter).swapExactTokensForETH(_amount, uint(0), path, address(this), now.add(1800)); return amounts[1]; }",
+        "file_name": "0x1ba35631c69a1363769d2b3e4a9d5c7020b3e520.sol",
+        "final_score": 8.5
+    },
+    {
+        "function_name": "buyNBurn",
+        "vulnerability": "Front-running vulnerability",
+        "criticism": "The reasoning is correct that the function is vulnerable to front-running attacks due to the lack of a minimum token amount to receive. This could allow an attacker to manipulate the market price before the transaction is mined. The severity and profitability of this vulnerability are high as it could result in significant financial loss.",
+        "correctness": 9,
+        "severity": 8,
+        "profitability": 8,
+        "reason": "Similar to the usdcToETH function, buyNBurn performs a swap on Uniswap with amountOutMin set to 0. This lack of a minimum token amount to receive creates a risk of front-running, where an attacker can manipulate the market price just before the transaction is mined, resulting in fewer tokens being received than intended.",
+        "code": "function buyNBurn(uint256 _ethToSwap) internal returns(uint256) { address[] memory path = new address[](2); path[0] = weth; path[1] = address(yeldToken); uint[] memory amounts = IUniswap(uniswapRouter).swapExactETHForTokens.value(_ethToSwap)(uint(0), path, address(0), now.add(1800)); return amounts[1]; }",
+        "file_name": "0x1ba35631c69a1363769d2b3e4a9d5c7020b3e520.sol",
+        "final_score": 8.5
+    },
+    {
+        "function_name": "withdraw",
+        "vulnerability": "Reentrancy vulnerability",
+        "criticism": "The reasoning is correct that the function is vulnerable to reentrancy attacks due to the sequence of operations. However, the function uses the nonReentrant modifier which is designed to prevent reentrancy attacks. Therefore, the severity and profitability of this vulnerability are very low unless the nonReentrant modifier is not functioning as expected.",
+        "correctness": 7,
+        "severity": 2,
+        "profitability": 2,
+        "reason": "The function updates the user's balance and transfers tokens within the same call. This sequence of operations can be exploited by a reentrant call, allowing the attacker to withdraw more funds than they are entitled to by calling withdraw recursively before the balance is updated. The use of the nonReentrant modifier attempts to mitigate this, but it should be verified that it is effectively preventing reentrancy.",
+        "code": "function withdraw(uint256 _shares) external nonReentrant noContract { require(_shares > 0, \"withdraw must be greater than 0\"); uint256 ibalance = balanceOf(msg.sender); require(_shares <= ibalance, \"insufficient balance\"); pool = _calcPoolValueInToken(); uint256 generatedYelds = getGeneratedYelds(); uint256 stablecoinsToWithdraw = (pool.mul(_shares)).div(_totalSupply); _balances[msg.sender] = _balances[msg.sender].sub(_shares, \"redeem amount exceeds balance\"); _totalSupply = _totalSupply.sub(_shares); emit Transfer(msg.sender, address(0), _shares); uint256 b = IERC20(token).balanceOf(address(this)); if (b < stablecoinsToWithdraw) { _withdrawSome(stablecoinsToWithdraw.sub(b)); } uint256 totalPercentage = percentageRetirementYield.add(percentageDevTreasury).add(percentageBuyBurn); uint256 combined = stablecoinsToWithdraw.mul(totalPercentage).div(1e20); depositBlockStarts[msg.sender] = block.number; depositAmount[msg.sender] = depositAmount[msg.sender].sub(stablecoinsToWithdraw); yeldToken.transfer(msg.sender, generatedYelds); uint256 stakingProfits = usdcToETH(combined); uint256 tokensAlreadyBurned = yeldToken.balanceOf(address(0)); uint256 devTreasuryAmount = stakingProfits.mul(uint256(100e18).mul(percentageDevTreasury).div(totalPercentage)).div(100e18); if (tokensAlreadyBurned < maximumTokensToBurn) { uint256 ethToSwap = stakingProfits.mul(uint256(100e18).mul(percentageBuyBurn).div(totalPercentage)).div(100e18); buyNBurn(ethToSwap); uint256 retirementYeld = stakingProfits.mul(uint256(100e18).mul(percentageRetirementYield).div(totalPercentage)).div(100e18); retirementYeldTreasury.transfer(retirementYeld); } else { uint256 retirementYeld = stakingProfits.sub(devTreasuryAmount); retirementYeldTreasury.transfer(retirementYeld); } (bool success, ) = devTreasury.call.value(devTreasuryAmount)(\"\"); require(success, \"Dev treasury transfer failed\"); IERC20(token).transfer(msg.sender, stablecoinsToWithdraw.sub(combined)); pool = _calcPoolValueInToken(); rebalance(); }",
+        "file_name": "0x1ba35631c69a1363769d2b3e4a9d5c7020b3e520.sol",
+        "final_score": 4.5
+    }
+]

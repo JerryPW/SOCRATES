@@ -1,0 +1,45 @@
+
+Start analyze function: Event.distribute()
+Function Security Analysis for Event.distribute()
+    There are no modifiers should be examined in function distribute.
+    Check direct function security
+        - function Event.distribute() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function 'distribute' does not have any checks or conditions involving 'msg.sender', specifically comparing it to an
+          'xxxOwner/xxxAddress/Leader/CEO'.
+        - function Event.distribute() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures. There are no require statements checking for a boolean variable assigned to a different value
+          later, nor a throw statement.
+External Call Analysis
+    Direct external call: ['attendees[i].call.value(reward)()']
+    Analyze Transfer
+    Analyze Gas
+        - attendees[i].call.value(reward)() ISN'T subjected to gas limits.
+    Remaining external call: ['attendees[i].call.value(reward)()']
+    Analyze External Address
+        There are ['attendees'] should be checked in variable attendees
+        Checked variables: attendees
+            No 1. The function is named 'register', and the contract name is 'Event'. The function name does not match the contract name, and it is not explicitly named
+            'constructor', so it does not satisfy the constructor requirement. 2. The state variable 'attendees' is used in the function, but it is not hardcoded with a
+            specific value in the function body, so it does not satisfy the state variable check requirement.
+            Function Security Analysis for Event.register(address,uint256)
+                There are no modifiers should be examined in function register.
+                Check direct function security
+                    - function Event.register(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The code does not contain any checks involving 'msg.sender' and does not compare it with any specific roles like Owner, Address, Leader, or
+                      CEO.
+                    - function Event.register(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code doesn't follow any of the structures mentioned. It contains a require statement with a condition (states[_attendee] ==
+                      ATTENDEE_UNREGISTERED), but it doesn't have any subsequent statement setting the value to either false (or equivalent) or a subsequent true as
+                      necessary per the structures.
+                Since the function can only be called by functions, we start to analyze indirect function security.
+                The reachable functions are ['register']
+                    Function Security Analysis for Event.register()
+                        There are no modifiers should be examined in function register.
+                        Check direct function security
+                            - function Event.register() has no security assurance protected by checking the authority of msg.sender
+                              Reason: The code does not contain any of the specific patterns involving checking 'msg.sender' against 'xxxOwner', 'xxxAddress', 'Leader',
+                              or 'CEO'. It simply calls a 'register' function with 'msg.sender' and 'msg.value' as arguments.
+                            - function Event.register() has no apparent security assurance by utilizing a lock machinism.
+                              Reason: The code does not contain any of the specified structures such as require statements checking boolean conditions or conditional
+                              throws related to variable assignments.
+Conclusion: This function will cause REE Problem.

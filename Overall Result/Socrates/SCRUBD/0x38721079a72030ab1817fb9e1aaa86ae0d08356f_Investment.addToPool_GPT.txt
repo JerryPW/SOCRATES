@@ -1,0 +1,137 @@
+
+Start analyze function: Investment.addToPool(uint256[])
+Function Security Analysis for Investment.addToPool(uint256[])
+    There are no modifiers should be examined in function addToPool.
+    Check direct function security
+        - function Investment.addToPool(uint256[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code doesn't contain any of the specified structures that check or validate msg.sender against roles like xxxOwner or xxxAddress.
+        - function Investment.addToPool(uint256[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures exactly. There are conditional checks such as `require(msg.value > 0);`, but they do
+          not follow up with variable assignments related to being True or False as required by the pattern definitions. Also, there are no `xxx = True;` or `xxx =
+          False;` statements that follow any of the require statements or follow a specific pattern as provided.
+External Call Analysis
+    Direct external call: ['WETHContract.deposit{value:msg.value}()', 'IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount)']
+    Analyze Transfer
+        - IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - WETHContract.deposit{value:msg.value}() ISN'T subjected to gas limits.
+        - IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['WETHContract.deposit{value:msg.value}()', 'IERC20(WETHAddress).transfer(owner(),poolOwnerFeeAmount)']
+    Analyze External Address
+        There are ['WETHAddress'] should be checked in variable WETHContract
+        Checked variables: WETHAddress
+            State variable WETHAddress has initialized in public area after declaration.
+        There are ['WETHAddress'] should be checked in variable WETHAddress
+        Checked variables: WETHAddress
+            State variable WETHAddress has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Investment.processFee(address,uint256,uint24)
+Function Security Analysis for Investment.processFee(address,uint256,uint24)
+    There are no modifiers should be examined in function processFee.
+    Check direct function security
+        - function Investment.processFee(address,uint256,uint24) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any condition checking or assertions involving 'msg.sender'.
+        - function Investment.processFee(address,uint256,uint24) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain the specific structures mentioned in the criteria, such as require statements or conditional throwing followed by
+          setting a boolean variable.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['swapTokens', 'removeFromPool', 'addToPool']
+        Function Security Analysis for Investment.swapTokens(address[],bytes,uint256,uint256,address)
+            The modifier of function swapTokens are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier is named 'onlyOwner' and includes a call to `_checkOwner()`, suggesting that it enforces a check for ownership, which aligns with
+                  characteristic 1 of allowing only the owner or specific addresses to execute the function.
+        Function Security Analysis for Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[])
+            There are no modifiers should be examined in function removeFromPool.
+            Check direct function security
+                - function Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[]) has no security assurance protected by checking the authority of
+                msg.sender
+                  Reason: The code does not contain any condition or assertion that checks specifically if `msg.sender` is an owner or address like 'xxxOwner',
+                  'xxxAddress', 'Leader', or 'CEO'.
+                - function Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[]) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code snippet provided does not contain any of the specified structures like `require(xxx == True or False)` followed by setting `xxx` to the
+                  opposite boolean value immediately after it. All condition checks are handled using `require` statements with comparisons involving `amountToRemove`,
+                  `exitSwapParams.length`, and account balances without involving the change of same variable after `require`.
+External Call Analysis
+    Direct external call: ['IFactory(_factoryAddress)._feeHandlerAddress()', 'IFeeHandler(feeHandlerAddress).collectFees(feeAmount)',
+    'IERC20(WETHAddress).approve(feeHandlerAddress,feeAmount)']
+    Analyze Transfer
+    Analyze Gas
+        - IFactory(_factoryAddress)._feeHandlerAddress() ISN'T subjected to gas limits.
+        - IFeeHandler(feeHandlerAddress).collectFees(feeAmount) ISN'T subjected to gas limits.
+        - IERC20(WETHAddress).approve(feeHandlerAddress,feeAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['IFactory(_factoryAddress)._feeHandlerAddress()', 'IFeeHandler(feeHandlerAddress).collectFees(feeAmount)',
+    'IERC20(WETHAddress).approve(feeHandlerAddress,feeAmount)']
+    Analyze External Address
+        There are ['_factoryAddress'] should be checked in variable _factoryAddress
+        Checked variables: _factoryAddress
+            Yes 1. The given code is a constructor because its name matches the contract name 'Investment' as the function is defined as 'constructor()'.  2. The state
+            variable '_factoryAddress' is initialized with a parameter 'factoryAddress_' that is passed to the constructor, hence it does not have a hardcoded value
+            within the code.
+        There are ['_factoryAddress'] should be checked in variable feeHandlerAddress
+        Checked variables: _factoryAddress
+            Yes The function provided in the code is named 'constructor', which explicitly indicates that it is a constructor function. Constructors typically set initial
+            values for state variables, and in this case, the constructor sets '_factoryAddress' to the 'factoryAddress_' passed as a parameter. Hence, rule 1 is
+            satisfied.
+        There are ['WETHAddress'] should be checked in variable WETHAddress
+        Checked variables: WETHAddress
+            State variable WETHAddress has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Investment._swapTokens(address[],bytes,uint256,uint256,address)
+Function Security Analysis for Investment._swapTokens(address[],bytes,uint256,uint256,address)
+    There are no modifiers should be examined in function _swapTokens.
+    Check direct function security
+        - function Investment._swapTokens(address[],bytes,uint256,uint256,address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not contain any checks related to 'msg.sender', such as require, if statements, assert statements or others mentioned in the
+          specified characteristics. It is a function that conducts a token swap on Uniswap protocol without checking or utilizing the 'msg.sender' variable.
+        - function Investment._swapTokens(address[],bytes,uint256,uint256,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code snippet provided does not contain any of the specified structures with the 'require' statement, nor does it have a structure where 'if(!xxx)
+          throw;' is followed by 'xxx = true;'. It mainly focuses on calling swap functions based on conditions related to token paths.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['swapTokens', 'removeFromPool', 'processFee', 'addToPool', 'crashProtect']
+        Function Security Analysis for Investment.swapTokens(address[],bytes,uint256,uint256,address)
+            The modifier of function swapTokens are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The analysis reaffirms the previous judgment based on the modifier's code and name. The modifier 'onlyOwner' implies owner access restriction
+                  (Rule 3), and additionally invokes a function '_checkOwner()', which suggests further that it checks for owner rights in its implementation. There's no
+                  evidence of a lock mechanism (Rule 2) within the provided code.
+        Function Security Analysis for Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[])
+            There are no modifiers should be examined in function removeFromPool.
+            Check direct function security
+                - function Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[]) has no security assurance protected by checking the authority of
+                msg.sender
+                  Reason: The code doesn't contain any condition explicitly checking if `msg.sender` is equal or not equal to xxxOwner/xxxAddress/Leader/CEO.
+                - function Investment.removeFromPool(uint256,InvestmentLibrary.exitSwapParams[]) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain statements such as require(xxx == True) or require(xxx == False) followed by setting the variable as False or True,
+                  nor does it have if(!xxx) throw followed by setting the variable to True.
+External Call Analysis
+    Direct external call: ['uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(amountIn,amountOutMinimum,v2Path,address(this),block.timestamp)',
+    'IERC20(decodedTokenIn).approve(address(swapRouter),amountIn)', 'swapRouter.exactInput(params)',
+    'IERC20(decodedTokenIn_scope_0).approve(address(swapRouter),amountIn)', 'IERC20(v2Path[0]).approve(address(uniswapV2Router),amountIn)']
+    Analyze Transfer
+    Analyze Gas
+        - uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(amountIn,amountOutMinimum,v2Path,address(this),block.timestamp) ISN'T subjected to gas
+        limits.
+        - IERC20(decodedTokenIn).approve(address(swapRouter),amountIn) ISN'T subjected to gas limits.
+        - swapRouter.exactInput(params) ISN'T subjected to gas limits.
+        - IERC20(decodedTokenIn_scope_0).approve(address(swapRouter),amountIn) ISN'T subjected to gas limits.
+        - IERC20(v2Path[0]).approve(address(uniswapV2Router),amountIn) ISN'T subjected to gas limits.
+    Remaining external call: ['uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(amountIn,amountOutMinimum,v2Path,address(this),block.timestamp)',
+    'IERC20(decodedTokenIn).approve(address(swapRouter),amountIn)', 'swapRouter.exactInput(params)',
+    'IERC20(decodedTokenIn_scope_0).approve(address(swapRouter),amountIn)', 'IERC20(v2Path[0]).approve(address(uniswapV2Router),amountIn)']
+    Analyze External Address
+        There are ['uniswapV2Router'] should be checked in variable uniswapV2Router
+        Checked variables: uniswapV2Router
+            Yes 1. The provided code is a constructor for a smart contract. It is explicitly named 'constructor', therefore matching the first characteristic. 2. The
+            state variable 'uniswapV2Router' is hardcoded in the constructor with the address '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'. This satisfies the second
+            characteristic.
+        The variable 'decodedTokenIn' in external call 'IERC20(decodedTokenIn).approve(address(swapRouter),amountIn)' has no state variable assigned. Therefore we check
+        whether it has been hardcoded in the function.
+            No In the provided code, the variable `decodedTokenIn` is derived from the `v3Path` parameter using the `abi.decode` function. It is not hardcoded but
+            dynamically extracted based on the `v3Path` provided when the function is called. Since it depends on the input values and is not preset in the function's
+            code, it is not hardcoded.
+Conclusion: This function will cause REE Problem.

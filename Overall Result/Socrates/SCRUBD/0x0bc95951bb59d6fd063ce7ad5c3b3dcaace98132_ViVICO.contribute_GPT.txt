@@ -1,0 +1,74 @@
+
+Start analyze function: ViVICO.contribute()
+Function Security Analysis for ViVICO.contribute()
+    The modifier of function contribute are ['notFinishedOrHold']
+    The result of checking modifiers:
+        - modifier notFinishedOrHold has no relation with controlled by owner.
+          Reason: The modifier 'notFinishedOrHold' does not show evidence of ownership check or a locking mechanism. It simply checks for certain states, which does not
+          fall under any of the given categories for enforcing execution by a specific address or preventing reentrancy.
+    Check direct function security
+        - function ViVICO.contribute() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any conditions checking against msg.sender as '!= xxxOwner/xxxAddress/Leader/CEO' or any similar checks using assert or
+          require. It focuses only on whitelist and other validation.
+        - function ViVICO.contribute() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The examined code does not contain any of the specific structures mentioned: require(... == True); ... = False;, require(... == False); ... = True;,
+          require(!...); ... = True; or if(!...) throw; ... = true;. Hence, it does not meet the required characteristics.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(msg.sender,tokenBought.add(tempBalance))']
+    Analyze Transfer
+        - tokenReward.transfer(msg.sender,tokenBought.add(tempBalance)) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,tokenBought.add(tempBalance)) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,tokenBought.add(tempBalance))']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function is explicitly named 'constructor', which indicates that it is a constructor function. Constructor functions in Solidity do not exhibit
+            typical inheritance or overriding behavior; they are executed once at the time of contract creation.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ViVICO.checkIfFundingCompleteOrExpired()
+Function Security Analysis for ViVICO.checkIfFundingCompleteOrExpired()
+    There are no modifiers should be examined in function checkIfFundingCompleteOrExpired.
+    Check direct function security
+        - function ViVICO.checkIfFundingCompleteOrExpired() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the conditional structures related to 'msg.sender' as described in the specified characteristics.
+        - function ViVICO.checkIfFundingCompleteOrExpired() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided function does not contain any require statements or the specific if conditions to throw within the structure provided in the conditions.
+          Therefore, it does not satisfy any of the given patterns.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: ViVICO.successful()
+Function Security Analysis for ViVICO.successful()
+    There are no modifiers should be examined in function successful.
+    Check direct function security
+        - function ViVICO.successful() has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the conditions involve msg.sender or any owner/leader/CEO-related verification directly.
+        - function ViVICO.successful() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code contains the structure: require(state == State.Successful);, but it does not include any subsequent assignment to the 'state' variable
+          (True or False) in the same function. Therefore, it doesn't strictly match any of the defined patterns.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(creator,remanent)', 'tokenReward.balanceOf(this)', 'creator.transfer(address(this).balance)']
+    Analyze Transfer
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - creator.transfer(address(this).balance) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.transfer(creator,remanent) ISN'T subjected to gas limits.
+        - tokenReward.balanceOf(this) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(creator,remanent)', 'tokenReward.balanceOf(this)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function is explicitly named 'constructor', which indicates it is a constructor function. Constructor functions are typically used to initialize smart
+            contracts, including setting up state variables when the contract is deployed.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code snippet represents a constructor. This is indicated by the presence of the keyword 'constructor' which matches the criteria of point 1.
+Conclusion: This function will not cause REE Problem.

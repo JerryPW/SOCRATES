@@ -1,0 +1,56 @@
+
+Start analyze function: SOLIDBLOCK.transferFrom(address,address,uint256)
+Function Security Analysis for SOLIDBLOCK.transferFrom(address,address,uint256)
+    There are no modifiers should be examined in function transferFrom.
+    Check direct function security
+        - function SOLIDBLOCK.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check the identity of the msg.sender against any specific owner or leader address in its access control logic as specified by the
+          criteria.
+        - function SOLIDBLOCK.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structural patterns. It includes a 'require' statement checking a condition, but it does not modify the
+          evaluated variable in the way described by any of the specified structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: SOLIDBLOCK._transfer(address,address,uint256)
+Function Security Analysis for SOLIDBLOCK._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function SOLIDBLOCK._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any conditions that check if msg.sender is equal to or not equal to xxxOwner/xxxAddress/Leader/CEO. It primarily checks
+          conditions like zero address, bot detection, trading status, purchasing limitations, presale or cooldown conditions, and fee exclusions.
+        - function SOLIDBLOCK._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match the required structures. While it contains several `require` statements, none of them are followed by assignments that
+          match the specific pattern with the variable `xxx` being set to `False` or `True` subsequently. Additionally, there's no `if(!xxx) throw;` pattern present in
+          the code.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transferFrom', 'transfer']
+        Function Security Analysis for SOLIDBLOCK.transferFrom(address,address,uint256)
+            There are no modifiers should be examined in function transferFrom.
+            Check direct function security
+                - function SOLIDBLOCK.transferFrom(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any checks or assertions related to 'msg.sender' against a specific owner address or any other specific entity
+                  such as Leader/CEO. It only verifies allowance balances.
+                - function SOLIDBLOCK.transferFrom(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not contain a structure that matches any of the specified patterns involving 'require' or 'if(!xxx) throw'.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: SOLIDBLOCK.swapTokensForETH(uint256)
+Function Security Analysis for SOLIDBLOCK.swapTokensForETH(uint256)
+    The modifier of function swapTokensForETH are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'lockTheSwap' sets the 'swapping' flag to true before executing the function (indicated by '_;') and resets it to false afterwards,
+          fulfilling both the lock and unlock operations required for structure 2.
+Conclusion: This function will not cause REE Problem.

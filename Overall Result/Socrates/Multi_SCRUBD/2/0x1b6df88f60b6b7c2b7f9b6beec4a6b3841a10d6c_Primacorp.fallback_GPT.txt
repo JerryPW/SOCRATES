@@ -1,0 +1,22 @@
+
+Start analyze function: Primacorp.fallback()
+Function Security Analysis for Primacorp.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Primacorp.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include a permission check based on the sender's address such as msg.sender == xxxOwner/xxxAddress/Leader/CEO
+        - function Primacorp.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code checks if the sender has a positive allowance and enough wei is sent but does not match any of the specified structures involving
+          require statements or condition checks with variable assignments that convert to or from booleans.
+External Call Analysis
+    Direct external call: ['ERC20(_tokenAddress).transfer(msg.sender,allowance[msg.sender])']
+    Analyze Transfer
+        - ERC20(_tokenAddress).transfer(msg.sender,allowance[msg.sender]) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - ERC20(_tokenAddress).transfer(msg.sender,allowance[msg.sender]) ISN'T subjected to gas limits.
+    Remaining external call: ['ERC20(_tokenAddress).transfer(msg.sender,allowance[msg.sender])']
+    Analyze External Address
+        There are ['_tokenAddress'] should be checked in variable _tokenAddress
+        Checked variables: _tokenAddress
+            State variable _tokenAddress has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

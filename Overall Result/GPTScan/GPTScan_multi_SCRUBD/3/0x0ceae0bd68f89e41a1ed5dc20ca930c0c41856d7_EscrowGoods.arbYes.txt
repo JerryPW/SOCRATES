@@ -1,0 +1,363 @@
+EscrowGoods.arbYes: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function arbYes(uint _lockId, address _who, uint _payment, string _dataInfo, uint _version) onlyArbiter {
+
+        EscrowInfo info = escrows[_lockId];
+
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return;
+        }
+        if(info.frozenFunds == 0) {
+            logDebug("info.frozenFunds == 0");
+            return;
+        }
+
+        if(_who != seller && _who != info.buyer) {
+            logDebug("_who != seller && _who != info.buyer");
+            return;
+        }
+        //requires both NO to arbitration
+        if(!info.buyerNo || !info.sellerNo) {
+            logDebug("!info.buyerNo || !info.sellerNo");
+            return;
+        }
+
+        if(_payment > info.lockedFunds) {
+            logDebug("_payment > info.lockedFunds");
+            return;
+        }
+        if(_payment > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("_payment > this.balance");
+            return;
+        }
+
+        //limit payment
+        uint reward = (info.lockedFunds * rewardPromille) / 1000;
+        if(reward > (info.lockedFunds - _payment)) {
+            logDebug("reward > (info.lockedFunds - _payment)");
+            return;
+        }
+
+        //send funds to the winner
+        safeSend(_who, _payment);
+
+        //send the rest as reward
+        info.lockedFunds -= _payment;
+        feeFunds += info.lockedFunds;
+        info.lockedFunds = 0;
+
+        logEvent(_lockId, _dataInfo, _version, Resolved, msg.sender, info.count, _payment);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function arbYes(uint _lockId, address _who, uint _payment, string _dataInfo, uint _version) onlyArbiter {
+
+        EscrowInfo info = escrows[_lockId];
+
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return;
+        }
+        if(info.frozenFunds == 0) {
+            logDebug("info.frozenFunds == 0");
+            return;
+        }
+
+        if(_who != seller && _who != info.buyer) {
+            logDebug("_who != seller && _who != info.buyer");
+            return;
+        }
+        //requires both NO to arbitration
+        if(!info.buyerNo || !info.sellerNo) {
+            logDebug("!info.buyerNo || !info.sellerNo");
+            return;
+        }
+
+        if(_payment > info.lockedFunds) {
+            logDebug("_payment > info.lockedFunds");
+            return;
+        }
+        if(_payment > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("_payment > this.balance");
+            return;
+        }
+
+        //limit payment
+        uint reward = (info.lockedFunds * rewardPromille) / 1000;
+        if(reward > (info.lockedFunds - _payment)) {
+            logDebug("reward > (info.lockedFunds - _payment)");
+            return;
+        }
+
+        //send funds to the winner
+        safeSend(_who, _payment);
+
+        //send the rest as reward
+        info.lockedFunds -= _payment;
+        feeFunds += info.lockedFunds;
+        info.lockedFunds = 0;
+
+        logEvent(_lockId, _dataInfo, _version, Resolved, msg.sender, info.count, _payment);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function arbYes(uint _lockId, address _who, uint _payment, string _dataInfo, uint _version) onlyArbiter {
+
+        EscrowInfo info = escrows[_lockId];
+
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return;
+        }
+        if(info.frozenFunds == 0) {
+            logDebug("info.frozenFunds == 0");
+            return;
+        }
+
+        if(_who != seller && _who != info.buyer) {
+            logDebug("_who != seller && _who != info.buyer");
+            return;
+        }
+        //requires both NO to arbitration
+        if(!info.buyerNo || !info.sellerNo) {
+            logDebug("!info.buyerNo || !info.sellerNo");
+            return;
+        }
+
+        if(_payment > info.lockedFunds) {
+            logDebug("_payment > info.lockedFunds");
+            return;
+        }
+        if(_payment > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("_payment > this.balance");
+            return;
+        }
+
+        //limit payment
+        uint reward = (info.lockedFunds * rewardPromille) / 1000;
+        if(reward > (info.lockedFunds - _payment)) {
+            logDebug("reward > (info.lockedFunds - _payment)");
+            return;
+        }
+
+        //send funds to the winner
+        safeSend(_who, _payment);
+
+        //send the rest as reward
+        info.lockedFunds -= _payment;
+        feeFunds += info.lockedFunds;
+        info.lockedFunds = 0;
+
+        logEvent(_lockId, _dataInfo, _version, Resolved, msg.sender, info.count, _payment);
+    }
+Response:
+{"StatementsA": {"info.lockedFunds -= _payment;": "Updates the lockedFunds of the escrow info", "feeFunds += info.lockedFunds;": "Updates the feeFunds state variable", "info.lockedFunds = 0;": "Resets the lockedFunds of the escrow info to zero"}, "StatementsB": {"safeSend(_who, _payment);": "Executes an external call to send funds"}, "VariableA": {"msg.sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: info.lockedFunds -= _payment;
+2.External Call: safeSend(_who, _payment);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function arbYes(uint _lockId, address _who, uint _payment, string _dataInfo, uint _version) onlyArbiter {
+
+        EscrowInfo info = escrows[_lockId];
+
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return;
+        }
+        if(info.frozenFunds == 0) {
+            logDebug("info.frozenFunds == 0");
+            return;
+        }
+
+        if(_who != seller && _who != info.buyer) {
+            logDebug("_who != seller && _who != info.buyer");
+            return;
+        }
+        //requires both NO to arbitration
+        if(!info.buyerNo || !info.sellerNo) {
+            logDebug("!info.buyerNo || !info.sellerNo");
+            return;
+        }
+
+        if(_payment > info.lockedFunds) {
+            logDebug("_payment > info.lockedFunds");
+            return;
+        }
+        if(_payment > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("_payment > this.balance");
+            return;
+        }
+
+        //limit payment
+        uint reward = (info.lockedFunds * rewardPromille) / 1000;
+        if(reward > (info.lockedFunds - _payment)) {
+            logDebug("reward > (info.lockedFunds - _payment)");
+            return;
+        }
+
+        //send funds to the winner
+        safeSend(_who, _payment);
+
+        //send the rest as reward
+        info.lockedFunds -= _payment;
+        feeFunds += info.lockedFunds;
+        info.lockedFunds = 0;
+
+        logEvent(_lockId, _dataInfo, _version, Resolved, msg.sender, info.count, _payment);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function arbYes(uint _lockId, address _who, uint _payment, string _dataInfo, uint _version) onlyArbiter {
+
+        EscrowInfo info = escrows[_lockId];
+
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return;
+        }
+        if(info.frozenFunds == 0) {
+            logDebug("info.frozenFunds == 0");
+            return;
+        }
+
+        if(_who != seller && _who != info.buyer) {
+            logDebug("_who != seller && _who != info.buyer");
+            return;
+        }
+        //requires both NO to arbitration
+        if(!info.buyerNo || !info.sellerNo) {
+            logDebug("!info.buyerNo || !info.sellerNo");
+            return;
+        }
+
+        if(_payment > info.lockedFunds) {
+            logDebug("_payment > info.lockedFunds");
+            return;
+        }
+        if(_payment > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("_payment > this.balance");
+            return;
+        }
+
+        //limit payment
+        uint reward = (info.lockedFunds * rewardPromille) / 1000;
+        if(reward > (info.lockedFunds - _payment)) {
+            logDebug("reward > (info.lockedFunds - _payment)");
+            return;
+        }
+
+        //send funds to the winner
+        safeSend(_who, _payment);
+
+        //send the rest as reward
+        info.lockedFunds -= _payment;
+        feeFunds += info.lockedFunds;
+        info.lockedFunds = 0;
+
+        logEvent(_lockId, _dataInfo, _version, Resolved, msg.sender, info.count, _payment);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function arbYes(uint _lockId, address _who, uint _payment, string _dataInfo, uint _version) onlyArbiter {
+
+        EscrowInfo info = escrows[_lockId];
+
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return;
+        }
+        if(info.frozenFunds == 0) {
+            logDebug("info.frozenFunds == 0");
+            return;
+        }
+
+        if(_who != seller && _who != info.buyer) {
+            logDebug("_who != seller && _who != info.buyer");
+            return;
+        }
+        //requires both NO to arbitration
+        if(!info.buyerNo || !info.sellerNo) {
+            logDebug("!info.buyerNo || !info.sellerNo");
+            return;
+        }
+
+        if(_payment > info.lockedFunds) {
+            logDebug("_payment > info.lockedFunds");
+            return;
+        }
+        if(_payment > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("_payment > this.balance");
+            return;
+        }
+
+        //limit payment
+        uint reward = (info.lockedFunds * rewardPromille) / 1000;
+        if(reward > (info.lockedFunds - _payment)) {
+            logDebug("reward > (info.lockedFunds - _payment)");
+            return;
+        }
+
+        //send funds to the winner
+        safeSend(_who, _payment);
+
+        //send the rest as reward
+        info.lockedFunds -= _payment;
+        feeFunds += info.lockedFunds;
+        info.lockedFunds = 0;
+
+        logEvent(_lockId, _dataInfo, _version, Resolved, msg.sender, info.count, _payment);
+    }
+Response:
+{"StatementsA": {"info.lockedFunds -= _payment;": "Updates the lockedFunds of the escrow info", "feeFunds += info.lockedFunds;": "Updates the feeFunds state variable", "info.lockedFunds = 0;": "Resets the lockedFunds of the escrow info to zero"}, "StatementsB": {"safeSend(_who, _payment);": "Executes an external call to send funds"}, "VariableA": {"msg.sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: info.lockedFunds -= _payment;
+2.External Call: safeSend(_who, _payment);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

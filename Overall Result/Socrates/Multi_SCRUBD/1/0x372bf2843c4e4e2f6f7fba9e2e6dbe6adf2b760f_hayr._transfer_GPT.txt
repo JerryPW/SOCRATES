@@ -1,0 +1,52 @@
+
+Start analyze function: hayr._transfer(address,address,uint256)
+Function Security Analysis for hayr._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function hayr._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain the structures that check msg.sender against an owner or leadership role directly for access control purposes.
+        - function hayr._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain the required structure such as a variable being checked with 'require' and subsequently modified in a way that matches the
+          given patterns. There are checks and multiple 'require' statements, but they do not fit the specified patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for hayr.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function hayr.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any checks related to msg.sender such as require, if, or assert statements that involve an owner, leader, or CEO
+                  type of condition.
+                - function hayr.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function provided does not contain any require or if statements, nor does it involve any variable assignments changing a boolean variable
+                  from true to false or vice versa. Therefore, it does not match any of the specified characteristics.
+External Call Analysis
+    Direct external call: ['hayReflections.setShare(sender,_balances[sender])', 'hayReflections.setShare(recipient,_balances[recipient])']
+    Analyze Transfer
+    Analyze Gas
+        - hayReflections.setShare(sender,_balances[sender]) ISN'T subjected to gas limits.
+        - hayReflections.setShare(recipient,_balances[recipient]) ISN'T subjected to gas limits.
+    Remaining external call: ['hayReflections.setShare(sender,_balances[sender])', 'hayReflections.setShare(recipient,_balances[recipient])']
+    Analyze External Address
+        There are ['hayReflections'] should be checked in variable hayReflections
+        Checked variables: hayReflections
+            Yes 1. The function code provided has the name 'constructor' which indicates that it is a constructor function. Constructor functions directly satisfy the
+            first characteristic as they are responsible for initializing the contract's state, especially at deployment time. Additionally, even if not named
+            specifically like the contract, the keyword 'constructor' is sufficient to mark it as such.  2. The state variable 'hayReflections' is being initialized with
+            'new HayReflections()'. This means it is being set in the constructor, hence considered hardcoded according to the given definition, meeting the second
+            characteristic.
+        There are ['hayReflections'] should be checked in variable hayReflections
+        Checked variables: hayReflections
+            Yes The function in the provided code is named 'constructor', which directly matches with the second characteristic for determining if it is a constructor
+            function. The constructor also initializes certain state variables, including 'hayReflections'. While 'hayReflections' is not exactly hardcoded, it is
+            instantiated as a new object, which is part of constructor-specific initialization. Thus, the code qualifies for the first characteristic that it is a
+            constructor function.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: hayr.swapBack()
+Function Security Analysis for hayr.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'lockTheSwap' sets the flag 'inSwapAndLiquify' to true before executing the function and resets it to false afterward, ensuring the
+          function can only enter once, thereby fulfilling rule 2 completely. Both the lock (set to true) and unlock (set to false) operations are present in the code.
+Conclusion: This function will not cause REE Problem.

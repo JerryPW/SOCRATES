@@ -1,0 +1,10 @@
+
+Start analyze function: BalanceManager.systemWithdraw(address,uint64)
+Function Security Analysis for BalanceManager.systemWithdraw(address,uint64)
+    The modifier of function systemWithdraw are ['onlyServer']
+    The result of checking modifiers:
+        - modifier onlyServer is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier onlyServer directly checks if msg.sender is equal to the variable 'server', which is a specific address. This satisfies characteristic 1,
+          as msg.sender is validated against a specific address to control access to the function. There are no other structural elements like locks to match with
+          characteristic 2.
+Conclusion: This function will not cause REE Problem.

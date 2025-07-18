@@ -1,0 +1,19 @@
+
+Start analyze function: NamiPool.withdrawTop(uint256)
+Function Security Analysis for NamiPool.withdrawTop(uint256)
+    There are no modifiers should be examined in function withdrawTop.
+    Check direct function security
+        - function NamiPool.withdrawTop(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any permission checks related to msg.sender specifically checking against xxxOwner, xxxAddress, Leader, or CEO.
+        - function NamiPool.withdrawTop(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not satisfy any of the required structures. Although it contains 'require' statements checking for conditions, it does not set the
+          same variable to 'True' or 'False' afterward.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(ethReturn)']
+    Analyze Transfer
+        - msg.sender.transfer(ethReturn) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        '.transfer(' keyword, which satisfies the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

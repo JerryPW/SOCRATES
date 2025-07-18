@@ -1,0 +1,101 @@
+EscrowGoods.yes: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function yes(uint _lockId, string _dataInfo, uint _version) {
+        EscrowInfo info = escrows[_lockId];
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return; }
+        if(msg.sender != info.buyer && msg.sender != seller) {
+            logDebug("msg.sender != info.buyer && msg.sender != seller");
+            return; }
+        uint payment = info.lockedFunds;
+        if(payment > this.balance) {
+            logDebug("payment > this.balance");
+            return; }
+        if(msg.sender == info.buyer) {
+            safeSend(seller, payment);
+        } else if(msg.sender == seller) {
+            safeSend(info.buyer, payment);
+        } else {
+            logDebug("unknown msg.sender");
+            return; }
+        if(totalEscrows > 0) totalEscrows -= 1;
+        info.lockedFunds = 0;
+        logEvent(_lockId, _dataInfo, _version, Unlock, msg.sender, info.count, payment);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function yes(uint _lockId, string _dataInfo, uint _version) {
+        EscrowInfo info = escrows[_lockId];
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return; }
+        if(msg.sender != info.buyer && msg.sender != seller) {
+            logDebug("msg.sender != info.buyer && msg.sender != seller");
+            return; }
+        uint payment = info.lockedFunds;
+        if(payment > this.balance) {
+            logDebug("payment > this.balance");
+            return; }
+        if(msg.sender == info.buyer) {
+            safeSend(seller, payment);
+        } else if(msg.sender == seller) {
+            safeSend(info.buyer, payment);
+        } else {
+            logDebug("unknown msg.sender");
+            return; }
+        if(totalEscrows > 0) totalEscrows -= 1;
+        info.lockedFunds = 0;
+        logEvent(_lockId, _dataInfo, _version, Unlock, msg.sender, info.count, payment);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function yes(uint _lockId, string _dataInfo, uint _version) {
+        EscrowInfo info = escrows[_lockId];
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return; }
+        if(msg.sender != info.buyer && msg.sender != seller) {
+            logDebug("msg.sender != info.buyer && msg.sender != seller");
+            return; }
+        uint payment = info.lockedFunds;
+        if(payment > this.balance) {
+            logDebug("payment > this.balance");
+            return; }
+        if(msg.sender == info.buyer) {
+            safeSend(seller, payment);
+        } else if(msg.sender == seller) {
+            safeSend(info.buyer, payment);
+        } else {
+            logDebug("unknown msg.sender");
+            return; }
+        if(totalEscrows > 0) totalEscrows -= 1;
+        info.lockedFunds = 0;
+        logEvent(_lockId, _dataInfo, _version, Unlock, msg.sender, info.count, payment);
+    }
+Response:
+{"StatementsA": {"info.lockedFunds = 0;":"This statement updates the state variable 'lockedFunds' of the 'info' object."}, "StatementsB": {"safeSend(seller, payment);":"This statement executes an external call to the 'safeSend' function."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: info.lockedFunds = 0;
+2.External Call: safeSend(seller, payment);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,31 @@
+
+Start analyze function: Escrow.fundICO(uint256,uint8)
+Function Security Analysis for Escrow.fundICO(uint256,uint8)
+    There are no modifiers should be examined in function fundICO.
+    Check direct function security
+        - function Escrow.fundICO(uint256,uint8) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code includes a check in the condition 'if (msg.sender != addressSCICO || tx.origin != owner) {...}', which partially matches with the provided
+          structure 2 if (msg.sender != xxxOwner/xxxAddress/Leader/CEO) {...}. However, the match is invalidated as tx.origin is being compared against the owner, and the
+          msg.sender is compared against addressSCICO, where addressSCICO is a local variable within the function, which is specified to not count for the criteria.
+        - function Escrow.fundICO(uint256,uint8) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not execute any require statements matching the specified criteria. There is no setting of a boolean variable immediately after
+          checking it with a require statement.
+External Call Analysis
+    Direct external call: ['SCTokens.transfer(addressSCICO,_amount)']
+    Analyze Transfer
+        - SCTokens.transfer(addressSCICO,_amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - SCTokens.transfer(addressSCICO,_amount) ISN'T subjected to gas limits.
+    Remaining external call: ['SCTokens.transfer(addressSCICO,_amount)']
+    Analyze External Address
+        There are ['SCTokens'] should be checked in variable SCTokens
+        Checked variables: SCTokens
+            No The function 'setTokensContract' does not match the contract name 'Escrow' and is not explicitly named 'constructor', so it is not a constructor.
+            Additionally, the code does not hardcode the state variable 'SCTokens'; instead, it assigns 'SCTokens' a value from the input parameter '_addressSCTokens'.
+            Function Security Analysis for Escrow.setTokensContract(address)
+                The modifier of function setTokensContract are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier 'onlyOwner' enforces that only the owner can execute the function by checking if 'msg.sender' is not 'owner', which is
+                      consistent with Rule 1. There is no evidence of a lock operation as described in Rule 2, thus no blind judgment regarding structure 2.
+Conclusion: This function will not cause REE Problem.

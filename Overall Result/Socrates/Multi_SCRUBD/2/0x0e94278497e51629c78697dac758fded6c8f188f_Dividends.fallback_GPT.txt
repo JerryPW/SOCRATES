@@ -1,0 +1,25 @@
+
+Start analyze function: Dividends.fallback()
+Function Security Analysis for Dividends.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Dividends.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code checks if msg.sender is not an admin before executing the transfer logic and updating the 'users' mapping. However, it does not utilize any of
+          the specific conditions featuring msg.sender as mentioned in the identified characteristics.
+        - function Dividends.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code snippet does not contain any of the specified structures. There are no require statements or if-throw structures, nor does it have the
+          specified sequence of variable assignments.
+External Call Analysis
+    Direct external call: ['tokenReward.balanceOf(user)', 'user.transfer(userether)']
+    Analyze Transfer
+        - user.transfer(userether) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer('
+        keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - tokenReward.balanceOf(user) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.balanceOf(user)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function `Dividends` matches the contract name `Dividends`, which suggests that it is a constructor function. This is because in older versions of
+            Solidity, constructor functions were named after the contract. Therefore, it satisfies the first characteristic.
+Conclusion: This function will not cause REE Problem.

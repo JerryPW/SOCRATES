@@ -1,0 +1,39 @@
+
+Start analyze function: NamiExchange.sellNac(uint256,address,uint256)
+Function Security Analysis for NamiExchange.sellNac(uint256,address,uint256)
+    There are no modifiers should be examined in function sellNac.
+    Check direct function security
+        - function NamiExchange.sellNac(uint256,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function sellNac does not contain any control structures or assertions that enforce specific sender addresses/roles such as
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function NamiExchange.sellNac(uint256,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures. There are require statements, but they don't meet the conditions for variable assignment after
+          the require. No `if(!xxx) throw;` structure is present either with subsequent variable true assignment.
+External Call Analysis
+    Direct external call: ['msg.sender.send(eth)', 'namiToken.transferFrom(msg.sender,_buyer,maxToken)', 'namiToken.allowance(msg.sender,this)',
+    'msg.sender.send(ethOfBuyer)', 'namiToken.transferFrom(msg.sender,_buyer,_value)']
+    Analyze Transfer
+        - msg.sender.send(eth) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains 'send(' keyword
+        indicating a call with potential for gas-related issues.. Parameter in 'transfer'/'send': 1.
+        - msg.sender.send(ethOfBuyer) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains 'send('
+        keyword indicating a call with potential for gas-related issues.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - namiToken.transferFrom(msg.sender,_buyer,maxToken) ISN'T subjected to gas limits.
+        - namiToken.allowance(msg.sender,this) ISN'T subjected to gas limits.
+        - namiToken.transferFrom(msg.sender,_buyer,_value) ISN'T subjected to gas limits.
+    Remaining external call: ['namiToken.transferFrom(msg.sender,_buyer,maxToken)', 'namiToken.allowance(msg.sender,this)',
+    'namiToken.transferFrom(msg.sender,_buyer,_value)']
+    Analyze External Address
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes The function given in the code snippet is named 'NamiExchange', which matches the contract name 'NamiExchange'. This indicates that the function is acting
+            as a constructor, fulfilling the first characteristic for satisfying the conditions.  Additionally, the function assigns the parameter '_namiAddress' to the
+            state variable 'NamiAddr'. Since '_namiAddress' is provided as an argument and not hardcoded within the function, it does not satisfy the second
+            characteristic of having a hardcoded state variable.
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes The provided function `NamiExchange` matches the contract name, indicating that it is a constructor.
+        There are ['NamiAddr'] should be checked in variable namiToken
+        Checked variables: NamiAddr
+            Yes The provided function named 'NamiExchange' matches the contract name 'NamiExchange', indicating that it is a constructor function.
+Conclusion: This function will not cause REE Problem.

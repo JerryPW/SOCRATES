@@ -1,0 +1,24 @@
+
+Start analyze function: PriceChecker._updatePrice()
+Function Security Analysis for PriceChecker._updatePrice()
+    There are no modifiers should be examined in function _updatePrice.
+    Check direct function security
+        - function PriceChecker._updatePrice() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any of the structures listed: 1. 'require', 2. 'if (msg.sender != ...)', 3. 'if (msg.sender != ...) throw;', or 4. 'assert'.
+        - function PriceChecker._updatePrice() has no apparent security assurance by utilizing a lock machinism.
+          Reason: There is no 'require(xxx == True)', 'require(xxx == False)', 'require(!xxx)', or 'if(!xxx) throw;' statement followed by a change of 'xxx' to 'False' or
+          'True'.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['updatePrice', 'constructor', 'constructor']
+        Function Security Analysis for PriceChecker.updatePrice()
+            There are no modifiers should be examined in function updatePrice.
+            Check direct function security
+                - function PriceChecker.updatePrice() has security assurance protected by checking the authority of msg.sender, the function would not cause REE problem.
+                  Reason: The code uses 'require(msg.sender == priceCheckerAddress);', satisfying the first structure where 'require' checks 'msg.sender' directly against
+                  'priceCheckerAddress', which is not a local variable context as described in the note. The note does not apply here because 'priceCheckerAddress' is not
+                  prefixed by a local variable 'xxx'.
+        Function Security Analysis for PriceChecker.constructor(address)
+            This is a constructor.
+        Function Security Analysis for FidaSale.constructor(string,address,address,address,address,address,address,string,string)
+            This is a constructor.
+Conclusion: This function will not cause REE Problem.

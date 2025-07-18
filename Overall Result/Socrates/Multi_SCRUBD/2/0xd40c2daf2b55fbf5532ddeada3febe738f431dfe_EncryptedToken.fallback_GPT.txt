@@ -1,0 +1,19 @@
+
+Start analyze function: EncryptedToken.fallback()
+Function Security Analysis for EncryptedToken.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function EncryptedToken.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any require, if, or assert statements that check msg.sender against xxxOwner/xxxAddress/Leader/CEO.
+        - function EncryptedToken.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any statements that match the structural patterns outlined (i.e., use of `require` or `if(!xxx) throw` with
+          subsequent assignments to the variable). It primarily consists of financial transactions without boolean checks or reassignments as described.
+External Call Analysis
+    Direct external call: ['owner.send(msg.value)']
+    Analyze Transfer
+        - owner.send(msg.value) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call 'owner.send(msg.value)'
+        contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

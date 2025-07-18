@@ -1,0 +1,47 @@
+
+Start analyze function: BEAST._transfer(address,address,uint256)
+Function Security Analysis for BEAST._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function BEAST._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures where msg.sender is compared to xxxOwner/xxxAddress/Leader/CEO for conditions using 'require',
+          'if', or 'assert'.
+        - function BEAST._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain a pattern that matches any of the specified structures. There are 'require' statements, but none fit the form such as
+          'require(xxx == true); xxx = false;' or the other patterns listed.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for BEAST.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function BEAST.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not check for the sender's address being equal to a particular owner, address, leader, or CEO. It simply calls another
+                  function `_transfer` using `msg.sender`, without any of the structures listed in the conditions.
+                - function BEAST.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not contain any require statement or if statement that throws, nor does it modify a variable after checking a condition with
+                  require or if. As none of the specified structures are present, the function does not meet any listed condition.
+External Call Analysis
+    Direct external call: ['bensRevival.setShare(sender,_balances[sender])', 'bensRevival.setShare(recipient,_balances[recipient])']
+    Analyze Transfer
+    Analyze Gas
+        - bensRevival.setShare(sender,_balances[sender]) ISN'T subjected to gas limits.
+        - bensRevival.setShare(recipient,_balances[recipient]) ISN'T subjected to gas limits.
+    Remaining external call: ['bensRevival.setShare(sender,_balances[sender])', 'bensRevival.setShare(recipient,_balances[recipient])']
+    Analyze External Address
+        There are ['bensRevival'] should be checked in variable bensRevival
+        Checked variables: bensRevival
+            Yes The provided code snippet contains a constructor for the contract. This is identified by the function explicitly named 'constructor'.
+        There are ['bensRevival'] should be checked in variable bensRevival
+        Checked variables: bensRevival
+            Yes The provided code is a constructor. The function is explicitly named 'constructor', which satisfies the first characteristic for a 'Yes' output according
+            to the given rules.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: BEAST.swapBack()
+Function Security Analysis for BEAST.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'lockTheSwap' includes both a lock operation by setting 'inSwapAndLiquify' to true before executing the function and an unlock operation by
+          resetting it to false afterward. This matches the locking structure criteria mentioned in Rule 2.
+Conclusion: This function will not cause REE Problem.

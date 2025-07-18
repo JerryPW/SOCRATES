@@ -1,0 +1,29 @@
+
+Start analyze function: VestingContractWTTEST.transfer(address,uint256)
+Function Security Analysis for VestingContractWTTEST.transfer(address,uint256)
+    There are no modifiers should be examined in function transfer.
+    Check direct function security
+        - function VestingContractWTTEST.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks or assertions on 'msg.sender' being equal or not equal to an owner, address, or similar authority figure. All
+          conditions relate to balance and transfer limits, without role-based access control.
+        - function VestingContractWTTEST.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures specified in the characteristics. It only contains a standard require statement checking
+          multiple conditions, but it has no assignments for the same variable with different boolean values as described.
+External Call Analysis
+    Direct external call: ['we_test_token.transfer(to,value)', 'we_test_token.balanceOf(this)']
+    Analyze Transfer
+        - we_test_token.transfer(to,value) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - we_test_token.transfer(to,value) ISN'T subjected to gas limits.
+        - we_test_token.balanceOf(this) ISN'T subjected to gas limits.
+    Remaining external call: ['we_test_token.transfer(to,value)', 'we_test_token.balanceOf(this)']
+    Analyze External Address
+        There are ['we_test_token'] should be checked in variable we_test_token
+        Checked variables: we_test_token
+            Yes The provided code contains a constructor function that is named exactly the same as the contract name, 'VestingContractWTTEST'. There is no evidence of
+            directly hardcoded assignment of the state variable 'we_test_token' in the constructor code, but the function fulfills the constructor characteristic.
+        There are ['we_test_token'] should be checked in variable we_test_token
+        Checked variables: we_test_token
+            Yes The function 'VestingContractWTTEST' has the same name as the contract 'VestingContractWTTEST', which indicates it is a constructor function in older
+            versions of Solidity (before 0.4.22).
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,36 @@
+
+Start analyze function: Goldmint.issueTokensInternal(address,uint256)
+Function Security Analysis for Goldmint.issueTokensInternal(address,uint256)
+    There are no modifiers should be examined in function issueTokensInternal.
+    Check direct function security
+        - function Goldmint.issueTokensInternal(address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not contain any of the specified structures as it does not include a comparison with msg.sender.
+        - function Goldmint.issueTokensInternal(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any require or if statements checking a boolean variable followed by assigning a new value to that variable as per the
+          specified patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['buyTokens', 'issueTokensFromOtherCurrency', 'fallback']
+        Function Security Analysis for Goldmint.buyTokens(address)
+            The modifier of function buyTokens are ['onlyInState']
+            The result of checking modifiers:
+                - modifier onlyInState has no relation with controlled by owner.
+                  Reason: The modifier doesn't enforce an owner or specific address check nor does it associate with any known lock pattern function names.
+            Check direct function security
+                - function Goldmint.buyTokens(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any statements that match the specified structures for checking msg.sender against a specific owner or address
+                  condition.
+                - function Goldmint.buyTokens(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: There is no usage of the require statement matching the specific structures mentioned. The require statement here checks if msg.value is not
+                  equal to 0, which does not fulfill criteria 1, 2, 3, or 4.
+External Call Analysis
+    Direct external call: ['mntToken.issueTokens(_to,_tokens)']
+    Analyze Transfer
+    Analyze Gas
+        - mntToken.issueTokens(_to,_tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['mntToken.issueTokens(_to,_tokens)']
+    Analyze External Address
+        There are ['mntToken'] should be checked in variable mntToken
+        Checked variables: mntToken
+            Yes The function name 'Goldmint' matches the contract name, indicating that this function is a constructor. Constructors are special functions in smart
+            contracts that are executed once when the contract is deployed.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,37 @@
+
+Start analyze function: BoomerangLiquidity.payout()
+Function Security Analysis for BoomerangLiquidity.payout()
+    There are no modifiers should be examined in function payout.
+    Check direct function security
+        - function BoomerangLiquidity.payout() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code snippet does not include any conditions that specifically check if msg.sender is equal to xxxOwner/xxxAddress/Leader/CEO or similar,
+          which are required for it to match any of the defined structures.
+        - function BoomerangLiquidity.payout() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match any of the specified structures. The code uses a single `require` statement `require(balance > 1);` but it does not
+          switch a boolean variable's state following this condition, which is necessary to match the specified patterns.
+External Call Analysis
+    Direct external call: ['participants[payoutOrder].etherAddress.send(payoutToSend)', 'participants[payoutOrder].etherAddress.call.value(payoutToSend).gas(1000000)()',
+    'weak_hands.buy.value(investment)(msg.sender)']
+    Analyze Transfer
+        - participants[payoutOrder].etherAddress.send(payoutToSend) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains the '.send(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - The gas limit in participants[payoutOrder].etherAddress.call.value(payoutToSend).gas(1000000)() is 1000000, which is too high. Therefore, it will not prevent
+        REE problem.
+        - weak_hands.buy.value(investment)(msg.sender) ISN'T subjected to gas limits.
+    Remaining external call: ['participants[payoutOrder].etherAddress.call.value(payoutToSend).gas(1000000)()', 'weak_hands.buy.value(investment)(msg.sender)']
+    Analyze External Address
+        There are ['participants'] should be checked in variable participants
+        Checked variables: participants
+            No The provided code does not include a constructor function, as there is no function with the name 'BoomerangLiquidity' or named 'constructor'. The function
+            `deposit` doesn't hardcode the state variable 'participants', as it pushes new entries to it dynamically based on external inputs (`msg.sender` and
+            `msg.value`). Therefore, none of the conditions are satisfied.
+            Function Security Analysis for BoomerangLiquidity.deposit()
+                There are no modifiers should be examined in function deposit.
+                Check direct function security
+                    - function BoomerangLiquidity.deposit() has no security assurance protected by checking the authority of msg.sender
+                      Reason: The function does not contain any of the specified structures that involve comparing msg.sender to an owner or leader address.
+                    - function BoomerangLiquidity.deposit() has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code does not contain any of the required structures. There are no `require` or `if` statements, and no explicit variable state checks
+                      (True/False) with matching assignments.
+Conclusion: This function will cause REE Problem.

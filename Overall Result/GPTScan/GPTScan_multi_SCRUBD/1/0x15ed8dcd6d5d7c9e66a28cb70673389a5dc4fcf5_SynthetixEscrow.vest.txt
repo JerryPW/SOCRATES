@@ -1,0 +1,69 @@
+SynthetixEscrow.vest: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function vest()
+        external
+    {
+        uint numEntries = numVestingEntries(msg.sender);
+        uint total;
+        for (uint i = 0; i < numEntries; i++) {
+            uint time = getVestingTime(msg.sender, i);
+            /* The list is sorted; when we reach the first future time, bail out. */
+            if (time > now) {
+                break;
+            }
+            uint qty = getVestingQuantity(msg.sender, i);
+            if (qty == 0) {
+                continue;
+            }
+
+            vestingSchedules[msg.sender][i] = [0, 0];
+            total = total.add(qty);
+        }
+
+        if (total != 0) {
+            totalVestedBalance = totalVestedBalance.sub(total);
+            totalVestedAccountBalance[msg.sender] = totalVestedAccountBalance[msg.sender].sub(total);
+            synthetix.transfer(msg.sender, total);
+            emit Vested(msg.sender, now, total);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function vest()
+        external
+    {
+        uint numEntries = numVestingEntries(msg.sender);
+        uint total;
+        for (uint i = 0; i < numEntries; i++) {
+            uint time = getVestingTime(msg.sender, i);
+            /* The list is sorted; when we reach the first future time, bail out. */
+            if (time > now) {
+                break;
+            }
+            uint qty = getVestingQuantity(msg.sender, i);
+            if (qty == 0) {
+                continue;
+            }
+
+            vestingSchedules[msg.sender][i] = [0, 0];
+            total = total.add(qty);
+        }
+
+        if (total != 0) {
+            totalVestedBalance = totalVestedBalance.sub(total);
+            totalVestedAccountBalance[msg.sender] = totalVestedAccountBalance[msg.sender].sub(total);
+            synthetix.transfer(msg.sender, total);
+            emit Vested(msg.sender, now, total);
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

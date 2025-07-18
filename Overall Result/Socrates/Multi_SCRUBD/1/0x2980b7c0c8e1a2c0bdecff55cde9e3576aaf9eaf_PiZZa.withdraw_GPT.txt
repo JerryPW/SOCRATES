@@ -1,0 +1,24 @@
+
+Start analyze function: PiZZa.withdraw(uint256)
+Function Security Analysis for PiZZa.withdraw(uint256)
+    There are no modifiers should be examined in function withdraw.
+    Check direct function security
+        - function PiZZa.withdraw(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: There is no condition in the code that specifically checks 'msg.sender == xxxOwner/xxxAddress/Leader/CEO' or similar patterns as specified in the
+          criteria.
+        - function PiZZa.withdraw(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures with require or if(!xxx) throw statements related to modifying the same boolean variable.
+External Call Analysis
+    Direct external call: ['sender.call{value:amount}()', 'resolveToken.transfer(address0,weightDiff)']
+    Analyze Transfer
+        - resolveToken.transfer(address0,weightDiff) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - sender.call{value:amount}() ISN'T subjected to gas limits.
+        - resolveToken.transfer(address0,weightDiff) ISN'T subjected to gas limits.
+    Remaining external call: ['sender.call{value:amount}()', 'resolveToken.transfer(address0,weightDiff)']
+    Analyze External Address
+        The variable 'sender' in external call 'sender.call{value:amount}()' has no state variable assigned in PiZZa.withdraw(uint256). Therefore we check whether it has
+        been hardcoded in the function.
+            No The variable sender is assigned dynamically from msg.sender, which represents the address initiating the transaction or calling the function in Ethereum's
+            environment. This means it is determined at runtime based on who the call is coming from, rather than being pre-set or hardcoded within the function itself.
+Conclusion: This function will cause REE Problem.

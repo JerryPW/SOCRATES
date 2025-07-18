@@ -1,0 +1,52 @@
+
+Start analyze function: BrokerV2.collect(uint256,address)
+Function Security Analysis for BrokerV2.collect(uint256,address)
+    There are no modifiers should be examined in function collect.
+    Check direct function security
+        - function BrokerV2.collect(uint256,address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any checks or require statements that compare the msg.sender with an owner or specific address role like Owner, Address,
+          Leader, or CEO.
+        - function BrokerV2.collect(uint256,address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not match any of the specified structures. There is no usage of require with a boolean condition where the variable is
+          subsequently changed to the opposite boolean value, as outlined in the criteria. The require statements in the code do not follow up with setting the related
+          variable to a converse boolean value, either directly or using the '!xxx' syntax, nor does it use 'if(!xxx) throw' syntax followed by setting the variable to
+          true.
+External Call Analysis
+    Direct external call: ['erc20Token.transfer(lastOwner2,lastOwner_funds)', 'lastOwner2.transfer(lastOwner_funds)', 'erc20Token.transfer(creator,royality)',
+    'Token.safeTransferFrom(Token.ownerOf(tokenID),_auction.highestBidder,tokenID)', 'creator.transfer(royality)']
+    Analyze Transfer
+        - erc20Token.transfer(lastOwner2,lastOwner_funds) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - lastOwner2.transfer(lastOwner_funds) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, as seen in 'lastOwner2.transfer(lastOwner_funds)'.. Parameter in 'transfer'/'send': 1.
+        - erc20Token.transfer(creator,royality) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - creator.transfer(royality) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, as seen in 'creator.transfer(royality)'.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - erc20Token.transfer(lastOwner2,lastOwner_funds) ISN'T subjected to gas limits.
+        - erc20Token.transfer(creator,royality) ISN'T subjected to gas limits.
+        - Token.safeTransferFrom(Token.ownerOf(tokenID),_auction.highestBidder,tokenID) ISN'T subjected to gas limits.
+    Remaining external call: ['erc20Token.transfer(lastOwner2,lastOwner_funds)', 'erc20Token.transfer(creator,royality)',
+    'Token.safeTransferFrom(Token.ownerOf(tokenID),_auction.highestBidder,tokenID)']
+    Analyze External Address
+        There are ['auctions'] should be checked in variable erc20Token
+        Checked variables: auctions
+            No The provided code consists of several functions from a smart contract named BrokerV2. None of these functions is a constructor, as there is no function
+            that matches the contract name nor is any function explicitly named 'constructor'. Additionally, the characteristic of having hardcoded the provided state
+            variable 'auctions' is not satisfied because 'auctions' is used with dynamic data and not hardcoded values.
+            Function Security Analysis for BrokerV2.bid(uint256,address,uint256)
+                The modifier of function bid are ['onSaleOnly', 'activeAuction']
+                The result of checking modifiers:
+                    - modifier onSaleOnly has no relation with controlled by owner.
+                      Reason: The modifier does not explicitly enforce execution by an owner or specific address, nor does it show a lock mechanism to prevent reentry. It
+                      only checks if a token is open for sale.
+                    - modifier activeAuction has no relation with controlled by owner.
+                      Reason: The modifier 'activeAuction' doesn't enforce ownership or specific address execution nor does it use a lock mechanism. Its name and logic
+                      suggest it's related to a time condition, not access control or reentrancy protection.
+                Check direct function security
+                    - function BrokerV2.bid(uint256,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                      Reason: The provided code snippet does not contain any of the specific structures outlined in the instructions that involve checks or assertions on
+                      the `msg.sender` being equal or not equal to any xxxOwner/xxxAddress/Leader/CEO.
+                    - function BrokerV2.bid(uint256,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                      Reason: The code does not contain any of the specified structures where a variable xxx is checked with require or if statement, altered to its
+                      opposing boolean value, and optionally changed back.
+Conclusion: This function will cause REE Problem.

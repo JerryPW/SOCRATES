@@ -1,0 +1,37 @@
+
+Start analyze function: COPIUM._transfer(address,address,uint256)
+Function Security Analysis for COPIUM._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function COPIUM._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: There is a condition 'if (from != owner() && to != owner()...) {...}' but it does not match the required pattern to involve msg.sender.
+        - function COPIUM._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains the statement: require(_isBlacklistWallet[from] == false), which corresponds to characteristic 2: require(xxx == False). However, the
+          associated xxx = True statement is missing in the provided snippet, hence it does not fulfil the criteria.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for COPIUM.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function COPIUM.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The given code does not contain any checks or conditions using msg.sender related to xxxOwner/xxxAddress/Leader/CEO roles, such as require, if,
+                  or assert statements.
+                - function COPIUM.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided function does not contain any 'require' or 'if' statements for condition checks, nor does it involve setting a boolean variable.
+                  Therefore, it does not match any of the specified structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: COPIUM.swapAndLiquify()
+Function Security Analysis for COPIUM.swapAndLiquify()
+    The modifier of function swapAndLiquify are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'lockTheSwap' includes both the lock and unlock operations: it sets 'inSwapAndLiquify' to true before executing the function body (denoted
+          by '_;') and resets it to false afterward. This fully satisfies condition 2, confirming the initial judgment was correct.
+Conclusion: This function will not cause REE Problem.

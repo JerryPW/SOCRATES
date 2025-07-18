@@ -1,0 +1,41 @@
+
+Start analyze function: KUNOICHIX._transfer(address,address,uint256)
+Function Security Analysis for KUNOICHIX._transfer(address,address,uint256)
+    There are no modifiers should be examined in function _transfer.
+    Check direct function security
+        - function KUNOICHIX._transfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any condition where 'msg.sender' is compared against an owner or other high privilege address or thrown as an
+          error/requirement.
+        - function KUNOICHIX._transfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not match any of the required structures. Specifically, it doesn't include any 'require(xxx == True)' or 'require(xxx == False)' or
+          'require(!xxx)' assertions that are immediately followed by a statement which directly modifies that same variable like 'xxx = False' or 'xxx = True'.
+          Additionally, it doesn't have any 'if(!xxx) throw;' constructs. It mostly involves checks with 'require' but doesn't alter the variable checked with 'require'
+          in the manner stipulated.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'transferFrom']
+        Function Security Analysis for KUNOICHIX.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function KUNOICHIX.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function `transfer` does not contain a check for `msg.sender` being equal to an owner, address, or role like Leader/CEO. It simply calls
+                  `_transfer` with `_msgSender()` which is a common pattern but does not fit the specified structures.
+                - function KUNOICHIX.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code defines a function `transfer` that calls an internal function `_transfer` with specified sender, recipient, and amount
+                  arguments. It does not contain any 'require' or 'if' statements with a specific variable being checked and then reassigned, which are needed to match
+                  one of the defined structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: KUNOICHIX.swapBack()
+Function Security Analysis for KUNOICHIX.swapBack()
+    The modifier of function swapBack are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'lockTheSwap' sets 'inSwapAndLiquify' to true before the function runs and resets it to false afterward. This matches the full lock and
+          unlock structure required for rule 2.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "mintProof",
+        "code": "function mintProof(uint256 mintCount,address receiveAds,bytes32[] memory proof) public payable { require(!isContract(msg.sender),\"not supper contract mint\"); require(mintCount > 0, \"Invalid mint count\"); require(mintCount <= _maxMintPerAddress, \"Exceeded maximum mint count per address\"); require(msg.value >= mintCount*_mintPrice, \"illegal price\"); require(_mintCounts[msg.sender]+mintCount <= _maxMintPerAddress, \"over limit\"); receiveAds = msg.sender; if(isZero(wlRoot)){ require(block.timestamp >= mintStartTime, \"Minting has not started yet\"); require(block.timestamp <= mintEndTime, \"Minting has ended\"); }else { if (block.timestamp<wlMintedEndTime){ require(wlMintedCounts+mintCount<=wlMintCounts,\"over limit\"); bytes32 leaf = keccak256(abi.encodePacked(msg.sender)); require(MerkleProof.verify(proof, wlRoot, leaf),\"Not In Wl\"); wlMintedCounts += mintCount; } } if (block.timestamp<wlMintedEndTime){ require(_mintedCounts-wlMintedCounts+mintCount <= (_maxMintCount - wlMintedCounts), \"illegal mintAmount\"); } IWETH(wethAddress).deposit{value: msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}(); IWETH(wethAddress).approve(lpContract, msg.value*(1000-deployReserveEthPro-donateEthPro)/1000); IWETH(wethAddress).transferFrom(address(this), lpContract, msg.value*(1000-deployReserveEthPro-donateEthPro)/1000); uint256 mintAmount = (totalSupply() * _maxPro * mintCount) / (_maxMintCount * 2000000); for (uint256 i = 0; i < contractAuths.length; i++) { if (contractAuths[i].contractType == ContractType.ERC721) { if(validateNftNumber==1){ IERC721Enumerable eRC721Enumerable = IERC721Enumerable(contractAuths[i].contractAddress); uint256 tokenId = eRC721Enumerable.tokenOfOwnerByIndex(msg.sender, 0); require(!tokenExists[tokenId],\"had used!\"); tokenExists[tokenId] = true; } uint256 tokenCount = getERC721TokenCount(contractAuths[i].contractAddress); require(tokenCount >= contractAuths[i].tokenCount, \"Insufficient ERC721 tokens\"); } else if (contractAuths[i].contractType == ContractType.ERC20) { uint256 tokenCount = getERC20TokenCount(contractAuths[i].contractAddress); require(tokenCount >= contractAuths[i].tokenCount, \"Insufficient ERC20 tokens\"); } else if (contractAuths[i].contractType == ContractType.ERC1155) { uint256 tokenCount = getERC1155TokenCount(contractAuths[i].contractAddress, 0); require(tokenCount >= contractAuths[i].tokenCount, \"Insufficient ERC1155 tokens\"); } } _transfer(address(this), receiveAds, mintAmount); _transfer(address(this), lpContract, mintAmount); IUniswapV2Pair(lpContract).sync(); _mintCounts[msg.sender] += mintCount; _mintedCounts += mintCount; }",
+        "vulnerability": "Unrestricted ETH transfer to lpContract",
+        "reason": "The function transfers ETH to lpContract based on msg.value without verifying if lpContract is a trusted address, allowing potential redirection of ETH to an attacker-controlled contract.",
+        "file_name": "0x0321be5f545ea569424aace4dc08d60f467229ac.sol"
+    },
+    {
+        "function_name": "mint",
+        "code": "function mint(uint256 mintCount,address receiveAds) external payable { bytes32[] memory proof = new bytes32[](0); mintProof(mintCount,receiveAds,proof); }",
+        "vulnerability": "Bypass Merkle Proof Verification",
+        "reason": "This function calls mintProof with an empty proof array, effectively bypassing the Merkle proof verification and potentially allowing unauthorized users to mint tokens.",
+        "file_name": "0x0321be5f545ea569424aace4dc08d60f467229ac.sol"
+    },
+    {
+        "function_name": "devAwardEth",
+        "code": "function devAwardEth() external { require(_mintedCounts==_maxMintCount,\"waiting mint finish\"); require(!devHadClaimEth,\"had claimed\"); require(msg.sender==_devAddress,\"only dev!\"); uint256 balance = address(this).balance; require(balance > 0, \"Contract has no ETH balance.\"); address payable sender = payable(_devAddress); uint256 devAmount = donateEthPro*balance/(deployReserveEthPro+donateEthPro); if(remainBalance==0){ sender.transfer(devAmount); remainBalance = balance-devAmount; }else{ sender.transfer(remainBalance); } devHadClaimEth = true; }",
+        "vulnerability": "Incorrect ETH Distribution Logic",
+        "reason": "The calculation for devAmount does not account for proper proportional distribution. If remainBalance is zero, it may incorrectly transfer more ETH than intended, potentially causing unintended ETH loss.",
+        "file_name": "0x0321be5f545ea569424aace4dc08d60f467229ac.sol"
+    }
+]

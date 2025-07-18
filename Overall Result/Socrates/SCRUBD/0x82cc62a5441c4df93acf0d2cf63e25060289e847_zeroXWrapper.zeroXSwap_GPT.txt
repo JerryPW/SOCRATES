@@ -1,0 +1,22 @@
+
+Start analyze function: zeroXWrapper.zeroXSwap(address,address,bytes)
+Function Security Analysis for zeroXWrapper.zeroXSwap(address,address,bytes)
+    There are no modifiers should be examined in function zeroXSwap.
+    Check direct function security
+        - function zeroXWrapper.zeroXSwap(address,address,bytes) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks for msg.sender as listed in the specified characteristics.
+        - function zeroXWrapper.zeroXSwap(address,address,bytes) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not have any 'require' statements or 'if' conditions with variable assignments as outlined. It also lacks boolean variable
+          manipulations fitting the structures specified.
+External Call Analysis
+    Direct external call: ['forwarder.call.value(msg.value)(args)']
+    Analyze Transfer
+    Analyze Gas
+        - forwarder.call.value(msg.value)(args) ISN'T subjected to gas limits.
+    Remaining external call: ['forwarder.call.value(msg.value)(args)']
+    Analyze External Address
+        The variable 'forwarder' in external call 'forwarder.call.value(msg.value)(args)' has no state variable assigned. Therefore we check whether it has been hardcoded
+        in the function.
+            No The forwarder variable is a parameter of the function zeroXSwap and is used within the function without any explicit assignment to a predefined value. It
+            is assigned within the function dynamically, based on the function call input when the function is executed.
+Conclusion: This function will cause REE Problem.

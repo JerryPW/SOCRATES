@@ -1,0 +1,21 @@
+Voting.addRaiseTapProposal: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function addRaiseTapProposal (
+        string _reason,
+        uint256 _tapMultiplierRate
+    ) external payable returns(uint256) {
+        require(!queued[uint(Subject.RaiseTap)]);
+        require(100 < _tapMultiplierRate && _tapMultiplierRate <= 200);
+
+        uint256 newID = addProposal(Subject.RaiseTap, _reason);
+        proposals[newID].tapMultiplierRate = _tapMultiplierRate;
+
+        queued[uint(Subject.RaiseTap)] = true;
+        emit ProposalRaised(msg.sender, "RaiseTap");
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

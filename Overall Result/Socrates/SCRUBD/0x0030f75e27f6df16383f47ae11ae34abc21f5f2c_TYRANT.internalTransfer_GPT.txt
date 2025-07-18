@@ -1,0 +1,43 @@
+
+Start analyze function: TYRANT.internalTransfer(address,address,uint256)
+Function Security Analysis for TYRANT.internalTransfer(address,address,uint256)
+    There are no modifiers should be examined in function internalTransfer.
+    Check direct function security
+        - function TYRANT.internalTransfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any condition that explicitly checks if 'msg.sender' is equal or not equal to an owner, specific address, leader or CEO.
+        - function TYRANT.internalTransfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: None of the structures specified in the guidance are present in the code. The code contains multiple require statements, but they do not follow the
+          specified patterns such as changing a boolean variable after checking its state.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['AirDrop', 'transfer', 'withdrawStuckTokens', 'transferFrom', 'manualBurnTokensFromLP']
+        Function Security Analysis for TYRANT.AirDrop(address[],uint256[])
+            The modifier of function AirDrop are ['onlyOwner']
+            The result of checking modifiers:
+                - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                  Reason: The code contains a 'require' statement that checks if the caller (_msgSender()) is the same as the owner. This ensures that only the owner can
+                  execute the function, satisfying the conditions of characteristic 1. There are no lock operations present in the modifier which would relate to
+                  characteristic 2.
+        Function Security Analysis for TYRANT.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function TYRANT.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain a requirement, if statement, or assertion to check if msg.sender is equal to any xxxOwner/xxxAddress/Leader/CEO.
+                - function TYRANT.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not include any of the required conditional statements or assignments as per the specified patterns. It only calls another
+                  function and returns a boolean value.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: TYRANT.taxTokenSwap()
+Function Security Analysis for TYRANT.taxTokenSwap()
+    The modifier of function taxTokenSwap are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The code defines the lock operation by setting the flag 'inSwapAndLiquify' to true before executing the rest of the function, and resets it to false
+          afterward. Both lock and unlock conditions are met.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,159 @@
+
+Start analyze function: Escrow.userRecover(address,address,uint256)
+Function Security Analysis for Escrow.userRecover(address,address,uint256)
+    There are no modifiers should be examined in function userRecover.
+    Check direct function security
+        - function Escrow.userRecover(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not include any checks related to msg.sender against any xxxOwner, xxxAddress, Leader, or CEO.
+        - function Escrow.userRecover(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code provided does not match any of the specified structures. It does not include any 'require' or 'if' statements that check a condition and then
+          modify a variable accordingly.
+External Call Analysis
+    Direct external call: ['eternal.getUint(2)', 'base.transferFrom(_origin,reserve,rF)', 'base.transferFrom(_origin,owner,transaction.sellerFee)',
+    'base.transferFrom(_origin,_destination,destinationAmt)']
+    Analyze Transfer
+    Analyze Gas
+        - eternal.getUint(2) ISN'T subjected to gas limits.
+        - base.transferFrom(_origin,reserve,rF) ISN'T subjected to gas limits.
+        - base.transferFrom(_origin,owner,transaction.sellerFee) ISN'T subjected to gas limits.
+        - base.transferFrom(_origin,_destination,destinationAmt) ISN'T subjected to gas limits.
+    Remaining external call: ['eternal.getUint(2)', 'base.transferFrom(_origin,reserve,rF)', 'base.transferFrom(_origin,owner,transaction.sellerFee)',
+    'base.transferFrom(_origin,_destination,destinationAmt)']
+    Analyze External Address
+        There are ['eternal'] should be checked in variable eternal
+        Checked variables: eternal
+            Yes The given piece of code contains a constructor, which is indicated by the function named 'constructor'. In Solidity, this indicates a special function
+            that gets executed only once when the contract is initially deployed. This constructor function initializes the "eternal" state variable using the passed
+            address parameter "_s". Therefore, the code satisfies the first characteristic, as it contains a constructor function.
+        There are ['base'] should be checked in variable base
+        Checked variables: base
+            Yes The function in the provided code is named 'constructor', which indicates it is indeed a constructor, satisfying the first characteristic for outputting
+            'Yes'. Since constructors are by definition functions that match the contract name or are explicitly named 'constructor', this code meets the criteria.
+        There are ['base'] should be checked in variable base
+        Checked variables: base
+            Yes The code contains a constructor function, identified explicitly by the keyword 'constructor'. This indicates that the function is a constructor, which
+            satisfies the first characteristic stated in the instructions. Furthermore, the constructor function directly interacts with the state variable 'base', but it
+            is not hardcoded as it is assigned a value using the input parameter '_base'.
+        There are ['base'] should be checked in variable base
+        Checked variables: base
+            Yes The function in the provided code is named 'constructor', which matches the criteria for being a constructor function. In Solidity, a constructor is run
+            only once when a contract is created and is not callable afterwards. Constructors often initialize state variables or perform important initialization tasks.
+            As it is explicitly named 'constructor', it satisfies the first characteristic provided: checking if the function is a constructor.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Escrow.recovery(address)
+Function Security Analysis for Escrow.recovery(address)
+    There are no modifiers should be examined in function recovery.
+    Check direct function security
+        - function Escrow.recovery(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not perform any checks on msg.sender as per the required structures.
+        - function Escrow.recovery(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures. It calls two functions, r1 and r2, with the address _tag parameter. None of the
+          require statements with specific conditions or assignments to 'True' or 'False' are present.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['userRecover', 'releaseFunds', 'release']
+        Function Security Analysis for Escrow.userRecover(address,address,uint256)
+            There are no modifiers should be examined in function userRecover.
+            Check direct function security
+                - function Escrow.userRecover(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: None of the specified structures such as require, if, or assert involving msg.sender and xxxOwner/xxxAddress/Leader/CEO are present in the code.
+                - function Escrow.userRecover(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the specified structures or characteristics: it does not have a conditional or require statement that checks a
+                  boolean variable and then sets it to the opposite value. Instead, it performs a series of operations related to transferring amounts and handling a
+                  transaction.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Escrow.r2(address)
+Function Security Analysis for Escrow.r2(address)
+    There are no modifiers should be examined in function r2.
+    Check direct function security
+        - function Escrow.r2(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks involving msg.sender comparing it to xxxOwner/xxxAddress/Leader/CEO.
+        - function Escrow.r2(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluation, the code only contains a require statement checking if transaction.status equals transactionStatus.PendingR2, but it does not match
+          the pattern completely. The second statement in the pattern, 'xxx = False' or 'xxx = True', does not correspond to setting a boolean opposite in the code
+          provided (PendingR2 to Completed is not a straightforward boolean transition from True to False or vice versa). Therefore, it does not fully satisfy any of the
+          structures outlined.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['recovery', 'userRecover', 'releaseFunds', 'release']
+        Function Security Analysis for Escrow.recovery(address)
+            There are no modifiers should be examined in function recovery.
+            Check direct function security
+                - function Escrow.recovery(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function 'recovery' does not contain any of the specified structures related to 'msg.sender' to check for specific roles or addresses, such
+                  as 'Owner', 'Leader', or 'CEO'.
+                - function Escrow.recovery(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not satisfy any of the given structures as there are no 'require', 'if', or assignment statements involving a Boolean
+                  variable.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['userRecover', 'releaseFunds', 'release']
+                Function Security Analysis for Escrow.userRecover(address,address,uint256)
+                    There are no modifiers should be examined in function userRecover.
+                    Check direct function security
+                        - function Escrow.userRecover(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code does not include any of the structures that require or check msg.sender against any owner or designated address.
+                        - function Escrow.userRecover(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The provided code does not contain any 'require' statements or 'if-throw' structures related to variable assignments that match the
+                          specified patterns.
+External Call Analysis
+    Direct external call: ['base.transferFrom(_tag,r,rF)']
+    Analyze Transfer
+    Analyze Gas
+        - base.transferFrom(_tag,r,rF) ISN'T subjected to gas limits.
+    Remaining external call: ['base.transferFrom(_tag,r,rF)']
+    Analyze External Address
+        There are ['base'] should be checked in variable base
+        Checked variables: base
+            Yes The function in the provided code is named 'constructor', which indicates that it is a constructor function according to characteristic 1. Therefore, it
+            satisfies the condition of being a constructor.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Escrow.r1(address)
+Function Security Analysis for Escrow.r1(address)
+    There are no modifiers should be examined in function r1.
+    Check direct function security
+        - function Escrow.r1(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any condition that checks if msg.sender is equal to or not equal to xxxOwner/xxxAddress/Leader/CEO using require, if, or
+          assert statements.
+        - function Escrow.r1(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code has the statement 'require(transaction.status == transactionStatus.PendingR1);', but the next line sets 'transaction.status' to
+          'transactionStatus.PendingR2', not 'False'. The required corresponding update to 'transaction.status = False;' is not present, nor does it match the conditions
+          outlined for structures 1, 2, 3, or 4. None of the structures are fully satisfied.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['recovery', 'userRecover', 'releaseFunds', 'release']
+        Function Security Analysis for Escrow.recovery(address)
+            There are no modifiers should be examined in function recovery.
+            Check direct function security
+                - function Escrow.recovery(address) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code does not contain any checks or assertions involving msg.sender. It simply calls two functions, r1 and r2, passing _tag as an
+                  argument, without any verification of the sender's address against any xxxOwner/xxxAddress/Leader/CEO conditions.
+                - function Escrow.recovery(address) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code does not include any 'require' or 'if' statements that check the condition of a boolean variable, followed by assignments to
+                  this boolean variable. It simply defines a private function calling two other functions, r1 and r2.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['userRecover', 'releaseFunds', 'release']
+                Function Security Analysis for Escrow.userRecover(address,address,uint256)
+                    There are no modifiers should be examined in function userRecover.
+                    Check direct function security
+                        - function Escrow.userRecover(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+                          Reason: None of the permission verification structures involving msg.sender are present in the code.
+                        - function Escrow.userRecover(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not contain any of the specified structures or logic patterns involving 'require' or 'if' statements checking a boolean
+                          condition and altering it.
+External Call Analysis
+    Direct external call: ['base.transferFrom(reserve,_tag,rF)']
+    Analyze Transfer
+    Analyze Gas
+        - base.transferFrom(reserve,_tag,rF) ISN'T subjected to gas limits.
+    Remaining external call: ['base.transferFrom(reserve,_tag,rF)']
+    Analyze External Address
+        There are ['base'] should be checked in variable base
+        Checked variables: base
+            Yes The provided code is a constructor because the function is explicitly named 'constructor', which aligns with the first characteristic outlined.
+Conclusion: This function will not cause REE Problem.

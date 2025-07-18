@@ -1,0 +1,9 @@
+
+Start analyze function: yDAI.withdraw(uint256)
+Function Security Analysis for yDAI.withdraw(uint256)
+    The modifier of function withdraw are ['nonReentrant', 'noContract']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: Upon closer inspection, both the lock and unlock mechanisms are present in the code. The modifier increases '_guardCounter' as the lock operation and
+          checks 'localCounter == _guardCounter' to ensure no reentrant calls occurred, thus effectively performing the unlock operation after the function executes.
+Conclusion: This function will not cause REE Problem.

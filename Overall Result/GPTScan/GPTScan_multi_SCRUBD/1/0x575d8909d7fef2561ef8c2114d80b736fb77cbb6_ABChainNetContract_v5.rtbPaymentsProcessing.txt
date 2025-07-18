@@ -1,0 +1,87 @@
+ABChainNetContract_v5.rtbPaymentsProcessing: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function rtbPaymentsProcessing() public {
+        uint256 _balance = ABChainRTBtoken(tokenAddress).balanceOf(address(this));
+        require(_balance > 0);
+        
+        processingCallsCount = processingCallsCount.add(1);
+        
+        uint256 _forBurning = uint256(_balance.div(10000)).mul(tokenBurningPercentage);
+        
+        uint256 _forRevenue = uint256(_balance.div(10000)).mul(revenuePercentage);
+        
+        uint256 _forPBudgets = uint256(_balance.sub(_forBurning)).sub(_forRevenue);
+        
+        ABChainRTBtoken(tokenAddress).transfer(ABChainPBudgetsAddress, _forPBudgets);
+        
+        ABChainRTBtoken(tokenAddress).transfer(ABChainRevenueAddress, _forRevenue);
+        
+        ABChainRTBtoken(tokenAddress).burn(_forBurning);
+        
+        processedRTBs = processedRTBs.add(_balance);
+        burnedRTBs = burnedRTBs.add(_forBurning);
+        publrsBudgRTBs = publrsBudgRTBs.add(_forPBudgets);
+        netRevenueRTBs = netRevenueRTBs.add(_forRevenue);
+
+        emit RTBProcessing(
+            msg.sender,
+            _balance,
+            _forBurning,
+            _forPBudgets,
+            _forRevenue,
+            ABChainRevenueAddress,
+            ABChainPBudgetsAddress,
+            revenuePercentage,
+            tokenBurningPercentage,
+            contractOwner
+        );
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function rtbPaymentsProcessing() public {
+        uint256 _balance = ABChainRTBtoken(tokenAddress).balanceOf(address(this));
+        require(_balance > 0);
+        
+        processingCallsCount = processingCallsCount.add(1);
+        
+        uint256 _forBurning = uint256(_balance.div(10000)).mul(tokenBurningPercentage);
+        
+        uint256 _forRevenue = uint256(_balance.div(10000)).mul(revenuePercentage);
+        
+        uint256 _forPBudgets = uint256(_balance.sub(_forBurning)).sub(_forRevenue);
+        
+        ABChainRTBtoken(tokenAddress).transfer(ABChainPBudgetsAddress, _forPBudgets);
+        
+        ABChainRTBtoken(tokenAddress).transfer(ABChainRevenueAddress, _forRevenue);
+        
+        ABChainRTBtoken(tokenAddress).burn(_forBurning);
+        
+        processedRTBs = processedRTBs.add(_balance);
+        burnedRTBs = burnedRTBs.add(_forBurning);
+        publrsBudgRTBs = publrsBudgRTBs.add(_forPBudgets);
+        netRevenueRTBs = netRevenueRTBs.add(_forRevenue);
+
+        emit RTBProcessing(
+            msg.sender,
+            _balance,
+            _forBurning,
+            _forPBudgets,
+            _forRevenue,
+            ABChainRevenueAddress,
+            ABChainPBudgetsAddress,
+            revenuePercentage,
+            tokenBurningPercentage,
+            contractOwner
+        );
+    }
+    
+Response:
+No
+--------------------------------------------------

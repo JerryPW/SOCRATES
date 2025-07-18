@@ -1,0 +1,35 @@
+
+Start analyze function: DividendPayingToken._withdrawDividendOfUser(address)
+Function Security Analysis for DividendPayingToken._withdrawDividendOfUser(address)
+    There are no modifiers should be examined in function _withdrawDividendOfUser.
+    Check direct function security
+        - function DividendPayingToken._withdrawDividendOfUser(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified structures related to checking the `msg.sender` against an owner, leader, CEO, etc.
+        - function DividendPayingToken._withdrawDividendOfUser(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not include any of the specified structures such as requiring a condition on a boolean variable and changing its state, or throwing an
+          exception based on a condition.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdrawDividend']
+        Function Security Analysis for DividendPayingToken.withdrawDividend()
+            There are no modifiers should be examined in function withdrawDividend.
+            Check direct function security
+                - function DividendPayingToken.withdrawDividend() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The given code does not contain any of the required structures, such as require, if, or assert, that check if msg.sender is equal or not equal
+                  to xxxOwner/xxxAddress/Leader/CEO.
+                - function DividendPayingToken.withdrawDividend() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The provided code snippet does not contain any of the specified structures involving 'require' or 'if' statements with variable assignments like
+                  !(xxx) or xxx == True/False, and corresponding variable state changes.
+External Call Analysis
+    Direct external call: ['user.call{value:_withdrawableDividend}()', 'IERC20(DividendToken).transfer(user,_withdrawableDividend)']
+    Analyze Transfer
+        - IERC20(DividendToken).transfer(user,_withdrawableDividend) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - user.call{value:_withdrawableDividend}() ISN'T subjected to gas limits.
+        - IERC20(DividendToken).transfer(user,_withdrawableDividend) ISN'T subjected to gas limits.
+    Remaining external call: ['user.call{value:_withdrawableDividend}()', 'IERC20(DividendToken).transfer(user,_withdrawableDividend)']
+    Analyze External Address
+        The variable 'user' in external call 'user.call{value:_withdrawableDividend}()' has no state variable assigned in
+        DividendPayingToken._withdrawDividendOfUser(address). Considering that it is an internal/private function, we analyze the function inputs.
+        Analyze External Address
+            External call msg.sender calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

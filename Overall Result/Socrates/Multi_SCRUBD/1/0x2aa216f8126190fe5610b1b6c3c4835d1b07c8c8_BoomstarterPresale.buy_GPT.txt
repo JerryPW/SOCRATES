@@ -1,0 +1,9 @@
+
+Start analyze function: BoomstarterPresale.buy()
+Function Security Analysis for BoomstarterPresale.buy()
+    The modifier of function buy are ['nonReentrant', 'onlyIfSaleIsActive', 'checkLimitsAndDates']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier `nonReentrant` contains both a lock operation (setting `rentrancy_lock` to true before executing function body) and an unlock operation
+          (resetting `rentrancy_lock` to false after executing function body), fulfilling all necessary criteria for rule 2.
+Conclusion: This function will not cause REE Problem.

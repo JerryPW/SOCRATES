@@ -1,0 +1,26 @@
+
+Start analyze function: Crowdsale.fallback()
+Function Security Analysis for Crowdsale.fallback()
+    There are no modifiers should be examined in function fallback.
+    Check direct function security
+        - function Crowdsale.fallback() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any condition involving msg.sender in comparison or assertion with xxxOwner, xxxAddress, Leader, or CEO.
+        - function Crowdsale.fallback() has no apparent security assurance by utilizing a lock machinism.
+          Reason: Upon re-evaluation, the code contains 'require(!crowdsaleClosed);' but does not include the subsequent 'crowdsaleClosed = True;' statement, or any
+          direct statement equivalent within the required conditions of the specified structures. The presence of both statements is mandatory in order to meet any of the
+          specified structures, especially structure 3. Therefore, the previous judgment was incorrect.
+External Call Analysis
+    Direct external call: ['beneficiary.send(amount)', 'tokenReward.transfer(msg.sender,sendTokens)']
+    Analyze Transfer
+        - beneficiary.send(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The call contains the '.send(' keyword..
+        Parameter in 'transfer'/'send': 1.
+        - tokenReward.transfer(msg.sender,sendTokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(msg.sender,sendTokens) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(msg.sender,sendTokens)']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function in the provided code is named 'Crowdsale', which matches the name of the contract. Hence, it is a constructor function. Therefore, it
+            satisfies the first characteristic of being a constructor function.
+Conclusion: This function will not cause REE Problem.

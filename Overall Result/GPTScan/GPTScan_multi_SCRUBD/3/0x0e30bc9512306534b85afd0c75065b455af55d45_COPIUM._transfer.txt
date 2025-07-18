@@ -1,0 +1,135 @@
+COPIUM._transfer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) private {
+        require(from != address(0), "ERC20: transfer from the zero address");
+        require(to != address(0), "ERC20: transfer to the zero address");
+        require(amount > 0, "Transfer amount must be greater than zero");
+        require(_isBlacklistWallet[from] == false, "You're in blacklist");
+
+       if(limitsEnabled){
+        if(!isExcludedFromMax[to] && !_isExcludedFromFee[to] && from != owner() && to != owner() && to != uniswapV2Pair ){
+        require(amount <= maxBuyLimit,"Over the Max buy");
+        require(amount.add(balanceOf(to)) <= maxWallet);
+        }
+        if (
+                from != owner() &&
+                to != owner() &&
+                to != address(0) &&
+                to != address(0xdead) &&
+                !inSwapAndLiquify
+            ){
+
+                if(!trading){
+                    require(_isExcludedFromFee[from] || _isExcludedFromFee[to] || isinwl[to], "Trading is not active.");
+                }
+
+            
+                if (transferDelayEnabled){
+                    if (to != owner() && to != address(uniswapV2Router) && to != address(uniswapV2Pair)){
+                        require(_holderLastTransferTimestamp[tx.origin] < block.number, "_transfer:: Transfer Delay enabled.  Only one purchase per block allowed.");
+                        _holderLastTransferTimestamp[tx.origin] = block.number;
+                    }
+                }
+            }
+        }
+
+        uint256 swapAmount = accumulatedForLiquid.add(accumulatedForMarketing).add(accumulatedForDev);
+        bool overMinTokenBalance = swapAmount >= numTokensSellToAddToLiquidity;
+        if (
+            !inSwapAndLiquify &&
+            from != uniswapV2Pair &&
+            swapAndLiquifyEnabled &&
+            overMinTokenBalance
+        ) {
+            //swap add liquid
+            swapAndLiquify();
+        }
+        
+        //indicates if fee should be deducted from transfer
+        bool takeFee = true;
+        
+        //if any account belongs to _isExcludedFromFee account then remove the fee
+        if(_isExcludedFromFee[from] || _isExcludedFromFee[to] || (from != uniswapV2Pair && to != uniswapV2Pair)){
+            takeFee = false;
+        }
+
+        //transfer amount, it will take tax, burn, liquidity fee
+        _tokenTransfer(from,to,amount,takeFee);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) private {
+        require(from != address(0), "ERC20: transfer from the zero address");
+        require(to != address(0), "ERC20: transfer to the zero address");
+        require(amount > 0, "Transfer amount must be greater than zero");
+        require(_isBlacklistWallet[from] == false, "You're in blacklist");
+
+       if(limitsEnabled){
+        if(!isExcludedFromMax[to] && !_isExcludedFromFee[to] && from != owner() && to != owner() && to != uniswapV2Pair ){
+        require(amount <= maxBuyLimit,"Over the Max buy");
+        require(amount.add(balanceOf(to)) <= maxWallet);
+        }
+        if (
+                from != owner() &&
+                to != owner() &&
+                to != address(0) &&
+                to != address(0xdead) &&
+                !inSwapAndLiquify
+            ){
+
+                if(!trading){
+                    require(_isExcludedFromFee[from] || _isExcludedFromFee[to] || isinwl[to], "Trading is not active.");
+                }
+
+            
+                if (transferDelayEnabled){
+                    if (to != owner() && to != address(uniswapV2Router) && to != address(uniswapV2Pair)){
+                        require(_holderLastTransferTimestamp[tx.origin] < block.number, "_transfer:: Transfer Delay enabled.  Only one purchase per block allowed.");
+                        _holderLastTransferTimestamp[tx.origin] = block.number;
+                    }
+                }
+            }
+        }
+
+        uint256 swapAmount = accumulatedForLiquid.add(accumulatedForMarketing).add(accumulatedForDev);
+        bool overMinTokenBalance = swapAmount >= numTokensSellToAddToLiquidity;
+        if (
+            !inSwapAndLiquify &&
+            from != uniswapV2Pair &&
+            swapAndLiquifyEnabled &&
+            overMinTokenBalance
+        ) {
+            //swap add liquid
+            swapAndLiquify();
+        }
+        
+        //indicates if fee should be deducted from transfer
+        bool takeFee = true;
+        
+        //if any account belongs to _isExcludedFromFee account then remove the fee
+        if(_isExcludedFromFee[from] || _isExcludedFromFee[to] || (from != uniswapV2Pair && to != uniswapV2Pair)){
+            takeFee = false;
+        }
+
+        //transfer amount, it will take tax, burn, liquidity fee
+        _tokenTransfer(from,to,amount,takeFee);
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

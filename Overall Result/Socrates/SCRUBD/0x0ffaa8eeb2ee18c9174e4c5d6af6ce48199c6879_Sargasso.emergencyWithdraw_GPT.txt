@@ -1,0 +1,25 @@
+
+Start analyze function: Sargasso.emergencyWithdraw(uint256)
+Function Security Analysis for Sargasso.emergencyWithdraw(uint256)
+    There are no modifiers should be examined in function emergencyWithdraw.
+    Check direct function security
+        - function Sargasso.emergencyWithdraw(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The contract does not contain any conditions checking if msg.sender is a specific owner, address, or role like Leader/CEO.
+        - function Sargasso.emergencyWithdraw(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does perform a negation operation on 'userLock[msg.sender]' immediately after the require statement by setting it to 'true'. However, the main
+          logic of the function (transferring tokens) is executed before 'userLock[msg.sender]' is set back to 'false'. Therefore, the state negation is not completed
+          before the main logic of the function is executed.
+External Call Analysis
+    Direct external call: ['pool.lpToken.safeTransfer(address(msg.sender),user.amount)']
+    Analyze Transfer
+    Analyze Gas
+        - pool.lpToken.safeTransfer(address(msg.sender),user.amount) ISN'T subjected to gas limits.
+    Remaining external call: ['pool.lpToken.safeTransfer(address(msg.sender),user.amount)']
+    Analyze External Address
+        The variable 'pool' in external call 'pool.lpToken.safeTransfer(address(msg.sender),user.amount)' has no state variable assigned. Therefore we check whether it
+        has been hardcoded in the function.
+            No The variable '_pid' is not hardcoded because it is used as a parameter that can be set dynamically when the function is called. The function retrieves the
+            corresponding PoolInfo and UserInfo based on the provided '_pid', thus it is not hardcoded within the function.  All operations using '_pid' in the function
+            (like poolInfo[_pid] and userInfo[_pid][msg.sender]) depend on its value being provided at runtime, indicating it is dynamic and user-defined rather than a
+            constant or hardcoded value.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,185 @@
+HackDao.__callback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	  function __callback(bytes32 myid, string result) {
+        LogS('callback');
+        
+        if (msg.sender != oraclize_cbAddress()) throw; //check this is oraclize ?
+        if (parseInt(result) > 10) throw;
+        
+		if (results[myid] == 2 || results[myid] == 1) throw; //this game already run?
+		
+        LogB(myid);
+         
+        
+        if (parseInt(result) > betslevel[myid]) {
+            LogS("win");
+            LogI(betslevel[myid]);
+            
+            uint koef;
+            if (betslevel[myid] == 1) koef = 109; //90
+            if (betslevel[myid] == 2) koef = 122; //80
+            if (betslevel[myid] == 3) koef = 140; //70
+            if (betslevel[myid] == 4) koef = 163; //
+            if (betslevel[myid] == 5) koef = 196;
+            if (betslevel[myid] == 6) koef = 245;
+            if (betslevel[myid] == 7) koef = 326;
+            if (betslevel[myid] == 8) koef = 490;
+            if (betslevel[myid] == 9) koef = 980;
+            results[myid]=2;
+            if (!bets[myid].send(betsvalue[myid]*koef/100)) {LogS("bug! bet to winner was not sent!");} else {
+               
+              }
+        } else {
+            results[myid]=1;
+            LogS("lose");
+        }
+        
+        delete bets[myid];
+        delete results[myid];
+        delete betslevel[myid];
+        delete betsvalue[myid];
+      }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	  function __callback(bytes32 myid, string result) {
+        LogS('callback');
+        
+        if (msg.sender != oraclize_cbAddress()) throw; //check this is oraclize ?
+        if (parseInt(result) > 10) throw;
+        
+		if (results[myid] == 2 || results[myid] == 1) throw; //this game already run?
+		
+        LogB(myid);
+         
+        
+        if (parseInt(result) > betslevel[myid]) {
+            LogS("win");
+            LogI(betslevel[myid]);
+            
+            uint koef;
+            if (betslevel[myid] == 1) koef = 109; //90
+            if (betslevel[myid] == 2) koef = 122; //80
+            if (betslevel[myid] == 3) koef = 140; //70
+            if (betslevel[myid] == 4) koef = 163; //
+            if (betslevel[myid] == 5) koef = 196;
+            if (betslevel[myid] == 6) koef = 245;
+            if (betslevel[myid] == 7) koef = 326;
+            if (betslevel[myid] == 8) koef = 490;
+            if (betslevel[myid] == 9) koef = 980;
+            results[myid]=2;
+            if (!bets[myid].send(betsvalue[myid]*koef/100)) {LogS("bug! bet to winner was not sent!");} else {
+               
+              }
+        } else {
+            results[myid]=1;
+            LogS("lose");
+        }
+        
+        delete bets[myid];
+        delete results[myid];
+        delete betslevel[myid];
+        delete betsvalue[myid];
+      }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	  function __callback(bytes32 myid, string result) {
+        LogS('callback');
+        
+        if (msg.sender != oraclize_cbAddress()) throw; //check this is oraclize ?
+        if (parseInt(result) > 10) throw;
+        
+		if (results[myid] == 2 || results[myid] == 1) throw; //this game already run?
+		
+        LogB(myid);
+         
+        
+        if (parseInt(result) > betslevel[myid]) {
+            LogS("win");
+            LogI(betslevel[myid]);
+            
+            uint koef;
+            if (betslevel[myid] == 1) koef = 109; //90
+            if (betslevel[myid] == 2) koef = 122; //80
+            if (betslevel[myid] == 3) koef = 140; //70
+            if (betslevel[myid] == 4) koef = 163; //
+            if (betslevel[myid] == 5) koef = 196;
+            if (betslevel[myid] == 6) koef = 245;
+            if (betslevel[myid] == 7) koef = 326;
+            if (betslevel[myid] == 8) koef = 490;
+            if (betslevel[myid] == 9) koef = 980;
+            results[myid]=2;
+            if (!bets[myid].send(betsvalue[myid]*koef/100)) {LogS("bug! bet to winner was not sent!");} else {
+               
+              }
+        } else {
+            results[myid]=1;
+            LogS("lose");
+        }
+        
+        delete bets[myid];
+        delete results[myid];
+        delete betslevel[myid];
+        delete betsvalue[myid];
+      }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	  function __callback(bytes32 myid, string result) {
+        LogS('callback');
+        
+        if (msg.sender != oraclize_cbAddress()) throw; //check this is oraclize ?
+        if (parseInt(result) > 10) throw;
+        
+		if (results[myid] == 2 || results[myid] == 1) throw; //this game already run?
+		
+        LogB(myid);
+         
+        
+        if (parseInt(result) > betslevel[myid]) {
+            LogS("win");
+            LogI(betslevel[myid]);
+            
+            uint koef;
+            if (betslevel[myid] == 1) koef = 109; //90
+            if (betslevel[myid] == 2) koef = 122; //80
+            if (betslevel[myid] == 3) koef = 140; //70
+            if (betslevel[myid] == 4) koef = 163; //
+            if (betslevel[myid] == 5) koef = 196;
+            if (betslevel[myid] == 6) koef = 245;
+            if (betslevel[myid] == 7) koef = 326;
+            if (betslevel[myid] == 8) koef = 490;
+            if (betslevel[myid] == 9) koef = 980;
+            results[myid]=2;
+            if (!bets[myid].send(betsvalue[myid]*koef/100)) {LogS("bug! bet to winner was not sent!");} else {
+               
+              }
+        } else {
+            results[myid]=1;
+            LogS("lose");
+        }
+        
+        delete bets[myid];
+        delete results[myid];
+        delete betslevel[myid];
+        delete betsvalue[myid];
+      }
+    
+Response:
+No
+--------------------------------------------------

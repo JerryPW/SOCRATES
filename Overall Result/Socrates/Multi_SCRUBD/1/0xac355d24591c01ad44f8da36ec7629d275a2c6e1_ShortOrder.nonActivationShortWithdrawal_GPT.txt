@@ -1,0 +1,21 @@
+
+Start analyze function: ShortOrder.nonActivationShortWithdrawal(address[2],uint256[8],uint8,bytes32[2])
+Function Security Analysis for ShortOrder.nonActivationShortWithdrawal(address[2],uint256[8],uint8,bytes32[2])
+    There are no modifiers should be examined in function nonActivationShortWithdrawal.
+    Check direct function security
+        - function ShortOrder.nonActivationShortWithdrawal(address[2],uint256[8],uint8,bytes32[2]) has no security assurance protected by checking the authority of
+        msg.sender
+          Reason: The code does not contain any of the specified structures that involve checking `msg.sender` against a specific owner or address role such as
+          xxxOwner/xxxAddress/Leader/CEO. It merely checks if `msg.sender` is equal to the result of an `ecrecover` function, among other unrelated conditions.
+        - function ShortOrder.nonActivationShortWithdrawal(address[2],uint256[8],uint8,bytes32[2]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any conditional statements of the specified structures. There are no 'require' statements that toggle the state of a variable
+          between true and false or vice versa, nor an 'if' statement that throws an exception followed by state changes in the specified pattern.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(orderRecord[msg.sender][orderHash].coupon)']
+    Analyze Transfer
+        - msg.sender.transfer(orderRecord[msg.sender][orderHash].coupon) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains the '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

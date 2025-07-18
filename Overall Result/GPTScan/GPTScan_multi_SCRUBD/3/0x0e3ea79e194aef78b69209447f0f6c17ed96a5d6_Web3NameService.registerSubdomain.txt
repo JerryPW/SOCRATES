@@ -1,0 +1,237 @@
+Web3NameService.registerSubdomain: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function registerSubdomain(string memory pepe_name, string memory subdomain_name)
+        public
+        payable
+    {   
+        require(IS_SALE_ACTIVE, "Sale is not active!");
+        string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+        require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+        require(bytes(subdomain_name).length>0,"Write a name");
+        require(_checkName(pepe_name), "Invalid name");
+        require(_checkName(subdomain_name), "Invalid name");
+        require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+  
+        TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+        if (Ownership.addr == msg.sender)
+        {
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender; 
+        _safeMint(msg.sender,1);   
+        } else {
+        require(subDomains_publicSale[pepe_name]==true, "Only Owner can register");
+        require(msg.value >= subDomains_cost[pepe_name], "Insufficient funds!");
+        payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender;
+        _safeMint(msg.sender,1);       
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function registerSubdomain(string memory pepe_name, string memory subdomain_name)
+        public
+        payable
+    {   
+        require(IS_SALE_ACTIVE, "Sale is not active!");
+        string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+        require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+        require(bytes(subdomain_name).length>0,"Write a name");
+        require(_checkName(pepe_name), "Invalid name");
+        require(_checkName(subdomain_name), "Invalid name");
+        require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+  
+        TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+        if (Ownership.addr == msg.sender)
+        {
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender; 
+        _safeMint(msg.sender,1);   
+        } else {
+        require(subDomains_publicSale[pepe_name]==true, "Only Owner can register");
+        require(msg.value >= subDomains_cost[pepe_name], "Insufficient funds!");
+        payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender;
+        _safeMint(msg.sender,1);       
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function registerSubdomain(string memory pepe_name, string memory subdomain_name)
+        public
+        payable
+    {   
+        require(IS_SALE_ACTIVE, "Sale is not active!");
+        string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+        require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+        require(bytes(subdomain_name).length>0,"Write a name");
+        require(_checkName(pepe_name), "Invalid name");
+        require(_checkName(subdomain_name), "Invalid name");
+        require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+  
+        TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+        if (Ownership.addr == msg.sender)
+        {
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender; 
+        _safeMint(msg.sender,1);   
+        } else {
+        require(subDomains_publicSale[pepe_name]==true, "Only Owner can register");
+        require(msg.value >= subDomains_cost[pepe_name], "Insufficient funds!");
+        payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender;
+        _safeMint(msg.sender,1);       
+        }
+    }
+Response:
+{"StatementsA": {"tokenIDandAddress[_currentIndex]=new_domain;":"Updates the mapping of token ID to address with the new domain.", "tokenAddressandID[new_domain]=_currentIndex;":"Updates the mapping of new domain to token ID.", "resolveAddress[new_domain]=msg.sender;":"Updates the mapping of new domain to the sender's address."}, "StatementsB": {"payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);":"Executes an external call to transfer Ether to the owner's address."}, "VariableA": {"Ownership.addr":"Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: tokenIDandAddress[_currentIndex]=new_domain;
+2.External Call: payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+3.Variable A: Ownership.addr
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function registerSubdomain(string memory pepe_name, string memory subdomain_name)
+        public
+        payable
+    {   
+        require(IS_SALE_ACTIVE, "Sale is not active!");
+        string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+        require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+        require(bytes(subdomain_name).length>0,"Write a name");
+        require(_checkName(pepe_name), "Invalid name");
+        require(_checkName(subdomain_name), "Invalid name");
+        require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+  
+        TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+        if (Ownership.addr == msg.sender)
+        {
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender; 
+        _safeMint(msg.sender,1);   
+        } else {
+        require(subDomains_publicSale[pepe_name]==true, "Only Owner can register");
+        require(msg.value >= subDomains_cost[pepe_name], "Insufficient funds!");
+        payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender;
+        _safeMint(msg.sender,1);       
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function registerSubdomain(string memory pepe_name, string memory subdomain_name)
+        public
+        payable
+    {   
+        require(IS_SALE_ACTIVE, "Sale is not active!");
+        string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+        require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+        require(bytes(subdomain_name).length>0,"Write a name");
+        require(_checkName(pepe_name), "Invalid name");
+        require(_checkName(subdomain_name), "Invalid name");
+        require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+  
+        TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+        if (Ownership.addr == msg.sender)
+        {
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender; 
+        _safeMint(msg.sender,1);   
+        } else {
+        require(subDomains_publicSale[pepe_name]==true, "Only Owner can register");
+        require(msg.value >= subDomains_cost[pepe_name], "Insufficient funds!");
+        payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender;
+        _safeMint(msg.sender,1);       
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function registerSubdomain(string memory pepe_name, string memory subdomain_name)
+        public
+        payable
+    {   
+        require(IS_SALE_ACTIVE, "Sale is not active!");
+        string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+        require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+        require(bytes(subdomain_name).length>0,"Write a name");
+        require(_checkName(pepe_name), "Invalid name");
+        require(_checkName(subdomain_name), "Invalid name");
+        require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+  
+        TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+        if (Ownership.addr == msg.sender)
+        {
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender; 
+        _safeMint(msg.sender,1);   
+        } else {
+        require(subDomains_publicSale[pepe_name]==true, "Only Owner can register");
+        require(msg.value >= subDomains_cost[pepe_name], "Insufficient funds!");
+        payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+        tokenIDandAddress[_currentIndex]=new_domain;
+        tokenAddressandID[new_domain]=_currentIndex;
+        resolveAddress[new_domain]=msg.sender;
+        _safeMint(msg.sender,1);       
+        }
+    }
+Response:
+{"StatementsA": {"tokenIDandAddress[_currentIndex]=new_domain;":"Updates the mapping of token ID to address with the new domain."}, "StatementsB": {"payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);":"Executes an external call to transfer Ether to the owner's address."}, "VariableA": {"Ownership.addr": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: tokenIDandAddress[_currentIndex]=new_domain;
+2.External Call: payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+3.Variable A: Ownership.addr
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,13 @@
+
+Start analyze function: Sargasso.ETHsend(uint256,uint256)
+Function Security Analysis for Sargasso.ETHsend(uint256,uint256)
+    There are no modifiers should be examined in function ETHsend.
+    Check direct function security
+        - function Sargasso.ETHsend(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any 'require', 'if', or 'assert' statements that compare 'msg.sender' to 'xxxOwner', 'xxxAddress', 'Leader', or 'CEO'.
+        - function Sargasso.ETHsend(uint256,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+          Reason: The code satisfies Structure 2 with 'require(secondaryUserLock[msg.sender] == false);' followed by 'secondaryUserLock[msg.sender] = true;'. The main
+          logic of the function begins after setting 'secondaryUserLock[msg.sender] = true;', as it includes critical operations on balances and transfers, therefore
+          meeting the specified conditions where the first two lines of code that meet the structural requirements immediately perform a state negation operation on
+          'xxx'.
+Conclusion: This function will not cause REE Problem.

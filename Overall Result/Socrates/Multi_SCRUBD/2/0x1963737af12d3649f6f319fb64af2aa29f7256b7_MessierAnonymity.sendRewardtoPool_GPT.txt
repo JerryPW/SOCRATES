@@ -1,0 +1,28 @@
+
+Start analyze function: MessierAnonymity.sendRewardtoPool()
+Function Security Analysis for MessierAnonymity.sendRewardtoPool()
+    There are no modifiers should be examined in function sendRewardtoPool.
+    Check direct function security
+        - function MessierAnonymity.sendRewardtoPool() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not include any condition that checks the identity of 'msg.sender' against any special role or address (like Owner/Leader/CEO).
+          Therefore, it does not satisfy any of the required structures.
+        - function MessierAnonymity.sendRewardtoPool() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given function `sendRewardtoPool` does not contain any `require` or `if` statement with `throw`, and thus does not fit any of the predefined
+          structures. It only consists of a simple loop and conditional operations unrelated to the specified structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['deposit', 'withdraw']
+        Function Security Analysis for MessierAnonymity.deposit(bytes32)
+            The modifier of function deposit are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: In the provided modifier code, _guardCounter is set to a new value and stored in localCounter before executing the function. After executing the
+                  function, there's a check to ensure that _guardCounter is still equal to localCounter. This structure implements a lock operation (setting
+                  _guardCounter) and unlock operation (confirming _guardCounter hasn't changed) to prevent reentrancy, satisfying rule 2.
+        Function Security Analysis for MessierAnonymity.withdraw(bytes,bytes32,bytes32,address,address,uint256,uint256)
+            The modifier of function withdraw are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier is named 'nonReentrant', which matches rule 3. Additionally, the code uses a counter to implement a reentrancy lock, fulfilling
+                  rule 2. The '_guardCounter' is incremented, and a local copy is compared after function execution. Both locking and unlocking operations are present,
+                  ensuring rule 2 is satisfied without omission.
+Conclusion: This function will not cause REE Problem.

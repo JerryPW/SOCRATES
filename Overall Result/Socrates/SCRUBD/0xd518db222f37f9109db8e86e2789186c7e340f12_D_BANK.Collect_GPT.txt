@@ -1,0 +1,20 @@
+
+Start analyze function: D_BANK.Collect(uint256)
+Function Security Analysis for D_BANK.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function D_BANK.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any owner or specific address checks related to msg.sender as outlined in the given criteria. It only checks balances and
+          attempts to send the specified amount.
+        - function D_BANK.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not follow any of the specified structures. It has conditions for checking balances and executing a transfer based on that, but it does
+          not have any 'require' or 'throw' statements for checking or altering boolean variables in the specific patterns described.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

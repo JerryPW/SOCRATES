@@ -1,0 +1,21 @@
+
+Start analyze function: Sargasso.sendtoRecipient(uint256,uint256)
+Function Security Analysis for Sargasso.sendtoRecipient(uint256,uint256)
+    There are no modifiers should be examined in function sendtoRecipient.
+    Check direct function security
+        - function Sargasso.sendtoRecipient(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any of the specified structures related to 'msg.sender'.
+        - function Sargasso.sendtoRecipient(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the specified structures. It does not contain any require statement followed by an assignment of the same variable, nor
+          does it have an if followed by an assignment of the same variable.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['specialdeposit']
+        Function Security Analysis for Sargasso.specialdeposit(uint256,uint256)
+            There are no modifiers should be examined in function specialdeposit.
+            Check direct function security
+                - function Sargasso.specialdeposit(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not perform any checks related to the identity of msg.sender against specific roles like xxxOwner, xxxAddress, Leader, or CEO.
+                - function Sargasso.specialdeposit(uint256,uint256) has security assurance by utilizing a lock machinism, the function would not cause REE problem.
+                  Reason: The negation operation 'userLock[msg.sender] = true;' immediately follows the 'require(userLock[msg.sender] == false);' check, and this change
+                  of state occurs before the main logic (pool updates, balance checks, etc.) of the function proceeds.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,35 @@
+[
+    {
+        "function_name": "stake",
+        "vulnerability": "Denial of Service via Reentrancy",
+        "criticism": "The reasoning correctly identifies a potential reentrancy issue due to the external call to `swapAndLiquifyForYZY` before updating the contract's state. However, the severity of this vulnerability is mitigated by the fact that Solidity 0.6.0+ includes reentrancy guards, and the function does not directly transfer Ether or tokens to the caller, which reduces the risk of reentrancy attacks. The profitability is low because exploiting this would require a specific setup and timing, and the potential gain is limited to disrupting the staking process rather than direct financial gain.",
+        "correctness": 8,
+        "severity": 3,
+        "profitability": 2,
+        "reason": "The function allows an external call to `swapAndLiquifyForYZY` before updating the contract's balance and staker information. If `swapAndLiquifyForYZY` interacts with an untrusted contract, it can reenter the `stake` function, potentially causing incorrect staker records and preventing users from staking further. Although Solidity 0.6.0+ has built-in reentrancy protection, developers should be cautious and use the 'checks-effects-interactions' pattern to mitigate this risk.",
+        "code": "function stake() external payable returns (bool) { require(!isContract(_msgSender()), \"Vault: Could not be contract.\"); require(msg.value >= _minDepositETHAmount, \"Vault: insufficient staking amount.\"); uint256 initialBalance = _yzyETHV2Pair.balanceOf(address(this)); require(swapAndLiquifyForYZY(msg.value), \"Vault: Failed to get LP tokens.\"); uint256 newBalance = _yzyETHV2Pair.balanceOf(address(this)).sub(initialBalance); StakerInfo storage staker = _stakers[_msgSender()]; if (staker.stakedAmount > 0) { claimYzyReward(); claimSwapReward(); } else { staker.lastClimedBlockForYzyReward = block.number; staker.lastClimedBlockForSwapReward = block.number; } staker.stakedAmount = staker.stakedAmount.add(newBalance); staker.lockedTo = _lockPeriod.add(block.timestamp); emit Staked(_msgSender(), newBalance); return _sendLotteryAmount(); }",
+        "file_name": "0x0a5a0a14419f9db1da68cf2f550720e5df49d4fe.sol"
+    },
+    {
+        "function_name": "claimYzyReward",
+        "vulnerability": "Unchecked External Call",
+        "criticism": "The reasoning highlights a valid concern regarding the unchecked call to `safeYzyTransfer`. However, the function does include a `require` statement to ensure the transfer is successful, which would revert the transaction if the transfer fails. This reduces the risk of repeated claims without proper validation. The severity is moderate because a failed transfer would revert the transaction, preventing any state changes. The profitability is low because the attacker cannot gain more than what is available in rewards, and any failed attempt would revert the transaction.",
+        "correctness": 6,
+        "severity": 4,
+        "profitability": 2,
+        "reason": "The function makes an unchecked call to `safeYzyTransfer` which transfers tokens to the caller. If `_yzy.transfer` fails due to insufficient balance or other issues, the function could revert, but the unchecked external call can be exploited by attackers to repeatedly claim rewards without proper validation of the transfer success, potentially draining the contract.",
+        "code": "function claimYzyReward() public returns (bool) { (uint256 available, uint256 pending) = getYzyReward(_msgSender()); require(available > 0 || pending > 0, \"Vault: No rewards\"); StakerInfo storage staker = _stakers[_msgSender()]; if (available > 0) { require( safeYzyTransfer(_msgSender(), available), \"Vault: Failed to transfer.\" ); } if (pending > 0) { uint256 burnAmount = pending.mul(_burnFee).div(10000); _yzy.burnFromVault(burnAmount); safeYzyTransfer(_msgSender(), pending.sub(burnAmount)); staker.lastClimedBlockForYzyReward = block.number; } else if (available > 0) { staker.lastClimedBlockForYzyReward = _getLastAvailableClaimedBlock( staker.lastClimedBlockForYzyReward, block.number, _claimPeriodForYzyReward ); } emit ClaimedYzyReward(_msgSender(), available, pending); return _sendLotteryAmount(); }",
+        "file_name": "0x0a5a0a14419f9db1da68cf2f550720e5df49d4fe.sol"
+    },
+    {
+        "function_name": "_sendLotteryAmount",
+        "vulnerability": "Price Manipulation",
+        "criticism": "The reasoning correctly identifies the potential for price manipulation due to reliance on liquidity pool reserves for price calculation. This vulnerability is significant because an attacker with sufficient influence over the liquidity pools could manipulate prices to exploit the lottery payout mechanism. The severity is high because it could lead to disproportionate rewards being distributed. The profitability is also high, as an attacker could potentially gain significant rewards by manipulating the price.",
+        "correctness": 9,
+        "severity": 8,
+        "profitability": 8,
+        "reason": "The function calculates the lottery amount based on reserves from two liquidity pools without considering the potential for price manipulation. An attacker could manipulate the price by interacting with the liquidity pools, especially if they have significant influence over the reserves, to exploit the lottery payout mechanism and gain disproportionate rewards.",
+        "code": "function _sendLotteryAmount() internal returns (bool) { if (!_enabledLottery || _lotteryAmount <= 0) return false; uint256 usdcReserve = 0; uint256 ethReserve1 = 0; uint256 yzyReserve = 0; uint256 ethReserve2 = 0; address token0 = _usdcETHV2Pair.token0(); if (token0 == address(_weth)){ (ethReserve1, usdcReserve, ) = _usdcETHV2Pair.getReserves(); } else { (usdcReserve, ethReserve1, ) = _usdcETHV2Pair.getReserves(); } token0 = _yzyETHV2Pair.token0(); if (token0 == address(_weth)){ (ethReserve2, yzyReserve, ) = _yzyETHV2Pair.getReserves(); } else { (yzyReserve, ethReserve2, ) = _yzyETHV2Pair.getReserves(); } if (ethReserve1 <= 0 || yzyReserve <= 0) return false; uint256 yzyPrice = usdcReserve.mul(1 ether).div(ethReserve1).mul(ethReserve2).div(yzyReserve); uint256 lotteryValue = yzyPrice.mul(_lotteryAmount).div(1 ether); if (lotteryValue > 0 && lotteryValue >= _lotteryLimit) { uint256 amount = _lotteryLimit.mul(1 ether).div(yzyPrice); if (amount > _lotteryAmount) amount = _lotteryAmount; _yzy.transfer(_msgSender(), amount); _lotteryAmount = _lotteryAmount.sub(amount); _lotteryPaidOut = _lotteryPaidOut.add(amount); emit SentLotteryAmount(_msgSender(), amount, true); winnerInfo.push( WinnerInfo({ winner: _msgSender(), amount: amount, timestamp: block.timestamp }) ); } return false; }",
+        "file_name": "0x0a5a0a14419f9db1da68cf2f550720e5df49d4fe.sol"
+    }
+]

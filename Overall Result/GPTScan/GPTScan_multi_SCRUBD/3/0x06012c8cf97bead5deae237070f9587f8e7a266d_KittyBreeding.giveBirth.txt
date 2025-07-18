@@ -1,0 +1,266 @@
+KittyBreeding.giveBirth: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function giveBirth(uint256 _matronId)
+        external
+        whenNotPaused
+        returns(uint256)
+    {
+        // Grab a reference to the matron in storage.
+        Kitty storage matron = kitties[_matronId];
+
+        // Check that the matron is a valid cat.
+        require(matron.birthTime != 0);
+
+        // Check that the matron is pregnant, and that its time has come!
+        require(_isReadyToGiveBirth(matron));
+
+        // Grab a reference to the sire in storage.
+        uint256 sireId = matron.siringWithId;
+        Kitty storage sire = kitties[sireId];
+
+        // Determine the higher generation number of the two parents
+        uint16 parentGen = matron.generation;
+        if (sire.generation > matron.generation) {
+            parentGen = sire.generation;
+        }
+
+        // Call the sooper-sekret gene mixing operation.
+        uint256 childGenes = geneScience.mixGenes(matron.genes, sire.genes, matron.cooldownEndBlock - 1);
+
+        // Make the new kitten!
+        address owner = kittyIndexToOwner[_matronId];
+        uint256 kittenId = _createKitty(_matronId, matron.siringWithId, parentGen + 1, childGenes, owner);
+
+        // Clear the reference to sire from the matron (REQUIRED! Having siringWithId
+        // set is what marks a matron as being pregnant.)
+        delete matron.siringWithId;
+
+        // Every time a kitty gives birth counter is decremented.
+        pregnantKitties--;
+
+        // Send the balance fee to the person who made birth happen.
+        msg.sender.send(autoBirthFee);
+
+        // return the new kitten's ID
+        return kittenId;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function giveBirth(uint256 _matronId)
+        external
+        whenNotPaused
+        returns(uint256)
+    {
+        // Grab a reference to the matron in storage.
+        Kitty storage matron = kitties[_matronId];
+
+        // Check that the matron is a valid cat.
+        require(matron.birthTime != 0);
+
+        // Check that the matron is pregnant, and that its time has come!
+        require(_isReadyToGiveBirth(matron));
+
+        // Grab a reference to the sire in storage.
+        uint256 sireId = matron.siringWithId;
+        Kitty storage sire = kitties[sireId];
+
+        // Determine the higher generation number of the two parents
+        uint16 parentGen = matron.generation;
+        if (sire.generation > matron.generation) {
+            parentGen = sire.generation;
+        }
+
+        // Call the sooper-sekret gene mixing operation.
+        uint256 childGenes = geneScience.mixGenes(matron.genes, sire.genes, matron.cooldownEndBlock - 1);
+
+        // Make the new kitten!
+        address owner = kittyIndexToOwner[_matronId];
+        uint256 kittenId = _createKitty(_matronId, matron.siringWithId, parentGen + 1, childGenes, owner);
+
+        // Clear the reference to sire from the matron (REQUIRED! Having siringWithId
+        // set is what marks a matron as being pregnant.)
+        delete matron.siringWithId;
+
+        // Every time a kitty gives birth counter is decremented.
+        pregnantKitties--;
+
+        // Send the balance fee to the person who made birth happen.
+        msg.sender.send(autoBirthFee);
+
+        // return the new kitten's ID
+        return kittenId;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function giveBirth(uint256 _matronId)
+        external
+        whenNotPaused
+        returns(uint256)
+    {
+        // Grab a reference to the matron in storage.
+        Kitty storage matron = kitties[_matronId];
+
+        // Check that the matron is a valid cat.
+        require(matron.birthTime != 0);
+
+        // Check that the matron is pregnant, and that its time has come!
+        require(_isReadyToGiveBirth(matron));
+
+        // Grab a reference to the sire in storage.
+        uint256 sireId = matron.siringWithId;
+        Kitty storage sire = kitties[sireId];
+
+        // Determine the higher generation number of the two parents
+        uint16 parentGen = matron.generation;
+        if (sire.generation > matron.generation) {
+            parentGen = sire.generation;
+        }
+
+        // Call the sooper-sekret gene mixing operation.
+        uint256 childGenes = geneScience.mixGenes(matron.genes, sire.genes, matron.cooldownEndBlock - 1);
+
+        // Make the new kitten!
+        address owner = kittyIndexToOwner[_matronId];
+        uint256 kittenId = _createKitty(_matronId, matron.siringWithId, parentGen + 1, childGenes, owner);
+
+        // Clear the reference to sire from the matron (REQUIRED! Having siringWithId
+        // set is what marks a matron as being pregnant.)
+        delete matron.siringWithId;
+
+        // Every time a kitty gives birth counter is decremented.
+        pregnantKitties--;
+
+        // Send the balance fee to the person who made birth happen.
+        msg.sender.send(autoBirthFee);
+
+        // return the new kitten's ID
+        return kittenId;
+    }
+Response:
+{"StatementsA": {"pregnantKitties--;":"Decrements the count of pregnant kitties."}, "StatementsB": {"msg.sender.send(autoBirthFee);":"Sends the auto birth fee to the sender."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: pregnantKitties--;
+2.External Call: msg.sender.send(autoBirthFee);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function giveBirth(uint256 _matronId)
+        external
+        whenNotPaused
+        returns(uint256)
+    {
+        // Grab a reference to the matron in storage.
+        Kitty storage matron = kitties[_matronId];
+
+        // Check that the matron is a valid cat.
+        require(matron.birthTime != 0);
+
+        // Check that the matron is pregnant, and that its time has come!
+        require(_isReadyToGiveBirth(matron));
+
+        // Grab a reference to the sire in storage.
+        uint256 sireId = matron.siringWithId;
+        Kitty storage sire = kitties[sireId];
+
+        // Determine the higher generation number of the two parents
+        uint16 parentGen = matron.generation;
+        if (sire.generation > matron.generation) {
+            parentGen = sire.generation;
+        }
+
+        // Call the sooper-sekret gene mixing operation.
+        uint256 childGenes = geneScience.mixGenes(matron.genes, sire.genes, matron.cooldownEndBlock - 1);
+
+        // Make the new kitten!
+        address owner = kittyIndexToOwner[_matronId];
+        uint256 kittenId = _createKitty(_matronId, matron.siringWithId, parentGen + 1, childGenes, owner);
+
+        // Clear the reference to sire from the matron (REQUIRED! Having siringWithId
+        // set is what marks a matron as being pregnant.)
+        delete matron.siringWithId;
+
+        // Every time a kitty gives birth counter is decremented.
+        pregnantKitties--;
+
+        // Send the balance fee to the person who made birth happen.
+        msg.sender.send(autoBirthFee);
+
+        // return the new kitten's ID
+        return kittenId;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function giveBirth(uint256 _matronId)
+        external
+        whenNotPaused
+        returns(uint256)
+    {
+        // Grab a reference to the matron in storage.
+        Kitty storage matron = kitties[_matronId];
+
+        // Check that the matron is a valid cat.
+        require(matron.birthTime != 0);
+
+        // Check that the matron is pregnant, and that its time has come!
+        require(_isReadyToGiveBirth(matron));
+
+        // Grab a reference to the sire in storage.
+        uint256 sireId = matron.siringWithId;
+        Kitty storage sire = kitties[sireId];
+
+        // Determine the higher generation number of the two parents
+        uint16 parentGen = matron.generation;
+        if (sire.generation > matron.generation) {
+            parentGen = sire.generation;
+        }
+
+        // Call the sooper-sekret gene mixing operation.
+        uint256 childGenes = geneScience.mixGenes(matron.genes, sire.genes, matron.cooldownEndBlock - 1);
+
+        // Make the new kitten!
+        address owner = kittyIndexToOwner[_matronId];
+        uint256 kittenId = _createKitty(_matronId, matron.siringWithId, parentGen + 1, childGenes, owner);
+
+        // Clear the reference to sire from the matron (REQUIRED! Having siringWithId
+        // set is what marks a matron as being pregnant.)
+        delete matron.siringWithId;
+
+        // Every time a kitty gives birth counter is decremented.
+        pregnantKitties--;
+
+        // Send the balance fee to the person who made birth happen.
+        msg.sender.send(autoBirthFee);
+
+        // return the new kitten's ID
+        return kittenId;
+    }
+    
+Response:
+No
+--------------------------------------------------

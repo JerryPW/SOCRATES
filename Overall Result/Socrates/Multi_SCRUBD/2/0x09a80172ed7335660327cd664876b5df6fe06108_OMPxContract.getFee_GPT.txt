@@ -1,0 +1,29 @@
+
+Start analyze function: OMPxContract.getFee()
+Function Security Analysis for OMPxContract.getFee()
+    There are no modifiers should be examined in function getFee.
+    Check direct function security
+        - function OMPxContract.getFee() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any require, if, or assert statements that check for msg.sender against xxxOwner, xxxAddress, Leader, or CEO.
+        - function OMPxContract.getFee() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not match any of the specified patterns. It contains an if condition, but it doesn't have a require statement or throw within the if
+          condition that affects a boolean variable (xxx) in the ways described in the patterns.
+External Call Analysis
+    Direct external call: ['feeReceiverContract.receiveFunds.value(feeBalance).gas(150000)()']
+    Analyze Transfer
+    Analyze Gas
+        - The gas limit in feeReceiverContract.receiveFunds.value(feeBalance).gas(150000)() is 150000, which is too high. Therefore, it will not prevent REE problem.
+    Remaining external call: ['feeReceiverContract.receiveFunds.value(feeBalance).gas(150000)()']
+    Analyze External Address
+        There are ['feeReceiverContract'] should be checked in variable feeReceiverContract
+        Checked variables: feeReceiverContract
+            No 1. The function name does not match the contract name nor is it explicitly named 'constructor', so it is not a constructor. 2. There is no hardcoding of
+            the state variable 'feeReceiverContract' in the provided code snippet. The state variable is set to a new value based on the parameter 'newReceiver', which is
+            provided at runtime, not hardcoded in the code.
+            Function Security Analysis for OMPxContract.setFeeReceiver(address)
+                The modifier of function setFeeReceiver are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon review, the code 'require(msg.sender == owner);' is present, which aligns with Rule 1 as it ensures that only the owner can execute the
+                      function. No other conditions or statements are present that would affect this judgment.
+Conclusion: This function will not cause REE Problem.

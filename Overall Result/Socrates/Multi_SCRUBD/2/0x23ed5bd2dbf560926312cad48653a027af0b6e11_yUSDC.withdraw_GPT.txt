@@ -1,0 +1,391 @@
+
+Start analyze function: yUSDC.withdraw(uint256)
+Function Security Analysis for yUSDC.withdraw(uint256)
+    The modifier of function withdraw are ['nonReentrant', 'noContract']
+    The result of checking modifiers:
+        - modifier nonReentrant has no relation with controlled by owner.
+          Reason: Upon reevaluation, the modifier employs a counter mechanism as a form of lock, intending to ensure reentrancy protection. The increment of
+          '_guardCounter' at the beginning and the check with 'localCounter' using 'require' at the end is indicative of reentrancy protection. However, according to the
+          precise requirement for structural match in characteristic 2, this code does not explicitly demonstrate both setting a lock variable to true and resetting it to
+          false as outlined in the requirement. Thus, by strictly adhering to the described structure for characteristic 2, the initial judgment needs refinement.
+        - modifier noContract has no relation with controlled by owner.
+          Reason: The modifier enforces a check using require to ensure that the sender is not a contract by calling isContract(msg.sender) == false. However, this does
+          not ensure that only specific addresses or the owner can execute the function. It also does not use a lock operation mechanism nor hints any restriction by its
+          name such as using 'Only' or 'nonReentrant'. Hence, it does not satisfy any characteristics for a 'Yes'.
+    Check direct function security
+        - function yUSDC.withdraw(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any direct check (require/assert/if) against msg.sender to ensure it is equal to owner-like or leader-like address.
+        - function yUSDC.withdraw(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures: no require statement checks if a boolean variable is true or false before changing its
+          state, nor does the function attempt to throw based on a boolean condition.
+External Call Analysis
+    Direct external call: ['IERC20(token).transfer(msg.sender,stablecoinsToWithdraw.sub(combined))', 'devTreasury.call.value(devTreasuryAmount)()',
+    'retirementYeldTreasury.transfer(retirementYeld_scope_0)', 'yeldToken.transfer(msg.sender,generatedYelds)', 'retirementYeldTreasury.transfer(retirementYeld)']
+    Analyze Transfer
+        - IERC20(token).transfer(msg.sender,stablecoinsToWithdraw.sub(combined)) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - retirementYeldTreasury.transfer(retirementYeld_scope_0) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external
+        call contains the '.transfer(' keyword: 'retirementYeldTreasury.transfer'. Hence, it satisfies the first characteristic.. Parameter in 'transfer'/'send': 1.
+        - yeldToken.transfer(msg.sender,generatedYelds) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - retirementYeldTreasury.transfer(retirementYeld) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        contains the '.transfer(' keyword: 'retirementYeldTreasury.transfer'. Hence, it satisfies the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - IERC20(token).transfer(msg.sender,stablecoinsToWithdraw.sub(combined)) ISN'T subjected to gas limits.
+        - devTreasury.call.value(devTreasuryAmount)() ISN'T subjected to gas limits.
+        - yeldToken.transfer(msg.sender,generatedYelds) ISN'T subjected to gas limits.
+    Remaining external call: ['IERC20(token).transfer(msg.sender,stablecoinsToWithdraw.sub(combined))', 'devTreasury.call.value(devTreasuryAmount)()',
+    'yeldToken.transfer(msg.sender,generatedYelds)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The code snippet provided is a constructor, as it is explicitly named 'constructor' and it initializes variables at the time of deployment. This satisfies
+            the first characteristic provided in the rules.
+        There are ['devTreasury'] should be checked in variable devTreasury
+        Checked variables: devTreasury
+            Yes The provided code is a constructor because the function is explicitly named 'constructor'. The contract name is 'yUSDC', which matches the state variable
+            name, but the named 'constructor' function explicitly identifies it as the constructor. The state variable 'devTreasury' is set using a parameter,
+            '_devTreasury', not hardcoded, so the second condition does not apply.
+        There are ['yeldToken'] should be checked in variable yeldToken
+        Checked variables: yeldToken
+            Yes The code provided includes a constructor function. The function is named 'constructor', which matches one of the specified characteristics for determining
+            if an external call satisfies the rules. This function does not hardcode the state variable 'yeldToken'.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC.usdcToETH(uint256)
+Function Security Analysis for yUSDC.usdcToETH(uint256)
+    There are no modifiers should be examined in function usdcToETH.
+    Check direct function security
+        - function yUSDC.usdcToETH(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks related to msg.sender and therefore does not match any of the specified characteristics.
+        - function yUSDC.usdcToETH(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any 'require' or 'if' statements. Therefore, it doesn't match any of the given structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdraw']
+        Function Security Analysis for yUSDC.withdraw(uint256)
+            The modifier of function withdraw are ['nonReentrant', 'noContract']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier uses _guardCounter to prevent reentrancy by setting a lock before executing the function and checking it after execution. The lock
+                  operation is setting the localCounter and verifying it, which matches characteristic 2.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC.buyNBurn(uint256)
+Function Security Analysis for yUSDC.buyNBurn(uint256)
+    There are no modifiers should be examined in function buyNBurn.
+    Check direct function security
+        - function yUSDC.buyNBurn(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any statements that compare msg.sender to a specific owner or address variable.
+        - function yUSDC.buyNBurn(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have any of the required structures explicitly. There are no require statements or if statements with the described structures.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['withdraw']
+        Function Security Analysis for yUSDC.withdraw(uint256)
+            The modifier of function withdraw are ['nonReentrant', 'noContract']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The 'nonReentrant' function name infers protection against reentrancy, which aligns with rule 3. Additionally, the code structure includes both
+                  a lock operation (_guardCounter increment) and an unlock condition (require statement checking _guardCounter), fulfilling rule 2.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC._withdrawSome(uint256)
+Function Security Analysis for yUSDC._withdrawSome(uint256)
+    There are no modifiers should be examined in function _withdrawSome.
+    Check direct function security
+        - function yUSDC._withdrawSome(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any access control logic based on 'msg.sender' that matches the required characteristics.
+        - function yUSDC._withdrawSome(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code checks a condition using `require`, but there is no assignment to the same variable after the `require` in any of the conditional blocks.
+          Therefore, none of the specified structures are followed.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['redeem', 'withdraw']
+        Function Security Analysis for yUSDC.redeem(uint256)
+            The modifier of function redeem are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: Rule 3: The modifier's name 'nonReentrant' suggests protection against reentrant calls (Rule 2). The code uses a counter mechanism to lock
+                  (increment _guardCounter) and ensure it remains unchanged during execution (require statement), which acts as a lock operation. The unlock action is
+                  implicit by checking the counter post-execution, fulfilling the lock operation's requirement without explicit reset as it's a counter-based strategy to
+                  prevent reentrancy.
+        Function Security Analysis for yUSDC.withdraw(uint256)
+            The modifier of function withdraw are ['nonReentrant', 'noContract']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: Upon re-evaluating the code, the modifier is named 'nonReentrant', following the naming convention that strongly suggests it intends to prevent
+                  reentrancy. The code initializes and checks a counter to enforce the non-reentrancy lock mechanism. The '_guardCounter' is incremented to act as a lock
+                  before the function logic, while the require statement checks for its consistency afterward to ensure it hasn't changed during execution. Therefore,
+                  both lock and unlock parts of the mechanism are present, aligning with rule 2's criteria.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC.rebalance()
+Function Security Analysis for yUSDC.rebalance()
+    There are no modifiers should be examined in function rebalance.
+    Check direct function security
+        - function yUSDC.rebalance() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check msg.sender against an owner or authorized address.
+        - function yUSDC.rebalance() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures as it does not have any require statements, variable assignment of the kind specified, or
+          explicit throws based on conditions.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC._withdrawAave(uint256)
+Function Security Analysis for yUSDC._withdrawAave(uint256)
+    There are no modifiers should be examined in function _withdrawAave.
+    Check direct function security
+        - function yUSDC._withdrawAave(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any checks on msg.sender against xxxOwner/xxxAddress, nor does it have a decision-making structure involving msg.sender.
+        - function yUSDC._withdrawAave(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified structures such as 'require(xxx == True)' or 'if(!xxx) throw'. It is a simple function call to
+          'redeem' without any checks or state changes like setting a variable to True/False after a require statement.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['redeem', 'deposit', '_withdrawSome', '_withdrawAll', 'rebalance', 'invest', 'withdraw']
+        Function Security Analysis for yUSDC.redeem(uint256)
+            The modifier of function redeem are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The code within the modifier uses a guard counter mechanism as a lock operation. It sets a counter before the function execution and checks it
+                  afterward, ensuring the function executes only once at a time to prevent reentrancy. Both the increase of the counter before the function execution and
+                  the check afterwards, effectively act similarly to the lock-unlock pattern described in characteristic 2. Therefore, the guard counter mechanism
+                  fulfills the requirement for characteristic 2, ensuring the function is executed only once at a time.
+        Function Security Analysis for yUSDC.deposit(uint256)
+            The modifier of function deposit are ['nonReentrant', 'noContract']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier uses a lock operation with `_guardCounter` where it increments at the beginning and checks consistently at the end of the function,
+                  ensuring it has not changed. Both the 'lock' (increment operation) and 'unlock' (checking the consistency of the counter) operations are present, which
+                  aligns with characteristic #2.
+        Function Security Analysis for yUSDC._withdrawSome(uint256)
+            There are no modifiers should be examined in function _withdrawSome.
+            Check direct function security
+                - function yUSDC._withdrawSome(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not use any access control checks based on 'msg.sender'. It checks the 'provider' variable instead.
+                - function yUSDC._withdrawSome(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not contain any of the specified structures involving both require statements and variable assignments.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['redeem', 'withdraw']
+                Function Security Analysis for yUSDC.redeem(uint256)
+                    The modifier of function redeem are ['nonReentrant']
+                    The result of checking modifiers:
+                        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                          Reason: Upon reviewing the code again, the modifier 'nonReentrant' indeed matches rule 2 as it includes both the lock (by incrementing
+                          _guardCounter) and unlock (by ensuring localCounter == _guardCounter) operations to prevent reentrancy, which ensures the function enters only
+                          once at a time. This confirms the initial judgment was correct.
+                Function Security Analysis for yUSDC.withdraw(uint256)
+                    The modifier of function withdraw are ['nonReentrant', 'noContract']
+                    The result of checking modifiers:
+                        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                          Reason: Upon reviewing the modifier code, the lock mechanism is ensured by incrementing _guardCounter at the beginning and checking its value at
+                          the end. This matches both the lock and unlock conditions required for rule 2.
+        Function Security Analysis for yUSDC._withdrawAll()
+            There are no modifiers should be examined in function _withdrawAll.
+            Check direct function security
+                - function yUSDC._withdrawAll() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any require, if, or assert statements involving msg.sender.
+                - function yUSDC._withdrawAll() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function _withdrawAll does not have any logical structures similar to require(X == true), require(X == false), or !X conditional checks as
+                  outlined in the criteria. It simply checks balances and triggers withdrawals if balances are greater than zero.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['redeem', 'deposit', 'rebalance', 'invest', 'withdraw']
+                Function Security Analysis for yUSDC.redeem(uint256)
+                    The modifier of function redeem are ['nonReentrant']
+                    The result of checking modifiers:
+                        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                          Reason: The modifier checks for reentrancy by using a counter mechanism to prevent nested calls, which equates to a lock operation. The
+                          increment of _guardCounter before the function logic and the requirement that the localCounter equals _guardCounter after the logic together
+                          ensure the lock and unlock mechanism of a reentrant guard.
+                Function Security Analysis for yUSDC.deposit(uint256)
+                    The modifier of function deposit are ['nonReentrant', 'noContract']
+                    The result of checking modifiers:
+                        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                          Reason: The provided modifier 'nonReentrant' uses a pattern to prevent reentrant calls by using a variable '_guardCounter' which is incremented
+                          at the start and checked again at the end. The condition 'require(localCounter == _guardCounter)' ensures that the function cannot be re-
+                          entered, which satisfies the lock operation requirement in characteristic 2 where state is preserved across function execution to prevent
+                          reentrancy. Both the increment and check act as lock and unlock operations, respectively.
+                Function Security Analysis for yUSDC.rebalance()
+                    There are no modifiers should be examined in function rebalance.
+                    Check direct function security
+                        - function yUSDC.rebalance() has no security assurance protected by checking the authority of msg.sender
+                          Reason: The provided function 'rebalance' does not contain any lines that explicitly check msg.sender against a specific owner or leader
+                          address, nor does it contain assert or require statements involving msg.sender to authorize access.
+                        - function yUSDC.rebalance() has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not contain any of the specified structures. The only conditional checks and assignments pertain to rebalancing lending
+                          providers and do not include require statements or conditions checking boolean values of variables with explicit assignments that match the
+                          specified patterns.
+External Call Analysis
+    Direct external call: ['AToken(aaveToken).redeem(amount)']
+    Analyze Transfer
+    Analyze Gas
+        - AToken(aaveToken).redeem(amount) ISN'T subjected to gas limits.
+    Remaining external call: ['AToken(aaveToken).redeem(amount)']
+    Analyze External Address
+        There are ['aaveToken'] should be checked in variable aaveToken
+        Checked variables: aaveToken
+            Yes 1. The provided function is a constructor because it is explicitly named 'constructor'.  2. The function hardcodes several addresses, including
+            `aaveToken`, with specific values.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC._withdrawDydx(uint256)
+Function Security Analysis for yUSDC._withdrawDydx(uint256)
+    There are no modifiers should be examined in function _withdrawDydx.
+    Check direct function security
+        - function yUSDC._withdrawDydx(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any access control structures such as require, if, or assert specifically related to checking the msg.sender against
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function yUSDC._withdrawDydx(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the specified structures. It neither uses 'require' statements nor 'if' statements. The code involves setting
+          up data structures for withdrawing funds from DyDx but without any conditional checks with the specified patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['redeem', 'deposit', '_withdrawSome', '_withdrawAll', 'rebalance', 'invest', 'withdraw']
+        Function Security Analysis for yUSDC.redeem(uint256)
+            The modifier of function redeem are ['nonReentrant']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: The modifier's code structure aligns with rule 2 as it uses a lock and unlock mechanism by setting a counter to manage reentrancy prevention.
+                  The '_guardCounter' is incremented at the start of the modifier, and a local copy is made before the function body. The 'require' statement checks if
+                  the local counter equals the global '_guardCounter', ensuring that reentrancy doesn't occur. Both the lock operation (incrementing '_guardCounter') and
+                  unlock operation (checking the counter against its prior state) are present, satisfying the complete confirmation for rule 2.
+        Function Security Analysis for yUSDC.deposit(uint256)
+            The modifier of function deposit are ['nonReentrant', 'noContract']
+            The result of checking modifiers:
+                - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                  Reason: Upon re-evaluation, rule 2 is about the entire locking mechanism involving both lock and unlock operations, which verify the call context. The
+                  code increments the _guardCounter and then checks at the end if the local copy matches, which together constitute a lock and unlock mechanism for
+                  reentrancy protection. Additionally, the 'nonReentrant' naming convention complies with rule 3.
+        Function Security Analysis for yUSDC._withdrawSome(uint256)
+            There are no modifiers should be examined in function _withdrawSome.
+            Check direct function security
+                - function yUSDC._withdrawSome(uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any access control checks involving msg.sender requiring it to match a specific owner, address, leader, or CEO.
+                - function yUSDC._withdrawSome(uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the defined structures, as it does not have variable assignments of the forms 'xxx = True;', 'xxx = False;', or
+                  any 'require' statements directly related to changing the boolean state of a variable.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['redeem', 'withdraw']
+                Function Security Analysis for yUSDC.redeem(uint256)
+                    The modifier of function redeem are ['nonReentrant']
+                    The result of checking modifiers:
+                        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                          Reason: The modifier uses '_guardCounter' as a mechanism to prevent reentrant calls by incrementing it at the start and checking its value
+                          afterward to ensure no reentrant calls have altered the state. The presence of both a lock (increment) and unlock (require check) operation
+                          confirms rule 2 is satisfied.
+                Function Security Analysis for yUSDC.withdraw(uint256)
+                    The modifier of function withdraw are ['nonReentrant', 'noContract']
+                    The result of checking modifiers:
+                        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                          Reason: The function uses a counter-based locking mechanism where '_guardCounter' is incremented and then checked with a local copy to prevent
+                          reentrancy. This acts as a locking operation and correctly resets, fulfilling both lock and unlock operations for the locking mechanism.
+        Function Security Analysis for yUSDC._withdrawAll()
+            There are no modifiers should be examined in function _withdrawAll.
+            Check direct function security
+                - function yUSDC._withdrawAll() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not contain any conditionals or assertions checking msg.sender against Owner, xxxOwner, xxxAddress, Leader, or CEO.
+                - function yUSDC._withdrawAll() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any require or if statements related to checking or throwing exceptions based on a condition related to a boolean
+                  variable, and it also does not modify any boolean variables to demonstrate any of the specific structural patterns provided.
+            Since the function can only be called by functions, we start to analyze indirect function security.
+            The reachable functions are ['redeem', 'deposit', 'rebalance', 'invest', 'withdraw']
+                Function Security Analysis for yUSDC.redeem(uint256)
+                    The modifier of function redeem are ['nonReentrant']
+                    The result of checking modifiers:
+                        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                          Reason: Upon reevaluation, the nonReentrant modifier aligns with rule 2. It utilizes a counter _guardCounter increment to act as a lock before
+                          function execution. The check require(localCounter == _guardCounter) acts as an unlock indicator after execution. Both lock (incrementing
+                          _guardCounter) and unlock (ensuring the original state via require check) operations are present, fulfilling the complete criteria.
+                Function Security Analysis for yUSDC.deposit(uint256)
+                    The modifier of function deposit are ['nonReentrant', 'noContract']
+                    The result of checking modifiers:
+                        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+                          Reason: The modifier 'nonReentrant' indeed suggests that it is designed to prevent reentrant calls by its name. However, according to the
+                          detailed rule (2), both lock and unlock operations must be identified within the code. In this provided code, there is an increment of
+                          '_guardCounter' which acts as a lock, and then there is a requirement check after execution which serves as an unlock by verifying the state
+                          wasn't corrupted by reentrant calls. Hence, both operations are present and correctly implemented based on rule (2).
+                Function Security Analysis for yUSDC.rebalance()
+                    There are no modifiers should be examined in function rebalance.
+                    Check direct function security
+                        - function yUSDC.rebalance() has no security assurance protected by checking the authority of msg.sender
+                          Reason: The code logic does not contain any checks or assertions that depend on msg.sender being equal to or not equal to a specific owner,
+                          address, or leader.
+                        - function yUSDC.rebalance() has no apparent security assurance by utilizing a lock machinism.
+                          Reason: The code does not contain any of the specified structures. It lacks any require statements or explicit checks followed by state variable
+                          assignments as described in the conditions.
+External Call Analysis
+    Direct external call: ['DyDx(dydx).operate(infos,args)']
+    Analyze Transfer
+    Analyze Gas
+        - DyDx(dydx).operate(infos,args) ISN'T subjected to gas limits.
+    Remaining external call: ['DyDx(dydx).operate(infos,args)']
+    Analyze External Address
+        There are ['dydx'] should be checked in variable dydx
+        Checked variables: dydx
+            Yes The provided code is a constructor function since it is explicitly named 'constructor'. This satisfies the first characteristic of the given conditions.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC.supplyCompound(uint256)
+Function Security Analysis for yUSDC.supplyCompound(uint256)
+    There are no modifiers should be examined in function supplyCompound.
+    Check direct function security
+        - function yUSDC.supplyCompound(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code only contains a require statement to check if the Compound mint function succeeded, and does not involve any checks related to msg.sender
+          ownership or roles like Owner, Address, Leader, or CEO.
+        - function yUSDC.supplyCompound(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code fragment provided does not contain any of the specified structures. It uses a `require` statement, but it is checking for the output of a
+          function call `Compound(compound).mint(amount) == 0`, which is not a boolean variable assignment or modification as described in the given structures.
+External Call Analysis
+    Direct external call: ['Compound(compound).mint(amount)']
+    Analyze Transfer
+    Analyze Gas
+        - Compound(compound).mint(amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Compound(compound).mint(amount)']
+    Analyze External Address
+        There are ['compound'] should be checked in variable compound
+        Checked variables: compound
+            Yes The provided function is a constructor as it has the name 'constructor'. Additionally, the state variable 'compound' is hardcoded within this constructor
+            function with a specific address '0x39AA39c021dfbaE8faC545936693aC917d5E7563'.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC.supplyFulcrum(uint256)
+Function Security Analysis for yUSDC.supplyFulcrum(uint256)
+    There are no modifiers should be examined in function supplyFulcrum.
+    Check direct function security
+        - function yUSDC.supplyFulcrum(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check if msg.sender is an owner or authorized address before executing the supplyFulcrum function. It only requires a successful mint
+          operation.
+        - function yUSDC.supplyFulcrum(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not match any of the specified structures as it only contains a require statement without any subsequent assignments to the same variable.
+          The require statement in the code is checking a condition with a function call but does not assign a value to a variable afterward corresponding to any of the
+          provided structures.
+External Call Analysis
+    Direct external call: ['Fulcrum(fulcrum).mint(address(this),amount)']
+    Analyze Transfer
+    Analyze Gas
+        - Fulcrum(fulcrum).mint(address(this),amount) ISN'T subjected to gas limits.
+    Remaining external call: ['Fulcrum(fulcrum).mint(address(this),amount)']
+    Analyze External Address
+        There are ['fulcrum'] should be checked in variable fulcrum
+        Checked variables: fulcrum
+            Yes The provided code is a constructor because the function name exactly matches the keyword 'constructor'. Additionally, the state variable 'fulcrum' is
+            hardcoded with a specific address value within the constructor.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: yUSDC.supplyAave(uint256)
+Function Security Analysis for yUSDC.supplyAave(uint256)
+    There are no modifiers should be examined in function supplyAave.
+    Check direct function security
+        - function yUSDC.supplyAave(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not have any access control checks related to msg.sender. It calls an Aave deposit function without any restriction on who
+          can call this function.
+        - function yUSDC.supplyAave(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided function does not contain any of the specified structures. It is a simple function that calls a deposit function on an Aave instance,
+          without involving any require statements or conditionals that manipulate the same variable as specified in the criteria.
+External Call Analysis
+    Direct external call: ['Aave(getAave()).deposit(token,amount,0)']
+    Analyze Transfer
+    Analyze Gas
+        - Aave(getAave()).deposit(token,amount,0) ISN'T subjected to gas limits.
+    Remaining external call: ['Aave(getAave()).deposit(token,amount,0)']
+    Analyze External Address
+        ERROR!! External call Aave(getAave()).deposit(token,amount,0) has no variable matched.

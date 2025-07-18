@@ -1,0 +1,10 @@
+
+Start analyze function: yUSDC.withdraw(uint256)
+Function Security Analysis for yUSDC.withdraw(uint256)
+    The modifier of function withdraw are ['nonReentrant', 'noContract']
+    The result of checking modifiers:
+        - modifier nonReentrant is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier 'nonReentrant' uses a _guardCounter to track function entry, with an increment before and a check after executing the function body,
+          ensuring the function enters only once per transaction. This matches characteristic 2 with both lock (counter increment) and unlock (require statement)
+          operations present.
+Conclusion: This function will not cause REE Problem.

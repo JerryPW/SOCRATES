@@ -1,0 +1,99 @@
+PunkMonkeyDividendTracker._reinvestDividendOfUser: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _reinvestDividendOfUser(address account) private returns (uint256) {
+        uint256 _withdrawableDividend = withdrawableDividendOf(account);
+        if (_withdrawableDividend > 0) {
+            bool success;
+
+            withdrawnDividends[account] = withdrawnDividends[account].add(_withdrawableDividend);
+
+            address[] memory path = new address[](2);
+            path[0] = uniswapV2Router.WETH();
+            path[1] = address(PunkMonkeyContract);
+
+            uint256 prevBalance = PunkMonkeyContract.balanceOf(address(this));
+
+            // make the swap
+            try
+                uniswapV2Router
+                    .swapExactETHForTokensSupportingFeeOnTransferTokens{value: _withdrawableDividend}
+                    (0, path, address(this), block.timestamp)
+            {
+                uint256 received =PunkMonkeyContract .balanceOf(address(this)).sub(prevBalance);
+                if (received > 0) {
+                    success = true;
+                    PunkMonkeyContract.transfer(account, received);
+                } 
+                else {
+                    success = false;
+                }
+            } catch {
+                success = false;
+            }
+
+            if (!success) {
+                withdrawnDividends[account] = withdrawnDividends[account].sub(_withdrawableDividend);
+                return 0;
+            }
+
+            return _withdrawableDividend;
+        }
+
+        return 0;
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _reinvestDividendOfUser(address account) private returns (uint256) {
+        uint256 _withdrawableDividend = withdrawableDividendOf(account);
+        if (_withdrawableDividend > 0) {
+            bool success;
+
+            withdrawnDividends[account] = withdrawnDividends[account].add(_withdrawableDividend);
+
+            address[] memory path = new address[](2);
+            path[0] = uniswapV2Router.WETH();
+            path[1] = address(PunkMonkeyContract);
+
+            uint256 prevBalance = PunkMonkeyContract.balanceOf(address(this));
+
+            // make the swap
+            try
+                uniswapV2Router
+                    .swapExactETHForTokensSupportingFeeOnTransferTokens{value: _withdrawableDividend}
+                    (0, path, address(this), block.timestamp)
+            {
+                uint256 received =PunkMonkeyContract .balanceOf(address(this)).sub(prevBalance);
+                if (received > 0) {
+                    success = true;
+                    PunkMonkeyContract.transfer(account, received);
+                } 
+                else {
+                    success = false;
+                }
+            } catch {
+                success = false;
+            }
+
+            if (!success) {
+                withdrawnDividends[account] = withdrawnDividends[account].sub(_withdrawableDividend);
+                return 0;
+            }
+
+            return _withdrawableDividend;
+        }
+
+        return 0;
+    }
+    
+Response:
+No
+--------------------------------------------------

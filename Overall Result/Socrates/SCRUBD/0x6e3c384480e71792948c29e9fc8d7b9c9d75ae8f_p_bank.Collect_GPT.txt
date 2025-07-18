@@ -1,0 +1,20 @@
+
+Start analyze function: p_bank.Collect(uint256)
+Function Security Analysis for p_bank.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function p_bank.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function code you provided does not incorporate any of the specific structures listed in the characteristics. It checks the account balance and
+          unlock time conditions, but does not include a direct requirement or assertion related to `msg.sender` equating to any 'Owner', 'Address', 'Leader', or 'CEO'.
+        - function p_bank.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not have the specified structural pattern of `require(xxx == True); xxx = False;` or `require(xxx == False); xxx = True;` or
+          `require(!xxx); xxx = True;` or `if(!xxx) throw; xxx = true;`. Hence, it does not meet the criteria for outputting 'Yes'.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

@@ -1,0 +1,183 @@
+Bussiness.setPriceFeeHBWALLET: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function setPriceFeeHBWALLET(uint256 _tokenId, uint256 _ethPrice) public returns (bool){
+      require(erc721Address.ownerOf(_tokenId) == msg.sender && prices[_tokenId].price != _ethPrice);
+      uint256 fee;
+      uint256 ethfee;
+      if(prices[_tokenId].price < _ethPrice) {
+          ethfee = (_ethPrice - prices[_tokenId].price) * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16); // ethfee * HBWALLETExchange / 2 * (10 ** 2) / (10 ** 18)
+          if(fee >= limitHBWALLETFee) {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), fee));
+          } else {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), limitHBWALLETFee));
+          }
+          fee += prices[_tokenId].hbfee;
+      } else {
+          ethfee = _ethPrice * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16);
+      }
+      prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);
+      return true;
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function setPriceFeeHBWALLET(uint256 _tokenId, uint256 _ethPrice) public returns (bool){
+      require(erc721Address.ownerOf(_tokenId) == msg.sender && prices[_tokenId].price != _ethPrice);
+      uint256 fee;
+      uint256 ethfee;
+      if(prices[_tokenId].price < _ethPrice) {
+          ethfee = (_ethPrice - prices[_tokenId].price) * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16); // ethfee * HBWALLETExchange / 2 * (10 ** 2) / (10 ** 18)
+          if(fee >= limitHBWALLETFee) {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), fee));
+          } else {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), limitHBWALLETFee));
+          }
+          fee += prices[_tokenId].hbfee;
+      } else {
+          ethfee = _ethPrice * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16);
+      }
+      prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);
+      return true;
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function setPriceFeeHBWALLET(uint256 _tokenId, uint256 _ethPrice) public returns (bool){
+      require(erc721Address.ownerOf(_tokenId) == msg.sender && prices[_tokenId].price != _ethPrice);
+      uint256 fee;
+      uint256 ethfee;
+      if(prices[_tokenId].price < _ethPrice) {
+          ethfee = (_ethPrice - prices[_tokenId].price) * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16); // ethfee * HBWALLETExchange / 2 * (10 ** 2) / (10 ** 18)
+          if(fee >= limitHBWALLETFee) {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), fee));
+          } else {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), limitHBWALLETFee));
+          }
+          fee += prices[_tokenId].hbfee;
+      } else {
+          ethfee = _ethPrice * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16);
+      }
+      prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);
+      return true;
+  }
+Response:
+{"StatementsA": {"prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);":"This statement updates the state variable 'prices' with a new 'Price' struct."}, "StatementsB": {"require(hbwalletToken.transferFrom(msg.sender, address(this), fee));":"This statement executes an external call to transfer tokens from the sender to the contract."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);
+2.External Call: require(hbwalletToken.transferFrom(msg.sender, address(this), fee));
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function setPriceFeeHBWALLET(uint256 _tokenId, uint256 _ethPrice) public returns (bool){
+      require(erc721Address.ownerOf(_tokenId) == msg.sender && prices[_tokenId].price != _ethPrice);
+      uint256 fee;
+      uint256 ethfee;
+      if(prices[_tokenId].price < _ethPrice) {
+          ethfee = (_ethPrice - prices[_tokenId].price) * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16); // ethfee * HBWALLETExchange / 2 * (10 ** 2) / (10 ** 18)
+          if(fee >= limitHBWALLETFee) {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), fee));
+          } else {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), limitHBWALLETFee));
+          }
+          fee += prices[_tokenId].hbfee;
+      } else {
+          ethfee = _ethPrice * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16);
+      }
+      prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);
+      return true;
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function setPriceFeeHBWALLET(uint256 _tokenId, uint256 _ethPrice) public returns (bool){
+      require(erc721Address.ownerOf(_tokenId) == msg.sender && prices[_tokenId].price != _ethPrice);
+      uint256 fee;
+      uint256 ethfee;
+      if(prices[_tokenId].price < _ethPrice) {
+          ethfee = (_ethPrice - prices[_tokenId].price) * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16); // ethfee * HBWALLETExchange / 2 * (10 ** 2) / (10 ** 18)
+          if(fee >= limitHBWALLETFee) {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), fee));
+          } else {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), limitHBWALLETFee));
+          }
+          fee += prices[_tokenId].hbfee;
+      } else {
+          ethfee = _ethPrice * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16);
+      }
+      prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);
+      return true;
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function setPriceFeeHBWALLET(uint256 _tokenId, uint256 _ethPrice) public returns (bool){
+      require(erc721Address.ownerOf(_tokenId) == msg.sender && prices[_tokenId].price != _ethPrice);
+      uint256 fee;
+      uint256 ethfee;
+      if(prices[_tokenId].price < _ethPrice) {
+          ethfee = (_ethPrice - prices[_tokenId].price) * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16); // ethfee * HBWALLETExchange / 2 * (10 ** 2) / (10 ** 18)
+          if(fee >= limitHBWALLETFee) {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), fee));
+          } else {
+              require(hbwalletToken.transferFrom(msg.sender, address(this), limitHBWALLETFee));
+          }
+          fee += prices[_tokenId].hbfee;
+      } else {
+          ethfee = _ethPrice * ETHFee / Percen;
+          fee = ethfee * HBWALLETExchange / 2 / (10 ** 16);
+      }
+      prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);
+      return true;
+  }
+Response:
+{"StatementsA": {"prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);":"This statement updates the state variable 'prices' with a new 'Price' struct."}, "StatementsB": {"require(hbwalletToken.transferFrom(msg.sender, address(this), fee));":"This statement executes an external call to the 'transferFrom' function of the 'hbwalletToken' contract."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: prices[_tokenId] = Price(msg.sender, _ethPrice, 0, fee);
+2.External Call: require(hbwalletToken.transferFrom(msg.sender, address(this), fee));
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

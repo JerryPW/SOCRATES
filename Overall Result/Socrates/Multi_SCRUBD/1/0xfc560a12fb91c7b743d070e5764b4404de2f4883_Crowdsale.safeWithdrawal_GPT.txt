@@ -1,0 +1,14 @@
+
+Start analyze function: Crowdsale.safeWithdrawal()
+Function Security Analysis for Crowdsale.safeWithdrawal()
+    The modifier of function safeWithdrawal are ['afterWithdrawalDeadline']
+    The result of checking modifiers:
+        - modifier afterWithdrawalDeadline has no relation with controlled by owner.
+          Reason: The modifier 'afterWithdrawalDeadline' does not follow any of the characteristics mentioned. It checks for a time condition and does not enforce
+          ownership or authorized access, nor does it implement a lock mechanism.
+    Check direct function security
+        - function Crowdsale.safeWithdrawal() has security assurance protected by checking the authority of msg.sender, the function would not cause REE problem.
+          Reason: The structure `if (beneficiary == msg.sender)` verifies that the sender is the beneficiary, and it matches with a condition checking if `msg.sender` is
+          equal to a specific address. The instruction explicitly states that if `msg.sender` is equal to an xxxOwner/xxxAddress like `beneficiary` and not a local
+          variable like xxx.owner, it fits the requirement.
+Conclusion: This function will not cause REE Problem.

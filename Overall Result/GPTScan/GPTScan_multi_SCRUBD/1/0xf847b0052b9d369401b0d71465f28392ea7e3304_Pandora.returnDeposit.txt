@@ -1,0 +1,80 @@
+Pandora.returnDeposit: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function returnDeposit() internal {
+        
+            if (msg.value == RETURN_DEPOSIT){
+
+                Investor memory investor;
+                investor = investors[msg.sender];
+                
+                if (investor.invested != 0){
+                    uint getPay = ((investor.invested.sub(investor.paid)).mul(RETURN_PERCENT).div(100)).sub(msg.value);
+                    msg.sender.transfer(getPay);
+                    investor.paid = 0;
+                    investor.invested = 0;
+                    investors[msg.sender] = investor;
+                }
+            }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function returnDeposit() internal {
+        
+            if (msg.value == RETURN_DEPOSIT){
+
+                Investor memory investor;
+                investor = investors[msg.sender];
+                
+                if (investor.invested != 0){
+                    uint getPay = ((investor.invested.sub(investor.paid)).mul(RETURN_PERCENT).div(100)).sub(msg.value);
+                    msg.sender.transfer(getPay);
+                    investor.paid = 0;
+                    investor.invested = 0;
+                    investors[msg.sender] = investor;
+                }
+            }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function returnDeposit() internal {
+        
+            if (msg.value == RETURN_DEPOSIT){
+
+                Investor memory investor;
+                investor = investors[msg.sender];
+                
+                if (investor.invested != 0){
+                    uint getPay = ((investor.invested.sub(investor.paid)).mul(RETURN_PERCENT).div(100)).sub(msg.value);
+                    msg.sender.transfer(getPay);
+                    investor.paid = 0;
+                    investor.invested = 0;
+                    investors[msg.sender] = investor;
+                }
+            }
+    }
+Response:
+{"StatementsA": {"investors[msg.sender] = investor;":"Updates the state variable 'investors' with the modified 'investor' struct."}, "StatementsB": {"msg.sender.transfer(getPay);":"Executes an external call to transfer Ether to the sender's address."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: investors[msg.sender] = investor;
+2.External Call: msg.sender.transfer(getPay);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,21 @@
+
+Start analyze function: PiggY_BANK.Collect(uint256)
+Function Security Analysis for PiggY_BANK.Collect(uint256)
+    There are no modifiers should be examined in function Collect.
+    Check direct function security
+        - function PiggY_BANK.Collect(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain a structure that directly checks msg.sender against an owner or leader type variable in accordance to any of the specified
+          patterns.
+        - function PiggY_BANK.Collect(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures such as 'require(xxx == True)' followed by 'xxx = False', or 'require(xxx == False)' followed
+          by 'xxx = True', and their variations with 'if (!xxx) throw'. It simply checks conditions and updates the balance if conditions are met, hence it does not meet
+          any of the specified conditions.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        External call msg.sender.call.value(_am)() calls msg.sender, which consider potential REE problem.
+Conclusion: This function will cause REE Problem.

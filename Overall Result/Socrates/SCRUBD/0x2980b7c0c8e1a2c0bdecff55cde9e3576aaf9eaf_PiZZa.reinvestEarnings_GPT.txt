@@ -1,0 +1,24 @@
+
+Start analyze function: PiZZa.reinvestEarnings(uint256)
+Function Security Analysis for PiZZa.reinvestEarnings(uint256)
+    There are no modifiers should be examined in function reinvestEarnings.
+    Check direct function security
+        - function PiZZa.reinvestEarnings(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: None of the conditions for msg.sender checks specified in the criteria were found.
+        - function PiZZa.reinvestEarnings(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not contain any of the required structures mentioned in the prompt. Although it contains a require statement, it doesn't set a
+          corresponding variable to false or true as per the given conditions. Instead, it compares a variable to check if the amountFromEarnings is less than or equal to
+          totalEarnings and reverts if it isn't.
+External Call Analysis
+    Direct external call: ['resolveToken.transfer(address0,weightDiff)']
+    Analyze Transfer
+        - resolveToken.transfer(address0,weightDiff) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - resolveToken.transfer(address0,weightDiff) ISN'T subjected to gas limits.
+    Remaining external call: ['resolveToken.transfer(address0,weightDiff)']
+    Analyze External Address
+        There are ['resolveToken'] should be checked in variable resolveToken
+        Checked variables: resolveToken
+            Yes The provided code contains a constructor function which sets the state variable resolveToken. The function is explicitly named 'constructor', which is one
+            of the characteristics to check, thus satisfying the first condition.
+Conclusion: This function will not cause REE Problem.

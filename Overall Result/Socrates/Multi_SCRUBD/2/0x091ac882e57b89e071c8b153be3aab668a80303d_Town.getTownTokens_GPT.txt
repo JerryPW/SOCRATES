@@ -1,0 +1,41 @@
+
+Start analyze function: Town.getTownTokens(address)
+Function Security Analysis for Town.getTownTokens(address)
+    There are no modifiers should be examined in function getTownTokens.
+    Check direct function security
+        - function Town.getTownTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any check related to msg.sender being an owner or a specific address. The checks are mainly on the 'holder' address and amount
+          values.
+        - function Town.getTownTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the specified structures where a variable is required to be true or false, then explicitly set to the opposite
+          value with a potential optional reset. The require statement in the code checks for a non-null address, and there are no such patterns involving a boolean
+          variable as described.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(change)', '_remunerationsQueue[i_scope_1]._address.transfer(_remunerationsQueue[i_scope_1]._amount)',
+    '_token.transfer(holder,tokenBalance)', '_remunerationsQueue[i]._address.transfer(amount)', '_remunerationsQueue[i_scope_1]._address.transfer(amount)',
+    '_token.transfer(holder,tokenAmount)', '_remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount)']
+    Analyze Transfer
+        - msg.sender.transfer(change) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains '.transfer('
+        keyword.. Parameter in 'transfer'/'send': 1.
+        - _remunerationsQueue[i_scope_1]._address.transfer(_remunerationsQueue[i_scope_1]._amount) is subjected to gas limits. Therefore, it has no potential REE problem.
+        Here is the reason: The external call contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - _token.transfer(holder,tokenBalance) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - _remunerationsQueue[i]._address.transfer(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - _remunerationsQueue[i_scope_1]._address.transfer(amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+        - _token.transfer(holder,tokenAmount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+        - _remunerationsQueue[i]._address.transfer(_remunerationsQueue[i]._amount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the
+        reason: The external call contains '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - _token.transfer(holder,tokenBalance) ISN'T subjected to gas limits.
+        - _token.transfer(holder,tokenAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['_token.transfer(holder,tokenBalance)', '_token.transfer(holder,tokenAmount)']
+    Analyze External Address
+        There are ['_token'] should be checked in variable _token
+        Checked variables: _token
+            Yes The function in the provided code is explicitly named 'constructor', thus it satisfies the first characteristic of being a constructor.
+        There are ['_token'] should be checked in variable _token
+        Checked variables: _token
+            Yes The given function is explicitly named 'constructor'. Therefore, it satisfies the first rule that checks if the function is a constructor.
+Conclusion: This function will not cause REE Problem.

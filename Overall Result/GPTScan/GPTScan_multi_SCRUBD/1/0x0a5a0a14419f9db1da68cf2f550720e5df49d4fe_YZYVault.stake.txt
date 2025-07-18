@@ -1,0 +1,27 @@
+YZYVault.stake: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function stake() external payable returns (bool) {
+        require(!isContract(_msgSender()), "Vault: Could not be contract.");
+        require(msg.value >= _minDepositETHAmount, "Vault: insufficient staking amount.");
+        uint256 initialBalance = _yzyETHV2Pair.balanceOf(address(this));
+        require(swapAndLiquifyForYZY(msg.value), "Vault: Failed to get LP tokens.");
+        uint256 newBalance = _yzyETHV2Pair.balanceOf(address(this)).sub(initialBalance);
+        StakerInfo storage staker = _stakers[_msgSender()];
+        if (staker.stakedAmount > 0) {
+            claimYzyReward();
+            claimSwapReward();
+        } else {
+            staker.lastClimedBlockForYzyReward = block.number;
+            staker.lastClimedBlockForSwapReward = block.number;
+        }
+        staker.stakedAmount = staker.stakedAmount.add(newBalance);
+        staker.lockedTo = _lockPeriod.add(block.timestamp);
+        emit Staked(_msgSender(), newBalance);
+        return _sendLotteryAmount();
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

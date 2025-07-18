@@ -1,0 +1,92 @@
+Crowdsale.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () public payable 
+	{
+        require(!crowdsaleClosed);
+		require(now <= deadline);
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised    += amount;
+		allAmountRaised += amount;
+        tokenReward.transfer(msg.sender, amount / price);
+        emit FundTransfer(msg.sender, amount, true);
+		
+		if (amountRaised >= limitTransfer)
+		{
+			if (beneficiary.send(amountRaised)) 
+			{
+                amountRaised = 0;
+				emit FundTransfer(beneficiary, amountRaised, false);
+            }
+		}
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () public payable 
+	{
+        require(!crowdsaleClosed);
+		require(now <= deadline);
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised    += amount;
+		allAmountRaised += amount;
+        tokenReward.transfer(msg.sender, amount / price);
+        emit FundTransfer(msg.sender, amount, true);
+		
+		if (amountRaised >= limitTransfer)
+		{
+			if (beneficiary.send(amountRaised)) 
+			{
+                amountRaised = 0;
+				emit FundTransfer(beneficiary, amountRaised, false);
+            }
+		}
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () public payable 
+	{
+        require(!crowdsaleClosed);
+		require(now <= deadline);
+        uint amount = msg.value;
+        balanceOf[msg.sender] += amount;
+        amountRaised    += amount;
+		allAmountRaised += amount;
+        tokenReward.transfer(msg.sender, amount / price);
+        emit FundTransfer(msg.sender, amount, true);
+		
+		if (amountRaised >= limitTransfer)
+		{
+			if (beneficiary.send(amountRaised)) 
+			{
+                amountRaised = 0;
+				emit FundTransfer(beneficiary, amountRaised, false);
+            }
+		}
+    }
+Response:
+{"StatementsA": {"balanceOf[msg.sender] += amount;":"Updates the balanceOf state variable for the sender."}, "StatementsB": {"beneficiary.send(amountRaised)":"Executes an external call to send ether to the beneficiary."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: balanceOf[msg.sender] += amount;
+2.External Call: beneficiary.send(amountRaised)
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

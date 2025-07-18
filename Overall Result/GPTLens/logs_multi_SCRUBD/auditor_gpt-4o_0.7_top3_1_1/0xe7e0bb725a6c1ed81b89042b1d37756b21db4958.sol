@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "BDSM_Crowdsale",
+        "code": "function BDSM_Crowdsale(address _tokenAddress, address _owner, address _stopScamHolder) { owner = _owner; sharesTokenAddress = token(_tokenAddress); safeContract = _stopScamHolder; }",
+        "vulnerability": "Lack of Access Control",
+        "reason": "The constructor does not enforce any access control, meaning anyone can deploy this contract and assign themselves as the owner. This could allow an attacker to deploy a fake crowdsale contract and trick users into sending their funds to a malicious address.",
+        "file_name": "0xe7e0bb725a6c1ed81b89042b1d37756b21db4958.sol"
+    },
+    {
+        "function_name": "function() payable",
+        "code": "function() payable { if(now > 1519084800) price = 0.0105 * 1 ether; else if(now > 1516406400) price = 0.0070 * 1 ether; tokenFree = sharesTokenAddress.balanceOf(this); if (now < startICO) { msg.sender.transfer(msg.value); } else if (now > stopICO) { msg.sender.transfer(msg.value); if(!tokenWithdraw){ sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this)); tokenFree = sharesTokenAddress.balanceOf(this); tokenWithdraw = true; crowdsaleClosed = true; } } else if (crowdsaleClosed) { msg.sender.transfer(msg.value); } else { uint256 tokenToBuy = msg.value / price * coeff; if(tokenToBuy <= 0) msg.sender.transfer(msg.value); require(tokenToBuy > 0); uint256 actualETHTransfer = tokenToBuy * price / coeff; if (tokenFree >= tokenToBuy) { owner.transfer(actualETHTransfer); if (msg.value > actualETHTransfer){ msg.sender.transfer(msg.value - actualETHTransfer); } sharesTokenAddress.transfer(msg.sender, tokenToBuy); tokenSold += tokenToBuy; tokenFree -= tokenToBuy; if(tokenFree==0) crowdsaleClosed = true; } else { uint256 sendETH = tokenFree * price / coeff; owner.transfer(sendETH); sharesTokenAddress.transfer(msg.sender, tokenFree); msg.sender.transfer(msg.value - sendETH); tokenSold += tokenFree; tokenFree = sharesTokenAddress.balanceOf(this); crowdsaleClosed = true; } } TokenFree(tokenFree); CrowdsaleClosed(crowdsaleClosed); }",
+        "vulnerability": "Reentrancy Attack",
+        "reason": "The payable fallback function transfers Ether to msg.sender before updating the state variables tokenSold and tokenFree. This sequence allows a reentrancy attack wherein the attacker can exploit the fallback function to repeatedly call and drain the contract of tokens or Ether before the state is correctly updated.",
+        "file_name": "0xe7e0bb725a6c1ed81b89042b1d37756b21db4958.sol"
+    },
+    {
+        "function_name": "function() payable",
+        "code": "function() payable { if(now > 1519084800) price = 0.0105 * 1 ether; else if(now > 1516406400) price = 0.0070 * 1 ether; tokenFree = sharesTokenAddress.balanceOf(this); if (now < startICO) { msg.sender.transfer(msg.value); } else if (now > stopICO) { msg.sender.transfer(msg.value); if(!tokenWithdraw){ sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this)); tokenFree = sharesTokenAddress.balanceOf(this); tokenWithdraw = true; crowdsaleClosed = true; } } else if (crowdsaleClosed) { msg.sender.transfer(msg.value); } else { uint256 tokenToBuy = msg.value / price * coeff; if(tokenToBuy <= 0) msg.sender.transfer(msg.value); require(tokenToBuy > 0); uint256 actualETHTransfer = tokenToBuy * price / coeff; if (tokenFree >= tokenToBuy) { owner.transfer(actualETHTransfer); if (msg.value > actualETHTransfer){ msg.sender.transfer(msg.value - actualETHTransfer); } sharesTokenAddress.transfer(msg.sender, tokenToBuy); tokenSold += tokenToBuy; tokenFree -= tokenToBuy; if(tokenFree==0) crowdsaleClosed = true; } else { uint256 sendETH = tokenFree * price / coeff; owner.transfer(sendETH); sharesTokenAddress.transfer(msg.sender, tokenFree); msg.sender.transfer(msg.value - sendETH); tokenSold += tokenFree; tokenFree = sharesTokenAddress.balanceOf(this); crowdsaleClosed = true; } } TokenFree(tokenFree); CrowdsaleClosed(crowdsaleClosed); }",
+        "vulnerability": "Price Manipulation",
+        "reason": "The contract sets the price based on specific timestamps without any off-chain or decentralized oracle verification. An attacker could manipulate the time (e.g., by mining) to exploit different token prices, potentially buying tokens at a lower price intended for an earlier time period.",
+        "file_name": "0xe7e0bb725a6c1ed81b89042b1d37756b21db4958.sol"
+    }
+]

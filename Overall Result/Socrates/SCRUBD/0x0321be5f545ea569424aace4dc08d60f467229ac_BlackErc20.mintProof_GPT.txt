@@ -1,0 +1,45 @@
+
+Start analyze function: BlackErc20.mintProof(uint256,address,bytes32[])
+Function Security Analysis for BlackErc20.mintProof(uint256,address,bytes32[])
+    There are no modifiers should be examined in function mintProof.
+    Check direct function security
+        - function BlackErc20.mintProof(uint256,address,bytes32[]) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check if 'msg.sender' matches any xxxOwner/xxxAddress/Leader/CEO condition.
+        - function BlackErc20.mintProof(uint256,address,bytes32[]) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The function does not contain any of the required structures where a variable is set to false and later checked or set to true according to the
+          described formats. Specifically, there's no usage of 'require(xxx == True)' followed by setting 'xxx = False' or vice versa. Also, there are no 'if(!xxx) throw'
+          conditions followed by 'xxx = true'. Hence, none of the conditions match.
+External Call Analysis
+    Direct external call: ['IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IUniswapV2Pair(lpContract).sync()', 'IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}()',
+    'IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)']
+    Analyze Transfer
+    Analyze Gas
+        - IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000) ISN'T subjected to gas limits.
+        - IUniswapV2Pair(lpContract).sync() ISN'T subjected to gas limits.
+        - IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}() ISN'T subjected to gas limits.
+        - IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000) ISN'T subjected to gas limits.
+    Remaining external call: ['IWETH(wethAddress).transferFrom(address(this),lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)',
+    'IUniswapV2Pair(lpContract).sync()', 'IWETH(wethAddress).deposit{value:msg.value*(1000-deployReserveEthPro-donateEthPro)/1000}()',
+    'IWETH(wethAddress).approve(lpContract,msg.value*(1000-deployReserveEthPro-donateEthPro)/1000)']
+    Analyze External Address
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+        There are ['lpContract'] should be checked in variable lpContract
+        Checked variables: lpContract
+            No The provided code is for the function 'setLPContract', which does not match the contract name 'BlackErc20', thus it is not a constructor. The function
+            updates the state variable 'lpContract' with a parameter 'lp', but it is not hardcoded as it relies on external input rather than a fixed value.
+            Function Security Analysis for BlackErc20.setLPContract(address)
+                The modifier of function setLPContract are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier name 'onlyOwner' suggests it enforces that only the owner can execute the function, fitting rule 3. There is no indication of a
+                      lock/unlock operation, fitting rule 2.
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+        There are ['wethAddress'] should be checked in variable wethAddress
+        Checked variables: wethAddress
+            State variable wethAddress has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

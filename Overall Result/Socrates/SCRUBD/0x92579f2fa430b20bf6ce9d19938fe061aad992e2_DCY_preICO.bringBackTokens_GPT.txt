@@ -1,0 +1,34 @@
+
+Start analyze function: DCY_preICO.bringBackTokens()
+Function Security Analysis for DCY_preICO.bringBackTokens()
+    The modifier of function bringBackTokens are ['afterDeadline']
+    The result of checking modifiers:
+        - modifier afterDeadline has no relation with controlled by owner.
+          Reason: The modifier checks if the current time is greater than or equal to a 'deadline', which is unrelated to ownership or reentrancy prevention.
+    Check direct function security
+        - function DCY_preICO.bringBackTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function uses 'if (msg.sender == beneficiary)', but 'beneficiary' is not a term like 'Owner', 'Address', 'Leader', or 'CEO' required by the prompt.
+          Therefore, it does not match the specified structure based on the variable name requirement.
+        - function DCY_preICO.bringBackTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code contains a 'require' statement that checks if 'tokensLeft > 0'. However, there is no subsequent assignment of 'tokensLeft = False' or
+          'tokensLeft = True'. Therefore, none of the specified structures are present in the code.
+External Call Analysis
+    Direct external call: ['tokenReward.transfer(beneficiary,tokensLeft)', 'tokenReward.getBalanceOf(address(this))']
+    Analyze Transfer
+        - tokenReward.transfer(beneficiary,tokensLeft) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - tokenReward.transfer(beneficiary,tokensLeft) ISN'T subjected to gas limits.
+        - tokenReward.getBalanceOf(address(this)) ISN'T subjected to gas limits.
+    Remaining external call: ['tokenReward.transfer(beneficiary,tokensLeft)', 'tokenReward.getBalanceOf(address(this))']
+    Analyze External Address
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The provided code is likely a constructor because the function name 'DCY_preICO' matches the contract name 'DCY_preICO'. Additionally, the code sets the
+            state variable 'tokenReward' directly using the parameter 'addressOfTokenUsedAsReward'. Therefore, this satisfies the first characteristic of checking whether
+            the provided code is a constructor.
+        There are ['tokenReward'] should be checked in variable tokenReward
+        Checked variables: tokenReward
+            Yes The function name 'DCY_preICO' matches the contract name 'DCY_preICO', indicating that the function is a constructor. Constructors typically initialize
+            state variables, which is what is happening here with the 'tokenReward' state variable being set. Therefore, the first characteristic (the function being a
+            constructor) is satisfied.
+Conclusion: This function will not cause REE Problem.

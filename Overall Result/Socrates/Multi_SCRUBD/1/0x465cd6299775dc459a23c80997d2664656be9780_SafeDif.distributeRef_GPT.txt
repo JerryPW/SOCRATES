@@ -1,0 +1,37 @@
+
+Start analyze function: SafeDif.distributeRef(uint256,uint256)
+Function Security Analysis for SafeDif.distributeRef(uint256,uint256)
+    There are no modifiers should be examined in function distributeRef.
+    Check direct function security
+        - function SafeDif.distributeRef(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any of the specified patterns such as condition checks for msg.sender regarding specific user roles like
+          xxxOwner/xxxAddress/Leader/CEO.
+        - function SafeDif.distributeRef(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures. It involves conditions and arithmetic operations, but none of the particular patterns with
+          'require' or 'throw' structures as described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['invest', 'fallback']
+        Function Security Analysis for SafeDif.invest(uint256,uint256)
+            The modifier of function invest are ['isActivated']
+            The result of checking modifiers:
+                - modifier isActivated has no relation with controlled by owner.
+                  Reason: The modifier `isActivated` checks if the variable `activated_` is true but does not restrict access based on the msg.sender or enforce a lock
+                  pattern. It also does not suggest its purpose by its name indicating ownership control or reentrancy protection.
+            Check direct function security
+                - function SafeDif.invest(uint256,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not include any check where 'require' or 'if' conditions check specifically against 'msg.sender' for an xxx owner or address
+                  such as xxxOwner, xxxAddress, Leader, CEO. The only 'require' here checks on '_planId' and 'msg.value'.
+                - function SafeDif.invest(uint256,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not contain any of the required structures: require(xxx == True); xxx = False;, require(xxx == False); xxx = True;, require(!xxx);
+                  xxx = True;, or if(!xxx) throw; xxx = true;. Hence, it does not satisfy any of the criteria for outputting 'Yes'.
+External Call Analysis
+    Direct external call: ['player_[_affID1].addr.transfer(_aff)', 'player_[_affID2].addr.transfer(_aff)']
+    Analyze Transfer
+        - player_[_affID1].addr.transfer(_aff) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, which satisfies the first characteristic.. Parameter in 'transfer'/'send': 1.
+        - player_[_affID2].addr.transfer(_aff) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword, which satisfies the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

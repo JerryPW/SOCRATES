@@ -1,0 +1,25 @@
+
+Start analyze function: Daoclub.subscriptionCancel(uint256)
+Function Security Analysis for Daoclub.subscriptionCancel(uint256)
+    There are no modifiers should be examined in function subscriptionCancel.
+    Check direct function security
+        - function Daoclub.subscriptionCancel(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code uses '_msgSender() == subscription._member' which checks if the sender of the message (caller) is a specific member related to the
+          subscription, not a role like 'xxxOwner', 'xxxAddress', 'Leader', or 'CEO'. It does not meet any of the defined structures checking for specific roles.
+        - function Daoclub.subscriptionCancel(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided function does not contain any of the specified code structures, as it lacks the sequential use of 'require(xxx == True)' or 'require(xxx ==
+          False)' followed by changing the value of the same variable 'xxx' as described in any of the given patterns.
+External Call Analysis
+    Direct external call: ['_targetToken.safeTransfer(subscription._member,subscription._buyAmount)', 'address(subscription._member).transfer(subscription._buyAmount)']
+    Analyze Transfer
+        - address(subscription._member).transfer(subscription._buyAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        call 'address(subscription._member).transfer(subscription._buyAmount)' contains the keyword '.transfer('.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+        - _targetToken.safeTransfer(subscription._member,subscription._buyAmount) ISN'T subjected to gas limits.
+    Remaining external call: ['_targetToken.safeTransfer(subscription._member,subscription._buyAmount)']
+    Analyze External Address
+        There are ['_targetToken'] should be checked in variable _targetToken
+        Checked variables: _targetToken
+            Yes The function 'init' explicitly hardcodes the address of the '_targetToken' under specific conditions. If 'targetSymbol' matches "USDT" or "USDC", the
+            corresponding token addresses are hardcoded into the smart contract when the function executes.
+Conclusion: This function will not cause REE Problem.

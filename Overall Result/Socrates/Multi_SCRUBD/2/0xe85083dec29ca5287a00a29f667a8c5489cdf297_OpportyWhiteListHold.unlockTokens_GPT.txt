@@ -1,0 +1,32 @@
+
+Start analyze function: OpportyWhiteListHold.unlockTokens()
+Function Security Analysis for OpportyWhiteListHold.unlockTokens()
+    There are no modifiers should be examined in function unlockTokens.
+    Check direct function security
+        - function OpportyWhiteListHold.unlockTokens() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code checks the requirements without a direct comparison to a specific owner or address such as xxxOwner/xxxAddress/Leader/CEO as described in the
+          given patterns.
+        - function OpportyWhiteListHold.unlockTokens() has no apparent security assurance by utilizing a lock machinism.
+          Reason: In the code, after the require statement checking '!holderList[msg.sender].withdrawed', the operation holderList[msg.sender].withdrawed = true; is
+          performed after the OppToken.transfer() and not immediately after the require statement. This means that the negation is not completed before the main logic
+          executes, which is transferring tokens. Thus, it does not satisfy the requirement of immediate negation after state check.
+External Call Analysis
+    Direct external call: ['OppToken.transfer(msg.sender,holderList[msg.sender].tokens)']
+    Analyze Transfer
+        - OppToken.transfer(msg.sender,holderList[msg.sender].tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - OppToken.transfer(msg.sender,holderList[msg.sender].tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['OppToken.transfer(msg.sender,holderList[msg.sender].tokens)']
+    Analyze External Address
+        There are ['OppToken'] should be checked in variable OppToken
+        Checked variables: OppToken
+            No The function `setToken` does not match the contract name `OpportyWhiteListHold` and is not named 'constructor', so it is not a constructor. Additionally,
+            the function sets the state variable `OppToken` to a new value based on the parameter `newToken`, which is not hardcoded. Therefore, the function does not
+            have hardcoded state variables.
+            Function Security Analysis for OpportyWhiteListHold.setToken(address)
+                The modifier of function setToken are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The modifier requires that msg.sender is equal to owner, which is a check to ensure that only the owner can execute the function, fulfilling
+                      rule 1. There's no structure corresponding to rule 2 present, as there is no lock or unlock operation found in the code.
+Conclusion: This function will not cause REE Problem.

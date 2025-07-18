@@ -1,0 +1,29 @@
+
+Start analyze function: Slaughter3D.DivsToRefundpot()
+Function Security Analysis for Slaughter3D.DivsToRefundpot()
+    There are no modifiers should be examined in function DivsToRefundpot.
+    Check direct function security
+        - function Slaughter3D.DivsToRefundpot() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not have any of the specified structures involving `msg.sender`.
+        - function Slaughter3D.DivsToRefundpot() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code includes the statement `require(dividends > 0);` which does not match any of the specified patterns as it doesn't involve setting a variable to
+          True or False after the require statement.
+External Call Analysis
+    Direct external call: ['SPASM_.disburse.value(base)()', 'p3dContract.withdraw()', 'p3dContract.myDividends(true)']
+    Analyze Transfer
+    Analyze Gas
+        - SPASM_.disburse.value(base)() ISN'T subjected to gas limits.
+        - p3dContract.withdraw() ISN'T subjected to gas limits.
+        - p3dContract.myDividends(true) ISN'T subjected to gas limits.
+    Remaining external call: ['SPASM_.disburse.value(base)()', 'p3dContract.withdraw()', 'p3dContract.myDividends(true)']
+    Analyze External Address
+        There are ['SPASM_'] should be checked in variable SPASM_
+        Checked variables: SPASM_
+            State variable SPASM_ has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+        There are ['p3dContract'] should be checked in variable p3dContract
+        Checked variables: p3dContract
+            State variable p3dContract has initialized in public area after declaration.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,20 @@
+
+Start analyze function: NamiExchange.closeBidOrder()
+Function Security Analysis for NamiExchange.closeBidOrder()
+    There are no modifiers should be examined in function closeBidOrder.
+    Check direct function security
+        - function NamiExchange.closeBidOrder() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not check against 'msg.sender == xxxOwner/xxxAddress/Leader/CEO' or any similar pattern as described in the conditions.
+        - function NamiExchange.closeBidOrder() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the specified structures like require(xxx == True), xxx = False; or require(xxx == False), xxx = True; etc. The require
+          statement checks if bid[msg.sender].eth and bid[msg.sender].price are greater than zero, but does not flip their boolean states as described in the criteria.
+          There are no statements that set these variables to boolean true/false states.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(bid[msg.sender].eth)']
+    Analyze Transfer
+        - msg.sender.transfer(bid[msg.sender].eth) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains
+        the '.transfer(' keyword, which satisfies the first characteristic.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

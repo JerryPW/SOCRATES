@@ -1,0 +1,75 @@
+EthTokenToSmthSwaps.refund: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function refund(address _participantAddress) public {
+    Swap memory swap = swaps[msg.sender][_participantAddress];
+
+    require(swap.balance > uint256(0));
+    require(swap.createdAt.add(SafeTime) < now);
+
+    ERC20(swap.token).transfer(msg.sender, swap.balance);
+    clean(msg.sender, _participantAddress);
+
+    Refund();
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function refund(address _participantAddress) public {
+    Swap memory swap = swaps[msg.sender][_participantAddress];
+
+    require(swap.balance > uint256(0));
+    require(swap.createdAt.add(SafeTime) < now);
+
+    ERC20(swap.token).transfer(msg.sender, swap.balance);
+    clean(msg.sender, _participantAddress);
+
+    Refund();
+  }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function refund(address _participantAddress) public {
+    Swap memory swap = swaps[msg.sender][_participantAddress];
+
+    require(swap.balance > uint256(0));
+    require(swap.createdAt.add(SafeTime) < now);
+
+    ERC20(swap.token).transfer(msg.sender, swap.balance);
+    clean(msg.sender, _participantAddress);
+
+    Refund();
+  }
+Response:
+{
+  "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function refund(address _participantAddress) public {
+    Swap memory swap = swaps[msg.sender][_participantAddress];
+
+    require(swap.balance > uint256(0));
+    require(swap.createdAt.add(SafeTime) < now);
+
+    ERC20(swap.token).transfer(msg.sender, swap.balance);
+    clean(msg.sender, _participantAddress);
+
+    Refund();
+  }
+    
+Response:
+No
+--------------------------------------------------

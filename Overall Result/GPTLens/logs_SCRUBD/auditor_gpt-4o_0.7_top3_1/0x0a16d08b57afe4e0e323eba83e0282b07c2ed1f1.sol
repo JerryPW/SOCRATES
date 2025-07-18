@@ -1,0 +1,23 @@
+[
+    {
+        "function_name": "teamMessage",
+        "code": "function teamMessage(string memory input) external onlyOwner { }",
+        "vulnerability": "Function is redundant and can be used for social engineering",
+        "reason": "The `teamMessage` function is an empty function that takes a string input and does nothing with it. While this does not directly cause a vulnerability, it can be exploited for social engineering or phishing attacks. Users may be misled to believe that this function is used for communication with the team, leading to potential scams.",
+        "file_name": "0x0a16d08b57afe4e0e323eba83e0282b07c2ed1f1.sol"
+    },
+    {
+        "function_name": "forceSwap",
+        "code": "function forceSwap() external onlyOwner { _swapTokensForEth(balanceOf(address(this))); (bool success,) = address(feeWallet).call{value : address(this).balance}(\"\"); success = false; }",
+        "vulnerability": "Potential loss of funds due to unchecked call",
+        "reason": "The `forceSwap` function allows the owner to swap the entire token balance of the contract to ETH and then attempts to transfer the entire ETH balance to the fee wallet. However, the success of the transfer is not properly checked, and the `success` variable is set to false immediately after the call, potentially ignoring any failed transfer attempts. This could lead to loss of funds if the transfer fails for any reason.",
+        "file_name": "0x0a16d08b57afe4e0e323eba83e0282b07c2ed1f1.sol"
+    },
+    {
+        "function_name": "_transfer",
+        "code": "function _transfer( address from, address to, uint256 amount ) internal override { require(from != address(0), \"ERC20: transfer from the zero address\"); require(to != address(0), \"ERC20: transfer to the zero address\"); require(!_isBlacklisted[from], \"Your address has been marked as a sniper, you are unable to transfer or swap.\"); if (amount == 0) { super._transfer(from, to, 0); return; } if(tradingActive) { require(block.number >= _launchBlock + deadBlocks, \"NOT BOT\"); } if (limitsInEffect) { if ( from != owner() && to != owner() && to != address(0) && to != address(0xdead) && !_swapping ) { if (!tradingActive) { require(_isExcludedFromFees[from] || _isExcludedFromFees[to], \"Trading is not active.\"); } if (balanceOf(to) == 0 && _holderFirstBuyTimestamp[to] == 0) { _holderFirstBuyTimestamp[to] = block.timestamp; } if (transferDelayEnabled) { if (to != owner() && to != address(uniswapV2Router) && to != address(uniswapV2Pair)) { require(_holderLastTransferTimestamp[tx.origin] < block.number, \"_transfer:: Transfer Delay enabled. Only one purchase per block allowed.\"); _holderLastTransferTimestamp[tx.origin] = block.number; } } if (automatedMarketMakerPairs[from] && !_isExcludedMaxTransactionAmount[to]) { require(amount <= maxTransactionAmount, \"Buy transfer amount exceeds the maxTransactionAmount.\"); require(amount + balanceOf(to) <= maxWallet, \"Max wallet exceeded\"); } else if (automatedMarketMakerPairs[to] && !_isExcludedMaxTransactionAmount[from]) { require(amount <= maxTransactionAmount, \"Sell transfer amount exceeds the maxTransactionAmount.\"); } else if (!_isExcludedMaxTransactionAmount[to]) { require(amount + balanceOf(to) <= maxWallet, \"Max wallet exceeded\"); } } } uint256 contractTokenBalance = balanceOf(address(this)); bool canSwap = contractTokenBalance >= swapTokensAtAmount; if ( canSwap && !_swapping && !automatedMarketMakerPairs[from] && !_isExcludedFromFees[from] && !_isExcludedFromFees[to] ) { _swapping = true; swapBack(); _swapping = false; } bool takeFee = !_swapping; if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) { takeFee = false; } uint256 fees = 0; if (takeFee) { fees = amount.mul(totalFees).div(100); _tokensForLiquidity += fees * _liquidityFee / totalFees; _tokensForMarketing += fees * _marketingFee / totalFees; if (fees > 0) { super._transfer(from, address(this), fees); } amount -= fees; } super._transfer(from, to, amount); }",
+        "vulnerability": "Potential denial of service due to transfer restrictions",
+        "reason": "The `_transfer` function imposes multiple restrictions, such as transfer delays, maximum transaction amounts, and maximum wallet balances. These restrictions can be exploited by an attacker to cause a denial of service for legitimate users by strategically manipulating the transfer conditions, thereby preventing users from making valid transfers under certain circumstances.",
+        "file_name": "0x0a16d08b57afe4e0e323eba83e0282b07c2ed1f1.sol"
+    }
+]

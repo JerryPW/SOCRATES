@@ -1,0 +1,17 @@
+Goldmint.issueTokensInternal: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+     function issueTokensInternal(address _to, uint _tokens) internal {
+          require((icoTokensSold + _tokens)<=ICO_TOKEN_SUPPLY_LIMIT);
+
+          mntToken.issueTokens(_to,_tokens);
+
+          icoTokensSold+=_tokens;
+
+          LogBuy(_to,_tokens);
+     }
+Response:
+{"1": "No"}
+--------------------------------------------------

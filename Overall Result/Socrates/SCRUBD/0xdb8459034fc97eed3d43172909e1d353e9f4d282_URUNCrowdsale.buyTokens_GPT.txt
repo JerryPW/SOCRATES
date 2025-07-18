@@ -1,0 +1,24 @@
+
+Start analyze function: URUNCrowdsale.buyTokens(address)
+Function Security Analysis for URUNCrowdsale.buyTokens(address)
+    There are no modifiers should be examined in function buyTokens.
+    Check direct function security
+        - function URUNCrowdsale.buyTokens(address) has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any checks related to msg.sender being compared with Owner, Address, Leader, or CEO, either with require, if, or assert
+          statements.
+        - function URUNCrowdsale.buyTokens(address) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures. There is no use of a variable that is first checked using `require` with a condition and then
+          later altered to an opposite value within the function.
+External Call Analysis
+    Direct external call: ['token.transfer(beneficiary,tokens)']
+    Analyze Transfer
+        - token.transfer(beneficiary,tokens) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(beneficiary,tokens) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(beneficiary,tokens)']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The provided function is a constructor for the "URUNCrowdsale" contract, as the function is explicitly named "constructor". Constructors are one of the
+            characteristics to check, and this matches the criteria for construction.
+Conclusion: This function will not cause REE Problem.

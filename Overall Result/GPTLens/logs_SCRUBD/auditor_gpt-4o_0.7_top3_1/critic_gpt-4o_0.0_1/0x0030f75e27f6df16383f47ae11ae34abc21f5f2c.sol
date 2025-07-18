@@ -1,0 +1,35 @@
+[
+    {
+        "function_name": "internalTransfer",
+        "vulnerability": "Sniper marking vulnerability",
+        "criticism": "The reasoning is correct in identifying that the function marks addresses as 'snipers' based on block timing, which can indeed be manipulated by miners. This could lead to legitimate users being incorrectly marked as snipers, restricting their trading abilities. The severity is moderate because it can affect user experience and trust in the contract. The profitability is low for an external attacker, as it does not directly lead to financial gain, but it could be used to disrupt trading activities.",
+        "correctness": 8,
+        "severity": 5,
+        "profitability": 2,
+        "reason": "The function marks an address as a 'sniper' based on block timing which can be manipulated by miners, potentially marking legitimate users as snipers and restricting their trading abilities.",
+        "code": "function internalTransfer(address from, address to, uint256 amount) internal {\n    require(from != address(0), \"ERC20: transfer from the zero address\");\n    require(to != address(0), \"ERC20: transfer to the zero address\");\n    require(amount > 0, \"ERC20: Transfer amount must be greater than zero\");\n    require(!isBot[from], \"ERC20: Can not transfer from BOT\");\n    if(!live){\n        require(isTaxExcluded[from] || isTaxExcluded[to], \"ERC20: Trading Is Not Live!\");\n    }\n    if (maxWalletOn == true && ! isMaxWalletExcluded[to]) {\n        require(balanceOf(to).add(amount) <= maxWallet, \"ERC20: Max amount of tokens for wallet reached\");\n    }\n    if(limitsOn){\n        if (from != owner() && to != owner() && to != address(0) && to != dead && to != uniV2Pair) {\n            for (uint x = 0; x < 3; x++) {\n                if(block.number == activeTradingBlock.add(x)) {\n                    isSniper[to] = true;\n                }\n            }\n        }\n    }\n    if(contractBlocker) {\n        require( !isContract(to) && isContractsExcluded[from] || !isContract(from) && isContractsExcluded[to] || isContract(from) && isContractsExcluded[to] || isContract(to) && isContractsExcluded[from] );\n    }\n    uint256 totalTokensToSwap = liquidityTokens.add(marketingTokens);\n    uint256 contractTokenBalance = balanceOf(address(this));\n    bool overMinimumTokenBalance = contractTokenBalance >= minTaxSwap;\n    if (!inSwapAndLiquify && swapAndLiquifyStatus && balanceOf(uniV2Pair) > 0 && totalTokensToSwap > 0 && !isTaxExcluded[to] && !isTaxExcluded[from] && to == uniV2Pair && overMinimumTokenBalance) {\n        taxTokenSwap();\n    }\n    if (isTaxExcluded[from] || isTaxExcluded[to]) {\n        marketingTax = 0;\n        liquidityTax = 0;\n        divForSplitTax = marketingTax.add(liquidityTax);\n    } else {\n        if (from == uniV2Pair) {\n            marketingTax = taxBuyMarketing;\n            liquidityTax = taxBuyLiquidity;\n            divForSplitTax = taxBuyMarketing.add(taxBuyLiquidity);\n        }else if (to == uniV2Pair) {\n            marketingTax = taxSellMarketing;\n            liquidityTax = taxSellLiquidity;\n            divForSplitTax = taxSellMarketing.add(taxSellLiquidity);\n            if(isSniper[from] && sniperPenaltyEnd >= block.timestamp){\n                marketingTax = 85;\n                liquidityTax = 10;\n                divForSplitTax = marketingTax.add(liquidityTax);\n            }\n        }else {\n            require(!isSniper[from] || sniperPenaltyEnd <= block.timestamp, \"ERC20: Snipers can not transfer till penalty time is over\");\n            marketingTax = 0;\n            liquidityTax = 0;\n        }\n    }\n    tokenTransfer(from, to, amount);\n}",
+        "file_name": "0x0030f75e27f6df16383f47ae11ae34abc21f5f2c.sol"
+    },
+    {
+        "function_name": "GoLive",
+        "vulnerability": "Liquidity add vulnerability",
+        "criticism": "The reasoning is partially correct. The requirement for the contract to have an ETH balance to go live could indeed be a point of failure if not managed properly. However, this is more of a design consideration rather than a vulnerability. An attacker would need to find a way to drain the ETH balance before the function is called, which is not directly facilitated by this function. The severity is low because it is a known requirement for the contract to function as intended. The profitability is also low because it requires specific conditions to be met.",
+        "correctness": 6,
+        "severity": 3,
+        "profitability": 1,
+        "reason": "The function requires the contract to have ETH balance to go live, which if not properly managed or if an attacker drains it beforehand, could prevent the contract from being activated.",
+        "code": "function GoLive() external onlyOwner returns (bool){\n    require(!live, \"ERC20: Trades already Live!\");\n    activeTradingBlock = block.number;\n    sniperPenaltyEnd = block.timestamp.add(2 days);\n    IUniswapV2Router02 _uniV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);\n    uniV2Router = _uniV2Router;\n    uniV3Router = 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45;\n    isContractsExcluded[address(uniV2Router)] = true;\n    isContractsExcluded[address(uniV3Router)] = true;\n    isMaxWalletExcluded[address(uniV2Router)] = true;\n    internalApprove(address(this), address(uniV2Router), tokenSupply);\n    uniV2Pair = IUniswapV2Factory(_uniV2Router.factory()).createPair(address(this), _uniV2Router.WETH());\n    isContractsExcluded[address(uniV2Pair)] = true;\n    isMaxWalletExcluded[address(uniV2Pair)] = true;\n    require(address(this).balance > 0, \"ERC20: Must have ETH on contract to Go Live!\");\n    addLiquidity(balanceOf(address(this)), address(this).balance);\n    launchSetLiquidityAddress(dead);\n    maxWalletOn = true;\n    swapAndLiquifyStatus = true;\n    limitsOn = true;\n    live = true;\n    return true;\n}",
+        "file_name": "0x0030f75e27f6df16383f47ae11ae34abc21f5f2c.sol"
+    },
+    {
+        "function_name": "withdrawStuckETH",
+        "vulnerability": "Owner withdrawal vulnerability",
+        "criticism": "The reasoning is correct in identifying that the function allows the owner to withdraw the entire ETH balance of the contract. This is a common pattern in smart contracts to allow owners to recover funds, but it does pose a risk if the owner is malicious. The severity is moderate because it depends on the trustworthiness of the owner. The profitability is high for a malicious owner, as they can drain the contract's funds.",
+        "correctness": 9,
+        "severity": 5,
+        "profitability": 8,
+        "reason": "This function allows the owner to withdraw the entire ETH balance of the contract, which could potentially be exploited by a malicious owner to drain the contract's funds.",
+        "code": "function withdrawStuckETH() external onlyOwner {\n    bool success;\n    (success,) = address(owner()).call{value: address(this).balance}(\"\");\n}",
+        "file_name": "0x0030f75e27f6df16383f47ae11ae34abc21f5f2c.sol"
+    }
+]

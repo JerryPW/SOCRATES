@@ -1,0 +1,25 @@
+
+Start analyze function: TydoIco.refund()
+Function Security Analysis for TydoIco.refund()
+    There are no modifiers should be examined in function refund.
+    Check direct function security
+        - function TydoIco.refund() has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided code does not include any checks on msg.sender being a specific owner, address, leader, or CEO of the contract, which are required by the
+          specified conditions.
+        - function TydoIco.refund() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not use a boolean variable xxx which follows any of the specified structures.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(weiAmount)', 'token.transfer(owner,balances[msg.sender])']
+    Analyze Transfer
+        - msg.sender.transfer(weiAmount) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call
+        'msg.sender.transfer(weiAmount)' contains the '.transfer(' keyword, which matches the first characteristic.. Parameter in 'transfer'/'send': 1.
+        - token.transfer(owner,balances[msg.sender]) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - token.transfer(owner,balances[msg.sender]) ISN'T subjected to gas limits.
+    Remaining external call: ['token.transfer(owner,balances[msg.sender])']
+    Analyze External Address
+        There are ['token'] should be checked in variable token
+        Checked variables: token
+            Yes The provided code contains a constructor for the contract as the function name is 'constructor'. The constructor initializes the state variable 'token'.
+            Therefore, it matches the first characteristic, which is being a constructor function.
+Conclusion: This function will not cause REE Problem.

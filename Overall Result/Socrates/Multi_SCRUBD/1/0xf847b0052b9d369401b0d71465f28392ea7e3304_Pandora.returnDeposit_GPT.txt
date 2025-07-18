@@ -1,0 +1,31 @@
+
+Start analyze function: Pandora.returnDeposit()
+Function Security Analysis for Pandora.returnDeposit()
+    There are no modifiers should be examined in function returnDeposit.
+    Check direct function security
+        - function Pandora.returnDeposit() has no security assurance protected by checking the authority of msg.sender
+          Reason: The given function does not contain any statement that matches one of the specified criteria for checking the structure related to msg.sender
+          verification against owner or address roles.
+        - function Pandora.returnDeposit() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not match any of the specified structures. It contains an 'if' statement that checks a condition on 'msg.value' and
+          'investor.invested', but there is no 'require' statement or 'if' statement that directly throws, nor any assignments that toggle a boolean variable within the
+          given code.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['fallback']
+        Function Security Analysis for Pandora.fallback()
+            There are no modifiers should be examined in function fallback.
+            Check direct function security
+                - function Pandora.fallback() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any checks comparing msg.sender to any address or role like xxxOwner, xxxAddress, Leader, or CEO.
+                - function Pandora.fallback() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code does not have a require statement check or an if statement that throws in the format specified. There is no scope where a boolean
+                  variable is set to true or false after a require or throw statement involving a boolean check.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(getPay)']
+    Analyze Transfer
+        - msg.sender.transfer(getPay) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external call contains the
+        '.transfer(' keyword.. Parameter in 'transfer'/'send': 1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

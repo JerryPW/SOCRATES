@@ -1,0 +1,43 @@
+
+Start analyze function: YZYVault._sendLotteryAmount()
+Function Security Analysis for YZYVault._sendLotteryAmount()
+    There are no modifiers should be examined in function _sendLotteryAmount.
+    Check direct function security
+        - function YZYVault._sendLotteryAmount() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function _sendLotteryAmount does not contain any condition or assertion that specifically checks if msg.sender is equal to any owner, address,
+          leader, or CEO.
+        - function YZYVault._sendLotteryAmount() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not satisfy any of the specified structures. It includes conditional checks and variable assignments, but there is no 'require'
+          statement or 'if' statement throwing an error that meets the specific patterns described, such as setting a variable from true to false or false to true.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['claimYzyAvailableReward', 'claimSwapAvailableReward', 'stake', 'unstake', 'stakeLPToken', 'claimSwapReward', 'claimYzyReward']
+        Function Security Analysis for YZYVault.claimYzyAvailableReward()
+            There are no modifiers should be examined in function claimYzyAvailableReward.
+            Check direct function security
+                - function YZYVault.claimYzyAvailableReward() has no security assurance protected by checking the authority of msg.sender
+                  Reason: The code does not have any check on msg.sender being equal or not equal to xxxOwner, xxxAddress, Leader, or CEO. The security or access control
+                  is implied to be managed by some other mechanism.
+                - function YZYVault.claimYzyAvailableReward() has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The function does not contain any of the specified patterns, such as checking a boolean variable with require or if(!xxx) throw statements,
+                  followed by assigning true or false to that variable.
+External Call Analysis
+    Direct external call: ['_yzy.transfer(_msgSender(),amount)']
+    Analyze Transfer
+        - _yzy.transfer(_msgSender(),amount) ISN'T subjected to gas limits. Parameter in 'transfer'/'send': 2.
+    Analyze Gas
+        - _yzy.transfer(_msgSender(),amount) ISN'T subjected to gas limits.
+    Remaining external call: ['_yzy.transfer(_msgSender(),amount)']
+    Analyze External Address
+        There are ['_yzy'] should be checked in variable _yzy
+        Checked variables: _yzy
+            No 1. The function name `changeYzyAddress` does not match the contract name `YZYVault`, nor is it named 'constructor'. Therefore, it is not a constructor. 2.
+            The state variable `_yzy` is not hardcoded in the function. Instead, it is assigned a value based on the input parameter `yzy`.  Therefore, the function does
+            not satisfy any of the given characteristics.
+            Function Security Analysis for YZYVault.changeYzyAddress(address)
+                The modifier of function changeYzyAddress are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: The code in the modifier enforces that only the owner can execute the function. The statement `require(_owner == _msgSender(), "Ownable:
+                      caller is not the owner");` ensures that the function can only be called by the owner, fulfilling rule 1. There are no structural omissions in the
+                      given code for rule 1.
+Conclusion: This function will not cause REE Problem.

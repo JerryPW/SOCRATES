@@ -1,0 +1,235 @@
+VNETTokenPreSale.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () public payable {
+        // Make sure token balance > 0
+        uint256 vnetBalance = vnetToken.balanceOf(address(this));
+        require(vnetBalance > 0);
+        require(vnetSold < vnetSupply);
+        
+        // Minimum & Maximum Limit
+        uint256 weiAmount = msg.value;
+        require(weiAmount >= weiMinimum);
+        require(weiAmount <= weiMaximum);
+
+        // VNET Token Amount to be transfer
+        uint256 vnetAmount = weiAmount.mul(ratioNext).div(10 ** 18);
+
+        // Transfer VNET
+        if (vnetBalance >= vnetAmount) {
+            assert(vnetToken.transfer(msg.sender, vnetAmount));
+            emit BuyVNET(msg.sender, ratioNext, vnetAmount, weiAmount);
+            vnetSold = vnetSold.add(vnetAmount);
+            if (weiAmount >= weiWelfare) {
+                welfare[msg.sender] = true;
+                emit Welfare(msg.sender);
+            }
+        } else {
+            uint256 weiExpend = vnetBalance.mul(10 ** 18).div(ratioNext);
+            assert(vnetToken.transfer(msg.sender, vnetBalance));
+            emit BuyVNET(msg.sender, ratioNext, vnetBalance, weiExpend);
+            vnetSold = vnetSold.add(vnetBalance);
+            msg.sender.transfer(weiAmount.sub(weiExpend));
+            if (weiExpend >= weiWelfare) {
+                welfare[msg.sender] = true;
+                emit Welfare(msg.sender);
+            }
+        }
+
+        // Calculate: ratioNext
+        calcRatioNext();
+
+        // transfer Ether
+        uint256 etherBalance = address(this).balance;
+        wallet.transfer(etherBalance);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () public payable {
+        // Make sure token balance > 0
+        uint256 vnetBalance = vnetToken.balanceOf(address(this));
+        require(vnetBalance > 0);
+        require(vnetSold < vnetSupply);
+        
+        // Minimum & Maximum Limit
+        uint256 weiAmount = msg.value;
+        require(weiAmount >= weiMinimum);
+        require(weiAmount <= weiMaximum);
+
+        // VNET Token Amount to be transfer
+        uint256 vnetAmount = weiAmount.mul(ratioNext).div(10 ** 18);
+
+        // Transfer VNET
+        if (vnetBalance >= vnetAmount) {
+            assert(vnetToken.transfer(msg.sender, vnetAmount));
+            emit BuyVNET(msg.sender, ratioNext, vnetAmount, weiAmount);
+            vnetSold = vnetSold.add(vnetAmount);
+            if (weiAmount >= weiWelfare) {
+                welfare[msg.sender] = true;
+                emit Welfare(msg.sender);
+            }
+        } else {
+            uint256 weiExpend = vnetBalance.mul(10 ** 18).div(ratioNext);
+            assert(vnetToken.transfer(msg.sender, vnetBalance));
+            emit BuyVNET(msg.sender, ratioNext, vnetBalance, weiExpend);
+            vnetSold = vnetSold.add(vnetBalance);
+            msg.sender.transfer(weiAmount.sub(weiExpend));
+            if (weiExpend >= weiWelfare) {
+                welfare[msg.sender] = true;
+                emit Welfare(msg.sender);
+            }
+        }
+
+        // Calculate: ratioNext
+        calcRatioNext();
+
+        // transfer Ether
+        uint256 etherBalance = address(this).balance;
+        wallet.transfer(etherBalance);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    constructor(ERC20Basic _vnetToken, uint256 _ethPrice) public {
+        vnetToken = _vnetToken;
+        wallet = owner;
+        calcRatioNext();
+        updateEthPrice(_ethPrice);
+    }
+Response:
+{"StatementsA": {"State update statement":"vnetToken = _vnetToken;"}, "StatementsB": {"External call statement"："None"}, "VariableA": {"Variable name": "None"}}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () public payable {
+        // Make sure token balance > 0
+        uint256 vnetBalance = vnetToken.balanceOf(address(this));
+        require(vnetBalance > 0);
+        require(vnetSold < vnetSupply);
+        
+        // Minimum & Maximum Limit
+        uint256 weiAmount = msg.value;
+        require(weiAmount >= weiMinimum);
+        require(weiAmount <= weiMaximum);
+
+        // VNET Token Amount to be transfer
+        uint256 vnetAmount = weiAmount.mul(ratioNext).div(10 ** 18);
+
+        // Transfer VNET
+        if (vnetBalance >= vnetAmount) {
+            assert(vnetToken.transfer(msg.sender, vnetAmount));
+            emit BuyVNET(msg.sender, ratioNext, vnetAmount, weiAmount);
+            vnetSold = vnetSold.add(vnetAmount);
+            if (weiAmount >= weiWelfare) {
+                welfare[msg.sender] = true;
+                emit Welfare(msg.sender);
+            }
+        } else {
+            uint256 weiExpend = vnetBalance.mul(10 ** 18).div(ratioNext);
+            assert(vnetToken.transfer(msg.sender, vnetBalance));
+            emit BuyVNET(msg.sender, ratioNext, vnetBalance, weiExpend);
+            vnetSold = vnetSold.add(vnetBalance);
+            msg.sender.transfer(weiAmount.sub(weiExpend));
+            if (weiExpend >= weiWelfare) {
+                welfare[msg.sender] = true;
+                emit Welfare(msg.sender);
+            }
+        }
+
+        // Calculate: ratioNext
+        calcRatioNext();
+
+        // transfer Ether
+        uint256 etherBalance = address(this).balance;
+        wallet.transfer(etherBalance);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () public payable {
+        // Make sure token balance > 0
+        uint256 vnetBalance = vnetToken.balanceOf(address(this));
+        require(vnetBalance > 0);
+        require(vnetSold < vnetSupply);
+        
+        // Minimum & Maximum Limit
+        uint256 weiAmount = msg.value;
+        require(weiAmount >= weiMinimum);
+        require(weiAmount <= weiMaximum);
+
+        // VNET Token Amount to be transfer
+        uint256 vnetAmount = weiAmount.mul(ratioNext).div(10 ** 18);
+
+        // Transfer VNET
+        if (vnetBalance >= vnetAmount) {
+            assert(vnetToken.transfer(msg.sender, vnetAmount));
+            emit BuyVNET(msg.sender, ratioNext, vnetAmount, weiAmount);
+            vnetSold = vnetSold.add(vnetAmount);
+            if (weiAmount >= weiWelfare) {
+                welfare[msg.sender] = true;
+                emit Welfare(msg.sender);
+            }
+        } else {
+            uint256 weiExpend = vnetBalance.mul(10 ** 18).div(ratioNext);
+            assert(vnetToken.transfer(msg.sender, vnetBalance));
+            emit BuyVNET(msg.sender, ratioNext, vnetBalance, weiExpend);
+            vnetSold = vnetSold.add(vnetBalance);
+            msg.sender.transfer(weiAmount.sub(weiExpend));
+            if (weiExpend >= weiWelfare) {
+                welfare[msg.sender] = true;
+                emit Welfare(msg.sender);
+            }
+        }
+
+        // Calculate: ratioNext
+        calcRatioNext();
+
+        // transfer Ether
+        uint256 etherBalance = address(this).balance;
+        wallet.transfer(etherBalance);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    constructor(ERC20Basic _vnetToken, uint256 _ethPrice) public {
+        vnetToken = _vnetToken;
+        wallet = owner;
+        calcRatioNext();
+        updateEthPrice(_ethPrice);
+    }
+Response:
+{"StatementsA": {"State update statement":"vnetToken = _vnetToken;"}, "StatementsB": {"External call statement":"calcRatioNext();"}, "VariableA": {"Variable name": "owner"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: State update statement
+2.External Call: External call statement
+3.Variable A: Variable name
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

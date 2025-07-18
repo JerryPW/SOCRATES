@@ -1,0 +1,34 @@
+
+Start analyze function: Bozu.internalTransfer(address,address,uint256)
+Function Security Analysis for Bozu.internalTransfer(address,address,uint256)
+    There are no modifiers should be examined in function internalTransfer.
+    Check direct function security
+        - function Bozu.internalTransfer(address,address,uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: No use of msg.sender within the provided structures.
+        - function Bozu.internalTransfer(address,address,uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: None of the specified characteristics are present in the provided code. There are no matching require/throw and assignment patterns as described.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['transfer', 'manualBurnTokensFromLP', 'withdrawStuckTokens', 'AirDrop', 'transferFrom']
+        Function Security Analysis for Bozu.transfer(address,uint256)
+            There are no modifiers should be examined in function transfer.
+            Check direct function security
+                - function Bozu.transfer(address,uint256) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function does not contain any of the specified structures related to msg.sender and an owner/CEO address check.
+                - function Bozu.transfer(address,uint256) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: None of the provided structures with the patterns involving 'require' with boolean assignments or 'if-throw' logic are present in this code.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: Bozu.taxTokenSwap()
+Function Security Analysis for Bozu.taxTokenSwap()
+    The modifier of function taxTokenSwap are ['lockTheSwap']
+    The result of checking modifiers:
+        - modifier lockTheSwap is controlled by owner, the function would not cause REE problem.
+          Reason: The modifier lockTheSwap includes both setting a flag to true before the function execution and resetting it to false afterward, matching the lock
+          operation criteria in point 2 accurately.
+Conclusion: This function will not cause REE Problem.

@@ -1,0 +1,96 @@
+
+Start analyze function: Crowdsale.updatePrice()
+Function Security Analysis for Crowdsale.updatePrice()
+    There are no modifiers should be examined in function updatePrice.
+    Check direct function security
+        - function Crowdsale.updatePrice() has no security assurance protected by checking the authority of msg.sender
+          Reason: The code does not contain any explicit checks or assertions that involve 'msg.sender == xxxOwner/xxxAddress/Leader/CEO' or similar checks ensuring the
+          sender is a specific owner or role.
+        - function Crowdsale.updatePrice() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided code does not have any 'require' statements or throw conditions with specific variable assignments that match the predefined structures.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: usingOraclize.oraclize_query(uint256,string,string)
+Function Security Analysis for usingOraclize.oraclize_query(uint256,string,string)
+    The modifier of function oraclize_query are ['oraclizeAPI']
+    The result of checking modifiers:
+        - modifier oraclizeAPI has no relation with controlled by owner.
+          Reason: The code provided in the modifier does not contain any explicit owner address checks or lock mechanisms. It mainly deals with setting up or checking
+          some network or oracle-related addresses, thus not fulfilling any of the provided characteristics.
+    Check direct function security
+        - function usingOraclize.oraclize_query(uint256,string,string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not contain any access control structure checking or throwing exceptions based on the identity of msg.sender, such as require or if
+          statements related to specific roles like xxxOwner/xxxAddress/Leader/CEO.
+        - function usingOraclize.oraclize_query(uint256,string,string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code doesn't match any of the specified structures. There are no 'require' or 'if' statements checking and changing the same variable's value as
+          described in any of the patterns.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['__callback', '__callback', 'updatePrice']
+        Function Security Analysis for usingOraclize.__callback(bytes32,string)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function usingOraclize.__callback(bytes32,string) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The provided code snippet does not include any direct check or assertion on msg.sender against a specific owner or address structure mentioned
+                  in the criteria.
+                - function usingOraclize.__callback(bytes32,string) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The given code does not satisfy any of the specified structures. There is no use of 'require' with a boolean check, nor any variable assignment
+                  patterns as described in the required structures. The function is simply calling another version of itself with different parameters without any logical
+                  checks or state changes related to a condition.
+External Call Analysis
+    Direct external call: ['oraclize.getPrice(datasource)', 'oraclize.query.value(price)(timestamp,datasource,arg)']
+    Analyze Transfer
+    Analyze Gas
+        - oraclize.getPrice(datasource) ISN'T subjected to gas limits.
+        - oraclize.query.value(price)(timestamp,datasource,arg) ISN'T subjected to gas limits.
+    Remaining external call: ['oraclize.getPrice(datasource)', 'oraclize.query.value(price)(timestamp,datasource,arg)']
+    Analyze External Address
+        There are ['oraclize'] should be checked in variable oraclize
+        Checked variables: oraclize
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+        There are ['oraclize'] should be checked in variable oraclize
+        Checked variables: oraclize
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: usingOraclize.oraclize_getPrice(string)
+Function Security Analysis for usingOraclize.oraclize_getPrice(string)
+    The modifier of function oraclize_getPrice are ['oraclizeAPI']
+    The result of checking modifiers:
+        - modifier oraclizeAPI has no relation with controlled by owner.
+          Reason: The code in the modifier does not enforce that only the owner or specific addresses can execute the function, nor does it implement a lock mechanism.
+          Additionally, the modifier name `oraclizeAPI` does not suggest any restrictions such as ownership or reentrancy lock.
+    Check direct function security
+        - function usingOraclize.oraclize_getPrice(string) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function "oraclize_getPrice" does not contain any check for 'msg.sender' against an owner or specific address. It simply calls
+          "oraclize.getPrice(datasource);", hence none of the listed structures are present.
+        - function usingOraclize.oraclize_getPrice(string) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The provided function does not have any require clause or condition structures that match any of the specified patterns given. It simply returns the
+          result of calling `oraclize.getPrice(datasource);`.
+    Since the function can only be called by functions, we start to analyze indirect function security.
+    The reachable functions are ['__callback', '__callback', 'updatePrice']
+        Function Security Analysis for usingOraclize.__callback(bytes32,string)
+            There are no modifiers should be examined in function __callback.
+            Check direct function security
+                - function usingOraclize.__callback(bytes32,string) has no security assurance protected by checking the authority of msg.sender
+                  Reason: The function __callback(bytes32 myid, string result) does not contain any of the specified structures such as require(), if(msg.sender != ...),
+                  if (msg.sender != ...) throw;, or assert() that are checking the msg.sender against an owner or claimant type of variable.
+                - function usingOraclize.__callback(bytes32,string) has no apparent security assurance by utilizing a lock machinism.
+                  Reason: The code snippet provided does not contain any of the specified patterns. It only shows the implementation of a function '__callback', which
+                  calls itself with different arguments. There is no 'require' statement or any conditional logic involving boolean variables present.
+External Call Analysis
+    Direct external call: ['oraclize.getPrice(datasource)']
+    Analyze Transfer
+    Analyze Gas
+        - oraclize.getPrice(datasource) ISN'T subjected to gas limits.
+    Remaining external call: ['oraclize.getPrice(datasource)']
+    Analyze External Address
+        There are ['oraclize'] should be checked in variable oraclize
+        Checked variables: oraclize
+        There are no function that assign and initialize this variable. Please further manually check on successor contracts or modifiers.
+Conclusion: This function will not cause REE Problem.

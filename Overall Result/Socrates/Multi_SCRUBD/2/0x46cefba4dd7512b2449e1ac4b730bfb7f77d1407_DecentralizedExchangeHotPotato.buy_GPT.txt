@@ -1,0 +1,28 @@
+
+Start analyze function: DecentralizedExchangeHotPotato.buy(uint256)
+Function Security Analysis for DecentralizedExchangeHotPotato.buy(uint256)
+    There are no modifiers should be examined in function buy.
+    Check direct function security
+        - function DecentralizedExchangeHotPotato.buy(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The provided function does not check any condition involving msg.sender being equal or not equal to xxxOwner, xxxAddress, Leader or CEO. All checks on
+          msg.sender are related to it not being the same as the current owner (orderBook[_id].owner) or being a contract or an insufficient price. None of these fulfill
+          any of the specified characteristics for outputting 'Yes'.
+        - function DecentralizedExchangeHotPotato.buy(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The given code does not contain any of the specified structures. There are no statements such as 'require(xxx == True)' followed by 'xxx = False', or
+          'require(xxx == False)' followed by 'xxx = True', nor 'if(!xxx) throw' followed by 'xxx = true' in the code provided.
+External Call Analysis
+    Direct external call: ['msg.sender.transfer(msg.value-orderBook[_id].price)', 'orderBook[_id].owner.transfer(orderBook[_id].price*24/25)',
+    'orderBook[_id].creator.transfer(orderBook[_id].price/50)']
+    Analyze Transfer
+        - msg.sender.transfer(msg.value-orderBook[_id].price) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The external
+        call 'msg.sender.transfer(msg.value-orderBook[_id].price)' contains the '.transfer(' keyword as per instruction 1.. Parameter in 'transfer'/'send': 1.
+        - orderBook[_id].owner.transfer(orderBook[_id].price*24/25) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call 'orderBook[_id].owner.transfer(orderBook[_id].price*24/25)' contains the '.transfer(' keyword as per instruction 1.. Parameter in 'transfer'/'send':
+        1.
+        - orderBook[_id].creator.transfer(orderBook[_id].price/50) is subjected to gas limits. Therefore, it has no potential REE problem. Here is the reason: The
+        external call 'orderBook[_id].creator.transfer(orderBook[_id].price/50)' contains the '.transfer(' keyword as per instruction 1.. Parameter in 'transfer'/'send':
+        1.
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.

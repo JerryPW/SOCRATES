@@ -1,0 +1,38 @@
+[
+    {
+        "function_name": "_transfer",
+        "vulnerability": "Potential bypass of trading restrictions",
+        "criticism": "The reasoning is correct. The function does not enforce trading restrictions on addresses excluded from fees, which could allow certain addresses to trade without restrictions. However, the severity is high because it undermines the intended trading controls. The profitability is moderate because an external attacker could potentially profit from this vulnerability by trading without restrictions.",
+        "correctness": 8,
+        "severity": 7,
+        "profitability": 5,
+        "reason": "The `_transfer` function has trading restrictions based on the `tradingActive` flag and other conditions. However, these restrictions can be bypassed if an address is marked as excluded from fees, as the function will not enforce the trading restrictions on such addresses. This could allow certain addresses to trade without restrictions, undermining the intended trading controls.",
+        "code": "function _transfer( address from, address to, uint256 amount ) internal override { require(from != address(0), \"ERC20: transfer from the zero address\"); require(to != address(0), \"ERC20: transfer to the zero address\"); require(!_isBlacklisted[from], \"Your address has been marked as a sniper, you are unable to transfer or swap.\"); if (amount == 0) { super._transfer(from, to, 0); return; } if(tradingActive) { require(block.number >= _launchBlock + deadBlocks, \"NOT BOT\"); } if (limitsInEffect) { if ( from != owner() && to != owner() && to != address(0) && to != address(0xdead) && !_swapping ) { if (!tradingActive) { require(_isExcludedFromFees[from] || _isExcludedFromFees[to], \"Trading is not active.\"); } if (balanceOf(to) == 0 && _holderFirstBuyTimestamp[to] == 0) { _holderFirstBuyTimestamp[to] = block.timestamp; } if (transferDelayEnabled) { if (to != owner() && to != address(uniswapV2Router) && to != address(uniswapV2Pair)) { require(_holderLastTransferTimestamp[tx.origin] < block.number, \"_transfer:: Transfer Delay enabled. Only one purchase per block allowed.\"); _holderLastTransferTimestamp[tx.origin] = block.number; } } if (automatedMarketMakerPairs[from] && !_isExcludedMaxTransactionAmount[to]) { require(amount <= maxTransactionAmount, \"Buy transfer amount exceeds the maxTransactionAmount.\"); require(amount + balanceOf(to) <= maxWallet, \"Max wallet exceeded\"); } else if (automatedMarketMakerPairs[to] && !_isExcludedMaxTransactionAmount[from]) { require(amount <= maxTransactionAmount, \"Sell transfer amount exceeds the maxTransactionAmount.\"); } else if (!_isExcludedMaxTransactionAmount[to]) { require(amount + balanceOf(to) <= maxWallet, \"Max wallet exceeded\"); } } } uint256 contractTokenBalance = balanceOf(address(this)); bool canSwap = contractTokenBalance >= swapTokensAtAmount; if ( canSwap && !_swapping && !automatedMarketMakerPairs[from] && !_isExcludedFromFees[from] && !_isExcludedFromFees[to] ) { _swapping = true; swapBack(); _swapping = false; } bool takeFee = !_swapping; if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) { takeFee = false; } uint256 fees = 0; if (takeFee) { fees = amount.mul(totalFees).div(100); _tokensForLiquidity += fees * _liquidityFee / totalFees; _tokensForMarketing += fees * _marketingFee / totalFees; if (fees > 0) { super._transfer(from, address(this), fees); } amount -= fees; } super._transfer(from, to, amount); }",
+        "file_name": "0x0a16d08b57afe4e0e323eba83e0282b07c2ed1f1.sol",
+        "final_score": 7.0
+    },
+    {
+        "function_name": "forceSend",
+        "vulnerability": "Missing success check",
+        "criticism": "The reasoning is correct. The function does not check the success of the call, which could lead to loss of funds if the call fails. However, the severity is moderate because it depends on the failure of the call, which is not guaranteed. The profitability is low because an external attacker cannot profit from this vulnerability.",
+        "correctness": 7,
+        "severity": 5,
+        "profitability": 0,
+        "reason": "The function uses a low-level call to transfer the balance to the feeWallet without checking if the call was successful. It sets `success` to false immediately after the call, which is misleading and indicates that the success status is not properly handled. This could lead to funds being lost if the call fails, as the failure will not be detected or reverted.",
+        "code": "function forceSend() external onlyOwner { (bool success,) = address(feeWallet).call{value : address(this).balance}(\"\"); success = false; }",
+        "file_name": "0x0a16d08b57afe4e0e323eba83e0282b07c2ed1f1.sol",
+        "final_score": 4.75
+    },
+    {
+        "function_name": "forceSwap",
+        "vulnerability": "Missing success check",
+        "criticism": "The reasoning is correct. Similar to the forceSend function, this function does not check the success of the call, which could lead to loss of funds if the call fails. However, the severity is moderate because it depends on the failure of the call, which is not guaranteed. The profitability is low because an external attacker cannot profit from this vulnerability.",
+        "correctness": 7,
+        "severity": 5,
+        "profitability": 0,
+        "reason": "Similar to the forceSend function, this function uses a low-level call to transfer the balance to the feeWallet without verifying the success of the call. The `success` variable is set to false immediately, which means even if the call fails, the transaction will not revert, potentially resulting in loss of funds.",
+        "code": "function forceSwap() external onlyOwner { _swapTokensForEth(balanceOf(address(this))); (bool success,) = address(feeWallet).call{value : address(this).balance}(\"\"); success = false; }",
+        "file_name": "0x0a16d08b57afe4e0e323eba83e0282b07c2ed1f1.sol",
+        "final_score": 4.75
+    }
+]

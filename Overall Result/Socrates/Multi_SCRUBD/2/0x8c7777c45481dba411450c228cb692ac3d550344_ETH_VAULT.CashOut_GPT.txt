@@ -1,0 +1,21 @@
+
+Start analyze function: ETH_VAULT.CashOut(uint256)
+Function Security Analysis for ETH_VAULT.CashOut(uint256)
+    There are no modifiers should be examined in function CashOut.
+    Check direct function security
+        - function ETH_VAULT.CashOut(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include comparisons of msg.sender with xxxOwner/xxxAddress/Leader/CEO using require, if, or assert, as specified in the
+          characteristics.
+        - function ETH_VAULT.CashOut(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures:  1. No 'require(xxx == True)' followed by 'xxx = False'.  2. No 'require(xxx == False)'
+          followed by 'xxx = True'.  3. No 'require(!xxx)' followed by 'xxx = True'.  4. No 'if(!xxx) throw' followed by 'xxx = true'. There are checks on variables using
+          conditionals, but they do not match any of the specific structures needed for a 'Yes'.
+External Call Analysis
+    Direct external call: ['msg.sender.call.value(_am)()']
+    Analyze Transfer
+    Analyze Gas
+        - msg.sender.call.value(_am)() ISN'T subjected to gas limits.
+    Remaining external call: ['msg.sender.call.value(_am)()']
+    Analyze External Address
+        Error! No variable has been found.
+Conclusion: This function will cause REE Problem.

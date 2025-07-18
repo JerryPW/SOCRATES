@@ -1,0 +1,200 @@
+MonkeyScam.endRound: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function endRound(LDdatasets.EventReturns memory _eventData_)
+    private
+    returns (LDdatasets.EventReturns)
+    {
+        // grab our winning player and team id's
+        uint256 _winPID = round_.plyr;
+
+        // grab our pot amount
+        // add airdrop pot into the final pot
+        uint256 _pot = round_.pot + airDropPot_;
+
+        // calculate our winner share, community rewards, gen share,
+        uint256 _win = (_pot.mul(40)) / 100;
+        uint256 _com = (_pot.mul(30)) / 100;
+        uint256 _queen = (_pot.mul(10)) / 100;
+        uint256 _gen = (_pot.mul(20)) / 100;
+
+        // calculate ppt for round mask
+        uint256 _ppt = (_gen.mul(1000000000000000000)) / (round_.keys);
+        uint256 _dust = _gen.sub((_ppt.mul(round_.keys)) / 1000000000000000000);
+        if (_dust > 0)
+        {
+            _gen = _gen.sub(_dust);
+            _com = _com.add(_dust);
+        }
+
+        // pay our winner
+        plyr_[_winPID].win = _win.add(plyr_[_winPID].win);
+
+        // community rewards
+        if (!address(monkeyKing).call.value(_com)())
+        {
+            _gen = _gen.add(_com);
+            _com = 0;
+        }
+
+        if (!address(monkeyQueue).call.value(_queen)())
+        {
+            _gen = _gen.add(_queen);
+            _queen = 0;
+        }
+
+        // distribute gen portion to key holders
+        round_.mask = _ppt.add(round_.mask);
+
+        // prepare event data
+        _eventData_.compressedData = _eventData_.compressedData + (round_.end * 1000000);
+        _eventData_.compressedIDs = _eventData_.compressedIDs + (_winPID * 100000000000000000000000000);
+        _eventData_.winnerAddr = plyr_[_winPID].addr;
+        _eventData_.winnerName = plyr_[_winPID].name;
+        _eventData_.amountWon = _win;
+        _eventData_.genAmount = _gen;
+        _eventData_.newPot = 0;
+
+        return(_eventData_);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function endRound(LDdatasets.EventReturns memory _eventData_)
+    private
+    returns (LDdatasets.EventReturns)
+    {
+        // grab our winning player and team id's
+        uint256 _winPID = round_.plyr;
+
+        // grab our pot amount
+        // add airdrop pot into the final pot
+        uint256 _pot = round_.pot + airDropPot_;
+
+        // calculate our winner share, community rewards, gen share,
+        uint256 _win = (_pot.mul(40)) / 100;
+        uint256 _com = (_pot.mul(30)) / 100;
+        uint256 _queen = (_pot.mul(10)) / 100;
+        uint256 _gen = (_pot.mul(20)) / 100;
+
+        // calculate ppt for round mask
+        uint256 _ppt = (_gen.mul(1000000000000000000)) / (round_.keys);
+        uint256 _dust = _gen.sub((_ppt.mul(round_.keys)) / 1000000000000000000);
+        if (_dust > 0)
+        {
+            _gen = _gen.sub(_dust);
+            _com = _com.add(_dust);
+        }
+
+        // pay our winner
+        plyr_[_winPID].win = _win.add(plyr_[_winPID].win);
+
+        // community rewards
+        if (!address(monkeyKing).call.value(_com)())
+        {
+            _gen = _gen.add(_com);
+            _com = 0;
+        }
+
+        if (!address(monkeyQueue).call.value(_queen)())
+        {
+            _gen = _gen.add(_queen);
+            _queen = 0;
+        }
+
+        // distribute gen portion to key holders
+        round_.mask = _ppt.add(round_.mask);
+
+        // prepare event data
+        _eventData_.compressedData = _eventData_.compressedData + (round_.end * 1000000);
+        _eventData_.compressedIDs = _eventData_.compressedIDs + (_winPID * 100000000000000000000000000);
+        _eventData_.winnerAddr = plyr_[_winPID].addr;
+        _eventData_.winnerName = plyr_[_winPID].name;
+        _eventData_.amountWon = _win;
+        _eventData_.genAmount = _gen;
+        _eventData_.newPot = 0;
+
+        return(_eventData_);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function endRound(LDdatasets.EventReturns memory _eventData_)
+    private
+    returns (LDdatasets.EventReturns)
+    {
+        // grab our winning player and team id's
+        uint256 _winPID = round_.plyr;
+
+        // grab our pot amount
+        // add airdrop pot into the final pot
+        uint256 _pot = round_.pot + airDropPot_;
+
+        // calculate our winner share, community rewards, gen share,
+        uint256 _win = (_pot.mul(40)) / 100;
+        uint256 _com = (_pot.mul(30)) / 100;
+        uint256 _queen = (_pot.mul(10)) / 100;
+        uint256 _gen = (_pot.mul(20)) / 100;
+
+        // calculate ppt for round mask
+        uint256 _ppt = (_gen.mul(1000000000000000000)) / (round_.keys);
+        uint256 _dust = _gen.sub((_ppt.mul(round_.keys)) / 1000000000000000000);
+        if (_dust > 0)
+        {
+            _gen = _gen.sub(_dust);
+            _com = _com.add(_dust);
+        }
+
+        // pay our winner
+        plyr_[_winPID].win = _win.add(plyr_[_winPID].win);
+
+        // community rewards
+        if (!address(monkeyKing).call.value(_com)())
+        {
+            _gen = _gen.add(_com);
+            _com = 0;
+        }
+
+        if (!address(monkeyQueue).call.value(_queen)())
+        {
+            _gen = _gen.add(_queen);
+            _queen = 0;
+        }
+
+        // distribute gen portion to key holders
+        round_.mask = _ppt.add(round_.mask);
+
+        // prepare event data
+        _eventData_.compressedData = _eventData_.compressedData + (round_.end * 1000000);
+        _eventData_.compressedIDs = _eventData_.compressedIDs + (_winPID * 100000000000000000000000000);
+        _eventData_.winnerAddr = plyr_[_winPID].addr;
+        _eventData_.winnerName = plyr_[_winPID].name;
+        _eventData_.amountWon = _win;
+        _eventData_.genAmount = _gen;
+        _eventData_.newPot = 0;
+
+        return(_eventData_);
+    }
+Response:
+{"StatementsA": {"round_.mask = _ppt.add(round_.mask);":"Updates the state variable 'round_.mask' with the new value calculated from '_ppt'."}, "StatementsB": {"if (!address(monkeyKing).call.value(_com)())":"Executes an external call to the 'monkeyKing' contract with '_com' as the value."}, "VariableA": {"plyr_[_winPID].addr": "Holds the sender's address of the external call, specifically the winner's address."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: round_.mask = _ppt.add(round_.mask);
+2.External Call: if (!address(monkeyKing).call.value(_com)())
+3.Variable A: plyr_[_winPID].addr
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,59 @@
+YZYVault.stakeLPToken: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function stakeLPToken(uint256 amount) external returns (bool) {
+        require(!isContract(_msgSender()), "Vault: Could not be contract.");
+
+        _yzyETHV2Pair.transferFrom(_msgSender(), address(this), amount);
+
+        StakerInfo storage staker = _stakers[_msgSender()];
+
+        if (staker.stakedAmount > 0) {
+            claimYzyReward();
+            claimSwapReward();
+        } else {
+            staker.lastClimedBlockForYzyReward = block.number;
+            staker.lastClimedBlockForSwapReward = block.number;
+        }
+
+        staker.stakedAmount = staker.stakedAmount.add(amount);
+        staker.lockedTo = _lockPeriod.add(block.timestamp);
+
+        emit Staked(_msgSender(), amount);
+
+        return _sendLotteryAmount();
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function stakeLPToken(uint256 amount) external returns (bool) {
+        require(!isContract(_msgSender()), "Vault: Could not be contract.");
+
+        _yzyETHV2Pair.transferFrom(_msgSender(), address(this), amount);
+
+        StakerInfo storage staker = _stakers[_msgSender()];
+
+        if (staker.stakedAmount > 0) {
+            claimYzyReward();
+            claimSwapReward();
+        } else {
+            staker.lastClimedBlockForYzyReward = block.number;
+            staker.lastClimedBlockForSwapReward = block.number;
+        }
+
+        staker.stakedAmount = staker.stakedAmount.add(amount);
+        staker.lockedTo = _lockPeriod.add(block.timestamp);
+
+        emit Staked(_msgSender(), amount);
+
+        return _sendLotteryAmount();
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

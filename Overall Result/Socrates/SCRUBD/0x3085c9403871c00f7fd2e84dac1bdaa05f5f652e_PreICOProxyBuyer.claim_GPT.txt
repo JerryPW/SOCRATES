@@ -1,0 +1,48 @@
+
+Start analyze function: PreICOProxyBuyer.claim(uint256)
+Function Security Analysis for PreICOProxyBuyer.claim(uint256)
+    The modifier of function claim are ['stopInEmergency']
+    The result of checking modifiers:
+        - modifier stopInEmergency has no relation with controlled by owner.
+          Reason: The modifier uses a flag 'halted' to control access, which is not directly an owner-specific check or a reentrancy guard. Thus, it doesn't meet any of
+          the outlined characteristics.
+    Check direct function security
+        - function PreICOProxyBuyer.claim(uint256) has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not include any of the msg.sender checks specified in the given characteristics. It uses msg.sender to assign it to the investor
+          address, but does not perform checks or conditions directly related to the specified patterns.
+        - function PreICOProxyBuyer.claim(uint256) has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain a 'require' statement or an equivalent conditional check that explicitly uses the patterns specified in the characteristics.
+External Call Analysis
+    Direct external call: []
+    Analyze Transfer
+    Analyze Gas
+    Remaining external call: []
+    No more external call should be analyzed.
+Conclusion: This function will not cause REE Problem.
+
+Start analyze function: PreICOProxyBuyer.getToken()
+Function Security Analysis for PreICOProxyBuyer.getToken()
+    There are no modifiers should be examined in function getToken.
+    Check direct function security
+        - function PreICOProxyBuyer.getToken() has no security assurance protected by checking the authority of msg.sender
+          Reason: The function does not check for msg.sender against any owner or authorized addresses as per the criteria given.
+        - function PreICOProxyBuyer.getToken() has no apparent security assurance by utilizing a lock machinism.
+          Reason: The code does not contain any of the required structures with 'xxx' variable handling as specified.
+External Call Analysis
+    Direct external call: ['crowdsale.token()']
+    Analyze Transfer
+    Analyze Gas
+        - crowdsale.token() ISN'T subjected to gas limits.
+    Remaining external call: ['crowdsale.token()']
+    Analyze External Address
+        There are ['crowdsale'] should be checked in variable crowdsale
+        Checked variables: crowdsale
+            No The function `setCrowdsale` does not match the name of the contract `PreICOProxyBuyer` nor is it explicitly named 'constructor', so it is not a
+            constructor. Additionally, it assigns the input parameter `_crowdsale` to the state variable `crowdsale`, rather than hardcoding a specific value.
+            Function Security Analysis for PreICOProxyBuyer.setCrowdsale(Crowdsale)
+                The modifier of function setCrowdsale are ['onlyOwner']
+                The result of checking modifiers:
+                    - modifier onlyOwner is controlled by owner, the function would not cause REE problem.
+                      Reason: Upon rechecking, the code 'if (msg.sender != owner) throw;' enforces that only the owner can execute the function. This clearly matches rule
+                      1, which focuses on owner or specific address enforcement.
+Conclusion: This function will not cause REE Problem.
