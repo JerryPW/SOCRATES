@@ -1,7 +1,7 @@
 # Socrates
 This is the official repository for Socrates in paper "How To Ask Questions The Smart Way: On the Role of LLM in Smart Contract Auditing"
 
-![Structure]()
+![Structure](Structure.png)
 
 ## Outline
 This supplementary material includes:  
