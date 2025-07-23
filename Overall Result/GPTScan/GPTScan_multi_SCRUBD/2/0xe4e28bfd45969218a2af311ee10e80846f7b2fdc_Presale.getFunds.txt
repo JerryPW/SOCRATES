@@ -1,0 +1,99 @@
+Presale.getFunds: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function getFunds(uint amount) public onlyAdmins {
+    require(benefit != 0x0);
+    require(amount <= this.balance);
+    Raise(benefit, amount);
+    benefit.send(amount);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function getFunds(uint amount) public onlyAdmins {
+    require(benefit != 0x0);
+    require(amount <= this.balance);
+    Raise(benefit, amount);
+    benefit.send(amount);
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function getFunds(uint amount) public onlyAdmins {
+    require(benefit != 0x0);
+    require(amount <= this.balance);
+    Raise(benefit, amount);
+    benefit.send(amount);
+  }
+Response:
+{"StatementsA": {"State update statement":"None"}, "StatementsB": {"External call statement":"benefit.send(amount);"}, "VariableA": {"Variable name": "benefit"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: State update statement
+2.External Call: External call statement
+3.Variable A: Variable name
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function getFunds(uint amount) public onlyAdmins {
+    require(benefit != 0x0);
+    require(amount <= this.balance);
+    Raise(benefit, amount);
+    benefit.send(amount);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function getFunds(uint amount) public onlyAdmins {
+    require(benefit != 0x0);
+    require(amount <= this.balance);
+    Raise(benefit, amount);
+    benefit.send(amount);
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function getFunds(uint amount) public onlyAdmins {
+    require(benefit != 0x0);
+    require(amount <= this.balance);
+    Raise(benefit, amount);
+    benefit.send(amount);
+  }
+Response:
+{"StatementsA": {"benefit.send(amount);":"Updates the state by sending funds from the contract."}, "StatementsB": {"benefit.send(amount);":"Executes an external call to send funds."}, "VariableA": {"benefit":"Holds the address to which the funds are sent."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: benefit.send(amount);
+2.External Call: benefit.send(amount);
+3.Variable A: benefit
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

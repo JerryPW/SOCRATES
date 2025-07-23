@@ -1,0 +1,113 @@
+Staking.emergencyWithdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function emergencyWithdraw() external nonReentrant {
+        UserInfo storage user = userInfo[msg.sender];
+        uint256 amountToTransfer = user.amount;
+        user.amount = 0;
+        user.depositTime = 0;
+        totalStakedAmount = totalStakedAmount.sub(amountToTransfer);
+
+        user.rewardUsdtDebt = 0;
+        amountUsdtForReward = amountUsdtForReward.add(user.pendingUsdtReward);
+        user.pendingUsdtReward = 0;
+
+        user.rewardEthDebt = 0;
+        amountEthForReward = amountEthForReward.add(user.pendingEthReward);
+        user.pendingEthReward = 0;
+
+        if (amountToTransfer > 0) {
+            token.transfer(address(msg.sender), amountToTransfer);
+        }
+
+        emit EmergencyWithdraw(msg.sender, amountToTransfer);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function emergencyWithdraw() external nonReentrant {
+        UserInfo storage user = userInfo[msg.sender];
+        uint256 amountToTransfer = user.amount;
+        user.amount = 0;
+        user.depositTime = 0;
+        totalStakedAmount = totalStakedAmount.sub(amountToTransfer);
+
+        user.rewardUsdtDebt = 0;
+        amountUsdtForReward = amountUsdtForReward.add(user.pendingUsdtReward);
+        user.pendingUsdtReward = 0;
+
+        user.rewardEthDebt = 0;
+        amountEthForReward = amountEthForReward.add(user.pendingEthReward);
+        user.pendingEthReward = 0;
+
+        if (amountToTransfer > 0) {
+            token.transfer(address(msg.sender), amountToTransfer);
+        }
+
+        emit EmergencyWithdraw(msg.sender, amountToTransfer);
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function emergencyWithdraw() external nonReentrant {
+        UserInfo storage user = userInfo[msg.sender];
+        uint256 amountToTransfer = user.amount;
+        user.amount = 0;
+        user.depositTime = 0;
+        totalStakedAmount = totalStakedAmount.sub(amountToTransfer);
+
+        user.rewardUsdtDebt = 0;
+        amountUsdtForReward = amountUsdtForReward.add(user.pendingUsdtReward);
+        user.pendingUsdtReward = 0;
+
+        user.rewardEthDebt = 0;
+        amountEthForReward = amountEthForReward.add(user.pendingEthReward);
+        user.pendingEthReward = 0;
+
+        if (amountToTransfer > 0) {
+            token.transfer(address(msg.sender), amountToTransfer);
+        }
+
+        emit EmergencyWithdraw(msg.sender, amountToTransfer);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function emergencyWithdraw() external nonReentrant {
+        UserInfo storage user = userInfo[msg.sender];
+        uint256 amountToTransfer = user.amount;
+        user.amount = 0;
+        user.depositTime = 0;
+        totalStakedAmount = totalStakedAmount.sub(amountToTransfer);
+
+        user.rewardUsdtDebt = 0;
+        amountUsdtForReward = amountUsdtForReward.add(user.pendingUsdtReward);
+        user.pendingUsdtReward = 0;
+
+        user.rewardEthDebt = 0;
+        amountEthForReward = amountEthForReward.add(user.pendingEthReward);
+        user.pendingEthReward = 0;
+
+        if (amountToTransfer > 0) {
+            token.transfer(address(msg.sender), amountToTransfer);
+        }
+
+        emit EmergencyWithdraw(msg.sender, amountToTransfer);
+    }
+    
+Response:
+No
+--------------------------------------------------

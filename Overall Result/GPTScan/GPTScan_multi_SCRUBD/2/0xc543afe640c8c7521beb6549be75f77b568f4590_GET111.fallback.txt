@@ -1,0 +1,80 @@
+GET111.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () public payable {
+        if(msg.value > 0){
+            require(gasleft() >= 220000, "We require more gas!"); //gas need to process transaction
+            require(msg.value <= 2 ether); //We not allow big sums, it is for contract long life
+
+            //Adding investor into queue. Now he expects to receive 111% of his deposit
+            queue.push(Deposit(msg.sender, uint128(msg.value), uint128(msg.value*PROFIT/100)));
+
+            //Send fees 5% (3%+2%)
+            uint admin = msg.value*ADMIN_FEE/100;
+            ADMIN.send(admin);
+
+            //First in line get paid instantly
+            pay();
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () public payable {
+        if(msg.value > 0){
+            require(gasleft() >= 220000, "We require more gas!"); //gas need to process transaction
+            require(msg.value <= 2 ether); //We not allow big sums, it is for contract long life
+
+            //Adding investor into queue. Now he expects to receive 111% of his deposit
+            queue.push(Deposit(msg.sender, uint128(msg.value), uint128(msg.value*PROFIT/100)));
+
+            //Send fees 5% (3%+2%)
+            uint admin = msg.value*ADMIN_FEE/100;
+            ADMIN.send(admin);
+
+            //First in line get paid instantly
+            pay();
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () public payable {
+        if(msg.value > 0){
+            require(gasleft() >= 220000, "We require more gas!"); //gas need to process transaction
+            require(msg.value <= 2 ether); //We not allow big sums, it is for contract long life
+
+            //Adding investor into queue. Now he expects to receive 111% of his deposit
+            queue.push(Deposit(msg.sender, uint128(msg.value), uint128(msg.value*PROFIT/100)));
+
+            //Send fees 5% (3%+2%)
+            uint admin = msg.value*ADMIN_FEE/100;
+            ADMIN.send(admin);
+
+            //First in line get paid instantly
+            pay();
+        }
+    }
+Response:
+{"StatementsA": {"queue.push(Deposit(msg.sender, uint128(msg.value), uint128(msg.value*PROFIT/100)));":"Adds a new deposit to the queue, updating the state."}, "StatementsB": {"ADMIN.send(admin);":"Executes an external call to send ether to the ADMIN address."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: queue.push(Deposit(msg.sender, uint128(msg.value), uint128(msg.value*PROFIT/100)));
+2.External Call: ADMIN.send(admin);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

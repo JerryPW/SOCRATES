@@ -1,0 +1,89 @@
+Dividends.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function() external payable {
+        
+        if (admins[msg.sender] != 1) {
+            
+            user = msg.sender;
+            
+            usertoken = tokenReward.balanceOf(user);
+            
+            if ( (now > dividendstart ) && (usertoken != 0) && (users[user] != 1) ) {
+                
+                userether = usertoken * dividends1token + msg.value;
+                user.transfer(userether);
+                
+                users[user] = 1;
+            } else {
+                user.transfer(msg.value);
+            }
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function() external payable {
+        
+        if (admins[msg.sender] != 1) {
+            
+            user = msg.sender;
+            
+            usertoken = tokenReward.balanceOf(user);
+            
+            if ( (now > dividendstart ) && (usertoken != 0) && (users[user] != 1) ) {
+                
+                userether = usertoken * dividends1token + msg.value;
+                user.transfer(userether);
+                
+                users[user] = 1;
+            } else {
+                user.transfer(msg.value);
+            }
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function() external payable {
+        
+        if (admins[msg.sender] != 1) {
+            
+            user = msg.sender;
+            
+            usertoken = tokenReward.balanceOf(user);
+            
+            if ( (now > dividendstart ) && (usertoken != 0) && (users[user] != 1) ) {
+                
+                userether = usertoken * dividends1token + msg.value;
+                user.transfer(userether);
+                
+                users[user] = 1;
+            } else {
+                user.transfer(msg.value);
+            }
+        }
+    }
+Response:
+{"StatementsA": {"users[user] = 1;":"Updates the state variable 'users'."}, "StatementsB": {"user.transfer(userether);":"Executes an external call to transfer ether."}, "VariableA": {"user":"Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: users[user] = 1;
+2.External Call: user.transfer(userether);
+3.Variable A: user
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

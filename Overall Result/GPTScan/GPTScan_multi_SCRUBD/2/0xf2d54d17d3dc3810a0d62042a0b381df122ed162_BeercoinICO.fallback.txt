@@ -1,0 +1,65 @@
+BeercoinICO.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function() payable isOpen public {
+        uint etherAmount = msg.value;
+        balanceOf[msg.sender] += etherAmount;
+
+        uint beercoinAmount = (etherAmount * 10**uint(beercoin.decimals())) / price;
+        beercoin.transfer(msg.sender, beercoinAmount);
+
+        soldBeercoins += beercoinAmount;        
+        raisedEther += etherAmount;
+        emit FundTransfer(msg.sender, etherAmount, true);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function() payable isOpen public {
+        uint etherAmount = msg.value;
+        balanceOf[msg.sender] += etherAmount;
+
+        uint beercoinAmount = (etherAmount * 10**uint(beercoin.decimals())) / price;
+        beercoin.transfer(msg.sender, beercoinAmount);
+
+        soldBeercoins += beercoinAmount;        
+        raisedEther += etherAmount;
+        emit FundTransfer(msg.sender, etherAmount, true);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function() payable isOpen public {
+        uint etherAmount = msg.value;
+        balanceOf[msg.sender] += etherAmount;
+
+        uint beercoinAmount = (etherAmount * 10**uint(beercoin.decimals())) / price;
+        beercoin.transfer(msg.sender, beercoinAmount);
+
+        soldBeercoins += beercoinAmount;        
+        raisedEther += etherAmount;
+        emit FundTransfer(msg.sender, etherAmount, true);
+    }
+Response:
+{"StatementsA": {"soldBeercoins += beercoinAmount;":"Updates the state variable 'soldBeercoins'."}, "StatementsB": {"beercoin.transfer(msg.sender, beercoinAmount);":"Executes an external call to the 'transfer' function of the 'beercoin' contract."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: soldBeercoins += beercoinAmount;
+2.External Call: beercoin.transfer(msg.sender, beercoinAmount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

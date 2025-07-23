@@ -1,0 +1,19 @@
+Escrow.cancelTokenTransaction: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function cancelTokenTransaction (address _tag) private {
+        Transaction storage transaction = transactions[_tag];
+        require(transaction.status == transactionStatus.Pending);
+        token = ERC20(eternal.getAddress(transaction.token));
+        uint refund = transaction.buyerBalance;
+        transaction.buyerBalance = 0;
+        address buyer = transaction.buyer;
+        transaction.buyer = 0x0;
+        token.transfer(buyer, refund);
+        transaction.status = transactionStatus.Canceled;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

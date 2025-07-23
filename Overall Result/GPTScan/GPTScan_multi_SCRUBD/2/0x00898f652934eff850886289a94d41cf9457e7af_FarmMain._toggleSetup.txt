@@ -1,0 +1,50 @@
+FarmMain._toggleSetup: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _toggleSetup(uint256 setupIndex) private {
+        FarmingSetup storage setup = _setups[setupIndex];
+        require(block.number > _setupsInfo[setup.infoIndex].startBlock, "Too early for this setup");
+        if (setup.active && block.number >= setup.endBlock && _setupsInfo[setup.infoIndex].renewTimes == 0) {
+            setup.active = false;
+            return;
+        } else if (block.number >= setup.startBlock && block.number < setup.endBlock && setup.active) {
+            setup.active = false;
+            _setupsInfo[setup.infoIndex].renewTimes = 0;
+            uint256 amount = (setup.endBlock - block.number) * setup.rewardPerBlock;
+            setup.endBlock = block.number;
+            if (_setupsInfo[setup.infoIndex].free) {
+                _updateFreeSetup(setupIndex, 0, 0, false);
+            }
+            _rewardReceived[setupIndex] -= amount;
+            _giveBack(amount);
+            return; }
+        bool wasActive = setup.active;
+        setup.active = _ensureTransfer(setup.rewardPerBlock * _setupsInfo[setup.infoIndex].blockDuration);
+        if (setup.active && wasActive) {
+            _rewardReceived[_farmingSetupsCount] = setup.rewardPerBlock * _setupsInfo[setup.infoIndex].blockDuration;
+            _setups[_farmingSetupsCount] = abi.decode(abi.encode(setup), (FarmingSetup));
+            _setups[setupIndex].active = false;
+            _setupsInfo[setup.infoIndex].renewTimes -= 1;
+            _setupsInfo[setup.infoIndex].setupsCount += 1;
+            _setupsInfo[setup.infoIndex].lastSetupIndex = _farmingSetupsCount;
+            _setups[_farmingSetupsCount].startBlock = block.number;
+            _setups[_farmingSetupsCount].endBlock = block.number + _setupsInfo[_setups[_farmingSetupsCount].infoIndex].blockDuration;
+            _setups[_farmingSetupsCount].objectId = 0;
+            _setups[_farmingSetupsCount].totalSupply = 0;
+            _farmingSetupsCount += 1;
+        } else if (setup.active && !wasActive) {
+            _rewardReceived[setupIndex] = setup.rewardPerBlock * _setupsInfo[_setups[setupIndex].infoIndex].blockDuration;
+            // update new setup
+            _setups[setupIndex].startBlock = block.number;
+            _setups[setupIndex].endBlock = block.number + _setupsInfo[_setups[setupIndex].infoIndex].blockDuration;
+            _setups[setupIndex].totalSupply = 0;
+            _setupsInfo[_setups[setupIndex].infoIndex].renewTimes -= 1;
+        } else {
+            _setupsInfo[_setups[setupIndex].infoIndex].renewTimes = 0;
+        }
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

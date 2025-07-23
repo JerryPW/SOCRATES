@@ -1,0 +1,212 @@
+Brave3d.overStage: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function overStage(uint8 rate)
+    private
+    {
+        uint256 curStageIndex = _currentMap[rate];
+        uint256 finishStageIndex = _finishMap[rate];
+
+        assert(curStageIndex >= finishStageIndex);
+
+        if (curStageIndex == finishStageIndex) {return;}
+
+        Stage storage finishStage = _stageMap[rate][finishStageIndex];
+
+        assert(!finishStage.isFinish);
+
+        if (finishStage.cnt < MAX_PLAYERS) {return;}
+
+        assert(finishStage.blocknumber != 0);
+
+        if (block.number - 256 <= finishStage.blocknumber) {
+
+            if (block.number == finishStage.blocknumber) {return;}
+
+            uint8 deadIndex = uint8(blockhash(finishStage.blocknumber)) % MAX_PLAYERS;
+            address deadPlayer = finishStage.playerMap[deadIndex];
+            emit BraveDeadPlayer(deadPlayer,finishStageIndex,deadIndex, rate);
+            finishStage.deadIndex = deadIndex;
+
+            for (uint8 i = 0; i < MAX_PLAYERS; i++) {
+                address player = finishStage.playerMap[i];
+                if (deadIndex != i) {
+                    _valueMap[player] += WIN_VALUE * rate;
+                }
+
+                address referee = _addressMap[player];
+                _valueMap[referee] += REFEREE_VALUE * rate;
+                _referredMap[referee] += REFEREE_VALUE * rate;
+            }
+
+
+            uint256 dividends = p3dContract.myDividends(true);
+            if (dividends > 0) {
+                p3dContract.withdraw();
+                _valueMap[deadPlayer] += dividends;
+            }
+
+            p3dContract.buy.value(P3D_VALUE * rate)(address(OFFICIAL_P3D));
+
+        } else {
+
+            for (uint8 j = 0; j < MAX_PLAYERS; j++) {
+                _valueMap[finishStage.playerMap[j]] += PRICE * rate;
+            }
+
+            emit BraveInvalidateStage(finishStageIndex, rate);
+        }
+
+        finishStage.isFinish = true;
+        finishStageIndex++;
+        _finishMap[rate] = finishStageIndex;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function overStage(uint8 rate)
+    private
+    {
+        uint256 curStageIndex = _currentMap[rate];
+        uint256 finishStageIndex = _finishMap[rate];
+
+        assert(curStageIndex >= finishStageIndex);
+
+        if (curStageIndex == finishStageIndex) {return;}
+
+        Stage storage finishStage = _stageMap[rate][finishStageIndex];
+
+        assert(!finishStage.isFinish);
+
+        if (finishStage.cnt < MAX_PLAYERS) {return;}
+
+        assert(finishStage.blocknumber != 0);
+
+        if (block.number - 256 <= finishStage.blocknumber) {
+
+            if (block.number == finishStage.blocknumber) {return;}
+
+            uint8 deadIndex = uint8(blockhash(finishStage.blocknumber)) % MAX_PLAYERS;
+            address deadPlayer = finishStage.playerMap[deadIndex];
+            emit BraveDeadPlayer(deadPlayer,finishStageIndex,deadIndex, rate);
+            finishStage.deadIndex = deadIndex;
+
+            for (uint8 i = 0; i < MAX_PLAYERS; i++) {
+                address player = finishStage.playerMap[i];
+                if (deadIndex != i) {
+                    _valueMap[player] += WIN_VALUE * rate;
+                }
+
+                address referee = _addressMap[player];
+                _valueMap[referee] += REFEREE_VALUE * rate;
+                _referredMap[referee] += REFEREE_VALUE * rate;
+            }
+
+
+            uint256 dividends = p3dContract.myDividends(true);
+            if (dividends > 0) {
+                p3dContract.withdraw();
+                _valueMap[deadPlayer] += dividends;
+            }
+
+            p3dContract.buy.value(P3D_VALUE * rate)(address(OFFICIAL_P3D));
+
+        } else {
+
+            for (uint8 j = 0; j < MAX_PLAYERS; j++) {
+                _valueMap[finishStage.playerMap[j]] += PRICE * rate;
+            }
+
+            emit BraveInvalidateStage(finishStageIndex, rate);
+        }
+
+        finishStage.isFinish = true;
+        finishStageIndex++;
+        _finishMap[rate] = finishStageIndex;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function overStage(uint8 rate)
+    private
+    {
+        uint256 curStageIndex = _currentMap[rate];
+        uint256 finishStageIndex = _finishMap[rate];
+
+        assert(curStageIndex >= finishStageIndex);
+
+        if (curStageIndex == finishStageIndex) {return;}
+
+        Stage storage finishStage = _stageMap[rate][finishStageIndex];
+
+        assert(!finishStage.isFinish);
+
+        if (finishStage.cnt < MAX_PLAYERS) {return;}
+
+        assert(finishStage.blocknumber != 0);
+
+        if (block.number - 256 <= finishStage.blocknumber) {
+
+            if (block.number == finishStage.blocknumber) {return;}
+
+            uint8 deadIndex = uint8(blockhash(finishStage.blocknumber)) % MAX_PLAYERS;
+            address deadPlayer = finishStage.playerMap[deadIndex];
+            emit BraveDeadPlayer(deadPlayer,finishStageIndex,deadIndex, rate);
+            finishStage.deadIndex = deadIndex;
+
+            for (uint8 i = 0; i < MAX_PLAYERS; i++) {
+                address player = finishStage.playerMap[i];
+                if (deadIndex != i) {
+                    _valueMap[player] += WIN_VALUE * rate;
+                }
+
+                address referee = _addressMap[player];
+                _valueMap[referee] += REFEREE_VALUE * rate;
+                _referredMap[referee] += REFEREE_VALUE * rate;
+            }
+
+
+            uint256 dividends = p3dContract.myDividends(true);
+            if (dividends > 0) {
+                p3dContract.withdraw();
+                _valueMap[deadPlayer] += dividends;
+            }
+
+            p3dContract.buy.value(P3D_VALUE * rate)(address(OFFICIAL_P3D));
+
+        } else {
+
+            for (uint8 j = 0; j < MAX_PLAYERS; j++) {
+                _valueMap[finishStage.playerMap[j]] += PRICE * rate;
+            }
+
+            emit BraveInvalidateStage(finishStageIndex, rate);
+        }
+
+        finishStage.isFinish = true;
+        finishStageIndex++;
+        _finishMap[rate] = finishStageIndex;
+    }
+Response:
+{"StatementsA": {"_finishMap[rate] = finishStageIndex;":"Updates the finish stage index in the _finishMap state variable."}, "StatementsB": {"p3dContract.withdraw();":"Executes an external call to the withdraw function of the p3dContract."}, "VariableA": {"deadPlayer": "Holds the sender's address of the external call to p3dContract.withdraw()."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _finishMap[rate] = finishStageIndex;
+2.External Call: p3dContract.withdraw();
+3.Variable A: deadPlayer
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

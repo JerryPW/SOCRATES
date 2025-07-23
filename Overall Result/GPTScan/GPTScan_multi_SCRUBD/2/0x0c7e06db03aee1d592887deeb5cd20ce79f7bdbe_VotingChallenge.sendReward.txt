@@ -1,0 +1,131 @@
+VotingChallenge.sendReward: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function sendReward(address payable to) public afterVotingPeriod {
+        uint winnerVotes = voters[to].weightedVotes[winner];
+        uint loserVotes = voters[to].fullVotes[1-winner];
+        address payable referrer1 = voters[to].referrers[0];
+        address payable referrer2 = voters[to].referrers[1];
+        uint sum;
+        if (winnerVotes > 0) {
+            uint reward = challengePrize * winnerVotes / teams[winner].weightedVotes;
+            to.transfer(reward + voters[to].fullVotes[winner]);
+            if (referrer1 != address(0)) {
+                sum = reward / 100 * 2;  // 2%
+                forwarder.forward.value(sum)(referrer1, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer1, sum); }
+            if (referrer2 != address(0)) {
+                sum = reward / 1000 * 2;  // 0.2%
+                forwarder.forward.value(sum)(referrer2, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer2, sum); }
+            voters[to].fullVotes[winner] = 0;
+            voters[to].weightedVotes[winner] = 0;
+            emit RewardWasPaid(to, reward); }
+        if (loserVotes > 0) {
+            if (referrer1 != address(0)) {
+                sum = loserVotes / 100 * 1;  // 1%
+                forwarder.forward.value(sum)(referrer1, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer1, sum); }
+            if (referrer2 != address(0)) {
+                sum = loserVotes / 1000 * 1;  // 0.1%
+                forwarder.forward.value(sum)(referrer2, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer2, sum); }} }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function sendReward(address payable to) public afterVotingPeriod {
+        uint winnerVotes = voters[to].weightedVotes[winner];
+        uint loserVotes = voters[to].fullVotes[1-winner];
+        address payable referrer1 = voters[to].referrers[0];
+        address payable referrer2 = voters[to].referrers[1];
+        uint sum;
+        if (winnerVotes > 0) {
+            uint reward = challengePrize * winnerVotes / teams[winner].weightedVotes;
+            to.transfer(reward + voters[to].fullVotes[winner]);
+            if (referrer1 != address(0)) {
+                sum = reward / 100 * 2;  // 2%
+                forwarder.forward.value(sum)(referrer1, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer1, sum); }
+            if (referrer2 != address(0)) {
+                sum = reward / 1000 * 2;  // 0.2%
+                forwarder.forward.value(sum)(referrer2, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer2, sum); }
+            voters[to].fullVotes[winner] = 0;
+            voters[to].weightedVotes[winner] = 0;
+            emit RewardWasPaid(to, reward); }
+        if (loserVotes > 0) {
+            if (referrer1 != address(0)) {
+                sum = loserVotes / 100 * 1;  // 1%
+                forwarder.forward.value(sum)(referrer1, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer1, sum); }
+            if (referrer2 != address(0)) {
+                sum = loserVotes / 1000 * 1;  // 0.1%
+                forwarder.forward.value(sum)(referrer2, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer2, sum); }} }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function sendReward(address payable to) public afterVotingPeriod {
+        uint winnerVotes = voters[to].weightedVotes[winner];
+        uint loserVotes = voters[to].fullVotes[1-winner];
+        address payable referrer1 = voters[to].referrers[0];
+        address payable referrer2 = voters[to].referrers[1];
+        uint sum;
+        if (winnerVotes > 0) {
+            uint reward = challengePrize * winnerVotes / teams[winner].weightedVotes;
+            to.transfer(reward + voters[to].fullVotes[winner]);
+            if (referrer1 != address(0)) {
+                sum = reward / 100 * 2;  // 2%
+                forwarder.forward.value(sum)(referrer1, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer1, sum); }
+            if (referrer2 != address(0)) {
+                sum = reward / 1000 * 2;  // 0.2%
+                forwarder.forward.value(sum)(referrer2, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer2, sum); }
+            voters[to].fullVotes[winner] = 0;
+            voters[to].weightedVotes[winner] = 0;
+            emit RewardWasPaid(to, reward); }
+        if (loserVotes > 0) {
+            if (referrer1 != address(0)) {
+                sum = loserVotes / 100 * 1;  // 1%
+                forwarder.forward.value(sum)(referrer1, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer1, sum); }
+            if (referrer2 != address(0)) {
+                sum = loserVotes / 1000 * 1;  // 0.1%
+                forwarder.forward.value(sum)(referrer2, to);
+                cryptoVersusPrize -= sum;
+                emit ReferrerRewardWasPaid(to, referrer2, sum); }} }
+Response:
+{"StatementsA": {"cryptoVersusPrize -= sum;":"This statement updates the state variable 'cryptoVersusPrize' by subtracting 'sum' from it."}, "StatementsB": {"forwarder.forward.value(sum)(referrer1, to);":"This statement executes an external call to the 'forward' function of the 'forwarder' contract."}, "VariableA": {"to": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: cryptoVersusPrize -= sum;
+2.External Call: forwarder.forward.value(sum)(referrer1, to);
+3.Variable A: to
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

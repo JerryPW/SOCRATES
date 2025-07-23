@@ -1,0 +1,20 @@
+Sargasso.emergencyWithdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function emergencyWithdraw(uint256 _pid) public {
+        require(userLock[msg.sender] == false);
+        userLock[msg.sender] = true;
+        PoolInfo storage pool = poolInfo[_pid];
+        UserInfo storage user = userInfo[_pid][msg.sender];
+        pool.lpToken.safeTransfer(address(msg.sender), user.amount);
+        user.amount = 0;
+        user.rewardDebt = 0;
+        hasJoined[msg.sender] = false;
+        fellowBuccaneers -= 1;
+        userLock[msg.sender] = false;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

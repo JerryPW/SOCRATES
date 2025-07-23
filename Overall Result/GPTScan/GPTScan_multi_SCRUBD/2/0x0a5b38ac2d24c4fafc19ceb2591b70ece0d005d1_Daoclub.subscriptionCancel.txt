@@ -1,0 +1,83 @@
+Daoclub.subscriptionCancel: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function subscriptionCancel(uint256 sid) external {
+        require(_daoType == 1, "Daoclub: type error");
+        Subscription storage subscription = _subscriptionMap[sid];
+        require(_msgSender() == subscription._member, "Daoclub: not allow" );
+        
+        //退款
+        if(isETH()) {
+            payable(subscription._member).transfer(subscription._buyAmount);
+        }else {
+            _targetToken.safeTransfer(subscription._member, subscription._buyAmount);
+        }
+        _lockAmount = _lockAmount.sub(subscription._buyAmount);
+        subscription._buyAmount = 0;
+        subscription._buyMaxNetValue = 0;
+        
+        
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function subscriptionCancel(uint256 sid) external {
+        require(_daoType == 1, "Daoclub: type error");
+        Subscription storage subscription = _subscriptionMap[sid];
+        require(_msgSender() == subscription._member, "Daoclub: not allow" );
+        
+        //退款
+        if(isETH()) {
+            payable(subscription._member).transfer(subscription._buyAmount);
+        }else {
+            _targetToken.safeTransfer(subscription._member, subscription._buyAmount);
+        }
+        _lockAmount = _lockAmount.sub(subscription._buyAmount);
+        subscription._buyAmount = 0;
+        subscription._buyMaxNetValue = 0;
+        
+        
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function subscriptionCancel(uint256 sid) external {
+        require(_daoType == 1, "Daoclub: type error");
+        Subscription storage subscription = _subscriptionMap[sid];
+        require(_msgSender() == subscription._member, "Daoclub: not allow" );
+        
+        //退款
+        if(isETH()) {
+            payable(subscription._member).transfer(subscription._buyAmount);
+        }else {
+            _targetToken.safeTransfer(subscription._member, subscription._buyAmount);
+        }
+        _lockAmount = _lockAmount.sub(subscription._buyAmount);
+        subscription._buyAmount = 0;
+        subscription._buyMaxNetValue = 0;
+        
+        
+    }
+Response:
+{"StatementsA": {"_lockAmount = _lockAmount.sub(subscription._buyAmount);":"Updates the state variable _lockAmount by subtracting subscription._buyAmount."}, "StatementsB": {"payable(subscription._member).transfer(subscription._buyAmount);":"Executes an external call to transfer ETH to subscription._member."}, "VariableA": {"subscription._member": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _lockAmount = _lockAmount.sub(subscription._buyAmount);
+2.External Call: payable(subscription._member).transfer(subscription._buyAmount);
+3.Variable A: subscription._member
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

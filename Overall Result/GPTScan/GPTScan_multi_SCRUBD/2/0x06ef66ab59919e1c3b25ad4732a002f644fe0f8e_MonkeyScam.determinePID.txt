@@ -1,0 +1,79 @@
+MonkeyScam.determinePID: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function determinePID(LDdatasets.EventReturns memory _eventData_)
+        private
+        returns (LDdatasets.EventReturns)
+    {
+        uint256 _pID = pIDxAddr_[msg.sender];
+        // if player is new to this version of ratscam
+        if (_pID == 0)
+        {
+            // grab their player ID, name and last aff ID, from player names contract 
+            _pID = PlayerBook.getPlayerID(msg.sender);
+            bytes32 _name = PlayerBook.getPlayerName(_pID);
+            uint256 _laff = PlayerBook.getPlayerLAff(_pID);
+            
+            // set up player account 
+            pIDxAddr_[msg.sender] = _pID;
+            plyr_[_pID].addr = msg.sender;
+            
+            if (_name != "")
+            {
+                pIDxName_[_name] = _pID;
+                plyr_[_pID].name = _name;
+                plyrNames_[_pID][_name] = true;
+            }
+            
+            if (_laff != 0 && _laff != _pID)
+                plyr_[_pID].laff = _laff;
+            
+            // set the new player bool to true
+            _eventData_.compressedData = _eventData_.compressedData + 1;
+        } 
+        return (_eventData_);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function determinePID(LDdatasets.EventReturns memory _eventData_)
+        private
+        returns (LDdatasets.EventReturns)
+    {
+        uint256 _pID = pIDxAddr_[msg.sender];
+        // if player is new to this version of ratscam
+        if (_pID == 0)
+        {
+            // grab their player ID, name and last aff ID, from player names contract 
+            _pID = PlayerBook.getPlayerID(msg.sender);
+            bytes32 _name = PlayerBook.getPlayerName(_pID);
+            uint256 _laff = PlayerBook.getPlayerLAff(_pID);
+            
+            // set up player account 
+            pIDxAddr_[msg.sender] = _pID;
+            plyr_[_pID].addr = msg.sender;
+            
+            if (_name != "")
+            {
+                pIDxName_[_name] = _pID;
+                plyr_[_pID].name = _name;
+                plyrNames_[_pID][_name] = true;
+            }
+            
+            if (_laff != 0 && _laff != _pID)
+                plyr_[_pID].laff = _laff;
+            
+            // set the new player bool to true
+            _eventData_.compressedData = _eventData_.compressedData + 1;
+        } 
+        return (_eventData_);
+    }
+    
+Response:
+No
+--------------------------------------------------

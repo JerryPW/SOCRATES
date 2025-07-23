@@ -1,0 +1,101 @@
+MTVote.onTokenReceived: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function onTokenReceived(address _from, uint256 _value, bytes _data) public returns (bytes4) {
+        require(msg.sender == TVTokenAddress);
+        require(!pause);
+        uint targetId = uint256(convertBytesToBytes32(_data));
+        targets[targetId] += _value;
+        TVToken(TVTokenAddress).transfer(wallet, _value);
+        _from = this == _from ? checkAndBuySender : _from;
+        checkAndBuySender = address(0);
+
+        bool inList = false;
+        for (uint i = 0; i < targetIdsSize; i++) {
+            if (targetIds[i] == targetId) {
+                inList = true;
+            }
+        }
+        if (!inList) {
+            targetIds.push(targetId);
+            targetIdsSize++;
+        }
+
+        emit TokenReceived(_from, _value, targetId);
+        return TOKEN_RECEIVED;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function onTokenReceived(address _from, uint256 _value, bytes _data) public returns (bytes4) {
+        require(msg.sender == TVTokenAddress);
+        require(!pause);
+        uint targetId = uint256(convertBytesToBytes32(_data));
+        targets[targetId] += _value;
+        TVToken(TVTokenAddress).transfer(wallet, _value);
+        _from = this == _from ? checkAndBuySender : _from;
+        checkAndBuySender = address(0);
+
+        bool inList = false;
+        for (uint i = 0; i < targetIdsSize; i++) {
+            if (targetIds[i] == targetId) {
+                inList = true;
+            }
+        }
+        if (!inList) {
+            targetIds.push(targetId);
+            targetIdsSize++;
+        }
+
+        emit TokenReceived(_from, _value, targetId);
+        return TOKEN_RECEIVED;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function onTokenReceived(address _from, uint256 _value, bytes _data) public returns (bytes4) {
+        require(msg.sender == TVTokenAddress);
+        require(!pause);
+        uint targetId = uint256(convertBytesToBytes32(_data));
+        targets[targetId] += _value;
+        TVToken(TVTokenAddress).transfer(wallet, _value);
+        _from = this == _from ? checkAndBuySender : _from;
+        checkAndBuySender = address(0);
+
+        bool inList = false;
+        for (uint i = 0; i < targetIdsSize; i++) {
+            if (targetIds[i] == targetId) {
+                inList = true;
+            }
+        }
+        if (!inList) {
+            targetIds.push(targetId);
+            targetIdsSize++;
+        }
+
+        emit TokenReceived(_from, _value, targetId);
+        return TOKEN_RECEIVED;
+    }
+Response:
+{"StatementsA": {"targets[targetId] += _value;":"This statement updates the state variable 'targets'."}, "StatementsB": {"TVToken(TVTokenAddress).transfer(wallet, _value);":"This statement executes an external call to transfer tokens."}, "VariableA": {"_from": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: targets[targetId] += _value;
+2.External Call: TVToken(TVTokenAddress).transfer(wallet, _value);
+3.Variable A: _from
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

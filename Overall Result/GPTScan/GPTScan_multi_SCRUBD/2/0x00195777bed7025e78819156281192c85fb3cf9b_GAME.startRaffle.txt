@@ -1,0 +1,95 @@
+GAME.startRaffle: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function startRaffle(uint random) internal {                                    //
+        require(ticketsBought == ticketPool);                                       //
+        //Variables to find winner                                                  //
+        address winner  = owner;                                                    //
+        uint tempSum    = amounts[0];                                               //
+        uint count      = 0;                                                        //
+        uint windex     = (random % ticketPool).add(1);       
+                                                                                    //
+        //Loop throught ticket-buyers to find winner                                //
+        while(tempSum < windex){                                                    //
+            count++;                                                                //
+            tempSum = tempSum.add(amounts[count]);                                  //
+        }                                                                           //
+        //store winners address                                                     //
+        winner = buyers[count];                                                     //
+                                                                                    //
+        //Reset                                                                     //
+        buyerNumber     = 0;                                                        //
+        ticketsBought   = 0;                                                        //
+                                                                                    //
+        //Send jackpot to winner if the game has a jackpot and jackpot is relased   //
+        if (random <= ((jackpotChance.mul(1000000)).div(100)) && jackpotFactor > 0){//
+            Winner(address(this), winner, winnerPrize, random, count);              //
+            Jackpot(address(this), winner, (jackpot.mul(jackpotFactor)).div(100));  //
+            winner.transfer(winnerPrize.add((jackpot.mul(jackpotFactor)).div(100)));//
+            jackpot = jackpot.sub((jackpot.mul(jackpotFactor)).div(100));           //
+        }                                                                           //
+        else {                                                                      //
+            Winner(address(this), winner, winnerPrize, random, count);              //
+            winner.transfer(winnerPrize);                                           //
+        }                                                                           //
+                                                                                    //
+        //Send prize to winner and cut to contracts                                 //
+        bank.receiveFromGame.value(address(this).balance.sub((jackpot.add(tokenCut.add(queueFunds)))))();
+        bonus.receiveFromGame.value(tokenCut)();                                    //
+                                                                                    //
+        if(queueAmount[queueIndex] > 0){                                            // *
+            fillFromQueue();                                                        // *
+        }                                                                           // *
+    }                                                                               //
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function startRaffle(uint random) internal {                                    //
+        require(ticketsBought == ticketPool);                                       //
+        //Variables to find winner                                                  //
+        address winner  = owner;                                                    //
+        uint tempSum    = amounts[0];                                               //
+        uint count      = 0;                                                        //
+        uint windex     = (random % ticketPool).add(1);       
+                                                                                    //
+        //Loop throught ticket-buyers to find winner                                //
+        while(tempSum < windex){                                                    //
+            count++;                                                                //
+            tempSum = tempSum.add(amounts[count]);                                  //
+        }                                                                           //
+        //store winners address                                                     //
+        winner = buyers[count];                                                     //
+                                                                                    //
+        //Reset                                                                     //
+        buyerNumber     = 0;                                                        //
+        ticketsBought   = 0;                                                        //
+                                                                                    //
+        //Send jackpot to winner if the game has a jackpot and jackpot is relased   //
+        if (random <= ((jackpotChance.mul(1000000)).div(100)) && jackpotFactor > 0){//
+            Winner(address(this), winner, winnerPrize, random, count);              //
+            Jackpot(address(this), winner, (jackpot.mul(jackpotFactor)).div(100));  //
+            winner.transfer(winnerPrize.add((jackpot.mul(jackpotFactor)).div(100)));//
+            jackpot = jackpot.sub((jackpot.mul(jackpotFactor)).div(100));           //
+        }                                                                           //
+        else {                                                                      //
+            Winner(address(this), winner, winnerPrize, random, count);              //
+            winner.transfer(winnerPrize);                                           //
+        }                                                                           //
+                                                                                    //
+        //Send prize to winner and cut to contracts                                 //
+        bank.receiveFromGame.value(address(this).balance.sub((jackpot.add(tokenCut.add(queueFunds)))))();
+        bonus.receiveFromGame.value(tokenCut)();                                    //
+                                                                                    //
+        if(queueAmount[queueIndex] > 0){                                            // *
+            fillFromQueue();                                                        // *
+        }                                                                           // *
+    }                                                                               //
+    
+Response:
+No
+--------------------------------------------------

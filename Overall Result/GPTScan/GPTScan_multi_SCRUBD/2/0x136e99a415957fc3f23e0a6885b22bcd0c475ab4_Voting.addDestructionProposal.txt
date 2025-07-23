@@ -1,0 +1,16 @@
+Voting.addDestructionProposal: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function addDestructionProposal (string _reason) external payable returns(uint256) {
+        require(!queued[uint(Subject.Destruction)]);
+
+        addProposal(Subject.Destruction, _reason);
+
+        queued[uint(Subject.Destruction)] = true;
+        emit ProposalRaised(msg.sender, "SelfDestruction");
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

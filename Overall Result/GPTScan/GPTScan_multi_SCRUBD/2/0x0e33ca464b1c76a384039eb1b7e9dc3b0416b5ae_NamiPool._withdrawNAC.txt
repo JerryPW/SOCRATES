@@ -1,0 +1,65 @@
+NamiPool._withdrawNAC: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _withdrawNAC(address _shareAddress, uint _roundIndex) internal {
+        require(namiPool[_roundIndex][_shareAddress].stake > 0);
+        NamiCrowdSale namiToken = NamiCrowdSale(NamiAddr);
+        uint previousBalances = namiToken.balanceOf(this);
+        namiToken.transfer(_shareAddress, namiPool[_roundIndex][_shareAddress].stake);
+        // update current Nac pool balance
+        round[_roundIndex].currentNAC = round[_roundIndex].currentNAC.sub(namiPool[_roundIndex][_shareAddress].stake);
+        
+        namiPool[_roundIndex][_shareAddress].stake = 0;
+        assert(previousBalances > namiToken.balanceOf(this));
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _withdrawNAC(address _shareAddress, uint _roundIndex) internal {
+        require(namiPool[_roundIndex][_shareAddress].stake > 0);
+        NamiCrowdSale namiToken = NamiCrowdSale(NamiAddr);
+        uint previousBalances = namiToken.balanceOf(this);
+        namiToken.transfer(_shareAddress, namiPool[_roundIndex][_shareAddress].stake);
+        // update current Nac pool balance
+        round[_roundIndex].currentNAC = round[_roundIndex].currentNAC.sub(namiPool[_roundIndex][_shareAddress].stake);
+        
+        namiPool[_roundIndex][_shareAddress].stake = 0;
+        assert(previousBalances > namiToken.balanceOf(this));
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function _withdrawNAC(address _shareAddress, uint _roundIndex) internal {
+        require(namiPool[_roundIndex][_shareAddress].stake > 0);
+        NamiCrowdSale namiToken = NamiCrowdSale(NamiAddr);
+        uint previousBalances = namiToken.balanceOf(this);
+        namiToken.transfer(_shareAddress, namiPool[_roundIndex][_shareAddress].stake);
+        // update current Nac pool balance
+        round[_roundIndex].currentNAC = round[_roundIndex].currentNAC.sub(namiPool[_roundIndex][_shareAddress].stake);
+        
+        namiPool[_roundIndex][_shareAddress].stake = 0;
+        assert(previousBalances > namiToken.balanceOf(this));
+    }
+Response:
+{"StatementsA": {"round[_roundIndex].currentNAC = round[_roundIndex].currentNAC.sub(namiPool[_roundIndex][_shareAddress].stake);":"Updates the current NAC balance in the round."}, "StatementsB": {"namiToken.transfer(_shareAddress, namiPool[_roundIndex][_shareAddress].stake);":"Executes a transfer of tokens to the _shareAddress."}, "VariableA": {"_shareAddress": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: round[_roundIndex].currentNAC = round[_roundIndex].currentNAC.sub(namiPool[_roundIndex][_shareAddress].stake);
+2.External Call: namiToken.transfer(_shareAddress, namiPool[_roundIndex][_shareAddress].stake);
+3.Variable A: _shareAddress
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

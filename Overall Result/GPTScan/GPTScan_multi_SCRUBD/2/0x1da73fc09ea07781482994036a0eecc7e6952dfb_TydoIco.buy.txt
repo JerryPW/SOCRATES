@@ -1,0 +1,22 @@
+TydoIco.buy: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function buy() payable public {
+
+    require (canBuy());
+    uint amount = msg.value.mul(COINS_PER_ETH).div(1 ether).mul(tokenDecMult);
+    amount = addBonus(amount);
+    //emit Debug("buy amount", amount);
+    require(amount > 0, 'amount must be positive');
+    token.transferFrom(address(owner), address(this), amount);
+    //emit Debug('transfered ', amount);
+    balances[msg.sender] = balances[msg.sender].add(amount);
+    ethBalances[msg.sender] += msg.value;
+    ethCollected = ethCollected.add(msg.value);
+    tokenSold = tokenSold.add(amount);
+  }
+Response:
+{"1": "No"}
+--------------------------------------------------

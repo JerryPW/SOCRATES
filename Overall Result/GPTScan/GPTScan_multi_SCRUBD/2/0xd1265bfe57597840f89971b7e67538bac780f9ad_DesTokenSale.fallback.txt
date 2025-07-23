@@ -1,0 +1,113 @@
+DesTokenSale.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable stopInEmergency {
+        require(tokensSelling != 0);
+        require(msg.value >= 0.01 * 1 ether);
+        
+        // calculate token amount
+        uint tokens = msg.value / tokenPrice * 1 ether;
+        
+        // throw if you trying to buy over the limit
+        require(token.balanceOf(msg.sender).add(tokens) <= purchaseLimit);
+        
+        // recalculate selling tokens
+        // will throw if it is not enough tokens
+        tokensSelling = tokensSelling.sub(tokens);
+        
+        // recalculate counters
+        tokensSoldTotal = tokensSoldTotal.add(tokens);
+        if (token.balanceOf(msg.sender) == 0) investorCount++;
+        weiRaisedTotal = weiRaisedTotal.add(msg.value);
+        
+        // transfer bought tokens to the contributor 
+        token.transfer(msg.sender, tokens);
+
+        // transfer funds to the beneficiary
+        beneficiary.transfer(msg.value);
+
+        NewContribution(msg.sender, tokens, msg.value);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable stopInEmergency {
+        require(tokensSelling != 0);
+        require(msg.value >= 0.01 * 1 ether);
+        
+        // calculate token amount
+        uint tokens = msg.value / tokenPrice * 1 ether;
+        
+        // throw if you trying to buy over the limit
+        require(token.balanceOf(msg.sender).add(tokens) <= purchaseLimit);
+        
+        // recalculate selling tokens
+        // will throw if it is not enough tokens
+        tokensSelling = tokensSelling.sub(tokens);
+        
+        // recalculate counters
+        tokensSoldTotal = tokensSoldTotal.add(tokens);
+        if (token.balanceOf(msg.sender) == 0) investorCount++;
+        weiRaisedTotal = weiRaisedTotal.add(msg.value);
+        
+        // transfer bought tokens to the contributor 
+        token.transfer(msg.sender, tokens);
+
+        // transfer funds to the beneficiary
+        beneficiary.transfer(msg.value);
+
+        NewContribution(msg.sender, tokens, msg.value);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () payable stopInEmergency {
+        require(tokensSelling != 0);
+        require(msg.value >= 0.01 * 1 ether);
+        
+        // calculate token amount
+        uint tokens = msg.value / tokenPrice * 1 ether;
+        
+        // throw if you trying to buy over the limit
+        require(token.balanceOf(msg.sender).add(tokens) <= purchaseLimit);
+        
+        // recalculate selling tokens
+        // will throw if it is not enough tokens
+        tokensSelling = tokensSelling.sub(tokens);
+        
+        // recalculate counters
+        tokensSoldTotal = tokensSoldTotal.add(tokens);
+        if (token.balanceOf(msg.sender) == 0) investorCount++;
+        weiRaisedTotal = weiRaisedTotal.add(msg.value);
+        
+        // transfer bought tokens to the contributor 
+        token.transfer(msg.sender, tokens);
+
+        // transfer funds to the beneficiary
+        beneficiary.transfer(msg.value);
+
+        NewContribution(msg.sender, tokens, msg.value);
+    }
+Response:
+{"StatementsA": {"tokensSelling = tokensSelling.sub(tokens);":"Updates the state variable tokensSelling."}, "StatementsB": {"beneficiary.transfer(msg.value);":"Executes an external call to transfer funds."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: tokensSelling = tokensSelling.sub(tokens);
+2.External Call: beneficiary.transfer(msg.value);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,113 @@
+Dice.__callback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function __callback(bytes32 myid, string memory result) 
+        public
+        payable 
+    {
+        
+        // All the action takes place on when we receive a new number from random.org
+
+        bool playerWins;
+        
+        uint winAmount;
+    
+        emit RandomOrgCallback(address(this), myid);
+    
+        address oraclize_cb = oraclize_cbAddress();
+
+        require(msg.sender == oraclize_cb);
+        
+        
+        address payable player = oraclizeStructs[myid].player;
+
+
+        emit NumberGeneratorResponse(address(this), msg.sender, myid, result);
+        
+        uint winningNumber = parseInt(result);
+        
+        
+        uint[] memory betNumbers = oraclizeStructs[myid].betNumbers;
+        
+        emit WinningNumber(address(this), myid, betNumbers, winningNumber);
+
+
+        oraclizeStructs[myid].winningNumber = winningNumber;
+        
+
+        uint betAmount = oraclizeStructs[myid].betAmount;
+
+
+        for (uint i = 0; i < betNumbers.length; i++) {
+
+            uint betNumber = betNumbers[i];
+
+            if(betNumber == winningNumber) {
+                playerWins = true;
+                break;
+            }
+
+        }
+        
+        
+        if(playerWins) {
+            
+            // Calculate how much player wins..
+
+            if(betNumbers.length == 1) {
+                    winAmount = (betAmount * 589) / 100;
+            }
+            if(betNumbers.length == 2) {
+                    winAmount = (betAmount * 293) / 100;
+            }
+            if(betNumbers.length == 3) {
+                    winAmount = (betAmount * 195) / 100;
+            }
+            if(betNumbers.length == 4) {
+                    winAmount = (betAmount * 142) / 100;
+            }
+            if(betNumbers.length == 5) {
+                    winAmount = (betAmount * 107) / 100;
+            }
+            if(betNumbers.length >= 6) {
+                    winAmount = 0;
+            }
+
+            emit PlayerWins(address(this), player, winningNumber, winAmount);
+
+            if(winAmount > 0) {
+
+                // Substract the casino edge 4% and pay the winner..
+                
+                uint casino_edge = (winAmount / 100) * 4;
+                uint oraclize_fee = 4000000000000000; // Oraclize service charges us a fee of 0.004 Ether for querying random.org on the blockchain
+                
+                winAmount = winAmount - casino_edge;
+                winAmount = winAmount - oraclize_fee;
+
+                address(player).transfer(winAmount);
+
+                oraclizeStructs[myid].winAmount = winAmount;
+
+                emit PlayerCashout(address(this), player, winningNumber, winAmount);
+            
+            }
+            
+        }
+
+        if(playerWins==false) {
+
+            emit DidNotWin(address(this), winningNumber, betNumbers);
+
+            emit GameFinalized(address(this));
+
+        }
+
+        oraclizeStructs[myid].status = true;
+
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

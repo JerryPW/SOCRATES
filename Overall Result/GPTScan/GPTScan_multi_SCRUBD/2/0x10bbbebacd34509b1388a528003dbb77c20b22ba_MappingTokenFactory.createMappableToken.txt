@@ -1,0 +1,47 @@
+MappingTokenFactory.createMappableToken: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function createMappableToken(string memory name, string memory symbol, uint8 decimals, uint totalSupply) external payable returns (address mappableToken) {
+        _chargeFee();
+        require(mappableTokens[_msgSender()] == address(0), 'MappableToken created already');
+
+        bytes32 salt = keccak256(abi.encodePacked(_chainId(), _msgSender()));
+
+        bytes memory bytecode = type(InitializableProductProxy).creationCode;
+        assembly {
+            mappableToken := create2(0, add(bytecode, 32), mload(bytecode), salt)
+        }
+        InitializableProductProxy(payable(mappableToken)).__InitializableProductProxy_init(address(this), _MappableToken_, abi.encodeWithSignature('__MappableToken_init(address,address,string,string,uint8,uint256)', address(this), _msgSender(), name, symbol, decimals, totalSupply));
+        
+        mappableTokens[_msgSender()] = mappableToken;
+        emit CreateMappableToken(_msgSender(), name, symbol, decimals, totalSupply, mappableToken);
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function createMappableToken(string memory name, string memory symbol, uint8 decimals, uint totalSupply) external payable returns (address mappableToken) {
+        _chargeFee();
+        require(mappableTokens[_msgSender()] == address(0), 'MappableToken created already');
+
+        bytes32 salt = keccak256(abi.encodePacked(_chainId(), _msgSender()));
+
+        bytes memory bytecode = type(InitializableProductProxy).creationCode;
+        assembly {
+            mappableToken := create2(0, add(bytecode, 32), mload(bytecode), salt)
+        }
+        InitializableProductProxy(payable(mappableToken)).__InitializableProductProxy_init(address(this), _MappableToken_, abi.encodeWithSignature('__MappableToken_init(address,address,string,string,uint8,uint256)', address(this), _msgSender(), name, symbol, decimals, totalSupply));
+        
+        mappableTokens[_msgSender()] = mappableToken;
+        emit CreateMappableToken(_msgSender(), name, symbol, decimals, totalSupply, mappableToken);
+    }
+    
+Response:
+No
+--------------------------------------------------

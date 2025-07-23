@@ -1,0 +1,23 @@
+TwelveHourAuction.sendProfitTTH: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function sendProfitTTH() private
+    {
+        uint256 balanceContract = totalEthereumBalance();
+        buyTHT(calEthSendToTHT(profitTHT));
+        exitTHT();
+        uint256 currentBalanceContract = totalEthereumBalance();
+        uint256 ethSendToTHT = SafeMath.sub(balanceContract, currentBalanceContract);
+        if (ethSendToTHT > profitTHT) {
+          // reset profit THT
+          profitTHT = 0;
+          nextPot = SafeMath.sub(nextPot, SafeMath.sub(ethSendToTHT, profitTHT));
+        } else {
+          profitTHT = SafeMath.sub(profitTHT, ethSendToTHT);
+        }
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

@@ -1,0 +1,80 @@
+HoldPresaleContract.unlockTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function unlockTokens() external {
+    address contributor = msg.sender;
+
+    if (holderList[contributor].isActive && !holderList[contributor].withdrawed) {
+      if (now >= holderList[contributor].holdPeriodTimestamp) {
+        if ( OppToken.transfer( msg.sender, holderList[contributor].tokens ) ) {
+          holderList[contributor].withdrawed = true;
+          TokensTransfered(contributor,  holderList[contributor].tokens);
+        }
+      } else {
+        revert();
+      }
+    } else {
+      revert();
+    }
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function unlockTokens() external {
+    address contributor = msg.sender;
+
+    if (holderList[contributor].isActive && !holderList[contributor].withdrawed) {
+      if (now >= holderList[contributor].holdPeriodTimestamp) {
+        if ( OppToken.transfer( msg.sender, holderList[contributor].tokens ) ) {
+          holderList[contributor].withdrawed = true;
+          TokensTransfered(contributor,  holderList[contributor].tokens);
+        }
+      } else {
+        revert();
+      }
+    } else {
+      revert();
+    }
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function unlockTokens() external {
+    address contributor = msg.sender;
+
+    if (holderList[contributor].isActive && !holderList[contributor].withdrawed) {
+      if (now >= holderList[contributor].holdPeriodTimestamp) {
+        if ( OppToken.transfer( msg.sender, holderList[contributor].tokens ) ) {
+          holderList[contributor].withdrawed = true;
+          TokensTransfered(contributor,  holderList[contributor].tokens);
+        }
+      } else {
+        revert();
+      }
+    } else {
+      revert();
+    }
+  }
+Response:
+{"StatementsA": {"holderList[contributor].withdrawed = true;":"This statement updates the 'withdrawed' field of the state variable 'holderList'."}, "StatementsB": {"OppToken.transfer( msg.sender, holderList[contributor].tokens )":"This statement executes an external call to the 'transfer' function of the 'OppToken' contract."}, "VariableA": {"contributor": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: holderList[contributor].withdrawed = true;
+2.External Call: OppToken.transfer( msg.sender, holderList[contributor].tokens )
+3.Variable A: contributor
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

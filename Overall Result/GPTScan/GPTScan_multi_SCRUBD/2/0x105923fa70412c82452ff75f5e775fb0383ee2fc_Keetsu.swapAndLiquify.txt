@@ -1,0 +1,123 @@
+Keetsu.swapAndLiquify: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapAndLiquify() private lockTheSwap {
+
+        uint256 totalcontracttokens = accumulatedForDev.add(accumulatedForLiquid).add(accumulatedForMarketing);
+        uint256 remainForDev = 0;
+        uint256 remainForMarketing = 0;
+        uint256 remainForLiq = 0;
+        if (routerselllimit && totalcontracttokens > numTokensSellToAddToLiquidity.mul(20)){
+            remainForDev = accumulatedForDev.div(20).mul(19);
+            accumulatedForDev = accumulatedForDev.sub(remainForDev);
+            remainForMarketing = accumulatedForMarketing.div(20).mul(19);
+            accumulatedForMarketing = accumulatedForMarketing.sub(remainForMarketing);
+            remainForLiq = accumulatedForLiquid.div(20).mul(19);
+            accumulatedForLiquid = accumulatedForLiquid.sub(remainForLiq);
+        }
+        // split the liquidity balance into halves
+        uint256 half = accumulatedForLiquid .div(2);
+        uint256 otherHalf = accumulatedForLiquid.sub(half);
+
+        uint256 swapAmount = half.add(accumulatedForMarketing).add(accumulatedForDev);
+        // capture the contract's current ETH balance.
+        // this is so that we can capture exactly the amount of ETH that the
+        // swap creates, and not make the liquidity event include any ETH that
+        // has been manually sent to the contract
+        uint256 initialBalance = address(this).balance;
+
+        // swap tokens for ETH
+        swapTokensForEth(swapAmount); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
+
+        // how much ETH did we just swap into?
+        uint256 delta = address(this).balance.sub(initialBalance);
+
+        uint256 ethLiquid = delta.mul(half).div(swapAmount);
+        uint256 ethMarketing = delta.mul(accumulatedForMarketing).div(swapAmount);
+        uint256 ethDev = delta.sub(ethLiquid).sub(ethMarketing);
+
+        if(ethLiquid > 0){
+            // add liquidity to uniswap
+            addLiquidity(otherHalf, ethLiquid);
+            emit SwapAndLiquify(half, ethLiquid, otherHalf);
+        }
+
+        if(ethMarketing > 0){
+            payable(marketingWallet).transfer(ethMarketing);
+        }
+
+        if(ethDev > 0){
+            payable(devWallet).transfer(ethDev);
+        }
+        //Reset accumulated amount
+        accumulatedForLiquid = remainForLiq;
+        accumulatedForMarketing = remainForMarketing;
+        accumulatedForDev = remainForDev;
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapAndLiquify() private lockTheSwap {
+
+        uint256 totalcontracttokens = accumulatedForDev.add(accumulatedForLiquid).add(accumulatedForMarketing);
+        uint256 remainForDev = 0;
+        uint256 remainForMarketing = 0;
+        uint256 remainForLiq = 0;
+        if (routerselllimit && totalcontracttokens > numTokensSellToAddToLiquidity.mul(20)){
+            remainForDev = accumulatedForDev.div(20).mul(19);
+            accumulatedForDev = accumulatedForDev.sub(remainForDev);
+            remainForMarketing = accumulatedForMarketing.div(20).mul(19);
+            accumulatedForMarketing = accumulatedForMarketing.sub(remainForMarketing);
+            remainForLiq = accumulatedForLiquid.div(20).mul(19);
+            accumulatedForLiquid = accumulatedForLiquid.sub(remainForLiq);
+        }
+        // split the liquidity balance into halves
+        uint256 half = accumulatedForLiquid .div(2);
+        uint256 otherHalf = accumulatedForLiquid.sub(half);
+
+        uint256 swapAmount = half.add(accumulatedForMarketing).add(accumulatedForDev);
+        // capture the contract's current ETH balance.
+        // this is so that we can capture exactly the amount of ETH that the
+        // swap creates, and not make the liquidity event include any ETH that
+        // has been manually sent to the contract
+        uint256 initialBalance = address(this).balance;
+
+        // swap tokens for ETH
+        swapTokensForEth(swapAmount); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
+
+        // how much ETH did we just swap into?
+        uint256 delta = address(this).balance.sub(initialBalance);
+
+        uint256 ethLiquid = delta.mul(half).div(swapAmount);
+        uint256 ethMarketing = delta.mul(accumulatedForMarketing).div(swapAmount);
+        uint256 ethDev = delta.sub(ethLiquid).sub(ethMarketing);
+
+        if(ethLiquid > 0){
+            // add liquidity to uniswap
+            addLiquidity(otherHalf, ethLiquid);
+            emit SwapAndLiquify(half, ethLiquid, otherHalf);
+        }
+
+        if(ethMarketing > 0){
+            payable(marketingWallet).transfer(ethMarketing);
+        }
+
+        if(ethDev > 0){
+            payable(devWallet).transfer(ethDev);
+        }
+        //Reset accumulated amount
+        accumulatedForLiquid = remainForLiq;
+        accumulatedForMarketing = remainForMarketing;
+        accumulatedForDev = remainForDev;
+    }
+    
+Response:
+No
+--------------------------------------------------

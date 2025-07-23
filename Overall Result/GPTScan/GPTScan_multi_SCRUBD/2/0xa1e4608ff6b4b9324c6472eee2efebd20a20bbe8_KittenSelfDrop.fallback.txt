@@ -1,0 +1,55 @@
+KittenSelfDrop.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function() payable {
+        require (participants[msg.sender] < dropNumber && kittensRemainingToDrop > basicReward);
+        uint256 tokensIssued = basicReward;
+        // Send extra Kitten Coins bonus if participant is donating Ether
+        if (msg.value > 0)
+            tokensIssued += donatorReward;
+        // Send extra Kitten Coins bonus if participant holds at least holderAmount
+        if (kittenContract.balanceOf(msg.sender) >= holderAmount)
+            tokensIssued += holderReward;
+        // Check if number of Kitten Coins to issue is higher than coins remaining for airdrop (last transaction of airdrop)
+        if (tokensIssued > kittensRemainingToDrop)
+            tokensIssued = kittensRemainingToDrop;
+        
+        // Give away these so cute Kitten Coins to contributor
+        kittenContract.transfer(msg.sender, tokensIssued);
+        participants[msg.sender] = dropNumber;
+        kittensRemainingToDrop -= tokensIssued;
+        kittensDroppedToTheWorld += tokensIssued;
+        totalDropTransactions += 1;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function() payable {
+        require (participants[msg.sender] < dropNumber && kittensRemainingToDrop > basicReward);
+        uint256 tokensIssued = basicReward;
+        // Send extra Kitten Coins bonus if participant is donating Ether
+        if (msg.value > 0)
+            tokensIssued += donatorReward;
+        // Send extra Kitten Coins bonus if participant holds at least holderAmount
+        if (kittenContract.balanceOf(msg.sender) >= holderAmount)
+            tokensIssued += holderReward;
+        // Check if number of Kitten Coins to issue is higher than coins remaining for airdrop (last transaction of airdrop)
+        if (tokensIssued > kittensRemainingToDrop)
+            tokensIssued = kittensRemainingToDrop;
+        
+        // Give away these so cute Kitten Coins to contributor
+        kittenContract.transfer(msg.sender, tokensIssued);
+        participants[msg.sender] = dropNumber;
+        kittensRemainingToDrop -= tokensIssued;
+        kittensDroppedToTheWorld += tokensIssued;
+        totalDropTransactions += 1;
+    }
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,62 @@
+DCY_preICO.bringBackTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function bringBackTokens() afterDeadline 
+    {
+        require(tokensLeft > 0);
+
+        if (msg.sender == beneficiary) 
+        {
+            tokenReward.transfer(beneficiary, tokensLeft);
+            tokensLeft = tokenReward.getBalanceOf(address(this));
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function bringBackTokens() afterDeadline 
+    {
+        require(tokensLeft > 0);
+
+        if (msg.sender == beneficiary) 
+        {
+            tokenReward.transfer(beneficiary, tokensLeft);
+            tokensLeft = tokenReward.getBalanceOf(address(this));
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function bringBackTokens() afterDeadline 
+    {
+        require(tokensLeft > 0);
+
+        if (msg.sender == beneficiary) 
+        {
+            tokenReward.transfer(beneficiary, tokensLeft);
+            tokensLeft = tokenReward.getBalanceOf(address(this));
+        }
+    }
+Response:
+{"StatementsA": {"tokensLeft = tokenReward.getBalanceOf(address(this));":"Updates the state variable tokensLeft with the balance of tokens in the contract."}, "StatementsB": {"tokenReward.transfer(beneficiary, tokensLeft);":"Executes an external call to transfer tokens to the beneficiary."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: tokensLeft = tokenReward.getBalanceOf(address(this));
+2.External Call: tokenReward.transfer(beneficiary, tokensLeft);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

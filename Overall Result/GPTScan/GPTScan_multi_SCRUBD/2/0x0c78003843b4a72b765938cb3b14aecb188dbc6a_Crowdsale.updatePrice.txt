@@ -1,0 +1,71 @@
+Crowdsale.updatePrice: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function updatePrice() public payable {
+        oraclizeBalance = oraclizeBalance.add(msg.value);
+        uint queryPrice = oraclize_getPrice("URL");
+        if (queryPrice > address(this).balance) {
+            emit NewOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
+        } else {
+            emit NewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
+
+            bytes32 queryId = oraclize_query(14400, "URL", oraclize_url);
+            pendingQueries[queryId] = true;
+            oraclizeBalance = oraclizeBalance.sub(queryPrice);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function updatePrice() public payable {
+        oraclizeBalance = oraclizeBalance.add(msg.value);
+        uint queryPrice = oraclize_getPrice("URL");
+        if (queryPrice > address(this).balance) {
+            emit NewOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
+        } else {
+            emit NewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
+
+            bytes32 queryId = oraclize_query(14400, "URL", oraclize_url);
+            pendingQueries[queryId] = true;
+            oraclizeBalance = oraclizeBalance.sub(queryPrice);
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function updatePrice() public payable {
+        oraclizeBalance = oraclizeBalance.add(msg.value);
+        uint queryPrice = oraclize_getPrice("URL");
+        if (queryPrice > address(this).balance) {
+            emit NewOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
+        } else {
+            emit NewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
+
+            bytes32 queryId = oraclize_query(14400, "URL", oraclize_url);
+            pendingQueries[queryId] = true;
+            oraclizeBalance = oraclizeBalance.sub(queryPrice);
+        }
+    }
+Response:
+{"StatementsA": {"oraclizeBalance = oraclizeBalance.add(msg.value);":"Updates the state variable oraclizeBalance with the added msg.value."}, "StatementsB": {"bytes32 queryId = oraclize_query(14400, \"URL\", oraclize_url);":"Executes an external call to the oraclize_query function."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: oraclizeBalance = oraclizeBalance.add(msg.value);
+2.External Call: bytes32 queryId = oraclize_query(14400, "URL", oraclize_url);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

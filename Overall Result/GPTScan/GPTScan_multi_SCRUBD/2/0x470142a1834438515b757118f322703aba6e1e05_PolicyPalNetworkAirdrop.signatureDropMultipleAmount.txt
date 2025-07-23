@@ -1,0 +1,98 @@
+PolicyPalNetworkAirdrop.signatureDropMultipleAmount: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function signatureDropMultipleAmount(address[] _recipients, uint256[] _amounts) external
+        onlyAdmin
+        validBalanceMultiple(_recipients, _amounts)
+    {
+        // Loop through all recipients
+        for (uint256 i = 0 ; i < _recipients.length ; i++) {
+            address recipient = _recipients[i];
+            uint256 amount = _amounts[i];
+            // If recipient not transfered yet
+            if (!signaturedrops[recipient]) {
+              // Transfer amount
+              assert(token.transfer(recipient, amount));
+              // Flag as transfered
+              signaturedrops[recipient] = true;
+              // Increment number of drops and total amount
+              numDrops = numDrops.add(1);
+              dropAmount = dropAmount.add(amount);
+              // TokenDrop event
+              TokenDrop(recipient, amount, "SIGNATURE");
+            }
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function signatureDropMultipleAmount(address[] _recipients, uint256[] _amounts) external
+        onlyAdmin
+        validBalanceMultiple(_recipients, _amounts)
+    {
+        // Loop through all recipients
+        for (uint256 i = 0 ; i < _recipients.length ; i++) {
+            address recipient = _recipients[i];
+            uint256 amount = _amounts[i];
+            // If recipient not transfered yet
+            if (!signaturedrops[recipient]) {
+              // Transfer amount
+              assert(token.transfer(recipient, amount));
+              // Flag as transfered
+              signaturedrops[recipient] = true;
+              // Increment number of drops and total amount
+              numDrops = numDrops.add(1);
+              dropAmount = dropAmount.add(amount);
+              // TokenDrop event
+              TokenDrop(recipient, amount, "SIGNATURE");
+            }
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function signatureDropMultipleAmount(address[] _recipients, uint256[] _amounts) external
+        onlyAdmin
+        validBalanceMultiple(_recipients, _amounts)
+    {
+        // Loop through all recipients
+        for (uint256 i = 0 ; i < _recipients.length ; i++) {
+            address recipient = _recipients[i];
+            uint256 amount = _amounts[i];
+            // If recipient not transfered yet
+            if (!signaturedrops[recipient]) {
+              // Transfer amount
+              assert(token.transfer(recipient, amount));
+              // Flag as transfered
+              signaturedrops[recipient] = true;
+              // Increment number of drops and total amount
+              numDrops = numDrops.add(1);
+              dropAmount = dropAmount.add(amount);
+              // TokenDrop event
+              TokenDrop(recipient, amount, "SIGNATURE");
+            }
+        }
+    }
+Response:
+{"StatementsA": {"signaturedrops[recipient] = true;": "Flags the recipient as transferred", "numDrops = numDrops.add(1);": "Increments the number of drops", "dropAmount = dropAmount.add(amount);": "Increments the total amount dropped"}, "StatementsB": {"assert(token.transfer(recipient, amount));": "Executes a token transfer to the recipient"}, "VariableA": {"recipient": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: signaturedrops[recipient] = true;
+2.External Call: assert(token.transfer(recipient, amount));
+3.Variable A: recipient
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

@@ -1,0 +1,99 @@
+CryptoFun.doInvest: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+function doInvest(address referrerAddr) public payable notFromContract balanceChanged {
+uint investment = msg.value;
+uint receivedEther = msg.value;
+require(investment >= minInvesment, "investment must be >= minInvesment");
+require(address(this).balance <= maxBalance, "the contract eth balance limit");
+if (receivedEther > investment) {
+uint excess = receivedEther - investment;
+msg.sender.transfer(excess);
+receivedEther = investment;
+emit LogSendExcessOfEther(msg.sender, now, msg.value, investment, excess); }
+advertisingAddress.transfer(m_advertisingPercent.mul(receivedEther));
+adminsAddress.transfer(m_adminsPercent.mul(receivedEther));
+if (msg.value > 0)
+{
+if (msg.data.length == 20) {
+referrerAddr.transfer(m_referrer_percent.mmul(investment));  
+}
+else if (msg.data.length == 0) {
+adminsAddress.transfer(m_referrer_percent.mmul(investment));
+} 
+else {
+assert(false);  }}
+bool senderIsInvestor = m_investors.isInvestor(msg.sender);
+if (referrerAddr.notZero() && !senderIsInvestor && !m_referrals[msg.sender] &&
+referrerAddr != msg.sender && m_investors.isInvestor(referrerAddr)) {
+m_referrals[msg.sender] = true;
+uint referrerBonus = m_referrer_percent.mmul(investment);
+if (investment > 10 ether) {
+referrerBonus = m_referrer_percentMax.mmul(investment); }}
+uint dividends = calcDividends(msg.sender);
+if (senderIsInvestor && dividends.notZero()) {
+investment = (investment += dividends) * 70/100;
+emit LogAutomaticReinvest(msg.sender, now, dividends); }
+if (senderIsInvestor) {
+assert(m_investors.addInvestment(msg.sender, investment));
+assert(m_investors.setPaymentTime(msg.sender, now));
+} else {
+assert(m_investors.newInvestor(msg.sender, investment, now));
+emit LogNewInvestor(msg.sender, now); }
+investmentsNumber++;
+emit LogNewInvesment(msg.sender, now, investment, receivedEther);
+}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+function doInvest(address referrerAddr) public payable notFromContract balanceChanged {
+uint investment = msg.value;
+uint receivedEther = msg.value;
+require(investment >= minInvesment, "investment must be >= minInvesment");
+require(address(this).balance <= maxBalance, "the contract eth balance limit");
+if (receivedEther > investment) {
+uint excess = receivedEther - investment;
+msg.sender.transfer(excess);
+receivedEther = investment;
+emit LogSendExcessOfEther(msg.sender, now, msg.value, investment, excess); }
+advertisingAddress.transfer(m_advertisingPercent.mul(receivedEther));
+adminsAddress.transfer(m_adminsPercent.mul(receivedEther));
+if (msg.value > 0)
+{
+if (msg.data.length == 20) {
+referrerAddr.transfer(m_referrer_percent.mmul(investment));  
+}
+else if (msg.data.length == 0) {
+adminsAddress.transfer(m_referrer_percent.mmul(investment));
+} 
+else {
+assert(false);  }}
+bool senderIsInvestor = m_investors.isInvestor(msg.sender);
+if (referrerAddr.notZero() && !senderIsInvestor && !m_referrals[msg.sender] &&
+referrerAddr != msg.sender && m_investors.isInvestor(referrerAddr)) {
+m_referrals[msg.sender] = true;
+uint referrerBonus = m_referrer_percent.mmul(investment);
+if (investment > 10 ether) {
+referrerBonus = m_referrer_percentMax.mmul(investment); }}
+uint dividends = calcDividends(msg.sender);
+if (senderIsInvestor && dividends.notZero()) {
+investment = (investment += dividends) * 70/100;
+emit LogAutomaticReinvest(msg.sender, now, dividends); }
+if (senderIsInvestor) {
+assert(m_investors.addInvestment(msg.sender, investment));
+assert(m_investors.setPaymentTime(msg.sender, now));
+} else {
+assert(m_investors.newInvestor(msg.sender, investment, now));
+emit LogNewInvestor(msg.sender, now); }
+investmentsNumber++;
+emit LogNewInvesment(msg.sender, now, investment, receivedEther);
+}
+    
+Response:
+No
+--------------------------------------------------

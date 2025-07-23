@@ -1,0 +1,69 @@
+WithdrawContract.withdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function withdraw() public {
+        uint acc = 0; // Accumulates the amount of tokens/ether to be sent
+        uint i = nextDepositToPayout[msg.sender]; // Iterates through the deposits
+        require(i<deposits.length);
+        ERC20 currentToken = deposits[i].token; // Sets the `currentToken` to ether
+        require(msg.gas>149000); // Throws if there is no gas to do at least a single transfer.
+        while (( i< deposits.length) && ( msg.gas > 148000)) {
+            Deposit storage d = deposits[i];
+            if ((!d.canceled)&&(!isDepositSkiped(msg.sender, i))) {
+                if (currentToken != d.token) {
+                    nextDepositToPayout[msg.sender] = i;
+                    require(doPayment(i-1, msg.sender, currentToken, acc));
+                    assert(nextDepositToPayout[msg.sender] == i);
+                    currentToken = d.token;
+                    acc =0;
+                }
+                acc +=  d.amount *
+                        rewardToken.balanceOfAt(msg.sender, d.block) /
+                            rewardToken.totalSupplyAt(d.block);
+            }
+            i++; // Next deposit :-D
+        }
+        nextDepositToPayout[msg.sender] = i;
+        require(doPayment(i-1, msg.sender, currentToken, acc));
+        assert(nextDepositToPayout[msg.sender] == i);
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function withdraw() public {
+        uint acc = 0; // Accumulates the amount of tokens/ether to be sent
+        uint i = nextDepositToPayout[msg.sender]; // Iterates through the deposits
+        require(i<deposits.length);
+        ERC20 currentToken = deposits[i].token; // Sets the `currentToken` to ether
+        require(msg.gas>149000); // Throws if there is no gas to do at least a single transfer.
+        while (( i< deposits.length) && ( msg.gas > 148000)) {
+            Deposit storage d = deposits[i];
+            if ((!d.canceled)&&(!isDepositSkiped(msg.sender, i))) {
+                if (currentToken != d.token) {
+                    nextDepositToPayout[msg.sender] = i;
+                    require(doPayment(i-1, msg.sender, currentToken, acc));
+                    assert(nextDepositToPayout[msg.sender] == i);
+                    currentToken = d.token;
+                    acc =0;
+                }
+                acc +=  d.amount *
+                        rewardToken.balanceOfAt(msg.sender, d.block) /
+                            rewardToken.totalSupplyAt(d.block);
+            }
+            i++; // Next deposit :-D
+        }
+        nextDepositToPayout[msg.sender] = i;
+        require(doPayment(i-1, msg.sender, currentToken, acc));
+        assert(nextDepositToPayout[msg.sender] == i);
+    }
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,77 @@
+BatchSwap.cancelSwapIntent: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function cancelSwapIntent(uint256 _swapId) public nonReentrant {
+        require(checksCreator[_swapId] == msg.sender, "You're not the interested counterpart");
+        require(swapList[msg.sender][swapMatch[_swapId]].addressOne == msg.sender, "You're not the interested counterpart");   
+        require(swapList[msg.sender][swapMatch[_swapId]].status == swapStatus.Opened, "Swap Status is not opened");
+
+        //Rollback
+        if(swapList[msg.sender][swapMatch[_swapId]].swapFee>0)
+            payable(msg.sender).transfer(swapList[msg.sender][swapMatch[_swapId]].swapFee);
+        uint256 i;
+        for(i=0; i<nftsOne[_swapId].length; i++) {
+            if(nftsOne[_swapId][i].typeStd == ERC20) {
+                ERC20Interface(nftsOne[_swapId][i].dapp).transfer(swapList[msg.sender][swapMatch[_swapId]].addressOne, nftsOne[_swapId][i].blc[0]);
+            }
+            else if(nftsOne[_swapId][i].typeStd == ERC721) {
+                ERC721Interface(nftsOne[_swapId][i].dapp).safeTransferFrom(address(this), swapList[msg.sender][swapMatch[_swapId]].addressOne, nftsOne[_swapId][i].tokenId[0], nftsOne[_swapId][i].data);
+            }
+            else if(nftsOne[_swapId][i].typeStd == ERC1155) {
+                ERC1155Interface(nftsOne[_swapId][i].dapp).safeBatchTransferFrom(address(this), swapList[msg.sender][swapMatch[_swapId]].addressOne, nftsOne[_swapId][i].tokenId, nftsOne[_swapId][i].blc, nftsOne[_swapId][i].data);
+            }
+            else {
+                customInterface(dappRelations[nftsOne[_swapId][i].dapp]).bridgeSafeTransferFrom(nftsOne[_swapId][i].dapp, dappRelations[nftsOne[_swapId][i].dapp], swapList[msg.sender][swapMatch[_swapId]].addressOne, nftsOne[_swapId][i].tokenId, nftsOne[_swapId][i].blc, nftsOne[_swapId][i].data);
+            }
+        }
+
+        if(swapList[msg.sender][swapMatch[_swapId]].valueOne > 0)
+            swapList[msg.sender][swapMatch[_swapId]].addressOne.transfer(swapList[msg.sender][swapMatch[_swapId]].valueOne);
+
+        swapList[msg.sender][swapMatch[_swapId]].swapEnd = block.timestamp;
+        swapList[msg.sender][swapMatch[_swapId]].status = swapStatus.Cancelled;
+        emit swapEvent(msg.sender, (block.timestamp-(block.timestamp%secs)), swapStatus.Cancelled, _swapId, address(0));
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function cancelSwapIntent(uint256 _swapId) public nonReentrant {
+        require(checksCreator[_swapId] == msg.sender, "You're not the interested counterpart");
+        require(swapList[msg.sender][swapMatch[_swapId]].addressOne == msg.sender, "You're not the interested counterpart");   
+        require(swapList[msg.sender][swapMatch[_swapId]].status == swapStatus.Opened, "Swap Status is not opened");
+
+        //Rollback
+        if(swapList[msg.sender][swapMatch[_swapId]].swapFee>0)
+            payable(msg.sender).transfer(swapList[msg.sender][swapMatch[_swapId]].swapFee);
+        uint256 i;
+        for(i=0; i<nftsOne[_swapId].length; i++) {
+            if(nftsOne[_swapId][i].typeStd == ERC20) {
+                ERC20Interface(nftsOne[_swapId][i].dapp).transfer(swapList[msg.sender][swapMatch[_swapId]].addressOne, nftsOne[_swapId][i].blc[0]);
+            }
+            else if(nftsOne[_swapId][i].typeStd == ERC721) {
+                ERC721Interface(nftsOne[_swapId][i].dapp).safeTransferFrom(address(this), swapList[msg.sender][swapMatch[_swapId]].addressOne, nftsOne[_swapId][i].tokenId[0], nftsOne[_swapId][i].data);
+            }
+            else if(nftsOne[_swapId][i].typeStd == ERC1155) {
+                ERC1155Interface(nftsOne[_swapId][i].dapp).safeBatchTransferFrom(address(this), swapList[msg.sender][swapMatch[_swapId]].addressOne, nftsOne[_swapId][i].tokenId, nftsOne[_swapId][i].blc, nftsOne[_swapId][i].data);
+            }
+            else {
+                customInterface(dappRelations[nftsOne[_swapId][i].dapp]).bridgeSafeTransferFrom(nftsOne[_swapId][i].dapp, dappRelations[nftsOne[_swapId][i].dapp], swapList[msg.sender][swapMatch[_swapId]].addressOne, nftsOne[_swapId][i].tokenId, nftsOne[_swapId][i].blc, nftsOne[_swapId][i].data);
+            }
+        }
+
+        if(swapList[msg.sender][swapMatch[_swapId]].valueOne > 0)
+            swapList[msg.sender][swapMatch[_swapId]].addressOne.transfer(swapList[msg.sender][swapMatch[_swapId]].valueOne);
+
+        swapList[msg.sender][swapMatch[_swapId]].swapEnd = block.timestamp;
+        swapList[msg.sender][swapMatch[_swapId]].status = swapStatus.Cancelled;
+        emit swapEvent(msg.sender, (block.timestamp-(block.timestamp%secs)), swapStatus.Cancelled, _swapId, address(0));
+    }
+    
+Response:
+No
+--------------------------------------------------

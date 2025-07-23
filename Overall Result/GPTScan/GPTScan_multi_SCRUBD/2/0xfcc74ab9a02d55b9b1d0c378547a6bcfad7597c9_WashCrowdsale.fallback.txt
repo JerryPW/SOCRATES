@@ -1,0 +1,101 @@
+WashCrowdsale.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable {
+        require(!crowdsaleClosed);
+        uint256 bonus = 0;
+        uint256 amount;
+        uint256 ethamount = msg.value;
+        balanceOf[msg.sender] = balanceOf[msg.sender].add(ethamount);
+        amountRaised = amountRaised.add(ethamount);
+        
+        //add bounus for funders
+        if(now >= preSaleStartdate && now <= preSaleDeadline ){
+            amount =  ethamount.div(price);
+            bonus = amount.div(8);
+            amount = amount.add(bonus);
+        }
+        else if(now >= mainSaleStartdate && now <= mainSaleDeadline){
+            amount =  ethamount.div(price);
+        }
+        
+        amount = amount.mul(1000000000000000000);
+        tokenReward.transfer(msg.sender, amount);
+        beneficiary.send(ethamount);
+        fundTransferred = fundTransferred.add(ethamount);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable {
+        require(!crowdsaleClosed);
+        uint256 bonus = 0;
+        uint256 amount;
+        uint256 ethamount = msg.value;
+        balanceOf[msg.sender] = balanceOf[msg.sender].add(ethamount);
+        amountRaised = amountRaised.add(ethamount);
+        
+        //add bounus for funders
+        if(now >= preSaleStartdate && now <= preSaleDeadline ){
+            amount =  ethamount.div(price);
+            bonus = amount.div(8);
+            amount = amount.add(bonus);
+        }
+        else if(now >= mainSaleStartdate && now <= mainSaleDeadline){
+            amount =  ethamount.div(price);
+        }
+        
+        amount = amount.mul(1000000000000000000);
+        tokenReward.transfer(msg.sender, amount);
+        beneficiary.send(ethamount);
+        fundTransferred = fundTransferred.add(ethamount);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () payable {
+        require(!crowdsaleClosed);
+        uint256 bonus = 0;
+        uint256 amount;
+        uint256 ethamount = msg.value;
+        balanceOf[msg.sender] = balanceOf[msg.sender].add(ethamount);
+        amountRaised = amountRaised.add(ethamount);
+        
+        //add bounus for funders
+        if(now >= preSaleStartdate && now <= preSaleDeadline ){
+            amount =  ethamount.div(price);
+            bonus = amount.div(8);
+            amount = amount.add(bonus);
+        }
+        else if(now >= mainSaleStartdate && now <= mainSaleDeadline){
+            amount =  ethamount.div(price);
+        }
+        
+        amount = amount.mul(1000000000000000000);
+        tokenReward.transfer(msg.sender, amount);
+        beneficiary.send(ethamount);
+        fundTransferred = fundTransferred.add(ethamount);
+    }
+Response:
+{"StatementsA": {"amountRaised = amountRaised.add(ethamount);":"Updates the state variable amountRaised."}, "StatementsB": {"beneficiary.send(ethamount);":"Executes an external call to send ether to the beneficiary."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: amountRaised = amountRaised.add(ethamount);
+2.External Call: beneficiary.send(ethamount);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

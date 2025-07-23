@@ -1,0 +1,103 @@
+CRYPTOVATOR._transfer: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _transfer( address from, address to, uint256 Tokenamount ) private {
+        require(from != address(0), "ERC20: transfer from the zero address");
+        require(to != address(0), "ERC20: transfer to the zero address");
+        require(Tokenamount > 0, "Transfer amount must be greater than zero");
+        require(!blackListAdd[from], "You are blacklisted, contact owner to solve this problem.");
+        require(!blackListAdd[to], "You can't send to a blacklisted address.");
+        uint256 _charityFee = Tokenamount.div(100).mul(charityFee);
+        uint256 amount = Tokenamount.sub(_charityFee);
+        require(block.timestamp > launchTime + 1 minutes  || amount <= maxAmountCanBuy, "You can't buy large amount.");        
+        if(!tradingActive) {
+            require(_isExcludedFromFee[from] || _isExcludedFromFee[to], "Trading is not active yet."); }
+        if(limitsInEffect){
+            if ( from != owner() && to != owner() && to != address(0) && to != address(0xdead) && !inSwapAndLiquify ){
+                if(from != owner() && to != uniswapV2Pair && block.number == tradingActiveBlock){
+                    boughtEarly[to] = true;
+                    emit BoughtEarly(to); }                
+                if (gasLimitActive && automatedMarketMakerPairs[from]) {
+                    require(tx.gasprice <= gasPriceLimit, "Gas price exceeds limit."); }
+                if (transferDelayEnabled){
+                    if (to != owner() && to != address(uniswapV2Router) && to != address(uniswapV2Pair)){
+                        require(_holderLastTransferTimestamp[to] < block.number && _holderLastTransferTimestamp[tx.origin] < block.number, "_transfer:: Transfer Delay enabled.  Only one purchase per block allowed.");
+                        _holderLastTransferTimestamp[to] = block.number;
+                        _holderLastTransferTimestamp[tx.origin] = block.number; }}
+                if (automatedMarketMakerPairs[from] && !_isExcludedMaxTransactionAmount[to]) {
+                        require(amount <= maxTransactionAmount, "Buy transfer amount exceeds the maxTransactionAmount."); } 
+                else if (automatedMarketMakerPairs[to] && !_isExcludedMaxTransactionAmount[from]) {
+                        require(amount <= maxTransactionAmount, "Sell transfer amount exceeds the maxTransactionAmount."); }
+                if (!_isExcludedMaxTransactionAmount[to]) {
+                        require(balanceOf(to) + amount <= maxWalletAmount, "Max wallet exceeded");
+                } 
+            }
+        }
+        
+        
+        
+        uint256 totalTokensToSwap = _liquidityTokensToSwap.add(_marketingTokensToSwap);
+        uint256 contractTokenBalance = balanceOf(address(this));
+        bool overMinimumTokenBalance = contractTokenBalance >= minimumTokensBeforeSwap;
+
+        // swap and liquify
+        if (
+            !inSwapAndLiquify &&
+            swapAndLiquifyEnabled &&
+            balanceOf(uniswapV2Pair) > 0 &&
+            totalTokensToSwap > 0 &&
+            !_isExcludedFromFee[to] &&
+            !_isExcludedFromFee[from] &&
+            automatedMarketMakerPairs[to] &&
+            overMinimumTokenBalance
+        ) {
+            swapBack();
+        }
+
+        bool takeFee = true;
+
+        // If any account belongs to _isExcludedFromFee account then remove the fee
+        if (_isExcludedFromFee[from] || _isExcludedFromFee[to]) {
+            takeFee = false;
+            buyOrSellSwitch = TRANSFER; // TRANSFERs do not pay a tax.
+        } else {
+            // Buy
+            if (automatedMarketMakerPairs[from]) {
+                removeAllFee();
+                _taxFee = _buyTaxFee;
+                _liquidityFee = _buyLiquidityFee + _buyMarketingFee;
+                buyOrSellSwitch = BUY;
+            } 
+            // Sell
+            else if (automatedMarketMakerPairs[to]) {
+                removeAllFee();
+                _taxFee = _sellTaxFee;
+                _liquidityFee = _sellLiquidityFee + _sellMarketingFee;
+                buyOrSellSwitch = SELL;
+                // higher tax if bought in the same block as trading active for 72 hours (sniper protect)
+                if(boughtEarly[from] && earlyBuyPenaltyEnd > block.timestamp){
+                    _taxFee = _taxFee * 5;
+                    _liquidityFee = _liquidityFee * 5;
+                }
+            // Normal transfers do not get taxed
+            } else {
+                require(!boughtEarly[from] || earlyBuyPenaltyEnd <= block.timestamp, "Snipers can't transfer tokens to sell cheaper until penalty timeframe is over.  DM a Mod.");
+                removeAllFee();
+                buyOrSellSwitch = TRANSFER; // TRANSFERs do not pay a tax.
+            }
+        }
+        
+        _tokenTransfer(from, to, amount, takeFee);
+        
+        if (_charityFee != 0) {
+            emit Transfer(from, _charityAdd, _charityFee);
+        }
+        
+    }
+Response:
+{
+    "1": "No"
+}
+--------------------------------------------------

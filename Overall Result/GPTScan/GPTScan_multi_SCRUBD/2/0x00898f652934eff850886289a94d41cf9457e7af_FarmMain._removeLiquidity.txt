@@ -1,0 +1,129 @@
+FarmMain._removeLiquidity: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function _removeLiquidity(uint256 positionId, uint256 setupIndex, bool unwrapPair, uint256 removedLiquidity, bool isUnlock) private {
+        FarmingSetupInfo memory setupInfo = _setupsInfo[_setups[setupIndex].infoIndex];
+        // create liquidity pool data struct for the AMM
+        LiquidityPoolData memory lpData = LiquidityPoolData(
+            setupInfo.liquidityPoolTokenAddress,
+            removedLiquidity,
+            setupInfo.mainTokenAddress,
+            true,
+            setupInfo.involvingETH,
+            msg.sender
+        );
+        // retrieve the position
+        FarmingPosition storage farmingPosition = _positions[positionId];
+        // remaining liquidity
+        uint256 remainingLiquidity;
+        // we are removing liquidity using the setup items
+        if (setupInfo.free && farmingPosition.creationBlock != 0 && positionId != 0) {
+            // update the remaining liquidity
+            remainingLiquidity = farmingPosition.liquidityPoolTokenAmount - removedLiquidity;
+        }
+        // retrieve fee stuff
+        (uint256 exitFeePercentage, address exitFeeWallet) = IFarmFactory(_factory).feePercentageInfo();
+        // pay the fees!
+        if (exitFeePercentage > 0) {
+            uint256 fee = (lpData.amount * ((exitFeePercentage * 1e18) / ONE_HUNDRED)) / 1e18;
+            _safeTransfer(setupInfo.liquidityPoolTokenAddress, exitFeeWallet, fee);
+            lpData.amount = lpData.amount - fee;
+        }
+        // check if the user wants to unwrap its pair or not
+        if (unwrapPair) {
+            // remove liquidity using AMM
+            _safeApprove(lpData.liquidityPoolAddress, setupInfo.ammPlugin, lpData.amount);
+            IAMM(setupInfo.ammPlugin).removeLiquidity(lpData);
+        } else {
+            // send back the liquidity pool token amount without the fee
+            _safeTransfer(lpData.liquidityPoolAddress, lpData.receiver, lpData.amount);
+        }
+        if (!setupInfo.free && _setups[setupIndex].active && !isUnlock) {
+            _toggleSetup(setupIndex);
+        } else if (setupInfo.free && positionId != 0) {
+            if (_setups[farmingPosition.setupIndex].active && _setups[farmingPosition.setupIndex].endBlock <= block.number) {
+                _toggleSetup(farmingPosition.setupIndex);
+            }
+            // delete the farming position after the withdraw
+            if (remainingLiquidity == 0) {
+                _setupPositionsCount[farmingPosition.setupIndex] -= 1;
+                if (_setupPositionsCount[farmingPosition.setupIndex] == 0 && !_setups[farmingPosition.setupIndex].active) {
+                    _giveBack(_rewardReceived[farmingPosition.setupIndex] - _rewardPaid[farmingPosition.setupIndex]);
+                    delete _setups[farmingPosition.setupIndex];
+                }
+                delete _positions[positionId];
+            } else {
+                // update the creation block and amount
+                farmingPosition.liquidityPoolTokenAmount = remainingLiquidity;
+            }
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function _removeLiquidity(uint256 positionId, uint256 setupIndex, bool unwrapPair, uint256 removedLiquidity, bool isUnlock) private {
+        FarmingSetupInfo memory setupInfo = _setupsInfo[_setups[setupIndex].infoIndex];
+        // create liquidity pool data struct for the AMM
+        LiquidityPoolData memory lpData = LiquidityPoolData(
+            setupInfo.liquidityPoolTokenAddress,
+            removedLiquidity,
+            setupInfo.mainTokenAddress,
+            true,
+            setupInfo.involvingETH,
+            msg.sender
+        );
+        // retrieve the position
+        FarmingPosition storage farmingPosition = _positions[positionId];
+        // remaining liquidity
+        uint256 remainingLiquidity;
+        // we are removing liquidity using the setup items
+        if (setupInfo.free && farmingPosition.creationBlock != 0 && positionId != 0) {
+            // update the remaining liquidity
+            remainingLiquidity = farmingPosition.liquidityPoolTokenAmount - removedLiquidity;
+        }
+        // retrieve fee stuff
+        (uint256 exitFeePercentage, address exitFeeWallet) = IFarmFactory(_factory).feePercentageInfo();
+        // pay the fees!
+        if (exitFeePercentage > 0) {
+            uint256 fee = (lpData.amount * ((exitFeePercentage * 1e18) / ONE_HUNDRED)) / 1e18;
+            _safeTransfer(setupInfo.liquidityPoolTokenAddress, exitFeeWallet, fee);
+            lpData.amount = lpData.amount - fee;
+        }
+        // check if the user wants to unwrap its pair or not
+        if (unwrapPair) {
+            // remove liquidity using AMM
+            _safeApprove(lpData.liquidityPoolAddress, setupInfo.ammPlugin, lpData.amount);
+            IAMM(setupInfo.ammPlugin).removeLiquidity(lpData);
+        } else {
+            // send back the liquidity pool token amount without the fee
+            _safeTransfer(lpData.liquidityPoolAddress, lpData.receiver, lpData.amount);
+        }
+        if (!setupInfo.free && _setups[setupIndex].active && !isUnlock) {
+            _toggleSetup(setupIndex);
+        } else if (setupInfo.free && positionId != 0) {
+            if (_setups[farmingPosition.setupIndex].active && _setups[farmingPosition.setupIndex].endBlock <= block.number) {
+                _toggleSetup(farmingPosition.setupIndex);
+            }
+            // delete the farming position after the withdraw
+            if (remainingLiquidity == 0) {
+                _setupPositionsCount[farmingPosition.setupIndex] -= 1;
+                if (_setupPositionsCount[farmingPosition.setupIndex] == 0 && !_setups[farmingPosition.setupIndex].active) {
+                    _giveBack(_rewardReceived[farmingPosition.setupIndex] - _rewardPaid[farmingPosition.setupIndex]);
+                    delete _setups[farmingPosition.setupIndex];
+                }
+                delete _positions[positionId];
+            } else {
+                // update the creation block and amount
+                farmingPosition.liquidityPoolTokenAmount = remainingLiquidity;
+            }
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

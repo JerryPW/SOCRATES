@@ -1,0 +1,107 @@
+BDSM_Presale.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function() payable {
+	    
+		tokenFree = sharesTokenAddress.balanceOf(this); // free tokens count
+		
+		if (now < presaleStart_6_December) {
+		    msg.sender.transfer(msg.value);
+		}
+		else if (now > presaleStop_13_December) {
+			msg.sender.transfer(msg.value); // if presale closed - cash back
+			if(!tokensWithdrawn){ // when presale closed - unsold tokens transfer to stopScamHolder
+			    sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+			    tokenFree = sharesTokenAddress.balanceOf(this);
+			    tokensWithdrawn = true;
+			    presaleClosed = true;
+			}
+		} 
+		else if (presaleClosed) {
+			msg.sender.transfer(msg.value); // if no more tokens - cash back
+		} 
+		else {
+			uint256 tokenToBuy = msg.value / realPrice * coeff; // tokens to buy
+			if(tokenToBuy <= 0) msg.sender.transfer(msg.value); // mistake protector
+			require(tokenToBuy > 0);
+			uint256 actualETHTransfer = tokenToBuy * realPrice / coeff;
+			if (tokenFree >= tokenToBuy) { // free tokens >= tokens to buy, sell tokens
+				owner.transfer(actualETHTransfer);
+				if (msg.value > actualETHTransfer){ // if more than need - cash back
+					msg.sender.transfer(msg.value - actualETHTransfer);
+				}
+				sharesTokenAddress.transfer(msg.sender, tokenToBuy);
+				tokenSold += tokenToBuy;
+				tokenFree -= tokenToBuy;
+				if(tokenFree==0) presaleClosed = true;
+			} else { // free tokens < tokens to buy 
+				uint256 sendETH = tokenFree * realPrice / coeff; // price for all free tokens
+				owner.transfer(sendETH); 
+				sharesTokenAddress.transfer(msg.sender, tokenFree); 
+				msg.sender.transfer(msg.value - sendETH); // more than need - cash back
+				tokenSold += tokenFree;
+				tokenFree = sharesTokenAddress.balanceOf(this);
+				presaleClosed = true;
+			}
+		}
+		TokenFree(tokenFree);
+		PresaleClosed(presaleClosed);
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function() payable {
+	    
+		tokenFree = sharesTokenAddress.balanceOf(this); // free tokens count
+		
+		if (now < presaleStart_6_December) {
+		    msg.sender.transfer(msg.value);
+		}
+		else if (now > presaleStop_13_December) {
+			msg.sender.transfer(msg.value); // if presale closed - cash back
+			if(!tokensWithdrawn){ // when presale closed - unsold tokens transfer to stopScamHolder
+			    sharesTokenAddress.transfer(safeContract, sharesTokenAddress.balanceOf(this));
+			    tokenFree = sharesTokenAddress.balanceOf(this);
+			    tokensWithdrawn = true;
+			    presaleClosed = true;
+			}
+		} 
+		else if (presaleClosed) {
+			msg.sender.transfer(msg.value); // if no more tokens - cash back
+		} 
+		else {
+			uint256 tokenToBuy = msg.value / realPrice * coeff; // tokens to buy
+			if(tokenToBuy <= 0) msg.sender.transfer(msg.value); // mistake protector
+			require(tokenToBuy > 0);
+			uint256 actualETHTransfer = tokenToBuy * realPrice / coeff;
+			if (tokenFree >= tokenToBuy) { // free tokens >= tokens to buy, sell tokens
+				owner.transfer(actualETHTransfer);
+				if (msg.value > actualETHTransfer){ // if more than need - cash back
+					msg.sender.transfer(msg.value - actualETHTransfer);
+				}
+				sharesTokenAddress.transfer(msg.sender, tokenToBuy);
+				tokenSold += tokenToBuy;
+				tokenFree -= tokenToBuy;
+				if(tokenFree==0) presaleClosed = true;
+			} else { // free tokens < tokens to buy 
+				uint256 sendETH = tokenFree * realPrice / coeff; // price for all free tokens
+				owner.transfer(sendETH); 
+				sharesTokenAddress.transfer(msg.sender, tokenFree); 
+				msg.sender.transfer(msg.value - sendETH); // more than need - cash back
+				tokenSold += tokenFree;
+				tokenFree = sharesTokenAddress.balanceOf(this);
+				presaleClosed = true;
+			}
+		}
+		TokenFree(tokenFree);
+		PresaleClosed(presaleClosed);
+	}
+    
+Response:
+No
+--------------------------------------------------

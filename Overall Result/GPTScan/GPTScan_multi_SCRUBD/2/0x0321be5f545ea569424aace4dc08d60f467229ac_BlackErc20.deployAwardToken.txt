@@ -1,0 +1,105 @@
+BlackErc20.deployAwardToken: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function deployAwardToken() external {
+        require(_mintedCounts==_maxMintCount,"waiting mint finish");
+        require(msg.sender==_deplyAddress,"not deplyer");
+        require(totalTokensClaimed <= totalTokensLocked, "All tokens have been claimed.");
+        uint256 currentTimestamp = block.timestamp;
+        uint256 lockEndTime = deployTime + (tokenLockDays * 86400);
+        uint256 unlockTimes = (lockEndTime - currentTimestamp) / ((tokenLockDays / tokenUnlockCounts) * 86400) - hadTokenUnlockCounts;
+        uint256 claimableTokens;
+        IERC20 token2 = IERC20(address(this));
+        if (unlockTimes >= tokenUnlockCounts) {
+            claimableTokens = token2.balanceOf(address(this));
+            hadTokenUnlockCounts = tokenUnlockCounts;
+        } else {
+            require(unlockTimes>0,"not have unlock times!");
+            claimableTokens = unlockTimes * (totalTokensLocked/tokenUnlockCounts);
+            hadTokenUnlockCounts += unlockTimes;
+        }
+        token2.transfer(msg.sender, claimableTokens);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function deployAwardToken() external {
+        require(_mintedCounts==_maxMintCount,"waiting mint finish");
+        require(msg.sender==_deplyAddress,"not deplyer");
+        require(totalTokensClaimed <= totalTokensLocked, "All tokens have been claimed.");
+        uint256 currentTimestamp = block.timestamp;
+        uint256 lockEndTime = deployTime + (tokenLockDays * 86400);
+        uint256 unlockTimes = (lockEndTime - currentTimestamp) / ((tokenLockDays / tokenUnlockCounts) * 86400) - hadTokenUnlockCounts;
+        uint256 claimableTokens;
+        IERC20 token2 = IERC20(address(this));
+        if (unlockTimes >= tokenUnlockCounts) {
+            claimableTokens = token2.balanceOf(address(this));
+            hadTokenUnlockCounts = tokenUnlockCounts;
+        } else {
+            require(unlockTimes>0,"not have unlock times!");
+            claimableTokens = unlockTimes * (totalTokensLocked/tokenUnlockCounts);
+            hadTokenUnlockCounts += unlockTimes;
+        }
+        token2.transfer(msg.sender, claimableTokens);
+    }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function deployAwardToken() external {
+        require(_mintedCounts==_maxMintCount,"waiting mint finish");
+        require(msg.sender==_deplyAddress,"not deplyer");
+        require(totalTokensClaimed <= totalTokensLocked, "All tokens have been claimed.");
+        uint256 currentTimestamp = block.timestamp;
+        uint256 lockEndTime = deployTime + (tokenLockDays * 86400);
+        uint256 unlockTimes = (lockEndTime - currentTimestamp) / ((tokenLockDays / tokenUnlockCounts) * 86400) - hadTokenUnlockCounts;
+        uint256 claimableTokens;
+        IERC20 token2 = IERC20(address(this));
+        if (unlockTimes >= tokenUnlockCounts) {
+            claimableTokens = token2.balanceOf(address(this));
+            hadTokenUnlockCounts = tokenUnlockCounts;
+        } else {
+            require(unlockTimes>0,"not have unlock times!");
+            claimableTokens = unlockTimes * (totalTokensLocked/tokenUnlockCounts);
+            hadTokenUnlockCounts += unlockTimes;
+        }
+        token2.transfer(msg.sender, claimableTokens);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function deployAwardToken() external {
+        require(_mintedCounts==_maxMintCount,"waiting mint finish");
+        require(msg.sender==_deplyAddress,"not deplyer");
+        require(totalTokensClaimed <= totalTokensLocked, "All tokens have been claimed.");
+        uint256 currentTimestamp = block.timestamp;
+        uint256 lockEndTime = deployTime + (tokenLockDays * 86400);
+        uint256 unlockTimes = (lockEndTime - currentTimestamp) / ((tokenLockDays / tokenUnlockCounts) * 86400) - hadTokenUnlockCounts;
+        uint256 claimableTokens;
+        IERC20 token2 = IERC20(address(this));
+        if (unlockTimes >= tokenUnlockCounts) {
+            claimableTokens = token2.balanceOf(address(this));
+            hadTokenUnlockCounts = tokenUnlockCounts;
+        } else {
+            require(unlockTimes>0,"not have unlock times!");
+            claimableTokens = unlockTimes * (totalTokensLocked/tokenUnlockCounts);
+            hadTokenUnlockCounts += unlockTimes;
+        }
+        token2.transfer(msg.sender, claimableTokens);
+    }
+    
+Response:
+No
+--------------------------------------------------

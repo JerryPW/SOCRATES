@@ -1,0 +1,18 @@
+SEISHI.transferFrom: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+function transferFrom(
+  address sender,
+  address recipient,
+  uint256 amount
+) public override returns (bool){
+  require(amount <= _allowances[sender][_msgSender()], "ERC20: transfer amount exceeds allowance");
+  _transfer(sender, recipient, amount);
+  _approve(sender, _msgSender(), _allowances[sender][_msgSender()] - amount);
+  return true;
+}
+Response:
+{"1": "No"}
+--------------------------------------------------

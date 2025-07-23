@@ -1,0 +1,80 @@
+TreasureHunt.unlockTreasure: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function unlockTreasure(bytes32 _secret) public {
+    // only if this treasure hunt is active
+    require(isActive, "treasure inactive");
+
+    // make sure the keccak256 hash of the _secret
+    // matches the hashedSecret
+    require(keccak256(abi.encodePacked(_secret)) == hashedSecret, "incorrect secret");
+
+    // transfer the DGX to the address
+    // that called this function
+    uint256 _dgxBalance = IERC20(DGX_TOKEN_ADDRESS).balanceOf(address(this));
+    require(IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender, _dgxBalance), "could not transfer DGX");
+
+    // set the treasure hunt to be inactive
+    isActive = false;
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function unlockTreasure(bytes32 _secret) public {
+    // only if this treasure hunt is active
+    require(isActive, "treasure inactive");
+
+    // make sure the keccak256 hash of the _secret
+    // matches the hashedSecret
+    require(keccak256(abi.encodePacked(_secret)) == hashedSecret, "incorrect secret");
+
+    // transfer the DGX to the address
+    // that called this function
+    uint256 _dgxBalance = IERC20(DGX_TOKEN_ADDRESS).balanceOf(address(this));
+    require(IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender, _dgxBalance), "could not transfer DGX");
+
+    // set the treasure hunt to be inactive
+    isActive = false;
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function unlockTreasure(bytes32 _secret) public {
+    // only if this treasure hunt is active
+    require(isActive, "treasure inactive");
+
+    // make sure the keccak256 hash of the _secret
+    // matches the hashedSecret
+    require(keccak256(abi.encodePacked(_secret)) == hashedSecret, "incorrect secret");
+
+    // transfer the DGX to the address
+    // that called this function
+    uint256 _dgxBalance = IERC20(DGX_TOKEN_ADDRESS).balanceOf(address(this));
+    require(IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender, _dgxBalance), "could not transfer DGX");
+
+    // set the treasure hunt to be inactive
+    isActive = false;
+  }
+Response:
+{"StatementsA": {"isActive = false;":"Sets the treasure hunt to be inactive."}, "StatementsB": {"IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender, _dgxBalance);":"Transfers DGX tokens to the caller's address."}, "VariableA": {"msg.sender": "Holds the address of the function caller."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: isActive = false;
+2.External Call: IERC20(DGX_TOKEN_ADDRESS).transfer(msg.sender, _dgxBalance);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

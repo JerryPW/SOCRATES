@@ -1,0 +1,113 @@
+Tokens.refundTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function refundTokens(address _from, uint256 _amount) public notTimeLocked stopInEmergency returns (bool success) {
+        if (tx.origin != _from) {
+            error('refundTokens: tx.origin did not request the refund directly');
+            return false;
+        }
+
+        if (addressSCICO != msg.sender) {
+            error('refundTokens: caller is not the current ICO address');
+            return false;
+        }
+
+        if (balances[_from] < _amount) {
+            error('refundTokens: the amount to transfer is higher than your token balance');
+            return false;
+        }
+
+        if(!SCComplianceService.validate(_from, addressSCICO, _amount)) {
+			error('transfer: not allowed by the compliance service');
+			return false;
+		}
+
+		balances[_from] = balances[_from].sub(_amount);
+		balances[addressSCICO] = balances[addressSCICO].add(_amount);
+		emit Transfer(_from, addressSCICO, _amount); // Event log
+
+		return true;
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function refundTokens(address _from, uint256 _amount) public notTimeLocked stopInEmergency returns (bool success) {
+        if (tx.origin != _from) {
+            error('refundTokens: tx.origin did not request the refund directly');
+            return false;
+        }
+
+        if (addressSCICO != msg.sender) {
+            error('refundTokens: caller is not the current ICO address');
+            return false;
+        }
+
+        if (balances[_from] < _amount) {
+            error('refundTokens: the amount to transfer is higher than your token balance');
+            return false;
+        }
+
+        if(!SCComplianceService.validate(_from, addressSCICO, _amount)) {
+			error('transfer: not allowed by the compliance service');
+			return false;
+		}
+
+		balances[_from] = balances[_from].sub(_amount);
+		balances[addressSCICO] = balances[addressSCICO].add(_amount);
+		emit Transfer(_from, addressSCICO, _amount); // Event log
+
+		return true;
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function refundTokens(address _from, uint256 _amount) public notTimeLocked stopInEmergency returns (bool success) {
+        if (tx.origin != _from) {
+            error('refundTokens: tx.origin did not request the refund directly');
+            return false;
+        }
+
+        if (addressSCICO != msg.sender) {
+            error('refundTokens: caller is not the current ICO address');
+            return false;
+        }
+
+        if (balances[_from] < _amount) {
+            error('refundTokens: the amount to transfer is higher than your token balance');
+            return false;
+        }
+
+        if(!SCComplianceService.validate(_from, addressSCICO, _amount)) {
+			error('transfer: not allowed by the compliance service');
+			return false;
+		}
+
+		balances[_from] = balances[_from].sub(_amount);
+		balances[addressSCICO] = balances[addressSCICO].add(_amount);
+		emit Transfer(_from, addressSCICO, _amount); // Event log
+
+		return true;
+	}
+Response:
+{"StatementsA": {"balances[_from] = balances[_from].sub(_amount);":"Updates the balance of the sender by subtracting the amount", "balances[addressSCICO] = balances[addressSCICO].add(_amount);":"Updates the balance of the ICO address by adding the amount"}, "StatementsB": {"SCComplianceService.validate(_from, addressSCICO, _amount)":"Calls the external compliance service to validate the transaction"}, "VariableA": {"msg.sender": "Holds the address of the entity calling the function"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: balances[_from] = balances[_from].sub(_amount);
+2.External Call: SCComplianceService.validate(_from, addressSCICO, _amount)
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

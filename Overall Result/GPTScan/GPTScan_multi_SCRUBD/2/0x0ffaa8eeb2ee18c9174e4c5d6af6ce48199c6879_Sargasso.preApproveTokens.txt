@@ -1,0 +1,23 @@
+Sargasso.preApproveTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function preApproveTokens(address specifiedToken, uint256 userSpecifiedAmount) public {
+        require(secondaryUserLock[msg.sender] == false);
+        secondaryUserLock[msg.sender] = true;
+        require(checkSubscription());
+        require(hasKey[msg.sender]);
+        require(specifiedToken != v2Address);
+        buccTransfer = BuccV2(v2Address);
+        selectedTokentoTumble = tokenTumble(specifiedToken);
+        //transfers
+        selectedTokentoTumble.transferFrom(msg.sender, address(this), userSpecifiedAmount);
+        //user amounts
+        userSpecifiedTokenLock[specifiedToken][msg.sender] += userSpecifiedAmount;
+        totalTokensSpecifiedAddress[specifiedToken] += userSpecifiedAmount;
+        secondaryUserLock[msg.sender] = false;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

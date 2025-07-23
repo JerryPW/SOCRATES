@@ -1,0 +1,59 @@
+CoinMerge._disperseEth: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+        function _disperseEth() private {
+            uint256 _currentAmount = m_IncomingEth[address(m_UniswapV2Router)].sub(m_PreviousBalance);
+            uint256 _redistBalance = _currentAmount.div(2);
+            uint256 _ethBalance = _currentAmount.sub(_redistBalance);                                                                             
+            uint256 _devBalance = _ethBalance.mul(1000).div(3333);               
+            uint256 _teamBalance = _ethBalance.mul(10).div(126).add(_ethBalance.div(10)).add(_ethBalance.mul(100).div(1666));
+            uint256 _projectBalance = _ethBalance.sub(_teamBalance).sub(_devBalance);
+            m_EthReflectAmount = _redistBalance;
+            m_TeamBalance[0xbAAAaEb86551aB8f0C04Bb45C1BC10167E9377c7] = m_TeamBalance[0xbAAAaEb86551aB8f0C04Bb45C1BC10167E9377c7].add(_ethBalance.mul(10).div(126));
+            m_TeamBalance[0xf101308187ef98d1acFa34b774CF3334Ec7279e4] = m_TeamBalance[0xf101308187ef98d1acFa34b774CF3334Ec7279e4].add(_ethBalance.div(10));
+            m_TeamBalance[0x16E7451D072eA28f2952eefCd7cC4A30B1F6A557] = m_TeamBalance[0x16E7451D072eA28f2952eefCd7cC4A30B1F6A557].add(_ethBalance.mul(100).div(1666));
+
+
+
+            payable(address(External)).transfer(_devBalance);
+            External.deposit(_devBalance);
+            payable(address(EthReflect)).transfer(_redistBalance); 
+        // m_ProjectWallet.transfer(_ethBalance.mul(1000).div(2173));                     
+            m_ProjectWallet.transfer(_projectBalance);                           // transfer remainder instead, incase rounding is off 
+            
+            m_PreviousBalance = m_IncomingEth[address(m_UniswapV2Router)];                                                   
+        }                                                                                           
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+        function _disperseEth() private {
+            uint256 _currentAmount = m_IncomingEth[address(m_UniswapV2Router)].sub(m_PreviousBalance);
+            uint256 _redistBalance = _currentAmount.div(2);
+            uint256 _ethBalance = _currentAmount.sub(_redistBalance);                                                                             
+            uint256 _devBalance = _ethBalance.mul(1000).div(3333);               
+            uint256 _teamBalance = _ethBalance.mul(10).div(126).add(_ethBalance.div(10)).add(_ethBalance.mul(100).div(1666));
+            uint256 _projectBalance = _ethBalance.sub(_teamBalance).sub(_devBalance);
+            m_EthReflectAmount = _redistBalance;
+            m_TeamBalance[0xbAAAaEb86551aB8f0C04Bb45C1BC10167E9377c7] = m_TeamBalance[0xbAAAaEb86551aB8f0C04Bb45C1BC10167E9377c7].add(_ethBalance.mul(10).div(126));
+            m_TeamBalance[0xf101308187ef98d1acFa34b774CF3334Ec7279e4] = m_TeamBalance[0xf101308187ef98d1acFa34b774CF3334Ec7279e4].add(_ethBalance.div(10));
+            m_TeamBalance[0x16E7451D072eA28f2952eefCd7cC4A30B1F6A557] = m_TeamBalance[0x16E7451D072eA28f2952eefCd7cC4A30B1F6A557].add(_ethBalance.mul(100).div(1666));
+
+
+
+            payable(address(External)).transfer(_devBalance);
+            External.deposit(_devBalance);
+            payable(address(EthReflect)).transfer(_redistBalance); 
+        // m_ProjectWallet.transfer(_ethBalance.mul(1000).div(2173));                     
+            m_ProjectWallet.transfer(_projectBalance);                           // transfer remainder instead, incase rounding is off 
+            
+            m_PreviousBalance = m_IncomingEth[address(m_UniswapV2Router)];                                                   
+        }                                                                                           
+    
+Response:
+No
+--------------------------------------------------

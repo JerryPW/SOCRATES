@@ -1,0 +1,97 @@
+RuneLock.lockTokens: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function lockTokens(
+        address _tokenAddress,
+        uint256 _amountToLock,
+        uint256 _releaseTime
+    ) external payable returns (bool _tokensLocked) {
+        require(
+            _releaseTime > block.timestamp,
+            "TokenLock: release time is before current time"
+        );
+
+        IERC20 token = IERC20(_tokenAddress);
+        // Check we can actually take ownership of the tokens
+        require(
+            token.allowance(msg.sender, address(this)) >= _amountToLock,
+            "TokenLock: Insufficient allowance to lock the required number of tokens"
+        );
+        require(
+            _releaseTime > beneficiaryToReleaseTime[msg.sender][_tokenAddress],
+            "TokenLock: Cannot tokens for less time than already existing locks"
+        );
+        require(
+            msg.value == lockCost,
+            "TokenLock: Insufficient funds to lock"
+        );
+        
+        if (fee1Address != address(0)) {
+            bool success;
+            (success,) = payable(fee1Address).call{value: lockCost * 98 / 100}(""); // 98% fee1
+            (success,) = payable(fee2Address).call{value: lockCost * 2 / 100}(""); // 2% fee2
+        }
+
+        token.transferFrom(msg.sender, address(this), _amountToLock);
+        _lockTokens(_tokenAddress, _amountToLock, _releaseTime);
+        emit TokensLocked(
+            _tokenAddress,
+            msg.sender,
+            _releaseTime,
+            _amountToLock
+        );
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function lockTokens(
+        address _tokenAddress,
+        uint256 _amountToLock,
+        uint256 _releaseTime
+    ) external payable returns (bool _tokensLocked) {
+        require(
+            _releaseTime > block.timestamp,
+            "TokenLock: release time is before current time"
+        );
+
+        IERC20 token = IERC20(_tokenAddress);
+        // Check we can actually take ownership of the tokens
+        require(
+            token.allowance(msg.sender, address(this)) >= _amountToLock,
+            "TokenLock: Insufficient allowance to lock the required number of tokens"
+        );
+        require(
+            _releaseTime > beneficiaryToReleaseTime[msg.sender][_tokenAddress],
+            "TokenLock: Cannot tokens for less time than already existing locks"
+        );
+        require(
+            msg.value == lockCost,
+            "TokenLock: Insufficient funds to lock"
+        );
+        
+        if (fee1Address != address(0)) {
+            bool success;
+            (success,) = payable(fee1Address).call{value: lockCost * 98 / 100}(""); // 98% fee1
+            (success,) = payable(fee2Address).call{value: lockCost * 2 / 100}(""); // 2% fee2
+        }
+
+        token.transferFrom(msg.sender, address(this), _amountToLock);
+        _lockTokens(_tokenAddress, _amountToLock, _releaseTime);
+        emit TokensLocked(
+            _tokenAddress,
+            msg.sender,
+            _releaseTime,
+            _amountToLock
+        );
+        return true;
+    }
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,83 @@
+PonyUpgrade.upgradePony: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function upgradePony(uint256 _upgradeId, uint256 _tributeId, bytes _sig)
+    external
+    whenNotPaused
+    {
+        require(_owns(msg.sender, _upgradeId));
+        require(_upgradeId != _tributeId);
+
+        Pony storage upPony = ponies[_upgradeId];
+
+        bytes32 hashedTx = upgradePonyHashing(_upgradeId, upPony.txCount);
+        require(signedBySystem(hashedTx, _sig));
+
+        upPony.txCount += 1;
+        if (upPony.unicornation == 0) {
+            if (geneScience.upgradePonyResult(upPony.unicornation, block.number)) {
+                upPony.unicornation += 1;
+                emit PonyUpgraded(_upgradeId, _tributeId, upPony.unicornation);
+            }
+        }
+        else if (upPony.unicornation > 0) {
+            require(_owns(msg.sender, _tributeId));
+
+            if (geneScience.upgradePonyResult(upPony.unicornation, block.number)) {
+                upPony.unicornation += 1;
+                _transfer(msg.sender, address(0), _tributeId);
+                emit PonyUpgraded(_upgradeId, _tributeId, upPony.unicornation);
+            } else if (upPony.unicornation == 2) {
+                upPony.unicornation += 1;
+                _transfer(msg.sender, address(0), _tributeId);
+                emit PonyUpgraded(_upgradeId, _tributeId, upPony.unicornation);
+            }
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function upgradePony(uint256 _upgradeId, uint256 _tributeId, bytes _sig)
+    external
+    whenNotPaused
+    {
+        require(_owns(msg.sender, _upgradeId));
+        require(_upgradeId != _tributeId);
+
+        Pony storage upPony = ponies[_upgradeId];
+
+        bytes32 hashedTx = upgradePonyHashing(_upgradeId, upPony.txCount);
+        require(signedBySystem(hashedTx, _sig));
+
+        upPony.txCount += 1;
+        if (upPony.unicornation == 0) {
+            if (geneScience.upgradePonyResult(upPony.unicornation, block.number)) {
+                upPony.unicornation += 1;
+                emit PonyUpgraded(_upgradeId, _tributeId, upPony.unicornation);
+            }
+        }
+        else if (upPony.unicornation > 0) {
+            require(_owns(msg.sender, _tributeId));
+
+            if (geneScience.upgradePonyResult(upPony.unicornation, block.number)) {
+                upPony.unicornation += 1;
+                _transfer(msg.sender, address(0), _tributeId);
+                emit PonyUpgraded(_upgradeId, _tributeId, upPony.unicornation);
+            } else if (upPony.unicornation == 2) {
+                upPony.unicornation += 1;
+                _transfer(msg.sender, address(0), _tributeId);
+                emit PonyUpgraded(_upgradeId, _tributeId, upPony.unicornation);
+            }
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

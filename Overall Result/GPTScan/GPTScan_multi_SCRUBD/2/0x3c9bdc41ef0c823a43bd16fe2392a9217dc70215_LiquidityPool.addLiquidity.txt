@@ -1,0 +1,104 @@
+LiquidityPool.addLiquidity: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function addLiquidity(uint _numTokensToInvest) external payable {      // This allows you to add liquidity without the burn penalty
+        pampToken.transferFrom(msg.sender, address(this), _numTokensToInvest);
+        (uint amountToken, uint amountETH, uint liquidity) = uniswapV2.addLiquidityETH{value: msg.value}(address(pampToken), _numTokensToInvest, 0, 0, address(this), now+86400);  // Adding liquidity to Uniswap via the router
+        
+        staker storage thisStaker = stakers[msg.sender];                                // Get the sender's information
+        
+        if(thisStaker.startTimestamp == 0 || thisStaker.poolTokenBalance == 0) {
+            thisStaker.startTimestamp = block.timestamp;
+            thisStaker.lastTimestamp = block.timestamp;
+        } else {                                                                        // If the sender is currently staking, adding to his balance results in a holding time penalty
+            uint percent = mulDiv(1000000, liquidity, thisStaker.poolTokenBalance);      // This is not really 'percent' it is just a number that represents the totalAmount as a fraction of the recipientBalance
+            assert(percent > 0);
+            if(percent > 1) {
+                percent = percent.div(2);           // We divide the 'penalty' by 2 so that the penalty is not as bad
+            }
+            if(percent.add(thisStaker.startTimestamp) > block.timestamp) {         // We represent the 'percent' or 'penalty' as seconds and add to the recipient's unix time
+               thisStaker.startTimestamp = block.timestamp; // Receiving too many tokens resets your holding time
+            } else {
+                thisStaker.startTimestamp = thisStaker.startTimestamp.add(percent);               
+            }
+        }
+        thisStaker.hasMigrated = true;
+        thisStaker.poolTokenBalance = thisStaker.poolTokenBalance.add(liquidity);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function addLiquidity(uint _numTokensToInvest) external payable {      // This allows you to add liquidity without the burn penalty
+        pampToken.transferFrom(msg.sender, address(this), _numTokensToInvest);
+        (uint amountToken, uint amountETH, uint liquidity) = uniswapV2.addLiquidityETH{value: msg.value}(address(pampToken), _numTokensToInvest, 0, 0, address(this), now+86400);  // Adding liquidity to Uniswap via the router
+        
+        staker storage thisStaker = stakers[msg.sender];                                // Get the sender's information
+        
+        if(thisStaker.startTimestamp == 0 || thisStaker.poolTokenBalance == 0) {
+            thisStaker.startTimestamp = block.timestamp;
+            thisStaker.lastTimestamp = block.timestamp;
+        } else {                                                                        // If the sender is currently staking, adding to his balance results in a holding time penalty
+            uint percent = mulDiv(1000000, liquidity, thisStaker.poolTokenBalance);      // This is not really 'percent' it is just a number that represents the totalAmount as a fraction of the recipientBalance
+            assert(percent > 0);
+            if(percent > 1) {
+                percent = percent.div(2);           // We divide the 'penalty' by 2 so that the penalty is not as bad
+            }
+            if(percent.add(thisStaker.startTimestamp) > block.timestamp) {         // We represent the 'percent' or 'penalty' as seconds and add to the recipient's unix time
+               thisStaker.startTimestamp = block.timestamp; // Receiving too many tokens resets your holding time
+            } else {
+                thisStaker.startTimestamp = thisStaker.startTimestamp.add(percent);               
+            }
+        }
+        thisStaker.hasMigrated = true;
+        thisStaker.poolTokenBalance = thisStaker.poolTokenBalance.add(liquidity);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function addLiquidity(uint _numTokensToInvest) external payable {      // This allows you to add liquidity without the burn penalty
+        pampToken.transferFrom(msg.sender, address(this), _numTokensToInvest);
+        (uint amountToken, uint amountETH, uint liquidity) = uniswapV2.addLiquidityETH{value: msg.value}(address(pampToken), _numTokensToInvest, 0, 0, address(this), now+86400);  // Adding liquidity to Uniswap via the router
+        
+        staker storage thisStaker = stakers[msg.sender];                                // Get the sender's information
+        
+        if(thisStaker.startTimestamp == 0 || thisStaker.poolTokenBalance == 0) {
+            thisStaker.startTimestamp = block.timestamp;
+            thisStaker.lastTimestamp = block.timestamp;
+        } else {                                                                        // If the sender is currently staking, adding to his balance results in a holding time penalty
+            uint percent = mulDiv(1000000, liquidity, thisStaker.poolTokenBalance);      // This is not really 'percent' it is just a number that represents the totalAmount as a fraction of the recipientBalance
+            assert(percent > 0);
+            if(percent > 1) {
+                percent = percent.div(2);           // We divide the 'penalty' by 2 so that the penalty is not as bad
+            }
+            if(percent.add(thisStaker.startTimestamp) > block.timestamp) {         // We represent the 'percent' or 'penalty' as seconds and add to the recipient's unix time
+               thisStaker.startTimestamp = block.timestamp; // Receiving too many tokens resets your holding time
+            } else {
+                thisStaker.startTimestamp = thisStaker.startTimestamp.add(percent);               
+            }
+        }
+        thisStaker.hasMigrated = true;
+        thisStaker.poolTokenBalance = thisStaker.poolTokenBalance.add(liquidity);
+    }
+Response:
+{"StatementsA": {"thisStaker.startTimestamp = block.timestamp;":"Updates the startTimestamp of the staker", "thisStaker.lastTimestamp = block.timestamp;":"Updates the lastTimestamp of the staker", "thisStaker.startTimestamp = thisStaker.startTimestamp.add(percent);":"Updates the startTimestamp of the staker", "thisStaker.hasMigrated = true;":"Updates the hasMigrated status of the staker", "thisStaker.poolTokenBalance = thisStaker.poolTokenBalance.add(liquidity);":"Updates the poolTokenBalance of the staker"}, "StatementsB": {"pampToken.transferFrom(msg.sender, address(this), _numTokensToInvest);":"Transfers tokens from the sender to the contract", "uniswapV2.addLiquidityETH{value: msg.value}(address(pampToken), _numTokensToInvest, 0, 0, address(this), now+86400);":"Adds liquidity to Uniswap via the router"}, "VariableA": {"msg.sender": "Holds the sender's address of the external call"}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: thisStaker.startTimestamp = block.timestamp;
+2.External Call: pampToken.transferFrom(msg.sender, address(this), _numTokensToInvest);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

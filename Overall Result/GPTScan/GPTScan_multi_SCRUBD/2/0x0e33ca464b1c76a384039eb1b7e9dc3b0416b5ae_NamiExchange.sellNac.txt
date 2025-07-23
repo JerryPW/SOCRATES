@@ -1,0 +1,127 @@
+NamiExchange.sellNac: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function sellNac(uint _value, address _buyer, uint _price) public returns (bool success) {
+        require(_price == bid[_buyer].price && _buyer != msg.sender);
+        NamiCrowdSale namiToken = NamiCrowdSale(NamiAddr);
+        uint ethOfBuyer = bid[_buyer].eth;
+        uint maxToken = ethOfBuyer.mul(bid[_buyer].price);
+        require(namiToken.allowance(msg.sender, this) >= _value && _value > 0 && ethOfBuyer != 0 && _buyer != 0x0);
+        if (_value > maxToken) {
+            if (msg.sender.send(ethOfBuyer) && namiToken.transferFrom(msg.sender,_buyer,maxToken)) {
+                // update order
+                bid[_buyer].eth = 0;
+                UpdateBid(_buyer, bid[_buyer].price, bid[_buyer].eth);
+                BuyHistory(_buyer, msg.sender, bid[_buyer].price, maxToken, now);
+                return true;
+            } else {
+                // revert anything
+                revert();
+            }
+        } else {
+            uint eth = _value.div(bid[_buyer].price);
+            if (msg.sender.send(eth) && namiToken.transferFrom(msg.sender,_buyer,_value)) {
+                // update order
+                bid[_buyer].eth = (bid[_buyer].eth).sub(eth);
+                UpdateBid(_buyer, bid[_buyer].price, bid[_buyer].eth);
+                BuyHistory(_buyer, msg.sender, bid[_buyer].price, _value, now);
+                return true;
+            } else {
+                // revert anything
+                revert();
+            }
+        }
+    }
+Response:
+{
+    "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function sellNac(uint _value, address _buyer, uint _price) public returns (bool success) {
+        require(_price == bid[_buyer].price && _buyer != msg.sender);
+        NamiCrowdSale namiToken = NamiCrowdSale(NamiAddr);
+        uint ethOfBuyer = bid[_buyer].eth;
+        uint maxToken = ethOfBuyer.mul(bid[_buyer].price);
+        require(namiToken.allowance(msg.sender, this) >= _value && _value > 0 && ethOfBuyer != 0 && _buyer != 0x0);
+        if (_value > maxToken) {
+            if (msg.sender.send(ethOfBuyer) && namiToken.transferFrom(msg.sender,_buyer,maxToken)) {
+                // update order
+                bid[_buyer].eth = 0;
+                UpdateBid(_buyer, bid[_buyer].price, bid[_buyer].eth);
+                BuyHistory(_buyer, msg.sender, bid[_buyer].price, maxToken, now);
+                return true;
+            } else {
+                // revert anything
+                revert();
+            }
+        } else {
+            uint eth = _value.div(bid[_buyer].price);
+            if (msg.sender.send(eth) && namiToken.transferFrom(msg.sender,_buyer,_value)) {
+                // update order
+                bid[_buyer].eth = (bid[_buyer].eth).sub(eth);
+                UpdateBid(_buyer, bid[_buyer].price, bid[_buyer].eth);
+                BuyHistory(_buyer, msg.sender, bid[_buyer].price, _value, now);
+                return true;
+            } else {
+                // revert anything
+                revert();
+            }
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function sellNac(uint _value, address _buyer, uint _price) public returns (bool success) {
+        require(_price == bid[_buyer].price && _buyer != msg.sender);
+        NamiCrowdSale namiToken = NamiCrowdSale(NamiAddr);
+        uint ethOfBuyer = bid[_buyer].eth;
+        uint maxToken = ethOfBuyer.mul(bid[_buyer].price);
+        require(namiToken.allowance(msg.sender, this) >= _value && _value > 0 && ethOfBuyer != 0 && _buyer != 0x0);
+        if (_value > maxToken) {
+            if (msg.sender.send(ethOfBuyer) && namiToken.transferFrom(msg.sender,_buyer,maxToken)) {
+                // update order
+                bid[_buyer].eth = 0;
+                UpdateBid(_buyer, bid[_buyer].price, bid[_buyer].eth);
+                BuyHistory(_buyer, msg.sender, bid[_buyer].price, maxToken, now);
+                return true;
+            } else {
+                // revert anything
+                revert();
+            }
+        } else {
+            uint eth = _value.div(bid[_buyer].price);
+            if (msg.sender.send(eth) && namiToken.transferFrom(msg.sender,_buyer,_value)) {
+                // update order
+                bid[_buyer].eth = (bid[_buyer].eth).sub(eth);
+                UpdateBid(_buyer, bid[_buyer].price, bid[_buyer].eth);
+                BuyHistory(_buyer, msg.sender, bid[_buyer].price, _value, now);
+                return true;
+            } else {
+                // revert anything
+                revert();
+            }
+        }
+    }
+Response:
+{"StatementsA": {"bid[_buyer].eth = 0;":"This statement updates the state variable 'eth' in the 'bid' mapping for the '_buyer' address."}, "StatementsB": {"namiToken.transferFrom(msg.sender,_buyer,maxToken)":"This statement executes an external call to the 'transferFrom' function of the 'namiToken' contract."}, "VariableA": {"_buyer": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: bid[_buyer].eth = 0;
+2.External Call: namiToken.transferFrom(msg.sender,_buyer,maxToken)
+3.Variable A: _buyer
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

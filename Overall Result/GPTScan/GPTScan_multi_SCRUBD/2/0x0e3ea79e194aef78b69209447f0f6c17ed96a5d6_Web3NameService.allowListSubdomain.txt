@@ -1,0 +1,104 @@
+Web3NameService.allowListSubdomain: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function allowListSubdomain(string memory pepe_name,  string memory subdomain_name, bytes32[] calldata _merkleProof)
+        public
+        payable
+    {      
+            string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+            bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+            require(MerkleProof.verify(_merkleProof, subDomains_allowList[pepe_name], leaf),"Invalid proof!");
+            require(msg.value >= subDomains_allowList_cost[pepe_name], "Insufficient funds!");
+
+
+            require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+            require(bytes(subdomain_name).length>0,"Write a name");
+            require(_checkName(pepe_name), "Invalid name");
+            require(_checkName(subdomain_name), "Invalid name");
+            require(subDomains_allowlistAddresses[pepe_name][msg.sender]!=true, "Claimed!");
+            require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+            TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+            payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+            subDomains_allowlistAddresses[pepe_name][msg.sender] = true;
+            tokenIDandAddress[_currentIndex]=new_domain;
+            tokenAddressandID[new_domain]=_currentIndex;
+            resolveAddress[new_domain]=msg.sender;
+            _safeMint(msg.sender,1);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function allowListSubdomain(string memory pepe_name,  string memory subdomain_name, bytes32[] calldata _merkleProof)
+        public
+        payable
+    {      
+            string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+            bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+            require(MerkleProof.verify(_merkleProof, subDomains_allowList[pepe_name], leaf),"Invalid proof!");
+            require(msg.value >= subDomains_allowList_cost[pepe_name], "Insufficient funds!");
+
+
+            require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+            require(bytes(subdomain_name).length>0,"Write a name");
+            require(_checkName(pepe_name), "Invalid name");
+            require(_checkName(subdomain_name), "Invalid name");
+            require(subDomains_allowlistAddresses[pepe_name][msg.sender]!=true, "Claimed!");
+            require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+            TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+            payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+            subDomains_allowlistAddresses[pepe_name][msg.sender] = true;
+            tokenIDandAddress[_currentIndex]=new_domain;
+            tokenAddressandID[new_domain]=_currentIndex;
+            resolveAddress[new_domain]=msg.sender;
+            _safeMint(msg.sender,1);
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function allowListSubdomain(string memory pepe_name,  string memory subdomain_name, bytes32[] calldata _merkleProof)
+        public
+        payable
+    {      
+            string memory new_domain=string.concat(subdomain_name,'.',pepe_name);
+            bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+            require(MerkleProof.verify(_merkleProof, subDomains_allowList[pepe_name], leaf),"Invalid proof!");
+            require(msg.value >= subDomains_allowList_cost[pepe_name], "Insufficient funds!");
+
+
+            require(bytes(subdomain_name).length<=maxCharSize,"Long name");
+            require(bytes(subdomain_name).length>0,"Write a name");
+            require(_checkName(pepe_name), "Invalid name");
+            require(_checkName(subdomain_name), "Invalid name");
+            require(subDomains_allowlistAddresses[pepe_name][msg.sender]!=true, "Claimed!");
+            require (tokenAddressandID[new_domain] == 0 , "This is already taken"); 
+            TokenOwnership memory Ownership = _ownershipOf(tokenAddressandID[pepe_name]);
+            payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+            subDomains_allowlistAddresses[pepe_name][msg.sender] = true;
+            tokenIDandAddress[_currentIndex]=new_domain;
+            tokenAddressandID[new_domain]=_currentIndex;
+            resolveAddress[new_domain]=msg.sender;
+            _safeMint(msg.sender,1);
+    }
+Response:
+{"StatementsA": {"subDomains_allowlistAddresses[pepe_name][msg.sender] = true;":"Marks the sender's address as having claimed the subdomain."}, "StatementsB": {"payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);":"Transfers a portion of the sent value to the address stored in Ownership."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: subDomains_allowlistAddresses[pepe_name][msg.sender] = true;
+2.External Call: payable(Ownership.addr).transfer(msg.value*(100-subdomains_fee)/100);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

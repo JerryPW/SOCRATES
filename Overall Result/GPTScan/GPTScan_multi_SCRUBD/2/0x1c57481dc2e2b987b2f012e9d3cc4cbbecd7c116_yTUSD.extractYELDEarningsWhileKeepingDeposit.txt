@@ -1,0 +1,61 @@
+yTUSD.extractYELDEarningsWhileKeepingDeposit: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function extractYELDEarningsWhileKeepingDeposit() public {
+    uint256 ibalance = balanceOf(msg.sender);
+    uint256 accomulatedStablecoins = (calcPoolValueInToken().mul(ibalance)).div(_totalSupply);
+    require(depositBlockStarts[msg.sender] > 0 && accomulatedStablecoins > 0, 'Must have deposited stablecoins beforehand');
+    uint256 generatedYelds = getGeneratedYelds();
+    depositBlockStarts[msg.sender] = block.number;
+    yeldToken.transfer(msg.sender, generatedYelds);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function extractYELDEarningsWhileKeepingDeposit() public {
+    uint256 ibalance = balanceOf(msg.sender);
+    uint256 accomulatedStablecoins = (calcPoolValueInToken().mul(ibalance)).div(_totalSupply);
+    require(depositBlockStarts[msg.sender] > 0 && accomulatedStablecoins > 0, 'Must have deposited stablecoins beforehand');
+    uint256 generatedYelds = getGeneratedYelds();
+    depositBlockStarts[msg.sender] = block.number;
+    yeldToken.transfer(msg.sender, generatedYelds);
+  }
+    
+Response:
+No
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function extractYELDEarningsWhileKeepingDeposit() public {
+    uint256 ibalance = balanceOf(msg.sender);
+    uint256 accomulatedStablecoins = (calcPoolValueInToken().mul(ibalance)).div(_totalSupply);
+    require(depositBlockStarts[msg.sender] > 0 && accomulatedStablecoins > 0, 'Must have deposited stablecoins beforehand');
+    uint256 generatedYelds = getGeneratedYelds();
+    depositBlockStarts[msg.sender] = block.number;
+    yeldToken.transfer(msg.sender, generatedYelds);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function extractYELDEarningsWhileKeepingDeposit() public {
+    uint256 ibalance = balanceOf(msg.sender);
+    uint256 accomulatedStablecoins = (calcPoolValueInToken().mul(ibalance)).div(_totalSupply);
+    require(depositBlockStarts[msg.sender] > 0 && accomulatedStablecoins > 0, 'Must have deposited stablecoins beforehand');
+    uint256 generatedYelds = getGeneratedYelds();
+    depositBlockStarts[msg.sender] = block.number;
+    yeldToken.transfer(msg.sender, generatedYelds);
+  }
+    
+Response:
+No
+--------------------------------------------------

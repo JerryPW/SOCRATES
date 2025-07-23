@@ -1,0 +1,100 @@
+bebBUYtwo.setUSDT: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+      function setUSDT(uint256 _value) public{
+         require(_value>=10000000);
+         uint256 _valueToBEB=SafeMath.safeDiv(_value,1000000);
+         uint256 _valueToBEBs=_valueToBEB*10**18;
+         uint256 _usdts=SafeMath.safeMul(_value,120);//100;
+         uint256 _usdt=SafeMath.safeDiv(_usdts,100);//100;
+         uint256 _bebex=SafeMath.safeMul(bebjiage,usdtex);
+         uint256 _usdtexs=SafeMath.safeDiv(1000000000000000000,_bebex);
+         uint256 _usdtex=SafeMath.safeMul(_usdtexs,_valueToBEBs);
+         USDTuser storage _user=USDTusers[msg.sender];
+         require(_user.amount==0,"Already invested ");
+         bebTokenTransferUSDT.transferFrom(msg.sender,address(this),_value);
+         bebTokenTransfer.transferFrom(msg.sender,address(this),_usdtex);
+         _user.zhiyaBEB=_usdtex;
+         _user.amount=_value;
+         _user.dayamount=SafeMath.safeDiv(_usdt,BEBday);
+         _user.usertime=now;
+         _user.sumProfit+=_value*20/100;
+         ProfitSUMBEB+=_usdtex*10/100;
+         USDTdeposit+=_value;
+         
+     }
+Response:
+{
+  "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+      function setUSDT(uint256 _value) public{
+         require(_value>=10000000);
+         uint256 _valueToBEB=SafeMath.safeDiv(_value,1000000);
+         uint256 _valueToBEBs=_valueToBEB*10**18;
+         uint256 _usdts=SafeMath.safeMul(_value,120);//100;
+         uint256 _usdt=SafeMath.safeDiv(_usdts,100);//100;
+         uint256 _bebex=SafeMath.safeMul(bebjiage,usdtex);
+         uint256 _usdtexs=SafeMath.safeDiv(1000000000000000000,_bebex);
+         uint256 _usdtex=SafeMath.safeMul(_usdtexs,_valueToBEBs);
+         USDTuser storage _user=USDTusers[msg.sender];
+         require(_user.amount==0,"Already invested ");
+         bebTokenTransferUSDT.transferFrom(msg.sender,address(this),_value);
+         bebTokenTransfer.transferFrom(msg.sender,address(this),_usdtex);
+         _user.zhiyaBEB=_usdtex;
+         _user.amount=_value;
+         _user.dayamount=SafeMath.safeDiv(_usdt,BEBday);
+         _user.usertime=now;
+         _user.sumProfit+=_value*20/100;
+         ProfitSUMBEB+=_usdtex*10/100;
+         USDTdeposit+=_value;
+         
+     }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+      function setUSDT(uint256 _value) public{
+         require(_value>=10000000);
+         uint256 _valueToBEB=SafeMath.safeDiv(_value,1000000);
+         uint256 _valueToBEBs=_valueToBEB*10**18;
+         uint256 _usdts=SafeMath.safeMul(_value,120);//100;
+         uint256 _usdt=SafeMath.safeDiv(_usdts,100);//100;
+         uint256 _bebex=SafeMath.safeMul(bebjiage,usdtex);
+         uint256 _usdtexs=SafeMath.safeDiv(1000000000000000000,_bebex);
+         uint256 _usdtex=SafeMath.safeMul(_usdtexs,_valueToBEBs);
+         USDTuser storage _user=USDTusers[msg.sender];
+         require(_user.amount==0,"Already invested ");
+         bebTokenTransferUSDT.transferFrom(msg.sender,address(this),_value);
+         bebTokenTransfer.transferFrom(msg.sender,address(this),_usdtex);
+         _user.zhiyaBEB=_usdtex;
+         _user.amount=_value;
+         _user.dayamount=SafeMath.safeDiv(_usdt,BEBday);
+         _user.usertime=now;
+         _user.sumProfit+=_value*20/100;
+         ProfitSUMBEB+=_usdtex*10/100;
+         USDTdeposit+=_value;
+         
+     }
+Response:
+{"StatementsA": {"USDTdeposit+=_value;":"This statement updates the state variable USDTdeposit."}, "StatementsB": {"bebTokenTransferUSDT.transferFrom(msg.sender,address(this),_value);":"This statement executes an external call to transfer tokens."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: USDTdeposit+=_value;
+2.External Call: bebTokenTransferUSDT.transferFrom(msg.sender,address(this),_value);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

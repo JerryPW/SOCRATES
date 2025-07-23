@@ -1,0 +1,77 @@
+XC.unlock: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function unlock(string txid, address fromAccount, address toAccount, uint value) nonzeroAddress(toAccount) external {
+        require(admin.status == 1 || admin.status == 3);
+        require(xcPlugin.getStatus());
+        require(value > 0);
+        bool complete;
+        bool verify;
+        (complete, verify) = xcPlugin.verifyProposal(fromAccount, toAccount, value, txid);
+        require(verify && !complete);
+        uint balance = token.balanceOf(this);
+        require(balance >= value);
+        require(token.transfer(toAccount, value));
+        require(xcPlugin.commitProposal(txid));
+        lockBalance = SafeMath.sub(lockBalance, value);
+        emit Unlock(txid, xcPlugin.getTrustPlatform(), fromAccount, bytes32(value), xcPlugin.getTokenSymbol());
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function unlock(string txid, address fromAccount, address toAccount, uint value) nonzeroAddress(toAccount) external {
+        require(admin.status == 1 || admin.status == 3);
+        require(xcPlugin.getStatus());
+        require(value > 0);
+        bool complete;
+        bool verify;
+        (complete, verify) = xcPlugin.verifyProposal(fromAccount, toAccount, value, txid);
+        require(verify && !complete);
+        uint balance = token.balanceOf(this);
+        require(balance >= value);
+        require(token.transfer(toAccount, value));
+        require(xcPlugin.commitProposal(txid));
+        lockBalance = SafeMath.sub(lockBalance, value);
+        emit Unlock(txid, xcPlugin.getTrustPlatform(), fromAccount, bytes32(value), xcPlugin.getTokenSymbol());
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function unlock(string txid, address fromAccount, address toAccount, uint value) nonzeroAddress(toAccount) external {
+        require(admin.status == 1 || admin.status == 3);
+        require(xcPlugin.getStatus());
+        require(value > 0);
+        bool complete;
+        bool verify;
+        (complete, verify) = xcPlugin.verifyProposal(fromAccount, toAccount, value, txid);
+        require(verify && !complete);
+        uint balance = token.balanceOf(this);
+        require(balance >= value);
+        require(token.transfer(toAccount, value));
+        require(xcPlugin.commitProposal(txid));
+        lockBalance = SafeMath.sub(lockBalance, value);
+        emit Unlock(txid, xcPlugin.getTrustPlatform(), fromAccount, bytes32(value), xcPlugin.getTokenSymbol());
+    }
+Response:
+{"StatementsA": {"lockBalance = SafeMath.sub(lockBalance, value);":"Updates the lockBalance state variable by subtracting the value."}, "StatementsB": {"require(token.transfer(toAccount, value));":"Executes an external call to transfer tokens to the toAccount."}, "VariableA": {"fromAccount": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: lockBalance = SafeMath.sub(lockBalance, value);
+2.External Call: require(token.transfer(toAccount, value));
+3.Variable A: fromAccount
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

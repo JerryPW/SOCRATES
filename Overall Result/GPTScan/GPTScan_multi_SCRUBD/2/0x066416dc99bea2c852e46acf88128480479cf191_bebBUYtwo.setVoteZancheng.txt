@@ -1,0 +1,99 @@
+bebBUYtwo.setVoteZancheng: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function setVoteZancheng()public{
+        BEBuser storage _user=BEBusers[msg.sender];
+        require(KAIGUAN);
+        uint256 _value=getTokenBalanceBET(msg.sender);//BET持有数量
+        require(_value>=1 ether,"You have no right to vote");
+        require(!_user.vote,"You have voted");
+        bebTokenTransferBET.transferFrom(msg.sender,address(this),_value);//转入BET
+        BEBzanchen+=_value;//赞成增加
+        _user.amounts=_value;//赋值
+        _user.vote=true;//赋值已经投票
+        if(BEBzanchen>=51 ether){
+            //投票通过执行财务支出
+            if(huobileixing!=0){
+                if(huobileixing==1){
+                 shenqingzhichu.transfer(shenqingAmount);//支出ETH
+                 KAIGUAN=false;
+                 BEBfandui=0;//票数归零
+                 BEBzanchen=0;//票数归零
+                 huobileixing=0;//撤销本次申请
+                 boody="通过";
+                 //shenqingzhichu=0;//撤销地址
+                 //shenqingAmount=0;//撤销申请金额
+                }else{
+                    if(huobileixing==2){
+                      bebTokenTransfer.transfer(shenqingzhichu,shenqingAmount);//支出BEB
+                      KAIGUAN=false;
+                      BEBfandui=0;//票数归零
+                      BEBzanchen=0;//票数归零
+                      huobileixing=0;//撤销本次申请
+                      boody="通过";
+                    }else{
+                        bebTokenTransferUSDT.transfer(shenqingzhichu,shenqingAmount);//支出USDT
+                        KAIGUAN=false;
+                        BEBfandui=0;//票数归零
+                        BEBzanchen=0;//票数归零
+                        huobileixing=0;//撤销本次申请
+                        boody="通过";
+                    }          
+                 }
+            }
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function setVoteZancheng()public{
+        BEBuser storage _user=BEBusers[msg.sender];
+        require(KAIGUAN);
+        uint256 _value=getTokenBalanceBET(msg.sender);//BET持有数量
+        require(_value>=1 ether,"You have no right to vote");
+        require(!_user.vote,"You have voted");
+        bebTokenTransferBET.transferFrom(msg.sender,address(this),_value);//转入BET
+        BEBzanchen+=_value;//赞成增加
+        _user.amounts=_value;//赋值
+        _user.vote=true;//赋值已经投票
+        if(BEBzanchen>=51 ether){
+            //投票通过执行财务支出
+            if(huobileixing!=0){
+                if(huobileixing==1){
+                 shenqingzhichu.transfer(shenqingAmount);//支出ETH
+                 KAIGUAN=false;
+                 BEBfandui=0;//票数归零
+                 BEBzanchen=0;//票数归零
+                 huobileixing=0;//撤销本次申请
+                 boody="通过";
+                 //shenqingzhichu=0;//撤销地址
+                 //shenqingAmount=0;//撤销申请金额
+                }else{
+                    if(huobileixing==2){
+                      bebTokenTransfer.transfer(shenqingzhichu,shenqingAmount);//支出BEB
+                      KAIGUAN=false;
+                      BEBfandui=0;//票数归零
+                      BEBzanchen=0;//票数归零
+                      huobileixing=0;//撤销本次申请
+                      boody="通过";
+                    }else{
+                        bebTokenTransferUSDT.transfer(shenqingzhichu,shenqingAmount);//支出USDT
+                        KAIGUAN=false;
+                        BEBfandui=0;//票数归零
+                        BEBzanchen=0;//票数归零
+                        huobileixing=0;//撤销本次申请
+                        boody="通过";
+                    }          
+                 }
+            }
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

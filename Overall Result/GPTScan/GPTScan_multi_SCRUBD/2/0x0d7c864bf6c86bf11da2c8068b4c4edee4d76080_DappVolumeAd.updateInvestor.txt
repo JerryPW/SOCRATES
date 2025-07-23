@@ -1,0 +1,59 @@
+DappVolumeAd.updateInvestor: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function updateInvestor() public payable {
+		require(msg.value >= investmentMin);
+		// send 60% to last investor (120% of original purchase)
+		theInvestor.send(msg.value.div(100).mul(60));
+		// double the price to become the investor
+		investmentMin = investmentMin.mul(2);
+		// set new investor
+		theInvestor = msg.sender;
+	}
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function updateInvestor() public payable {
+		require(msg.value >= investmentMin);
+		// send 60% to last investor (120% of original purchase)
+		theInvestor.send(msg.value.div(100).mul(60));
+		// double the price to become the investor
+		investmentMin = investmentMin.mul(2);
+		// set new investor
+		theInvestor = msg.sender;
+	}
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+	function updateInvestor() public payable {
+		require(msg.value >= investmentMin);
+		// send 60% to last investor (120% of original purchase)
+		theInvestor.send(msg.value.div(100).mul(60));
+		// double the price to become the investor
+		investmentMin = investmentMin.mul(2);
+		// set new investor
+		theInvestor = msg.sender;
+	}
+Response:
+{"StatementsA": {"investmentMin = investmentMin.mul(2);":"This statement updates the state variable 'investmentMin'."}, "StatementsB": {"theInvestor.send(msg.value.div(100).mul(60));":"This statement executes an external call to send Ether to 'theInvestor'."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: investmentMin = investmentMin.mul(2);
+2.External Call: theInvestor.send(msg.value.div(100).mul(60));
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

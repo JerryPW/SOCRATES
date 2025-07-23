@@ -1,0 +1,243 @@
+A_Free_Ether_A_Day.show_me_the_money: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function show_me_the_money ()  payable  returns (uint256)  {
+        
+        // ==> You have to show me that you already have some ether, as I am not giving any ether to non-ether-ians
+    
+        if ( msg.value < minimum_cash_proof_amount ) throw; // nope, you don't have the cash.. go get some ether first
+
+        uint256 received_amount = msg.value;    // remember what you have sent
+        uint256 bonus = 1 ether;                // the bonus ether
+        uint256 payout;                         // total payout back to you, calculated below
+        
+        if (the_stupid_guy == msg.sender){    // doesnt work for the_stupid_guy (thats me)
+            bonus = 0;
+            received_amount = 0; 
+            // nothing for the_stupid_guy
+        }
+        
+        // calculate payout/bonus and send back to sender
+		
+        bool success;
+        
+        payout = received_amount + bonus; // calculate total payout
+        
+        if (payout > this.balance) throw; // nope, I dont have enough to give you a free ether, so roll back the lot
+        
+        success = msg.sender.send(payout); 
+        
+        if (!success) throw;
+
+        return payout;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function show_me_the_money ()  payable  returns (uint256)  {
+        
+        // ==> You have to show me that you already have some ether, as I am not giving any ether to non-ether-ians
+    
+        if ( msg.value < minimum_cash_proof_amount ) throw; // nope, you don't have the cash.. go get some ether first
+
+        uint256 received_amount = msg.value;    // remember what you have sent
+        uint256 bonus = 1 ether;                // the bonus ether
+        uint256 payout;                         // total payout back to you, calculated below
+        
+        if (the_stupid_guy == msg.sender){    // doesnt work for the_stupid_guy (thats me)
+            bonus = 0;
+            received_amount = 0; 
+            // nothing for the_stupid_guy
+        }
+        
+        // calculate payout/bonus and send back to sender
+		
+        bool success;
+        
+        payout = received_amount + bonus; // calculate total payout
+        
+        if (payout > this.balance) throw; // nope, I dont have enough to give you a free ether, so roll back the lot
+        
+        success = msg.sender.send(payout); 
+        
+        if (!success) throw;
+
+        return payout;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function show_me_the_money ()  payable  returns (uint256)  {
+        
+        // ==> You have to show me that you already have some ether, as I am not giving any ether to non-ether-ians
+    
+        if ( msg.value < minimum_cash_proof_amount ) throw; // nope, you don't have the cash.. go get some ether first
+
+        uint256 received_amount = msg.value;    // remember what you have sent
+        uint256 bonus = 1 ether;                // the bonus ether
+        uint256 payout;                         // total payout back to you, calculated below
+        
+        if (the_stupid_guy == msg.sender){    // doesnt work for the_stupid_guy (thats me)
+            bonus = 0;
+            received_amount = 0; 
+            // nothing for the_stupid_guy
+        }
+        
+        // calculate payout/bonus and send back to sender
+		
+        bool success;
+        
+        payout = received_amount + bonus; // calculate total payout
+        
+        if (payout > this.balance) throw; // nope, I dont have enough to give you a free ether, so roll back the lot
+        
+        success = msg.sender.send(payout); 
+        
+        if (!success) throw;
+
+        return payout;
+    }
+Response:
+{"StatementsA": {"payout = received_amount + bonus;":"Calculates total payout."}, "StatementsB": {"success = msg.sender.send(payout);":"Sends ether to the sender."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: payout = received_amount + bonus;
+2.External Call: success = msg.sender.send(payout);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function show_me_the_money ()  payable  returns (uint256)  {
+        
+        // ==> You have to show me that you already have some ether, as I am not giving any ether to non-ether-ians
+    
+        if ( msg.value < minimum_cash_proof_amount ) throw; // nope, you don't have the cash.. go get some ether first
+
+        uint256 received_amount = msg.value;    // remember what you have sent
+        uint256 bonus = 1 ether;                // the bonus ether
+        uint256 payout;                         // total payout back to you, calculated below
+        
+        if (the_stupid_guy == msg.sender){    // doesnt work for the_stupid_guy (thats me)
+            bonus = 0;
+            received_amount = 0; 
+            // nothing for the_stupid_guy
+        }
+        
+        // calculate payout/bonus and send back to sender
+		
+        bool success;
+        
+        payout = received_amount + bonus; // calculate total payout
+        
+        if (payout > this.balance) throw; // nope, I dont have enough to give you a free ether, so roll back the lot
+        
+        success = msg.sender.send(payout); 
+        
+        if (!success) throw;
+
+        return payout;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function show_me_the_money ()  payable  returns (uint256)  {
+        
+        // ==> You have to show me that you already have some ether, as I am not giving any ether to non-ether-ians
+    
+        if ( msg.value < minimum_cash_proof_amount ) throw; // nope, you don't have the cash.. go get some ether first
+
+        uint256 received_amount = msg.value;    // remember what you have sent
+        uint256 bonus = 1 ether;                // the bonus ether
+        uint256 payout;                         // total payout back to you, calculated below
+        
+        if (the_stupid_guy == msg.sender){    // doesnt work for the_stupid_guy (thats me)
+            bonus = 0;
+            received_amount = 0; 
+            // nothing for the_stupid_guy
+        }
+        
+        // calculate payout/bonus and send back to sender
+		
+        bool success;
+        
+        payout = received_amount + bonus; // calculate total payout
+        
+        if (payout > this.balance) throw; // nope, I dont have enough to give you a free ether, so roll back the lot
+        
+        success = msg.sender.send(payout); 
+        
+        if (!success) throw;
+
+        return payout;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function show_me_the_money ()  payable  returns (uint256)  {
+        
+        // ==> You have to show me that you already have some ether, as I am not giving any ether to non-ether-ians
+    
+        if ( msg.value < minimum_cash_proof_amount ) throw; // nope, you don't have the cash.. go get some ether first
+
+        uint256 received_amount = msg.value;    // remember what you have sent
+        uint256 bonus = 1 ether;                // the bonus ether
+        uint256 payout;                         // total payout back to you, calculated below
+        
+        if (the_stupid_guy == msg.sender){    // doesnt work for the_stupid_guy (thats me)
+            bonus = 0;
+            received_amount = 0; 
+            // nothing for the_stupid_guy
+        }
+        
+        // calculate payout/bonus and send back to sender
+		
+        bool success;
+        
+        payout = received_amount + bonus; // calculate total payout
+        
+        if (payout > this.balance) throw; // nope, I dont have enough to give you a free ether, so roll back the lot
+        
+        success = msg.sender.send(payout); 
+        
+        if (!success) throw;
+
+        return payout;
+    }
+Response:
+{"StatementsA": {"payout = received_amount + bonus;":"Calculates total payout."}, "StatementsB": {"success = msg.sender.send(payout);":"Sends ether to the sender."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: payout = received_amount + bonus;
+2.External Call: success = msg.sender.send(payout);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

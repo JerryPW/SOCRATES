@@ -1,0 +1,18 @@
+Crowdsale.__callback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function __callback(bytes32 myid, string result, bytes proof) public {
+        if (msg.sender != oraclize_cbAddress()) revert();
+        require (pendingQueries[myid] == true);
+        proof;
+        emit NewKrakenPriceTicker(result);
+        uint USD = parseInt(result);
+        tokenPriceInWei = 1 ether / USD;
+        updatePrice();
+        delete pendingQueries[myid];
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

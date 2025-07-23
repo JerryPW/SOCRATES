@@ -1,0 +1,80 @@
+EthTokenToSmthSwaps.createSwap: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function createSwap(bytes20 _secretHash, address _participantAddress, uint256 _value, address _token) public {
+    require(_value > 0);
+    require(swaps[msg.sender][_participantAddress].balance == uint256(0));
+    require(ERC20(_token).transferFrom(msg.sender, this, _value));
+
+    swaps[msg.sender][_participantAddress] = Swap(
+      _token,
+	  _participantAddress,
+      bytes32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function createSwap(bytes20 _secretHash, address _participantAddress, uint256 _value, address _token) public {
+    require(_value > 0);
+    require(swaps[msg.sender][_participantAddress].balance == uint256(0));
+    require(ERC20(_token).transferFrom(msg.sender, this, _value));
+
+    swaps[msg.sender][_participantAddress] = Swap(
+      _token,
+	  _participantAddress,
+      bytes32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function createSwap(bytes20 _secretHash, address _participantAddress, uint256 _value, address _token) public {
+    require(_value > 0);
+    require(swaps[msg.sender][_participantAddress].balance == uint256(0));
+    require(ERC20(_token).transferFrom(msg.sender, this, _value));
+
+    swaps[msg.sender][_participantAddress] = Swap(
+      _token,
+	  _participantAddress,
+      bytes32(0),
+      _secretHash,
+      now,
+      _value
+    );
+
+    CreateSwap(now);
+  }
+Response:
+{"StatementsA": {"swaps[msg.sender][_participantAddress] = Swap(...)":"This statement updates the state variable 'swaps'."}, "StatementsB": {"require(ERC20(_token).transferFrom(msg.sender, this, _value));":"This statement executes an external call to the 'transferFrom' function of the ERC20 token contract."}, "VariableA": {"msg.sender": "This variable holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: swaps[msg.sender][_participantAddress] = Swap(...)
+2.External Call: require(ERC20(_token).transferFrom(msg.sender, this, _value));
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

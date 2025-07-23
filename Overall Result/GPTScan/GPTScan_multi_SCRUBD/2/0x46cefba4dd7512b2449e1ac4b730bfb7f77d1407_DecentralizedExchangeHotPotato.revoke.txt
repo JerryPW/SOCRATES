@@ -1,0 +1,59 @@
+DecentralizedExchangeHotPotato.revoke: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function revoke(uint256 _id) public {
+    require(msg.sender == orderBook[_id].owner);
+    require(orderBook[_id].endTime <= now);
+    
+    Issuer issuer = Issuer(orderBook[_id].issuer);
+    issuer.transfer(msg.sender, orderBook[_id].tokenId);    
+    orderBook[_id] = orderBook[orderBookSize-1];
+    orderBookSize -= 1;
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function revoke(uint256 _id) public {
+    require(msg.sender == orderBook[_id].owner);
+    require(orderBook[_id].endTime <= now);
+    
+    Issuer issuer = Issuer(orderBook[_id].issuer);
+    issuer.transfer(msg.sender, orderBook[_id].tokenId);    
+    orderBook[_id] = orderBook[orderBookSize-1];
+    orderBookSize -= 1;
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function revoke(uint256 _id) public {
+    require(msg.sender == orderBook[_id].owner);
+    require(orderBook[_id].endTime <= now);
+    
+    Issuer issuer = Issuer(orderBook[_id].issuer);
+    issuer.transfer(msg.sender, orderBook[_id].tokenId);    
+    orderBook[_id] = orderBook[orderBookSize-1];
+    orderBookSize -= 1;
+  }
+Response:
+{"StatementsA": {"orderBookSize -= 1;":"Decrements the orderBookSize state variable."}, "StatementsB": {"issuer.transfer(msg.sender, orderBook[_id].tokenId);":"Executes an external call to the Issuer contract's transfer function."}, "VariableA": {"msg.sender": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: orderBookSize -= 1;
+2.External Call: issuer.transfer(msg.sender, orderBook[_id].tokenId);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

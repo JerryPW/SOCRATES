@@ -1,0 +1,131 @@
+IOU.withdraw: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function withdraw() payable {
+    /*
+      Main mechanism to ensure a buyer's purchase/ETH/IOU is safe.
+
+      Refund the buyer's ETH if we're beyond the cut-off date of our distribution
+      promise AND if the contract doesn't have an adequate amount of tokens
+      to distribute to the buyer. Time-sensitive buyer/ETH protection is only
+      applicable if the contract doesn't have adequate tokens for the buyer.
+
+      The "adequacy" check prevents the seller and/or third party attacker
+      from locking down buyers' ETH by sending in an arbitrary amount of tokens.
+
+      If for whatever reason the tokens remain locked for an unexpected period
+      beyond the time defined by block.number, patient buyers may still wait until
+      the contract is filled with their purchased IOUs/tokens. Once the tokens
+      are here, they can initiate a withdraw() to retrieve their tokens. Attempting
+      to withdraw any sooner (after the block has been mined, but tokens not arrived)
+      will result in a refund of buyer's ETH.
+    */
+    if(block.number > 4199999 && iou_purchased[msg.sender] > token.balanceOf(address(this))) {
+      // We didn't fulfill our promise to have adequate tokens withdrawable at xx time
+      // Refund the buyer's ETH automatically instead
+      uint256 eth_to_refund = eth_sent[msg.sender];
+
+      // If the user doesn't have any ETH or tokens to withdraw, get out ASAP
+      if(eth_to_refund == 0 || iou_purchased[msg.sender] == 0) throw;
+
+      // Adjust total purchased so others can buy, and so numbers align with total_iou_withdrawn
+      total_iou_purchased -= iou_purchased[msg.sender];
+
+      // Clear record of buyer's ETH and IOU balance before refunding
+      eth_sent[msg.sender] = 0;
+      iou_purchased[msg.sender] = 0;
+
+      msg.sender.transfer(eth_to_refund);
+      return;
+    }
+
+    /*
+      Check if there is an adequate amount of tokens in the contract yet
+      and allow the buyer to withdraw tokens
+    */
+    if(token.balanceOf(address(this)) == 0 || iou_purchased[msg.sender] > token.balanceOf(address(this))) throw;
+
+    uint256 iou_to_withdraw = iou_purchased[msg.sender];
+
+    // If the user doesn't have any IOUs to withdraw, get out ASAP
+    if(iou_to_withdraw == 0) throw;
+
+    // Clear record of buyer's IOU and ETH balance before transferring out
+    iou_purchased[msg.sender] = 0;
+    eth_sent[msg.sender] = 0;
+
+    total_iou_withdrawn += iou_to_withdraw;
+
+    // Distribute tokens to the buyer
+    token.transfer(msg.sender, iou_to_withdraw);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function withdraw() payable {
+    /*
+      Main mechanism to ensure a buyer's purchase/ETH/IOU is safe.
+
+      Refund the buyer's ETH if we're beyond the cut-off date of our distribution
+      promise AND if the contract doesn't have an adequate amount of tokens
+      to distribute to the buyer. Time-sensitive buyer/ETH protection is only
+      applicable if the contract doesn't have adequate tokens for the buyer.
+
+      The "adequacy" check prevents the seller and/or third party attacker
+      from locking down buyers' ETH by sending in an arbitrary amount of tokens.
+
+      If for whatever reason the tokens remain locked for an unexpected period
+      beyond the time defined by block.number, patient buyers may still wait until
+      the contract is filled with their purchased IOUs/tokens. Once the tokens
+      are here, they can initiate a withdraw() to retrieve their tokens. Attempting
+      to withdraw any sooner (after the block has been mined, but tokens not arrived)
+      will result in a refund of buyer's ETH.
+    */
+    if(block.number > 4199999 && iou_purchased[msg.sender] > token.balanceOf(address(this))) {
+      // We didn't fulfill our promise to have adequate tokens withdrawable at xx time
+      // Refund the buyer's ETH automatically instead
+      uint256 eth_to_refund = eth_sent[msg.sender];
+
+      // If the user doesn't have any ETH or tokens to withdraw, get out ASAP
+      if(eth_to_refund == 0 || iou_purchased[msg.sender] == 0) throw;
+
+      // Adjust total purchased so others can buy, and so numbers align with total_iou_withdrawn
+      total_iou_purchased -= iou_purchased[msg.sender];
+
+      // Clear record of buyer's ETH and IOU balance before refunding
+      eth_sent[msg.sender] = 0;
+      iou_purchased[msg.sender] = 0;
+
+      msg.sender.transfer(eth_to_refund);
+      return;
+    }
+
+    /*
+      Check if there is an adequate amount of tokens in the contract yet
+      and allow the buyer to withdraw tokens
+    */
+    if(token.balanceOf(address(this)) == 0 || iou_purchased[msg.sender] > token.balanceOf(address(this))) throw;
+
+    uint256 iou_to_withdraw = iou_purchased[msg.sender];
+
+    // If the user doesn't have any IOUs to withdraw, get out ASAP
+    if(iou_to_withdraw == 0) throw;
+
+    // Clear record of buyer's IOU and ETH balance before transferring out
+    iou_purchased[msg.sender] = 0;
+    eth_sent[msg.sender] = 0;
+
+    total_iou_withdrawn += iou_to_withdraw;
+
+    // Distribute tokens to the buyer
+    token.transfer(msg.sender, iou_to_withdraw);
+  }
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,80 @@
+Mattew.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () payable{
+        if (block.number - PERIOD > blockheight){
+            bool isSuccess = whale.send(stake);
+            MattewWon("Mattew won (mattew, stake, blockheight)", whale, stake, block.number);
+            setFacts();
+            // selfdestruct(whale); People with Ethereum Foundation are ok with it.
+            return;
+            
+        }else{
+            
+            if (msg.value < stake + DELTA) throw;
+            bool isOtherSuccess = msg.sender.send(stake);
+            setFacts();
+            StakeIncreased("stake increased (whale, stake, blockheight)", whale, stake, blockheight);
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () payable{
+        if (block.number - PERIOD > blockheight){
+            bool isSuccess = whale.send(stake);
+            MattewWon("Mattew won (mattew, stake, blockheight)", whale, stake, block.number);
+            setFacts();
+            // selfdestruct(whale); People with Ethereum Foundation are ok with it.
+            return;
+            
+        }else{
+            
+            if (msg.value < stake + DELTA) throw;
+            bool isOtherSuccess = msg.sender.send(stake);
+            setFacts();
+            StakeIncreased("stake increased (whale, stake, blockheight)", whale, stake, blockheight);
+        }
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Answer only ZERO or ONE statement. Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Answer only ZERO or ONE statement.Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function () payable{
+        if (block.number - PERIOD > blockheight){
+            bool isSuccess = whale.send(stake);
+            MattewWon("Mattew won (mattew, stake, blockheight)", whale, stake, block.number);
+            setFacts();
+            // selfdestruct(whale); People with Ethereum Foundation are ok with it.
+            return;
+            
+        }else{
+            
+            if (msg.value < stake + DELTA) throw;
+            bool isOtherSuccess = msg.sender.send(stake);
+            setFacts();
+            StakeIncreased("stake increased (whale, stake, blockheight)", whale, stake, blockheight);
+        }
+    }
+Response:
+{"StatementsA": {"setFacts();":"Updates state variables within the function."}, "StatementsB": {"bool isSuccess = whale.send(stake);":"Executes an external call to send Ether."}, "VariableA": {"msg.sender":"Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: setFacts();
+2.External Call: bool isSuccess = whale.send(stake);
+3.Variable A: msg.sender
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

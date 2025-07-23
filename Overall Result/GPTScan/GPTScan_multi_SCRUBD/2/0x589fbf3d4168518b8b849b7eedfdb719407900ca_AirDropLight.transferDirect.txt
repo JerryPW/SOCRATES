@@ -1,0 +1,89 @@
+AirDropLight.transferDirect: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function transferDirect(address _recipient,uint256 _tokens) public{
+
+    //Check if contract has tokens
+    require(token.balanceOf(this)>=_tokens);
+    
+    //Check max value
+    require(_tokens < maxDirect );
+
+    //Check if _recipient already have got tokens
+    require(!recipients[_recipient]); 
+    recipients[_recipient] = true;
+  
+    //Transfer tokens
+    require(token.transfer(_recipient, _tokens));
+
+    //Add claimed tokens to grandTotalClaimed
+    grandTotalClaimed = grandTotalClaimed.add(_tokens); 
+     
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function transferDirect(address _recipient,uint256 _tokens) public{
+
+    //Check if contract has tokens
+    require(token.balanceOf(this)>=_tokens);
+    
+    //Check max value
+    require(_tokens < maxDirect );
+
+    //Check if _recipient already have got tokens
+    require(!recipients[_recipient]); 
+    recipients[_recipient] = true;
+  
+    //Transfer tokens
+    require(token.transfer(_recipient, _tokens));
+
+    //Add claimed tokens to grandTotalClaimed
+    grandTotalClaimed = grandTotalClaimed.add(_tokens); 
+     
+  }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+  function transferDirect(address _recipient,uint256 _tokens) public{
+
+    //Check if contract has tokens
+    require(token.balanceOf(this)>=_tokens);
+    
+    //Check max value
+    require(_tokens < maxDirect );
+
+    //Check if _recipient already have got tokens
+    require(!recipients[_recipient]); 
+    recipients[_recipient] = true;
+  
+    //Transfer tokens
+    require(token.transfer(_recipient, _tokens));
+
+    //Add claimed tokens to grandTotalClaimed
+    grandTotalClaimed = grandTotalClaimed.add(_tokens); 
+     
+  }
+Response:
+{"StatementsA": {"grandTotalClaimed = grandTotalClaimed.add(_tokens);":"Updates the state variable grandTotalClaimed."}, "StatementsB": {"require(token.transfer(_recipient, _tokens));":"Executes an external call to transfer tokens."}, "VariableA": {"_recipient": "Holds the sender's address of the external call."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: grandTotalClaimed = grandTotalClaimed.add(_tokens);
+2.External Call: require(token.transfer(_recipient, _tokens));
+3.Variable A: _recipient
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

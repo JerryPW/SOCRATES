@@ -1,0 +1,38 @@
+InstaDice.payoutPreviousRoll: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function payoutPreviousRoll()
+        public
+        returns (bool _success)
+    {
+        // Load last roll in one SLOAD.
+        User memory _prevUser = users[msg.sender];
+        // Error if on same block.
+        if (_prevUser.r_block == uint32(block.number)){
+            emit PayoutError(now, "Cannot payout roll on the same block");
+            return false;
+        }
+        // Error if nothing to payout.
+        if (_prevUser.r_block == 0){
+            emit PayoutError(now, "No roll to pay out.");
+            return false;
+        }
+
+        // Clear last roll data
+        User storage _user = users[msg.sender];
+        _user.r_id = 0;
+        _user.r_block = 0;
+        _user.r_number = 0;
+        _user.r_payout = 0;
+
+        // Finalize previous roll and update stats
+        Stats memory _stats = stats;
+        _finalizePreviousRoll(_prevUser, _stats);
+        stats.totalWon = _stats.totalWon;
+        return true;
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

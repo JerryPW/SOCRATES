@@ -1,0 +1,61 @@
+Tokens.transferFrom: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+	function transferFrom(address _from, address _to, uint256 _amount) public notTimeLocked stopInEmergency returns (bool success) {
+		if (balances[_from] < _amount) {
+			error('transferFrom: the amount to transfer is higher than the token balance of the source');
+			return false;
+		}
+		if (allowed[_from][msg.sender] < _amount) {
+			error('transferFrom: the amount to transfer is higher than the maximum token transfer allowed by the source');
+			return false;
+		}
+
+		if(!SCComplianceService.validate(_from, _to, _amount)) {
+			error('transfer: not allowed by the compliance service');
+			return false;
+		}
+
+		balances[_from] = balances[_from].sub(_amount);
+		balances[_to] = balances[_to].add(_amount);
+		allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_amount);
+		emit Transfer(_from, _to, _amount); // Event log
+
+		return true;
+	}
+Response:
+{
+  "1": "Yes"
+}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+	function transferFrom(address _from, address _to, uint256 _amount) public notTimeLocked stopInEmergency returns (bool success) {
+		if (balances[_from] < _amount) {
+			error('transferFrom: the amount to transfer is higher than the token balance of the source');
+			return false;
+		}
+		if (allowed[_from][msg.sender] < _amount) {
+			error('transferFrom: the amount to transfer is higher than the maximum token transfer allowed by the source');
+			return false;
+		}
+
+		if(!SCComplianceService.validate(_from, _to, _amount)) {
+			error('transfer: not allowed by the compliance service');
+			return false;
+		}
+
+		balances[_from] = balances[_from].sub(_amount);
+		balances[_to] = balances[_to].add(_amount);
+		allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_amount);
+		emit Transfer(_from, _to, _amount); // Event log
+
+		return true;
+	}
+    
+Response:
+No
+--------------------------------------------------

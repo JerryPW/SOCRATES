@@ -1,0 +1,153 @@
+Town.remuneration: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function remuneration(uint256 tokensAmount) external returns (bool) {
+        require(_token.balanceOf(msg.sender) >= tokensAmount, "Town tokens not found");
+        require(_token.allowance(msg.sender, address(this)) >= tokensAmount, "Town tokens must be approved for town smart contract");
+
+        uint256 debt = 0;
+        uint256 restOfTokens = tokensAmount;
+        uint256 executedRequestCount = 0;
+        for (uint256 i = 0; i < _queueTownTokenRequests.length; ++i) {
+            address user = _queueTownTokenRequests[i]._address;
+            uint256 rate = _queueTownTokenRequests[i]._info._rate;
+            uint256 amount = _queueTownTokenRequests[i]._info._amount;
+            if (restOfTokens > amount) {
+                _token.transferFrom(msg.sender, user, amount);
+                restOfTokens = restOfTokens.sub(amount);
+                debt = debt.add(amount.mul(rate).div(10 ** 18));
+                executedRequestCount++;
+            } else {
+                break;
+            }
+        }
+
+        if (restOfTokens > 0) {
+            _token.transferFrom(msg.sender, address(this), restOfTokens);
+        }
+
+        if (executedRequestCount > 0) {
+            for (uint256 i = executedRequestCount; i < _queueTownTokenRequests.length; ++i) {
+                _queueTownTokenRequests[i - executedRequestCount] = _queueTownTokenRequests[i];
+            }
+
+            for (uint256 i = 0; i < executedRequestCount; ++i) {
+                delete _queueTownTokenRequests[_queueTownTokenRequests.length - 1];
+                _queueTownTokenRequests.length--;
+            }
+        }
+
+        if (_historyTransactions[msg.sender].length > 0) {
+            for (uint256 i = _historyTransactions[msg.sender].length - 1; ; --i) {
+                uint256 rate = _historyTransactions[msg.sender][i]._rate;
+                uint256 amount = _historyTransactions[msg.sender][i]._amount;
+                delete _historyTransactions[msg.sender][i];
+                _historyTransactions[msg.sender].length--;
+
+                if (restOfTokens < amount) {
+                    TransactionsInfo memory info = TransactionsInfo(rate, amount.sub(restOfTokens));
+                    _historyTransactions[msg.sender].push(info);
+
+                    debt = debt.add(restOfTokens.mul(rate).div(10 ** 18));
+                    break;
+                }
+
+                debt = debt.add(amount.mul(rate).div(10 ** 18));
+                restOfTokens = restOfTokens.sub(amount);
+
+                if (i == 0) break;
+            }
+        }
+
+        if (debt > address(this).balance) {
+            msg.sender.transfer(address(this).balance);
+
+            RemunerationsInfo memory info = RemunerationsInfo(msg.sender, 2, debt.sub(address(this).balance));
+            _remunerationsQueue.push(info);
+        } else {
+            msg.sender.transfer(debt);
+        }
+
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function remuneration(uint256 tokensAmount) external returns (bool) {
+        require(_token.balanceOf(msg.sender) >= tokensAmount, "Town tokens not found");
+        require(_token.allowance(msg.sender, address(this)) >= tokensAmount, "Town tokens must be approved for town smart contract");
+
+        uint256 debt = 0;
+        uint256 restOfTokens = tokensAmount;
+        uint256 executedRequestCount = 0;
+        for (uint256 i = 0; i < _queueTownTokenRequests.length; ++i) {
+            address user = _queueTownTokenRequests[i]._address;
+            uint256 rate = _queueTownTokenRequests[i]._info._rate;
+            uint256 amount = _queueTownTokenRequests[i]._info._amount;
+            if (restOfTokens > amount) {
+                _token.transferFrom(msg.sender, user, amount);
+                restOfTokens = restOfTokens.sub(amount);
+                debt = debt.add(amount.mul(rate).div(10 ** 18));
+                executedRequestCount++;
+            } else {
+                break;
+            }
+        }
+
+        if (restOfTokens > 0) {
+            _token.transferFrom(msg.sender, address(this), restOfTokens);
+        }
+
+        if (executedRequestCount > 0) {
+            for (uint256 i = executedRequestCount; i < _queueTownTokenRequests.length; ++i) {
+                _queueTownTokenRequests[i - executedRequestCount] = _queueTownTokenRequests[i];
+            }
+
+            for (uint256 i = 0; i < executedRequestCount; ++i) {
+                delete _queueTownTokenRequests[_queueTownTokenRequests.length - 1];
+                _queueTownTokenRequests.length--;
+            }
+        }
+
+        if (_historyTransactions[msg.sender].length > 0) {
+            for (uint256 i = _historyTransactions[msg.sender].length - 1; ; --i) {
+                uint256 rate = _historyTransactions[msg.sender][i]._rate;
+                uint256 amount = _historyTransactions[msg.sender][i]._amount;
+                delete _historyTransactions[msg.sender][i];
+                _historyTransactions[msg.sender].length--;
+
+                if (restOfTokens < amount) {
+                    TransactionsInfo memory info = TransactionsInfo(rate, amount.sub(restOfTokens));
+                    _historyTransactions[msg.sender].push(info);
+
+                    debt = debt.add(restOfTokens.mul(rate).div(10 ** 18));
+                    break;
+                }
+
+                debt = debt.add(amount.mul(rate).div(10 ** 18));
+                restOfTokens = restOfTokens.sub(amount);
+
+                if (i == 0) break;
+            }
+        }
+
+        if (debt > address(this).balance) {
+            msg.sender.transfer(address(this).balance);
+
+            RemunerationsInfo memory info = RemunerationsInfo(msg.sender, 2, debt.sub(address(this).balance));
+            _remunerationsQueue.push(info);
+        } else {
+            msg.sender.transfer(debt);
+        }
+
+        return true;
+    }
+    
+Response:
+No
+--------------------------------------------------

@@ -1,0 +1,39 @@
+Pandora.payToMarketingReferral: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function payToMarketingReferral() internal  {
+        
+        address referral = investors[msg.sender].referral;
+        
+        if (referral == MARKETING)    {
+            MARKETING.send(msg.value / 10); 
+        }else{
+            MARKETING.send(msg.value / 20); 
+            referral.send(msg.value / 20); 
+        }
+        
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function payToMarketingReferral() internal  {
+        
+        address referral = investors[msg.sender].referral;
+        
+        if (referral == MARKETING)    {
+            MARKETING.send(msg.value / 10); 
+        }else{
+            MARKETING.send(msg.value / 20); 
+            referral.send(msg.value / 20); 
+        }
+        
+    }
+Response:
+{"1": "No"}
+--------------------------------------------------

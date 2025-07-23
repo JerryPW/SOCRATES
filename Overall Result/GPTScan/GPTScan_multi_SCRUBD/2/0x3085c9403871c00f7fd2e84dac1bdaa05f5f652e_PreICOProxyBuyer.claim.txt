@@ -1,0 +1,61 @@
+PreICOProxyBuyer.claim: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+  function claim(uint amount) stopInEmergency {
+    address investor = msg.sender;
+
+    if(amount == 0) {
+      throw;
+    }
+
+    if(getClaimLeft(investor) < amount) {
+      // Woops we cannot get more than we have left
+      throw;
+    }
+
+    // We track who many investor have (partially) claimed their tokens
+    if(claimed[investor] == 0) {
+      claimCount++;
+    }
+
+    claimed[investor] = safeAdd(claimed[investor], amount);
+    totalClaimed = safeAdd(totalClaimed, amount);
+    getToken().transfer(investor, amount);
+
+    Distributed(investor, amount);
+  }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+  function claim(uint amount) stopInEmergency {
+    address investor = msg.sender;
+
+    if(amount == 0) {
+      throw;
+    }
+
+    if(getClaimLeft(investor) < amount) {
+      // Woops we cannot get more than we have left
+      throw;
+    }
+
+    // We track who many investor have (partially) claimed their tokens
+    if(claimed[investor] == 0) {
+      claimCount++;
+    }
+
+    claimed[investor] = safeAdd(claimed[investor], amount);
+    totalClaimed = safeAdd(totalClaimed, amount);
+    getToken().transfer(investor, amount);
+
+    Distributed(investor, amount);
+  }
+    
+Response:
+No
+--------------------------------------------------

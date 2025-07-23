@@ -1,0 +1,95 @@
+SellERC20BasicTokens.fallback: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function () public payable {
+        // minimum limit
+        uint256 weiAmount = msg.value;
+        require(weiAmount >= etherMinimum.mul(10 ** etherDecimals));
+
+        // make sure: onsale > 0
+        uint256 balance = token.balanceOf(address(this));
+        uint256 onsale = balance.sub(deposit);
+        require(onsale > 0);
+
+        // token amount
+        uint256 tokenBought = weiAmount.mul(rate).div(10 ** decimalDiff);
+        uint256 tokenDeposit = weiAmount.mul(depositRate).div(10 ** decimalDiff);
+        uint256 tokenAmount = tokenBought.add(tokenDeposit);
+        require(tokenAmount > 0);
+
+        // transfer tokens
+        if (tokenAmount <= onsale) {
+            assert(token.transfer(msg.sender, tokenBought));
+        } else {
+            uint256 weiExpense = onsale.div(rate + depositRate);
+            tokenBought = weiExpense.mul(rate);
+            tokenDeposit = onsale.sub(tokenBought);
+
+            // transfer tokens
+            assert(token.transfer(msg.sender, tokenBought));
+
+            // refund
+            msg.sender.transfer(weiAmount - weiExpense.mul(10 ** decimalDiff));
+        }
+
+        // deposit +
+        deposit = deposit.add(tokenDeposit);
+
+        // onsale -
+        onsale = token.balanceOf(address(this)).sub(deposit);
+
+        // transfer eth back to owner
+        owner.transfer(address(this).balance);
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function () public payable {
+        // minimum limit
+        uint256 weiAmount = msg.value;
+        require(weiAmount >= etherMinimum.mul(10 ** etherDecimals));
+
+        // make sure: onsale > 0
+        uint256 balance = token.balanceOf(address(this));
+        uint256 onsale = balance.sub(deposit);
+        require(onsale > 0);
+
+        // token amount
+        uint256 tokenBought = weiAmount.mul(rate).div(10 ** decimalDiff);
+        uint256 tokenDeposit = weiAmount.mul(depositRate).div(10 ** decimalDiff);
+        uint256 tokenAmount = tokenBought.add(tokenDeposit);
+        require(tokenAmount > 0);
+
+        // transfer tokens
+        if (tokenAmount <= onsale) {
+            assert(token.transfer(msg.sender, tokenBought));
+        } else {
+            uint256 weiExpense = onsale.div(rate + depositRate);
+            tokenBought = weiExpense.mul(rate);
+            tokenDeposit = onsale.sub(tokenBought);
+
+            // transfer tokens
+            assert(token.transfer(msg.sender, tokenBought));
+
+            // refund
+            msg.sender.transfer(weiAmount - weiExpense.mul(10 ** decimalDiff));
+        }
+
+        // deposit +
+        deposit = deposit.add(tokenDeposit);
+
+        // onsale -
+        onsale = token.balanceOf(address(this)).sub(deposit);
+
+        // transfer eth back to owner
+        owner.transfer(address(this).balance);
+    }
+    
+Response:
+No
+--------------------------------------------------

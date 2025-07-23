@@ -1,0 +1,107 @@
+PhantomProject.swapAndLiquify: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
+        uint256 liquidityPart = 0;
+        if (_pendingLiquidityFees < contractTokenBalance) liquidityPart = _pendingLiquidityFees;
+
+        uint256 distributionPart = contractTokenBalance.sub(liquidityPart);
+        uint256 liquidityHalfPart = liquidityPart.div(2);
+        uint256 liquidityHalfTokenPart = liquidityPart.sub(liquidityHalfPart);
+
+        //now swapping half of the liquidity part + all of the distribution part into ETH
+        uint256 totalETHSwap = liquidityHalfPart.add(distributionPart);
+
+        swapTokensForEth(totalETHSwap);
+
+        uint256 newBalance = address(this).balance;
+        uint256 devBalance = _pendingDevelopmentFees.mul(newBalance).div(totalETHSwap);
+        uint256 liquidityBalance = liquidityHalfPart.mul(newBalance).div(totalETHSwap);
+
+        if (liquidityHalfTokenPart > 0 && liquidityBalance > 0) addLiquidity(liquidityHalfTokenPart, liquidityBalance);
+
+        if (devBalance > 0 && devBalance < address(this).balance) dev.call{ value: devBalance }("");
+        if (address(this).balance > 0) marketing.call{ value: address(this).balance }("");
+
+        _pendingDevelopmentFees = 0;
+        _pendingLiquidityFees = 0;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
+        uint256 liquidityPart = 0;
+        if (_pendingLiquidityFees < contractTokenBalance) liquidityPart = _pendingLiquidityFees;
+
+        uint256 distributionPart = contractTokenBalance.sub(liquidityPart);
+        uint256 liquidityHalfPart = liquidityPart.div(2);
+        uint256 liquidityHalfTokenPart = liquidityPart.sub(liquidityHalfPart);
+
+        //now swapping half of the liquidity part + all of the distribution part into ETH
+        uint256 totalETHSwap = liquidityHalfPart.add(distributionPart);
+
+        swapTokensForEth(totalETHSwap);
+
+        uint256 newBalance = address(this).balance;
+        uint256 devBalance = _pendingDevelopmentFees.mul(newBalance).div(totalETHSwap);
+        uint256 liquidityBalance = liquidityHalfPart.mul(newBalance).div(totalETHSwap);
+
+        if (liquidityHalfTokenPart > 0 && liquidityBalance > 0) addLiquidity(liquidityHalfTokenPart, liquidityBalance);
+
+        if (devBalance > 0 && devBalance < address(this).balance) dev.call{ value: devBalance }("");
+        if (address(this).balance > 0) marketing.call{ value: address(this).balance }("");
+
+        _pendingDevelopmentFees = 0;
+        _pendingLiquidityFees = 0;
+    }
+    
+Response:
+Yes
+--------------------------------------------------
+Prompt:
+In this function, which statement updates a state variable? Please answer in a section starting with "StatementsA:".
+In this function, which statement executes an external call? Please answer in a section starting with "StatementsB:".
+In this function, which variable holds the sender's address of the external call? Please answer in a section starting with "VariableA:". 
+Please answer strictly in the following format: {"StatementsA": {"State update statement":"Description"}, "StatementsB": {"External call statement"："Description"}, "VariableA": {"Variable name": "Description"}}
+
+    function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
+        uint256 liquidityPart = 0;
+        if (_pendingLiquidityFees < contractTokenBalance) liquidityPart = _pendingLiquidityFees;
+
+        uint256 distributionPart = contractTokenBalance.sub(liquidityPart);
+        uint256 liquidityHalfPart = liquidityPart.div(2);
+        uint256 liquidityHalfTokenPart = liquidityPart.sub(liquidityHalfPart);
+
+        //now swapping half of the liquidity part + all of the distribution part into ETH
+        uint256 totalETHSwap = liquidityHalfPart.add(distributionPart);
+
+        swapTokensForEth(totalETHSwap);
+
+        uint256 newBalance = address(this).balance;
+        uint256 devBalance = _pendingDevelopmentFees.mul(newBalance).div(totalETHSwap);
+        uint256 liquidityBalance = liquidityHalfPart.mul(newBalance).div(totalETHSwap);
+
+        if (liquidityHalfTokenPart > 0 && liquidityBalance > 0) addLiquidity(liquidityHalfTokenPart, liquidityBalance);
+
+        if (devBalance > 0 && devBalance < address(this).balance) dev.call{ value: devBalance }("");
+        if (address(this).balance > 0) marketing.call{ value: address(this).balance }("");
+
+        _pendingDevelopmentFees = 0;
+        _pendingLiquidityFees = 0;
+    }
+Response:
+{"StatementsA": {"_pendingDevelopmentFees = 0;":"Resets the pending development fees to zero.", "_pendingLiquidityFees = 0;":"Resets the pending liquidity fees to zero."}, "StatementsB": {"dev.call{ value: devBalance }(\"\");":"Executes an external call to the 'dev' address with 'devBalance' as value.", "marketing.call{ value: address(this).balance }(\"\");":"Executes an external call to the 'marketing' address with the contract's remaining balance as value."}, "VariableA": {"dev":"Holds the sender's address for the external call to the 'dev' address.", "marketing":"Holds the sender's address for the external call to the 'marketing' address."}}
+--------------------------------------------------
+
+=== check_REE_attack Analysis ===
+1.Static Variable: _pendingDevelopmentFees = 0;
+2.External Call: dev.call{ value: devBalance }("");
+3.Variable A: dev
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Potential REE-state variable update after external calls

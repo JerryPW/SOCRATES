@@ -1,0 +1,131 @@
+EscrowGoods.getMoney: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function getMoney(uint _lockId) {
+
+        EscrowInfo info = escrows[_lockId];
+
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return;
+        }
+        //HACK: this check is necessary since frozenTime == 0 at escrow creation
+        if(info.frozenFunds == 0) {
+            logDebug("info.frozenFunds == 0");
+            return;
+        }
+
+        //timout for voting not over yet
+        if(now < (info.frozenTime + freezePeriod)) {
+            logDebug("now < (info.frozenTime + freezePeriod)");
+            return;
+        }
+
+        uint payment = info.lockedFunds;
+        if(payment > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("payment > this.balance");
+            return;
+        }
+
+        //both has voted - money is under arbitration
+        if(info.buyerNo && info.sellerNo) {
+
+            //arbitration timeout is not over yet
+            if(now < (info.frozenTime + freezePeriod + arbitrationPeriod)) {
+                logDebug("now < (info.frozenTime + freezePeriod + arbitrationPeriod)");
+                return;
+            }
+
+            //arbiter was silent so redeem the funds to the buyer
+            safeSend(info.buyer, payment);
+
+            info.lockedFunds = 0;
+            return;
+        }
+
+        if(info.buyerNo) {
+
+            safeSend(info.buyer, payment);
+
+            info.lockedFunds = 0;
+            return;
+        }
+        if(info.sellerNo) {
+
+            safeSend(seller, payment);
+
+            info.lockedFunds = 0;
+            return;
+        }
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function getMoney(uint _lockId) {
+
+        EscrowInfo info = escrows[_lockId];
+
+        if(info.lockedFunds == 0) {
+            logDebug("info.lockedFunds == 0");
+            return;
+        }
+        //HACK: this check is necessary since frozenTime == 0 at escrow creation
+        if(info.frozenFunds == 0) {
+            logDebug("info.frozenFunds == 0");
+            return;
+        }
+
+        //timout for voting not over yet
+        if(now < (info.frozenTime + freezePeriod)) {
+            logDebug("now < (info.frozenTime + freezePeriod)");
+            return;
+        }
+
+        uint payment = info.lockedFunds;
+        if(payment > this.balance) {
+            //HACK: should not get here - funds cannot be unlocked in this case
+            logDebug("payment > this.balance");
+            return;
+        }
+
+        //both has voted - money is under arbitration
+        if(info.buyerNo && info.sellerNo) {
+
+            //arbitration timeout is not over yet
+            if(now < (info.frozenTime + freezePeriod + arbitrationPeriod)) {
+                logDebug("now < (info.frozenTime + freezePeriod + arbitrationPeriod)");
+                return;
+            }
+
+            //arbiter was silent so redeem the funds to the buyer
+            safeSend(info.buyer, payment);
+
+            info.lockedFunds = 0;
+            return;
+        }
+
+        if(info.buyerNo) {
+
+            safeSend(info.buyer, payment);
+
+            info.lockedFunds = 0;
+            return;
+        }
+        if(info.sellerNo) {
+
+            safeSend(seller, payment);
+
+            info.lockedFunds = 0;
+            return;
+        }
+    }
+    
+Response:
+No
+--------------------------------------------------

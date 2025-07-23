@@ -1,0 +1,63 @@
+CompliantCrowdsale.approveMint: GPTScan analysis start 
+Prompt:
+Given the following smart contract code, answer the questions below and organize the result in a json format like {"1": "Yes" or "No"}.
+"1": Does it "have an external call"?
+
+    function approveMint(uint256 nonce)
+        external 
+        onlyValidator 
+        checkIsInvestorApproved(pendingMints[nonce].to)
+        returns (bool)
+    {
+        // update state
+        weiRaised = weiRaised.add(pendingMints[nonce].weiAmount);
+
+        //No need to use mint-approval on token side, since the minting is already approved in the crowdsale side
+        token.mint(pendingMints[nonce].to, pendingMints[nonce].tokens);
+        
+        emit TokenPurchase(
+            msg.sender,
+            pendingMints[nonce].to,
+            pendingMints[nonce].weiAmount,
+            pendingMints[nonce].tokens
+        );
+
+        forwardFunds(pendingMints[nonce].weiAmount);
+        delete pendingMints[nonce];
+
+        return true;
+    }
+Response:
+{"1": "Yes"}
+--------------------------------------------------
+Prompt:
+Does the following smart contract code "have an external call and followed by any state changes"? Answer only "Yes" or "No".
+
+    function approveMint(uint256 nonce)
+        external 
+        onlyValidator 
+        checkIsInvestorApproved(pendingMints[nonce].to)
+        returns (bool)
+    {
+        // update state
+        weiRaised = weiRaised.add(pendingMints[nonce].weiAmount);
+
+        //No need to use mint-approval on token side, since the minting is already approved in the crowdsale side
+        token.mint(pendingMints[nonce].to, pendingMints[nonce].tokens);
+        
+        emit TokenPurchase(
+            msg.sender,
+            pendingMints[nonce].to,
+            pendingMints[nonce].weiAmount,
+            pendingMints[nonce].tokens
+        );
+
+        forwardFunds(pendingMints[nonce].weiAmount);
+        delete pendingMints[nonce];
+
+        return true;
+    }
+    
+Response:
+No
+--------------------------------------------------
